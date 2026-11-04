@@ -33,6 +33,12 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: node-format
+        name: parse the knowledge nodes
+        entry: uv run --frozen python -m knowledge_architecture.parser knowledge skills
+        language: system
+        pass_filenames: false
+        always_run: true
       - id: ruff-check
         name: ruff check
         entry: uv run --frozen ruff check --fix

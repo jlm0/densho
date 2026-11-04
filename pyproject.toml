@@ -1,0 +1,48 @@
+[project]
+name = "knowledge-architecture"
+version = "0.0.0"
+description = "Governed knowledge architecture for human and agent workspaces."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = []
+
+[build-system]
+requires = ["uv_build>=0.8.4,<0.9"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "knowledge_architecture"
+module-root = "engine"
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["COM812", "CPY", "D"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["INP001", "S101"]
+
+[tool.pyright]
+include = ["engine", "tests"]
+pythonVersion = "3.14"
+typeCheckingMode = "strict"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--import-mode=importlib", "--strict-config", "--strict-markers", "-ra"]
+xfail_strict = true
+
+[dependency-groups]
+dev = [
+    "mdformat>=0.7.22",
+    "mdformat-frontmatter>=2.1.2",
+    "mdformat-gfm>=1.0.0",
+    "mdformat-tables>=1.0.0",
+    "pre-commit>=4.7.0",
+    "pyright>=1.1.414",
+    "pytest>=9.2.0",
+    "ruff>=0.17.3",
+]

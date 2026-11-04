@@ -1,3 +1,4 @@
+exclude: ^engine/knowledge_architecture/generated/metamodel\.py$
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -17,6 +18,21 @@ repos:
         language: system
         files: ^(pyproject\.toml|uv\.lock)$
         pass_filenames: false
+      - id: schema-lint
+        name: linkml lint
+        entry: uv run --frozen linkml-lint --config governance/schema/linkml-lint.yaml governance/schema/metamodel.yaml
+        language: system
+        files: ^governance/schema/
+        pass_filenames: false
+      - id: schema-models
+        name: generate models from the schema
+        entry: >-
+          sh -c 'mkdir -p build &&
+          uv run --frozen gen-pydantic --meta None --template-dir governance/schema/templates governance/schema/metamodel.yaml > build/metamodel.py &&
+          cp build/metamodel.py engine/knowledge_architecture/generated/metamodel.py'
+        language: system
+        pass_filenames: false
+        always_run: true
       - id: ruff-check
         name: ruff check
         entry: uv run --frozen ruff check --fix

@@ -1,0 +1,21 @@
+extends: recommended
+rules:
+  recommended:
+    level: error
+  standard_naming:
+    level: error
+  canonical_prefixes:
+    level: error
+  no_empty_title:
+    level: disabled
+  no_invalid_slot_group:
+    level: error
+  no_undeclared_subsets:
+    level: error
+  tree_root_class:
+    level: error
+    root_class_name: KnowledgeGraph
+    validate_existing_class_name: true
+  permissible_values_format:
+    level: error
+    format: snake

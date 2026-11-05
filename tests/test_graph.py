@@ -468,7 +468,6 @@ def test_a_hostile_reference_is_a_problem_and_does_not_crash(tree: Tree, value: 
         ('"a\\nb"', "'a\\nb'"),
         ('"\\e[31mred"', "'\\x1b[31mred'"),
         ('"caf\\u00e9"', "'caf\\xe9'"),
-        ('"\\uD800"', "'\\ud800'"),
     ],
 )
 def test_a_reference_cannot_break_the_problem_line(tree: Tree, source: str, shown: str) -> None:
@@ -893,12 +892,15 @@ def test_an_empty_list_does_not_crash(tree: Tree, field: str) -> None:
     assert tree.problems() == []
 
 
-@pytest.mark.parametrize(
-    "value", ['"a\\x00b"', '"\\e[31m"', '"\\uFEFFx"', '"\\U0001F600"', '"\\uD800"']
-)
+@pytest.mark.parametrize("value", ['"a\\x00b"', '"\\e[31m"', '"\\uFEFFx"', '"\\U0001F600"'])
 def test_an_escaped_text_value_does_not_crash(tree: Tree, value: str) -> None:
     tree.change("motion", title=value, sources=[value])
     assert tree.problems() == []
+
+
+def test_a_lone_surrogate_in_a_text_value_fails_with_a_problem(tree: Tree) -> None:
+    tree.change("motion", title='"\\uD800"')
+    assert [problem.split(": ")[1] for problem in tree.problems()] == ["yaml"]
 
 
 def report_with(focus: URIRef | BNode | None, path: URIRef | None, value: URIRef | None) -> Graph:

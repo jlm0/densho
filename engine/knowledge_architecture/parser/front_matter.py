@@ -15,6 +15,8 @@ DELIMITER = "---"
 FIRST_LINE = 2
 MERGE_KEY = "<<"
 DOCUMENT_END = re.compile(r"\.\.\.(\s|$)")
+LONE_SURROGATE = re.compile(r"[\ud800-\udfff]")
+SURROGATE_MESSAGE = "A YAML escape gives a character that is not valid. Write the character itself."
 
 
 @dataclass(frozen=True, slots=True)
@@ -37,6 +39,9 @@ class _Converter:
         if isinstance(value, CommentedSeq):
             return self._sequence(cast("Any", value), field_path)
         if isinstance(value, str):
+            if LONE_SURROGATE.search(value):
+                line = self.locations[field_path]
+                self.problems.append(Problem(self.path, line, "yaml", SURROGATE_MESSAGE))
             return str(value)
         return value
 
@@ -46,6 +51,9 @@ class _Converter:
             line = FIRST_LINE + cast("int", mapping.lc.key(key)[0])
             if not isinstance(key, str):
                 self.problems.append(Problem(self.path, line, "yaml", "Each key must be a string."))
+                continue
+            if LONE_SURROGATE.search(key):
+                self.problems.append(Problem(self.path, line, "yaml", SURROGATE_MESSAGE))
                 continue
             child = (*field_path, str(key))
             self.locations[child] = line

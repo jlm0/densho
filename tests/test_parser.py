@@ -442,6 +442,11 @@ def test_reports_a_second_or_late_section_at_its_heading(old: str, new: str, hea
         pytest.param("---\nid: a\nid: b\n---\n", "yaml", 3, id="duplicate-key"),
         pytest.param("---\nid: a\nb: [1\n---\n", "yaml", 3, id="syntax-error"),
         pytest.param("---\nid: a\nb: \x01c\n---\n", "control-character", 3, id="control-character"),
+        pytest.param('---\nid: a\nb: "\\ud800"\n---\n', "yaml", 3, id="surrogate-value"),
+        pytest.param('---\nid: a\n"\\udfff": b\n---\n', "yaml", 3, id="surrogate-key"),
+        pytest.param(
+            '---\nid: a\nb:\n  - c\n  - "\\ud83d\\ude00"\n---\n', "yaml", 5, id="surrogate-pair"
+        ),
         pytest.param("---\nid: a\n1: b\n---\n", "yaml", 3, id="integer-key"),
         pytest.param("---\nid: a\n[x]: b\n---\n", "yaml", 3, id="list-key"),
         pytest.param("---\nid: a\nb: &x c\n---\n", "yaml-feature", 3, id="anchor"),

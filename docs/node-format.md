@@ -64,7 +64,7 @@ For the same reason, the parser rejects:
 - an unclosed code fence
 - a code fence that holds a section name the file does not otherwise have
 - raw HTML blocks and HTML comments, because a reader of the rendered file cannot see them
-- control characters
+- control characters, and a YAML escape such as `"\ud800"` that gives a character no file can hold
 - Markdown nested deeper than a Markdown parser can read reliably
 
 ## Directives

@@ -20,7 +20,7 @@ The rules for the metamodel, which defines what a node is. The metamodel file st
 
 ## Directives
 
-- Change a node kind, a field, or an edge only in `governance/schema/metamodel.yaml`. ^change-the-schema-file
+- Change a node kind, a field, or an edge only in `governance/schema/metamodel.yaml` of the template. ^change-the-schema-file
   - scope: node
   - status: proposed
   - origin: template

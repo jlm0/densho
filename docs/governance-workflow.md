@@ -122,7 +122,7 @@ A project owns its copy, so it can change or delete anything it received, and no
 
 `origin` records who added an entity, so it does not change, and the template ships no workspace knowledge. A project can add domain knowledge of its own.
 
-A first commit has no history to compare with, so a template copied into a new repo keeps its statuses. In a repo that already has history, everything from the template counts as new. It arrives as `proposed`, and a person accepts it in one commit.
+A first commit has no history to compare with, so a template copied into a new repo keeps its statuses. In a repo that already has history, everything from the template counts as new. It arrives as `proposed`, and a person accepts it in one commit. [The install](template-packaging.md#which-status-knowledge-arrives-with) sets those statuses for you, and a later pull follows the same rule.
 
 ## What fails
 
@@ -183,7 +183,7 @@ The folder is part of the graph. Every command reads it, a policy needs a pointe
 
 `governs` names what a policy sets rules for. Each policy must name something, and a policy must name each policy. The `governance` domain names itself, which closes the loop: the rules for rules follow their own rules, and they start as `proposed` like everything else.
 
-You can change or delete these policies in your own copy. The checks read them as data and do not depend on them. If you delete them, point the root at your own domain in the same commit, or delete the root too. The language checks and the schema still need `governance/language/` and `governance/schema/`.
+You can change or delete these policies in your own copy. The checks read them as data and do not depend on them. If you delete them, point the root at your own domain in the same commit, or delete the root too. The language checks still need `governance/language/`. [Template packaging](template-packaging.md#what-you-can-delete-from-governance) lists what a project can delete.
 
 ## How it fits
 

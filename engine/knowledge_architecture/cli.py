@@ -11,6 +11,7 @@ from knowledge_architecture.graph import check_tree
 from knowledge_architecture.language import check_language
 from knowledge_architecture.parser import parse_tree
 from knowledge_architecture.runtime import generate_runtime
+from knowledge_architecture.template import adopt_template, history_drift, record_history
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -190,3 +191,55 @@ def runtime(
         typer.echo(f"removed {path}")
     summary = f"{report.result.value}: {len(report.files)} files, {len(report.written)} written"
     _finish(f"{summary}, {len(report.removed)} removed", report.problems)
+
+
+@app.command()
+def adopt(
+    repository: Annotated[
+        Path, typer.Argument(help="The folder that holds the installed knowledge.")
+    ] = Path(),
+) -> None:
+    """Bring in template knowledge as the last commit requires, then write the runtime files."""
+    report = adopt_template(repository)
+    for note in report.notes:
+        typer.echo(f"note: {note}")
+    for name in report.imported:
+        typer.echo(f"added the import of the root to {name}")
+    for entity in report.proposed:
+        typer.echo(f"{entity.path}:{entity.line}: {entity.label} was {entity.status}, now proposed")
+    written = len(report.runtime.written) if report.runtime else 0
+    summary = f"{len(report.proposed)} entities set to proposed, {written} files written"
+    _finish(summary, report.problems)
+
+
+@app.command()
+def history(
+    repository: Annotated[
+        Path, typer.Argument(help="The folder that holds the template.")
+    ] = Path(),
+    *,
+    verify: Annotated[
+        bool,
+        typer.Option(
+            "--verify",
+            help="Also fail when the command wrote a change, or when the index lacks the file.",
+        ),
+    ] = False,
+    drift: Annotated[
+        bool,
+        typer.Option(
+            "--drift", help="Print how this tree differs from the history, and write nothing."
+        ),
+    ] = False,
+) -> None:
+    """Record template changes for agents, or list how this tree differs from the history."""
+    if verify and drift:
+        typer.echo("--drift writes nothing, so it cannot run with --verify.")
+        raise typer.Exit(2)
+    report = history_drift(repository) if drift else record_history(repository, verify=verify)
+    for note in report.notes:
+        typer.echo(f"note: {note}")
+    if drift:
+        for entry in report.entries:
+            typer.echo(entry.model_dump_json())
+    _finish(f"{len(report.entries)} entities differ from the history", report.problems)

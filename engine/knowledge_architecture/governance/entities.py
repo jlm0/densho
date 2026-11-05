@@ -49,9 +49,13 @@ class Entity:
         return f"{self.kind} {self.name}"
 
 
+def normal_text(value: str) -> str:
+    return " ".join(_MARKDOWN.render(value).split())
+
+
 def _normal(value: object) -> object:
     if isinstance(value, str):
-        return " ".join(_MARKDOWN.render(value).split())
+        return normal_text(value)
     if isinstance(value, list):
         return sorted(cast("list[str]", value))
     return value

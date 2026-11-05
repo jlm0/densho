@@ -1,0 +1,18 @@
+repos:
+  - repo: local
+    hooks:
+      - id: conflict-markers
+        name: stop a commit that holds a conflict marker
+        entry: "^(<{7} |>{7} )"
+        language: pygrep
+      - id: rejected-hunks
+        name: stop a commit that holds a rejected hunk
+        entry: Apply this rejected hunk by hand, then remove the file.
+        language: fail
+        files: \.rej$
+      - id: knowledge-checks
+        name: check the knowledge and generate the runtime files
+        entry: .ka/ka runtime --verify
+        language: system
+        pass_filenames: false
+        always_run: true

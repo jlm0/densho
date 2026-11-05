@@ -8,6 +8,7 @@ import pytest
 from linkml_runtime.utils.schemaview import SchemaView
 from markdown_it import MarkdownIt
 from rdflib import Graph, Variable
+from ruamel.yaml import YAML
 
 from knowledge_architecture.cli import app
 from knowledge_architecture.compiler import BUILD_CODES, OUTPUT_FOLDER, file_names
@@ -29,6 +30,7 @@ from knowledge_architecture.language.profile import (
 )
 from knowledge_architecture.parser import ParsedNode, parse_source, parse_tree
 from knowledge_architecture.runtime import REVIEW_FOLDER, RUNTIME_CODES, review_path
+from knowledge_architecture.template import ADOPT_CODES, HISTORY_CODES, Entry
 
 REPO = Path(__file__).resolve().parents[1]
 README = REPO / "README.md"
@@ -376,7 +378,8 @@ def test_the_governance_page_names_a_real_directive() -> None:
 
 def documented_commands() -> set[str]:
     texts = [path.read_text(encoding="utf-8") for path in [README, *FILES]]
-    return {command for text in texts for command in re.findall(r"uv run ka (\w+)", text)}
+    pattern = r"(?:uv run ka|\.ka/ka) (\w+)"
+    return {command for text in texts for command in re.findall(pattern, text)}
 
 
 def test_each_documented_command_exists() -> None:
@@ -412,6 +415,34 @@ def test_the_runtime_page_names_the_review_folder_and_each_review_name() -> None
     for name in ("AGENTS.md", ".claude/skills/<id>/SKILL.md", ".claude/rules/knowledge/<id>.md"):
         assert f"`{name}`" in text
         assert f"`{REVIEW_FOLDER.as_posix()}/{review_path(PurePosixPath(name))}`" in text
+
+
+TEMPLATE_PAGE = DOCS / "template-packaging.md"
+
+
+@pytest.mark.parametrize("code", [*ADOPT_CODES, *HISTORY_CODES])
+def test_the_template_page_names_each_code(code: str) -> None:
+    assert f"`{code}`" in TEMPLATE_PAGE.read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("key", Entry.model_fields)
+def test_the_template_page_names_each_history_key(key: str) -> None:
+    assert f"| `{key}`" in TEMPLATE_PAGE.read_text(encoding="utf-8")
+
+
+def test_the_template_page_example_is_a_history_line() -> None:
+    tokens = MarkdownIt("commonmark").parse(TEMPLATE_PAGE.read_text(encoding="utf-8"))
+    examples = [token.content for token in tokens if token.info == "json"]
+    assert len(examples) == 1
+    assert Entry.model_validate_json(examples[0]).kind == "directive"
+
+
+def test_the_template_page_names_each_path_that_a_project_receives() -> None:
+    text = TEMPLATE_PAGE.read_text(encoding="utf-8")
+    config = YAML(typ="safe").load((REPO / "copier.yml").read_text(encoding="utf-8"))
+    allowed = [entry[2:] for entry in config["_exclude"] if entry.startswith("!/")]
+    assert allowed
+    assert [path for path in allowed if f"`{path}" not in text] == []
 
 
 def test_the_compiled_page_names_the_output_folder() -> None:

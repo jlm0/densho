@@ -18,6 +18,12 @@ repos:
         language: system
         files: ^(pyproject\.toml|uv\.lock)$
         pass_filenames: false
+      - id: engine-constraints
+        name: write the locked engine versions for a project
+        entry: uv export --frozen --no-dev --no-emit-project --no-hashes --no-annotate --no-header --quiet --output-file .ka/engine-constraints.txt
+        language: system
+        pass_filenames: false
+        always_run: true
       - id: schema-lint
         name: linkml lint
         entry: uv run --frozen linkml-lint --config governance/schema/linkml-lint.yaml governance/schema/metamodel.yaml
@@ -75,6 +81,12 @@ repos:
       - id: runtime-files
         name: generate the runtime files
         entry: uv run --frozen ka runtime --verify
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: template-history
+        name: record template changes in the change history
+        entry: uv run --frozen ka history --verify
         language: system
         pass_filenames: false
         always_run: true

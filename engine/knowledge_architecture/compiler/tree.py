@@ -40,7 +40,7 @@ class BuildReport:
     problems: list[Problem]
 
 
-def _path_problems(items: Sequence[ParsedNode], repository: Path) -> list[Problem]:
+def path_problems(items: Sequence[ParsedNode], repository: Path) -> list[Problem]:
     problems: list[Problem] = []
     for item in items:
         relative = item.path.relative_to(repository).as_posix()
@@ -67,7 +67,7 @@ def compile_tree(repository: Path, *, proposals: bool = False) -> CompileReport:
         *check_directive_items(items),
         *governance.problems,
         *language,
-        *_path_problems(items, repository),
+        *path_problems(items, repository),
     }
     if found:
         return CompileReport(None, governance.notes, sorted(found))

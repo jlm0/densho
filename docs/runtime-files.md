@@ -111,7 +111,7 @@ A generated file holds one marker line: the first line, or the first line after 
 
 The parser reads the same marker. A Markdown file in a node folder must be `node.md` or a generated file, so a hand-written `AGENTS.md` there fails with `file-name`. So does a generated one after someone removes its marker.
 
-If a `CLAUDE.md`, `.claude/CLAUDE.md`, or `CLAUDE.local.md` sits in the repo root, Claude Code reads it and skips `AGENTS.md`. The command prints a note that names the import line to add to that file.
+If a `CLAUDE.md`, `.claude/CLAUDE.md`, or `CLAUDE.local.md` sits in the repo root, Claude Code reads it and skips `AGENTS.md`. The command prints a note that names the import line to add to that file, and the note stops once a file imports the root. In a project, [`ka adopt`](template-packaging.md#your-own-files) adds the line for you.
 
 ## The git hook
 

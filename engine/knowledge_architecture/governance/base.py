@@ -2,7 +2,7 @@ import os
 import shutil
 import subprocess
 from dataclasses import dataclass, field
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from knowledge_architecture.parser.node import GOVERNANCE_FOLDER, NODE_FILE_NAME, parse_source
 from knowledge_architecture.parser.result import ParsedNode, Problem
@@ -138,3 +138,11 @@ def tracked_files(repository: Path) -> frozenset[str] | None:
     if listing.returncode != 0:
         return None
     return frozenset(os.fsdecode(name) for name in listing.stdout.split(b"\0") if name)
+
+
+def read_head_file(repository: Path, path: PurePosixPath) -> bytes | None:
+    program = shutil.which("git")
+    if program is None:
+        return None
+    shown = _git(program, repository, "show", f"HEAD:./{path}")
+    return shown.stdout if shown.returncode == 0 else None

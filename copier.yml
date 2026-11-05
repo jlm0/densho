@@ -1,0 +1,44 @@
+_min_copier_version: "9.19"
+_exclude:
+  - "*"
+  - "!/AGENTS.md"
+  - "!/.copier-answers.yml"
+  - "!/.gitignore"
+  - "!/.pre-commit-config.yaml"
+  - "!/.ka/"
+  - "!/.claude/rules/knowledge/"
+  - "!/.claude/skills/"
+  - "!/knowledge/"
+  - "!/skills/"
+  - "!/governance/language/"
+  - "!/governance/policies/"
+  - "!/governance/schema/metamodel.yaml"
+  - ".DS_Store"
+  - "__pycache__"
+_skip_if_exists:
+  - "AGENTS.md"
+  - "/.claude/rules/knowledge/"
+  - "/.claude/skills/"
+  - "/.gitignore"
+  - "/.pre-commit-config.yaml"
+_tasks:
+  - command: [".ka/ka", "adopt"]
+    when: "{{ _copier_operation == 'copy' }}"
+_message_after_copy: |
+  The project now owns this copy. To run the checks on each commit:
+
+    uv tool install pre-commit
+    pre-commit install
+
+  Then stage the files and commit them. Each clone of the project needs the second command.
+_message_after_update: |
+  Resolve each conflict, and remove each conflict marker. Then run:
+
+    .ka/ka adopt
+
+  Then read the result, stage the files, and commit them.
+
+started_from:
+  type: str
+  help: The template commit that this project starts from. Keep the default.
+  default: "{{ _copier_conf.vcs_ref_hash }}"

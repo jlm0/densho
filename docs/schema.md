@@ -114,6 +114,8 @@ The models read one node at a time and hold each reference as a plain string, so
 
 ## Change the schema
 
+The engine reads its own copy of the schema, so you change the schema in the template. A project's `governance/schema/metamodel.yaml` is a reference, and editing it changes no check.
+
 After you edit `metamodel.yaml`, regenerate the files in `engine/knowledge_architecture/generated/`:
 
 ```sh

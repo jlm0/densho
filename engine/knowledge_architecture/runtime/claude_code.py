@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from urllib.parse import quote
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, select_autoescape
+from markdown_it import MarkdownIt
 
 from knowledge_architecture.compiler.output import NOTICES
 from knowledge_architecture.generated.metamodel import CompiledResult
@@ -27,7 +28,8 @@ SKILLS_FOLDER = PurePosixPath(".claude/skills")
 SKILL_FILE_NAME = "SKILL.md"
 SKILL_TEMPLATE = "skill.md.jinja"
 REVIEW_MARK = ".proposals"
-REPLACING_FILES = ("CLAUDE.md", ".claude/CLAUDE.md", "CLAUDE.local.md")
+IMPORTING_FILES = ("CLAUDE.md", ".claude/CLAUDE.md")
+REPLACING_FILES = (*IMPORTING_FILES, "CLAUDE.local.md")
 SKILL_KEPT_TOKENS = 5_000
 CHARACTERS_PER_TOKEN = 3
 SKILL_KEPT_CHARACTERS = SKILL_KEPT_TOKENS * CHARACTERS_PER_TOKEN
@@ -85,6 +87,7 @@ _ENVIRONMENT = Environment(
 )
 _ENVIRONMENT.filters["link_text"] = _link_text
 _ENVIRONMENT.filters["yaml_string"] = _yaml_string
+_IMPORT_PARSER = MarkdownIt("commonmark")
 
 
 def review_path(path: PurePosixPath) -> PurePosixPath:
@@ -177,11 +180,62 @@ def review_candidates(repository: Path) -> Iterator[Path]:
     yield from (repository / REVIEW_FOLDER).rglob("*.md")
 
 
+def _import_line(name: str) -> str:
+    return f"@{posixpath.relpath(ROOT_FILE, start=posixpath.dirname(name) or '.')}"
+
+
+def _imports_root(text: str, line: str) -> bool:
+    forms = {line, line.replace("@", "@./", 1)}
+    return any(
+        child.type == "text" and not forms.isdisjoint(child.content.split())
+        for token in _IMPORT_PARSER.parse(text)
+        for child in token.children or ()
+    )
+
+
+def _reads_root(repository: Path, name: str) -> bool:
+    path = repository / name
+    if path.resolve() == (repository / ROOT_FILE).resolve():
+        return True
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError, UnicodeDecodeError:
+        return False
+    return _imports_root(text, _import_line(name))
+
+
+def _replacing_files(repository: Path) -> list[str]:
+    return [name for name in REPLACING_FILES if (repository / name).exists()]
+
+
 def instruction_notes(repository: Path) -> list[str]:
+    existing = _replacing_files(repository)
+    if any(_reads_root(repository, name) for name in existing):
+        return []
     return [
         f"{name} exists, so Claude Code reads it and does not read {ROOT_FILE}. "
-        f"Add the line @{posixpath.relpath(ROOT_FILE, start=posixpath.dirname(name) or '.')} "
-        f"to {name}."
-        for name in REPLACING_FILES
-        if (repository / name).exists()
+        f"Add the line {_import_line(name)} to {name}."
+        for name in existing
     ]
+
+
+def add_root_import(repository: Path) -> tuple[tuple[str, ...], list[Problem]]:
+    existing = _replacing_files(repository)
+    target = next((name for name in IMPORTING_FILES if name in existing), None)
+    if target is None or any(_reads_root(repository, name) for name in existing):
+        return (), []
+    path = repository / target
+    if path.is_symlink():
+        message = (
+            f"This file is a symbolic link. Add the line {_import_line(target)} to its target."
+        )
+        return (), [Problem(path, 1, "import", message)]
+    try:
+        data = path.read_bytes()
+        separator = b"\n" if data.endswith(b"\n") else b"\n\n"
+        with path.open("ab") as stream:
+            stream.write((separator if data else b"") + _import_line(target).encode() + b"\n")
+    except OSError as error:
+        message = f"The command cannot add the import: {error.strerror!a}."
+        return (), [Problem(path, 1, "import", message)]
+    return (target,), []

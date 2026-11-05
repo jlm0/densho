@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-A project that copies the template receives this knowledge. It is ordinary content: one domain, two skills, and a few language terms, and it goes through the same checks and the same workflow as anything a project adds. Nothing in it binds an agent until a person accepts it.
+A project that [installs the template](template-packaging.md) receives this knowledge. It is ordinary content: one domain, two skills, and a few language terms, and it goes through the same checks and the same workflow as anything a project adds. Nothing in it binds an agent until a person accepts it.
 
 ## What ships
 

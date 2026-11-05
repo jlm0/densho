@@ -6,7 +6,7 @@ Knowledge lives in a tree of Markdown files that runs from domain to discipline 
 
 A build generates `AGENTS.md` from the tree as its root node. Agent tools such as Claude Code load it at the start of each session and follow the tree from there.
 
-The repo is early. The schema, the node parser, the graph checks, the language checks, the directive semantics, the governance workflow, the seed knowledge, the compiled outputs, and the runtime files are in place. Every seed directive is still a proposal, so no directive is in force yet.
+The repo is early. The schema, the node parser, the graph checks, the language checks, the directive semantics, the governance workflow, the seed knowledge, the compiled outputs, the runtime files, and the template packaging are in place. Every seed directive is still a proposal, so no directive is in force yet.
 
 ## Setup
 
@@ -38,12 +38,15 @@ uv run pre-commit run --all-files
 | `engine/knowledge_architecture/governance/`   | Checks the lifecycle, and compares each change with the last commit  |
 | `engine/knowledge_architecture/compiler/`     | Compiles the checked graph to JSON and RDF, with digests             |
 | `engine/knowledge_architecture/runtime/`      | Generates the files that an agent tool loads                         |
+| `engine/knowledge_architecture/template/`     | Takes in template knowledge, and records the history                 |
 | `engine/knowledge_architecture/vendor/`       | A third-party linter, kept unchanged with its license                |
 | `tests/`                                      | Tests for the engine                                                 |
 | `docs/`                                       | The overview and a page for each layer                               |
 | `build/`                                      | Generated output. Git ignores it.                                    |
 | `AGENTS.md`                                   | Generated from the root node. Do not edit it.                        |
 | `.claude/rules/knowledge/`, `.claude/skills/` | Generated path rules and skills. Do not edit them.                   |
+| `copier.yml`, `*.jinja`                       | What a project receives, and the files only a project holds          |
+| `.ka/`                                        | The way to the engine in a project, and the change history           |
 
 ## Docs
 
@@ -53,7 +56,19 @@ Start with the [overview](docs/README.md). It explains the system as a library a
 
 ### Start a project from the template
 
-Copy the template into the project once. From then on the project owns its copy. It adds workspace knowledge about its own code and can change anything it received. Drift from the template is expected.
+Install the template into the project once. From then on the project owns its copy. It adds workspace knowledge about its own code and can change anything it received. Drift from the template is expected.
+
+You need a current uv, git, and read access to this repo, which is private. A project needs no Python.
+
+```sh
+uvx --python 3.14 copier copy --trust --defaults --vcs-ref=HEAD https://github.com/jlm0/knowledge-architecture.git .
+uv tool install pre-commit
+pre-commit install
+```
+
+Run `git init` before `pre-commit install` if the folder has no repo. In a project, `.ka/ka` takes the place of `uv run ka`. To pull a later template change, run `uvx --python 3.14 copier update --trust --defaults --vcs-ref=HEAD`, then `.ka/ka adopt`.
+
+[Template packaging](docs/template-packaging.md) explains each step, what a project receives, and what happens to a node that both sides changed.
 
 The template holds two kinds of knowledge under one governance:
 
@@ -75,9 +90,12 @@ The template holds two kinds of knowledge under one governance:
 | `uv run ka build --proposals`                 | Compiles what acceptance would add   |
 | `uv run ka runtime`                           | Writes the files an agent tool loads |
 | `uv run ka runtime --proposals`               | Writes a review copy of those files  |
+| `uv run ka adopt`                             | Takes in template knowledge          |
+| `uv run ka history`                           | Records template changes for agents  |
+| `uv run ka history --drift`                   | Lists differences from the history   |
 | `uv run pytest`                               | Runs the tests                       |
 | `uv run pyright`                              | Checks types in strict mode          |
 | `uv run ruff check`                           | Lints the Python code                |
 | `uv run ruff format`                          | Formats the Python code              |
 
-The git hook runs these checks on each commit: file hygiene, the lock file, the schema lint, the generated models, the knowledge nodes, the graph checks, the directive checks, the governance checks, the language checks, the compiled outputs, the runtime files, Ruff lint and format, Markdown format, Pyright, and the tests.
+The git hook runs these checks on each commit: file hygiene, the lock file, the engine constraints, the schema lint, the generated models, the knowledge nodes, the graph checks, the directive checks, the governance checks, the language checks, the compiled outputs, the runtime files, the template history, Ruff lint and format, Markdown format, Pyright, and the tests.

@@ -242,7 +242,7 @@ class Node(GovernedEntity):
 
 class Root(Node):
     """
-    The top node of the graph. Agents load the root first, and each other node is reachable from it.
+    The top node of the graph. Agents load the root first.
     """
     kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/Root","ka:Root"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")

@@ -12,7 +12,7 @@ Think of the system as a library, where each node is a book. The first two layer
 | --------------------------------------------------------------- | --------------------------------------------- | ------- |
 | [Schema](schema.md)                                             | The design of the catalog card                | Built   |
 | [Node format](node-format.md)                                   | The scanner that rejects a badly filled card  | Built   |
-| [Graph checks](graph-checks.md)                                 | The walk through the whole building           | Planned |
+| [Graph checks](graph-checks.md)                                 | The walk through the whole building           | Built   |
 | [Language checks](language-checks.md)                           | The copy editor                               | Planned |
 | [Directive semantics](directive-semantics.md)                   | The rules about which signs cover which rooms | Planned |
 | [Governance workflow](governance-workflow.md)                   | The acquisitions policy                       | Planned |

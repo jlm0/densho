@@ -43,7 +43,7 @@ classes:
       - body
 
   Root:
-    description: The top node of the graph. Agents load the root first, and each other node is reachable from it.
+    description: The top node of the graph. Agents load the root first.
     is_a: Node
     slot_usage:
       pointers:

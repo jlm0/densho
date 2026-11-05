@@ -6,7 +6,7 @@ Knowledge lives in a tree of Markdown files that runs from domain to discipline 
 
 A build generates `AGENTS.md` from the tree as its root node. Agent tools such as Claude Code load it at the start of each session and follow the tree from there.
 
-The repo is early. The schema and the node parser are in place. The directive grammar, the governance checks, and the build that generates `AGENTS.md` and the skills are not built yet.
+The repo is early. The schema, the node parser, and the graph checks are in place. The directive grammar, the governance checks, and the build that generates `AGENTS.md` and the skills are not built yet.
 
 ## Setup
 
@@ -30,8 +30,9 @@ uv run pre-commit run --all-files
 | `knowledge/`                               | The knowledge nodes: concepts and directives                       |
 | `skills/`                                  | Skill sources built from the knowledge tree                        |
 | `engine/knowledge_architecture/`           | The Python engine: validators, compiler, and packager              |
-| `engine/knowledge_architecture/generated/` | Python models generated from the schema. Do not edit them.         |
+| `engine/knowledge_architecture/generated/` | Models and shapes generated from the schema. Do not edit them.     |
 | `engine/knowledge_architecture/parser/`    | Reads `node.md` files into the models, with line numbers           |
+| `engine/knowledge_architecture/graph/`     | Checks the structure of the whole graph                            |
 | `tests/`                                   | Tests for the engine                                               |
 | `docs/`                                    | The overview and a page for each layer                             |
 | `build/`                                   | Generated output. Git ignores it.                                  |
@@ -56,9 +57,11 @@ The template holds two kinds of knowledge under one governance:
 | Command                             | What it does                   |
 | ----------------------------------- | ------------------------------ |
 | `uv run pre-commit run --all-files` | Runs every check on every file |
+| `uv run ka parse knowledge skills`  | Parses each knowledge node     |
+| `uv run ka graph`                   | Checks the whole graph         |
 | `uv run pytest`                     | Runs the tests                 |
 | `uv run pyright`                    | Checks types in strict mode    |
 | `uv run ruff check`                 | Lints the Python code          |
 | `uv run ruff format`                | Formats the Python code        |
 
-The git hook runs these checks on each commit: file hygiene, the lock file, the schema lint, the generated models, the knowledge nodes, Ruff lint and format, Markdown format, Pyright, and the tests.
+The git hook runs these checks on each commit: file hygiene, the lock file, the schema lint, the generated models, the knowledge nodes, the graph checks, Ruff lint and format, Markdown format, Pyright, and the tests.

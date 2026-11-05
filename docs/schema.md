@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-`governance/schema/metamodel.yaml` defines what can exist in the knowledge graph: the node kinds, the fields they hold, and how they connect. It holds no knowledge itself. The Python models in `engine/knowledge_architecture/generated/` are generated from it, and the parser validates each node against those models.
+`governance/schema/metamodel.yaml` defines what can exist in the knowledge graph: the node kinds, the fields they hold, and how they connect. It holds no knowledge itself. The files in `engine/knowledge_architecture/generated/` are generated from it. The parser validates each node against the Python models, and the [graph checks](graph-checks.md) validate the whole graph against the SHACL shapes.
 
 Each class inherits the fields of the class above it:
 
@@ -92,9 +92,9 @@ A directive is one instruction with its own ID. It lives in the file of one node
 
 Governance is written in the same classes as everything else: a governance node is an ordinary node, and `governs` names what it sets rules for, which can include itself. Only `metamodel.yaml` stays outside the graph, because it defines what a node is.
 
-## What the models do not check yet
+## What the models do not check
 
-The models read one node at a time and hold each reference as a plain string. [Graph checks](graph-checks.md) will cover these points. Nothing yet checks that:
+The models read one node at a time and hold each reference as a plain string, so they cannot check that:
 
 - an ID is unique
 - a reference names something that exists
@@ -104,12 +104,14 @@ The models read one node at a time and hold each reference as a plain string. [G
 - `implements` starts from a workspace node
 - `related` does not join a node to one in its own `broader` chain
 
+[Graph checks](graph-checks.md) cover each of these points. They read the kinds that an edge can name from this schema, so each of those rules stays in one place.
+
 ## Change the schema
 
-After you edit `metamodel.yaml`, regenerate the Python models:
+After you edit `metamodel.yaml`, regenerate the files in `engine/knowledge_architecture/generated/`:
 
 ```sh
 uv run pre-commit run schema-models --all-files
 ```
 
-The command rewrites the models and reports a failure when they changed. Stage the new models and run it again. The git hook runs the same step on each commit, so a schema change cannot land without its models, and a hand edit to the models does not survive.
+The command rewrites the Python models, the RDF classes, the SHACL shapes, the ontology, and the engine's copy of the schema, and it reports a failure when any of them changed. Stage the new files and run it again. The git hook runs the same step on each commit, so a schema change cannot land without its generated files, and a hand edit to one of them does not survive.

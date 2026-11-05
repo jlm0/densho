@@ -17,7 +17,6 @@ from knowledge_architecture.generated.metamodel import (
     TextPointer,
 )
 from knowledge_architecture.parser import ParsedNode, parse_file, parse_source, parse_tree
-from knowledge_architecture.parser.__main__ import main
 
 PATH = Path("knowledge/sample/node.md")
 GOVERNED = "status: accepted\norigin: template\n"
@@ -1112,29 +1111,3 @@ def test_parse_tree_ignores_a_folder_with_the_node_file_name(tmp_path: Path) -> 
 def test_parse_tree_reports_a_missing_folder(tmp_path: Path) -> None:
     _, problems = parse_tree([tmp_path / "missing"])
     assert [problem.code for problem in problems] == ["folder"]
-
-
-def test_main_needs_a_folder(capsys: pytest.CaptureFixture[str]) -> None:
-    assert main([]) > 1
-    assert "Usage" in capsys.readouterr().err
-
-
-def test_main_passes_on_valid_nodes(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
-    write_node(tmp_path / "a")
-    assert main([str(tmp_path)]) == 0
-    assert capsys.readouterr().out == "1 nodes parsed, 0 problems\n"
-
-
-def test_main_fails_and_prints_each_location(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
-    text = CONCEPT.replace("status: accepted", "status: ok", 1)
-    path = write_node(tmp_path / "a", text)
-    assert main([str(tmp_path)]) == 1
-    out = capsys.readouterr().out
-    assert f"{path}:{line_with(text, 'status: ok')}: schema: status: " in out
-    assert out.endswith("0 nodes parsed, 1 problems\n")
-
-
-def test_main_fails_on_a_missing_folder(tmp_path: Path) -> None:
-    assert main([str(tmp_path / "missing")]) == 1

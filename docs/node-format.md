@@ -82,13 +82,13 @@ A value is plain text, so put one that holds Markdown syntax in backticks:
 ## Check your nodes
 
 ```sh
-uv run python -m knowledge_architecture.parser knowledge skills
+uv run ka parse knowledge skills
 ```
 
 Each problem prints as `path:line: code: message`. The git hook runs the same command on each commit.
 
 The parser reports every problem it can in a file. Three things stop it early: a control character, front matter it cannot read, and an unknown `kind`, which stops the field checks because the kind sets which fields apply.
 
-## What the parser does not check yet
+## What the parser does not check
 
-The parser checks each file on its own. It does not check that a reference such as `broader` names a node that exists. See [what the models do not check yet](schema.md#what-the-models-do-not-check-yet).
+The parser checks each file on its own. It does not check that a reference such as `broader` names a node that exists. [Graph checks](graph-checks.md) do that, and they run only after every file parses.

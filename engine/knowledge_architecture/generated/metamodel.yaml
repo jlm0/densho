@@ -1,0 +1,329 @@
+id: https://github.com/jlm0/knowledge-architecture/schema/metamodel
+name: metamodel
+title: Knowledge architecture metamodel
+description: This schema defines what can exist in the knowledge graph.
+version: 0.1.0
+prefixes:
+  ka: https://github.com/jlm0/knowledge-architecture/schema/
+  linkml: https://w3id.org/linkml/
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  skos: http://www.w3.org/2004/02/skos/core#
+  dcterms: http://purl.org/dc/terms/
+default_prefix: ka
+default_range: string
+imports:
+  - linkml:types
+
+classes:
+  KnowledgeGraph:
+    description: The root and the knowledge nodes of one repository. A graph has exactly one root.
+    tree_root: true
+    slots:
+      - root
+      - nodes
+
+  GovernedEntity:
+    description: An addressable entity that governance tracks.
+    abstract: true
+    slots:
+      - id
+      - status
+      - origin
+      - sources
+
+  Node:
+    description: One file in the graph. A node holds its knowledge, its directives, and its pointers.
+    abstract: true
+    is_a: GovernedEntity
+    slots:
+      - kind
+      - title
+      - pointers
+      - directives
+      - body
+
+  Root:
+    description: The top node of the graph. Agents load the root first.
+    is_a: Node
+    slot_usage:
+      pointers:
+        required: true
+        minimum_cardinality: 1
+
+  KnowledgeNode:
+    description: A node that holds domain knowledge or workspace knowledge.
+    abstract: true
+    is_a: Node
+    slots:
+      - knowledge_type
+
+  TaxonomyNode:
+    description: A node in the classification from domain to concept.
+    abstract: true
+    is_a: KnowledgeNode
+    class_uri: skos:Concept
+    slots:
+      - definition
+      - related
+      - informs
+      - depends_on
+      - governs
+      - implements
+
+  Domain:
+    description: The top level of the taxonomy. A domain has no broader node.
+    is_a: TaxonomyNode
+
+  Discipline:
+    description: A field of work in a domain.
+    is_a: TaxonomyNode
+    slots:
+      - broader
+    slot_usage:
+      broader:
+        range: Domain
+
+  PracticeArea:
+    description: A narrower area of work.
+    is_a: TaxonomyNode
+    slots:
+      - broader
+    slot_usage:
+      broader:
+        any_of:
+          - range: Domain
+          - range: Discipline
+          - range: PracticeArea
+
+  Concept:
+    description: A principle, a technique, or a body of knowledge.
+    is_a: TaxonomyNode
+    slots:
+      - broader
+    slot_usage:
+      broader:
+        any_of:
+          - range: Domain
+          - range: Discipline
+          - range: PracticeArea
+          - range: Concept
+
+  Skill:
+    description: A reusable capability that composes knowledge from any branch of the taxonomy.
+    is_a: KnowledgeNode
+    slots:
+      - description
+      - uses
+      - applies
+
+  Directive:
+    description: An atomic instruction with its own identity. A directive lives in the file of one node.
+    is_a: GovernedEntity
+    slots:
+      - text
+      - scope
+      - also_attached_to
+
+  Pointer:
+    description: A route that tells an agent when and how to load a node.
+    abstract: true
+    slots:
+      - kind
+      - target
+      - trigger
+
+  AlwaysPointer:
+    description: A pointer to a node that the harness loads at session start.
+    is_a: Pointer
+
+  PathPointer:
+    description: A pointer to a node that the harness loads when the agent opens a matching file.
+    is_a: Pointer
+    slots:
+      - paths
+
+  SkillPointer:
+    description: A pointer to a skill that the agent selects from the skill listing.
+    is_a: Pointer
+    slot_usage:
+      target:
+        range: Skill
+
+  TextPointer:
+    description: A pointer to a node that the agent opens when it reads the pointer text.
+    is_a: Pointer
+
+slots:
+  root:
+    description: The top node of the graph.
+    range: Root
+    inlined: true
+    required: true
+  nodes:
+    description: The knowledge nodes of the graph.
+    range: KnowledgeNode
+    multivalued: true
+    inlined_as_list: true
+    required: true
+    minimum_cardinality: 1
+  id:
+    description: The stable identifier. The identifier does not change when a file moves.
+    identifier: true
+    pattern: ^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\n)$
+  status:
+    description: The lifecycle state.
+    range: Status
+    required: true
+  origin:
+    description: The source of the entity in this repository.
+    range: Origin
+    required: true
+  sources:
+    description: The URLs, repository paths, or citations that support the entity.
+    slot_uri: dcterms:source
+    multivalued: true
+    pattern: &single-line '^\S(?: *\S)*(?!\n)$'
+  kind:
+    description: The class of the entity. The value is the class CURIE, for example ka:Concept.
+    slot_uri: rdf:type
+    range: uriorcurie
+    designates_type: true
+    required: true
+  title:
+    description: The preferred name of the node.
+    slot_uri: skos:prefLabel
+    required: true
+    pattern: *single-line
+  pointers:
+    description: The routes from this node to other nodes.
+    range: Pointer
+    multivalued: true
+    inlined_as_list: true
+  directives:
+    description: The directives that live in this file.
+    range: Directive
+    multivalued: true
+    inlined_as_list: true
+  body:
+    description: The supporting prose of the node.
+    pattern: \S
+  knowledge_type:
+    description: The kind of knowledge in the node.
+    range: KnowledgeType
+    required: true
+  definition:
+    description: The meaning of the node.
+    slot_uri: skos:definition
+    required: true
+    pattern: \S
+  description:
+    description: The text that an agent reads to select the skill.
+    required: true
+    pattern: *single-line
+  text:
+    description: The instruction.
+    required: true
+    pattern: *single-line
+  scope:
+    description: The nodes that the directive applies to. This field has no default, because inheritance is explicit.
+    range: DirectiveScope
+    required: true
+  also_attached_to:
+    description: The nodes that the directive attaches to, in addition to the node that holds it.
+    range: Node
+    multivalued: true
+  target:
+    description: The node that the pointer routes to.
+    range: Node
+    required: true
+  trigger:
+    description: The condition that tells an agent to follow the pointer.
+    required: true
+    pattern: *single-line
+  paths:
+    description: The file patterns that load the target.
+    multivalued: true
+    required: true
+    minimum_cardinality: 1
+    pattern: *single-line
+  edge:
+    description: A typed relationship from a node to a node or a directive.
+    abstract: true
+    range: GovernedEntity
+  broader:
+    description: The broader nodes in the taxonomy.
+    is_a: edge
+    slot_uri: skos:broader
+    range: TaxonomyNode
+    multivalued: true
+    required: true
+    minimum_cardinality: 1
+  related:
+    description: The nodes with an association to this node. This edge is symmetric.
+    is_a: edge
+    slot_uri: skos:related
+    symmetric: true
+    range: TaxonomyNode
+    multivalued: true
+  informs:
+    description: The nodes that this node has an influence on.
+    is_a: edge
+    range: TaxonomyNode
+    multivalued: true
+  depends_on:
+    description: The nodes that this node needs.
+    is_a: edge
+    range: TaxonomyNode
+    multivalued: true
+  governs:
+    description: The nodes that this node sets rules for. A governance node can name itself.
+    is_a: edge
+    range: Node
+    multivalued: true
+  implements:
+    description: The domain nodes that this workspace node gives project values for.
+    is_a: edge
+    range: TaxonomyNode
+    multivalued: true
+  uses:
+    description: The knowledge that the skill composes.
+    is_a: edge
+    range: TaxonomyNode
+    multivalued: true
+  applies:
+    description: The directives that the skill applies.
+    is_a: edge
+    range: Directive
+    multivalued: true
+
+enums:
+  KnowledgeType:
+    description: The kinds of knowledge.
+    permissible_values:
+      domain:
+        description: Universal knowledge.
+      workspace:
+        description: Knowledge that is specific to one project.
+  Origin:
+    description: The sources of an entity.
+    permissible_values:
+      template:
+        description: The template supplied the entity.
+      project:
+        description: The project added the entity.
+  Status:
+    description: The lifecycle states.
+    permissible_values:
+      proposed:
+        description: An author recommends the entity. No reviewer approved it.
+      accepted:
+        description: A reviewer approved the entity.
+      deprecated:
+        description: The entity stays for reference. Do not apply it to new work.
+  DirectiveScope:
+    description: The nodes that a directive applies to.
+    permissible_values:
+      node:
+        description: The directive applies only to the nodes that it attaches to.
+      subtree:
+        description: The directive applies to the attached nodes and to each node under them. Each node is under the root.

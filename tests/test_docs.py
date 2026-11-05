@@ -6,7 +6,9 @@ import pytest
 from linkml_runtime.utils.schemaview import SchemaView
 from markdown_it import MarkdownIt
 
+from knowledge_architecture.cli import app
 from knowledge_architecture.generated.metamodel import Concept
+from knowledge_architecture.graph.structure import ACYCLIC_EDGES, MAX_POINTER_HOPS
 from knowledge_architecture.parser import ParsedNode, parse_source
 
 REPO = Path(__file__).resolve().parents[1]
@@ -155,3 +157,47 @@ def test_the_node_format_example_parses() -> None:
     result = parse_source(f"{example}\n", Path("node.md"))
     assert isinstance(result, ParsedNode), result
     assert isinstance(result.node, Concept)
+
+
+def graph_page() -> str:
+    return (DOCS / "graph-checks.md").read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize(
+    "code",
+    [
+        "duplicate-id",
+        "root",
+        "placement",
+        "reference",
+        "type",
+        "skill",
+        "implements",
+        "association",
+        "cycle",
+        "unreachable",
+        "depth",
+    ],
+)
+def test_the_graph_page_names_each_code(code: str) -> None:
+    assert f"| `{code}`" in graph_page()
+
+
+def test_the_graph_page_states_the_depth_limit() -> None:
+    assert f"more than {MAX_POINTER_HOPS} hops" in graph_page()
+
+
+@pytest.mark.parametrize("edge", ACYCLIC_EDGES)
+def test_the_graph_page_names_each_acyclic_edge(edge: str) -> None:
+    assert f"`{edge}` edges" in graph_page()
+
+
+def documented_commands() -> set[str]:
+    texts = [path.read_text(encoding="utf-8") for path in [README, *FILES]]
+    return {command for text in texts for command in re.findall(r"uv run ka (\w+)", text)}
+
+
+def test_each_documented_command_exists() -> None:
+    commands = {command.callback.__name__ for command in app.registered_commands}
+    assert documented_commands()
+    assert documented_commands() <= commands

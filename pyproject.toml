@@ -5,10 +5,18 @@ description = "Governed knowledge architecture for human and agent workspaces."
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "linkml-runtime>=1.12.1",
     "markdown-it-py>=3",
+    "networkx>=3.7",
     "pydantic>=2",
+    "pyshacl>=0.40.2",
+    "rdflib>=7.6.0",
     "ruamel-yaml>=0.18",
+    "typer>=0.27.3",
 ]
+
+[project.scripts]
+ka = "knowledge_architecture.cli:app"
 
 [build-system]
 requires = ["uv_build>=0.8.4,<0.9"]
@@ -45,7 +53,6 @@ xfail_strict = true
 [dependency-groups]
 dev = [
     "linkml>=1.12.1",
-    "linkml-runtime>=1.12.1",
     "mdformat>=0.7.22",
     "mdformat-frontmatter>=2.1.2",
     "mdformat-gfm>=1.0.0",
@@ -53,6 +60,5 @@ dev = [
     "pre-commit>=4.7.0",
     "pyright>=1.1.414",
     "pytest>=9.2.0",
-    "rdflib>=7.6.0",
     "ruff>=0.17.3",
 ]

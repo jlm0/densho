@@ -99,7 +99,7 @@ class RuntimeView:
     folders: tuple[NodeView, ...]
 
 
-def _mechanism(pointer: object) -> LoadMechanism:
+def pointer_mechanism(pointer: object) -> LoadMechanism:
     if isinstance(pointer, AlwaysPointer):
         return LoadMechanism.ALWAYS
     if isinstance(pointer, PathPointer):
@@ -122,7 +122,7 @@ def _groups(
 
 def _pointers(node: Node, links: Mapping[str, NodeLink]) -> tuple[PointerLine, ...]:
     return tuple(
-        PointerLine(_mechanism(pointer), links[pointer.target], pointer.trigger)
+        PointerLine(pointer_mechanism(pointer), links[pointer.target], pointer.trigger)
         for pointer in node.pointers or []
     )
 

@@ -313,6 +313,26 @@ def test_a_crlf_file_keeps_its_line_ends(tmp_path: Path) -> None:
     assert data.count(b"\r\n") == DOMAIN_NODE.count("\n")
 
 
+def test_a_cr_file_keeps_its_line_ends(tmp_path: Path) -> None:
+    with_history(tmp_path)
+    write_tree(tmp_path)
+    path = tmp_path / DOMAIN_PATH
+    path.write_bytes(DOMAIN_NODE.replace("\n", "\r").encode())
+    assert not adopt_template(tmp_path).problems
+    data = path.read_bytes()
+    assert b"status: proposed\rorigin" in data
+    assert b"\n" not in data
+
+
+def test_a_status_in_backticks_keeps_its_backticks(tmp_path: Path) -> None:
+    with_history(tmp_path)
+    line = "- status: accepted"
+    assert line in DOMAIN_NODE
+    write_tree(tmp_path, domain=DOMAIN_NODE.replace(line, "- status: `accepted`"))
+    assert not adopt_template(tmp_path).problems
+    assert "- status: `proposed`" in text_of(tmp_path, DOMAIN_PATH)
+
+
 def test_a_longer_word_in_another_key_does_not_change(tmp_path: Path) -> None:
     with_history(tmp_path)
     block = "exceptions:\n  - directive: run-it\n    reason: A prototype.\n    status: accepted\n"

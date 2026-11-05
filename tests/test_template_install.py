@@ -10,7 +10,14 @@ import pytest
 from jinja2 import Environment
 from ruamel.yaml import YAML
 
+from knowledge_architecture.interface import (
+    VIEW_FOLDER,
+    accept_entities,
+    command_prefix,
+    write_view,
+)
 from knowledge_architecture.parser.generated import is_generated
+from knowledge_architecture.runtime import generate_runtime
 from knowledge_architecture.template.history import HISTORY_FILE
 
 REPO = Path(__file__).resolve().parents[1]
@@ -252,6 +259,59 @@ def test_an_install_keeps_other_tool_files(source: Path, tmp_path: Path) -> None
     install(source, tmp_path)
     for name in names:
         assert (tmp_path / name).read_text(encoding="utf-8") == "Own text.\n"
+
+
+@pytest.fixture
+def project(installed: Path, tmp_path: Path) -> Path:
+    folder = tmp_path / "project"
+    shutil.copytree(installed, folder)
+    git(folder, "init", "-q", "--template=", "--initial-branch=main")
+    git(folder, "config", "user.name", "Test")
+    git(folder, "config", "user.email", "test@example.com")
+    assert generate_runtime(folder).problems == []
+    git(folder, "add", "-A")
+    git(folder, "commit", "-qm", "the install", "--no-verify")
+    return folder
+
+
+def test_a_project_gets_a_view_that_git_ignores(project: Path) -> None:
+    report = write_view(project)
+    assert report.problems == []
+    assert (project / VIEW_FOLDER / "index.html").is_file()
+    assert git(project, "status", "--porcelain", "--untracked-files=all") == ""
+
+
+def test_a_project_page_names_the_command_of_the_project(project: Path) -> None:
+    assert command_prefix(project) == ".ka/ka"
+    assert write_view(project).problems == []
+    page = (project / VIEW_FOLDER / "review.html").read_text(encoding="utf-8")
+    assert ".ka/ka accept --subtree digital-product-development</code>" in page
+    assert "uv run ka accept" not in page
+    assert "uv run ka runtime" not in page
+
+
+def test_a_project_accepts_a_proposal_and_writes_no_commit(project: Path) -> None:
+    head = git(project, "rev-parse", "HEAD")
+    report = accept_entities(project, ["visual-grouping"])
+    assert report.problems == []
+    assert [entity.label for entity in report.accepted] == ["node visual-grouping"]
+    assert git(project, "rev-parse", "HEAD") == head
+    changed = git(project, "diff", "--name-only").split()
+    assert len(changed) == 1
+    assert changed[0].endswith("visual-grouping/node.md")
+    diff = git(project, "diff", "--unified=0", "--no-color").splitlines()
+    assert [line for line in diff if line[:1] in {"+", "-"} and line[:3] not in {"+++", "---"}] == [
+        "-status: proposed",
+        "+status: accepted",
+    ]
+
+
+def test_a_project_is_told_of_the_commands() -> None:
+    settings = YAML(typ="safe").load((REPO / "copier.yml").read_text(encoding="utf-8"))
+    message = settings["_message_after_copy"]
+    assert ".ka/ka view" in message
+    assert ".ka/ka accept" in message
+    assert "A person" in message
 
 
 def test_the_task_runs_only_on_a_copy() -> None:

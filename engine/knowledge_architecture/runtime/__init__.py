@@ -1,8 +1,18 @@
 from knowledge_architecture.parser.generated import MARKER, is_generated
 from knowledge_architecture.runtime.claude_code import REVIEW_FOLDER, render_files, review_path
 from knowledge_architecture.runtime.links import local_links, resolves
-from knowledge_architecture.runtime.tree import RUNTIME_CODES, RuntimeReport, generate_runtime
-from knowledge_architecture.runtime.view import LoadMechanism, RuntimeView, build_view
+from knowledge_architecture.runtime.tree import (
+    RUNTIME_CODES,
+    RuntimeReport,
+    generate_runtime,
+    rendered_problems,
+)
+from knowledge_architecture.runtime.view import (
+    LoadMechanism,
+    RuntimeView,
+    build_view,
+    pointer_mechanism,
+)
 
 __all__ = [
     "MARKER",
@@ -15,7 +25,9 @@ __all__ = [
     "generate_runtime",
     "is_generated",
     "local_links",
+    "pointer_mechanism",
     "render_files",
+    "rendered_problems",
     "resolves",
     "review_path",
 ]

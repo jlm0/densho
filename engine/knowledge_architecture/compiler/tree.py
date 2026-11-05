@@ -26,6 +26,13 @@ BUILD_CODES = ("empty-tree", "path", "write")
 
 
 @dataclass(frozen=True, slots=True)
+class CheckedTree:
+    items: Sequence[ParsedNode]
+    notes: list[str]
+    problems: list[Problem]
+
+
+@dataclass(frozen=True, slots=True)
 class CompileReport:
     compiled: CompiledGraph | None
     notes: list[str]
@@ -52,15 +59,13 @@ def path_problems(items: Sequence[ParsedNode], repository: Path) -> list[Problem
     return problems
 
 
-def compile_tree(repository: Path, *, proposals: bool = False) -> CompileReport:
+def checked_tree(repository: Path) -> CheckedTree:
     items, problems = check_tree(repository)
     if problems:
-        return CompileReport(None, [], problems)
+        return CheckedTree(items, [], problems)
     if not items:
         message = "The tree holds no node, so the build has nothing to compile."
-        return CompileReport(
-            None, [], [Problem(repository / "knowledge", 1, "empty-tree", message)]
-        )
+        return CheckedTree(items, [], [Problem(repository / "knowledge", 1, "empty-tree", message)])
     governance = check_governance(repository, items)
     _, language = check_language(repository, items)
     found = {
@@ -69,10 +74,15 @@ def compile_tree(repository: Path, *, proposals: bool = False) -> CompileReport:
         *language,
         *path_problems(items, repository),
     }
-    if found:
-        return CompileReport(None, governance.notes, sorted(found))
-    compiled = compile_items(items, repository, proposals=proposals)
-    return CompileReport(compiled, governance.notes, [])
+    return CheckedTree(items, governance.notes, sorted(found))
+
+
+def compile_tree(repository: Path, *, proposals: bool = False) -> CompileReport:
+    checked = checked_tree(repository)
+    if checked.problems:
+        return CompileReport(None, checked.notes, checked.problems)
+    compiled = compile_items(checked.items, repository, proposals=proposals)
+    return CompileReport(compiled, checked.notes, [])
 
 
 def build_tree(repository: Path, *, proposals: bool = False) -> BuildReport:

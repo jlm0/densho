@@ -952,6 +952,35 @@ def test_the_base_ignores_the_git_environment(
     assert base_ids(repository) == {"a"}
 
 
+@pytest.mark.parametrize("ending", ["\r\n", "\r"])
+def test_the_base_reads_each_line_ending(repository: Path, ending: str) -> None:
+    spec = node("a")
+    write(repository, spec)
+    path = repository / relative_file(spec)
+    path.write_bytes(path.read_text(encoding="utf-8").replace("\n", ending).encode("utf-8"))
+    commit_all(repository)
+    base = read_base(repository)
+    assert base.unreadable == frozenset()
+    assert [item.node.id for item in base.items] == ["a"]
+
+
+def test_the_change_rules_read_a_crlf_file(repository: Path) -> None:
+    spec = node("a")
+    write(repository, spec)
+    path = repository / relative_file(spec)
+    text = path.read_text(encoding="utf-8")
+    path.write_bytes(text.replace("\n", "\r\n").encode("utf-8"))
+    commit_all(repository)
+    changed = text.replace("status: proposed", "status: accepted").replace(
+        "origin: template", "origin: project"
+    )
+    assert changed != text
+    path.write_bytes(changed.replace("\n", "\r\n").encode("utf-8"))
+    report = check_governance(repository)
+    assert report.notes == []
+    assert "origin-change" in {problem.code for problem in report.problems}
+
+
 def test_a_head_file_that_does_not_parse_gives_a_note(repository: Path) -> None:
     write(repository, node("a"))
     path = repository / "knowledge/bad/node.md"

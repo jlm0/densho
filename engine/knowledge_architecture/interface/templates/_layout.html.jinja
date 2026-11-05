@@ -1,0 +1,21 @@
+{{ marker | safe }}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="{{ policy }}">
+<title>{% block title %}{% endblock %}</title>
+<style>{{ style | safe }}</style>
+</head>
+<body>
+<header class="site-header">
+<strong>{{ title }}</strong>
+<a href="{{ up }}index.html">Knowledge tree</a>
+<a href="{{ up }}review.html">Review queue</a>
+</header>
+<main>
+{% block main %}{% endblock %}
+</main>
+</body>
+</html>

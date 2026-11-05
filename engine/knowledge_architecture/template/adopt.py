@@ -1,4 +1,3 @@
-import re
 from collections import defaultdict
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
@@ -6,6 +5,7 @@ from typing import TYPE_CHECKING
 from knowledge_architecture.generated.metamodel import Status
 from knowledge_architecture.governance.base import read_base
 from knowledge_architecture.governance.entities import governed_entities
+from knowledge_architecture.governance.status_line import set_status_lines
 from knowledge_architecture.parser.node import node_folders, parse_tree
 from knowledge_architecture.parser.result import Problem
 from knowledge_architecture.runtime import generate_runtime
@@ -49,28 +49,19 @@ def _arrivals(base: Base, items: Sequence[ParsedNode]) -> list[Entity]:
     ]
 
 
-def _status_pattern(status: Status) -> re.Pattern[bytes]:
-    word = re.escape(Status(status).value.encode("ascii"))
-    return re.compile(rb"(?<![\w-])(status\s*:\s*[\"']?)" + word + rb"(?![\w-])")
-
-
 def _rewrite_file(path: Path, entities: Iterable[Entity]) -> list[Problem]:
-    problems: list[Problem] = []
     try:
-        lines = path.read_bytes().split(b"\n")
-        for entity in entities:
-            index = entity.line - 1
-            lines[index], count = _status_pattern(entity.status).subn(
-                rb"\g<1>proposed", lines[index], count=1
-            )
-            if not count:
-                message = f"Set the status of {entity.label} to proposed by hand."
-                problems.append(Problem(path, entity.line, "adopt", message))
-        path.write_bytes(b"\n".join(lines))
+        data, missed = set_status_lines(path.read_bytes(), entities, Status.proposed)
+        path.write_bytes(data)
     except OSError as error:
         message = f"The command cannot change this file: {error.strerror!a}."
         return [Problem(path, 1, "adopt", message)]
-    return problems
+    return [
+        Problem(
+            path, entity.line, "adopt", f"Set the status of {entity.label} to proposed by hand."
+        )
+        for entity in missed
+    ]
 
 
 def _set_proposed(entities: Iterable[Entity]) -> list[Problem]:

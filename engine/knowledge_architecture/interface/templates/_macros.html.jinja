@@ -1,0 +1,48 @@
+{% macro status(value) %}<span class="status status-{{ value }}">{{ value }}</span>{% endmacro %}
+{% macro target(base, item) %}<a href="{{ base }}{{ item.href }}">{{ item.label }}</a>{% endmacro %}
+{% macro targets(base, items) %}{% for item in items %}{% if not loop.first %}, {% endif %}{{ target(base, item) }}{% endfor %}{% endmacro %}
+{% macro route(base, steps) %}{% for step in steps %}{% if not loop.first %} &rarr; {% endif %}{{ target(base, step) }}{% endfor %}{% endmacro %}
+{% macro directive(base, entry) %}
+<span class="entry-text">{{ entry.text | inline | safe }}</span>
+<div class="meta">
+{{ status(entry.status) }}
+<code>{{ entry.id }}</code>
+<span>scope: {{ entry.scope }}</span>
+<span>origin: {{ entry.origin }}</span>
+{% for row in entry.edges %}
+<span>{{ row.label }}: {{ targets(base, row.targets) }}</span>
+{% endfor %}
+</div>
+{% if entry.sources %}
+<div class="meta">
+{% for source in entry.sources %}
+<span>source: <code>{{ source }}</code></span>
+{% endfor %}
+</div>
+{% endif %}
+{% endmacro %}
+{% macro applied(base, entry) %}
+<span class="entry-text">{{ entry.text | inline | safe }}</span>
+<div class="meta">
+{{ status(entry.status) }}
+<code>{{ entry.id }}</code>
+<span>scope: {{ entry.scope }}</span>
+<span>held by {{ target(base, entry.holder) }}</span>
+</div>
+<div class="meta"><span>route: {{ route(base, entry.route) }}</span></div>
+{% endmacro %}
+{% macro pointers(base, items) %}
+<ul class="entries">
+{% for pointer in items %}
+<li>
+<span class="entry-text">{% if pointer.trigger %}{{ pointer.trigger }} {% endif %}Go to {{ target(base, pointer.target) }}.</span>
+<div class="meta">
+<span>loads by: {{ pointer.mechanism }}</span>
+{% for path in pointer.paths %}
+<code>{{ path }}</code>
+{% endfor %}
+</div>
+</li>
+{% endfor %}
+</ul>
+{% endmacro %}

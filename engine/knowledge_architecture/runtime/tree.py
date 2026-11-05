@@ -17,6 +17,7 @@ from knowledge_architecture.runtime.links import local_links, resolves
 from knowledge_architecture.runtime.view import build_view
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from pathlib import Path, PurePosixPath
 
     from knowledge_architecture.runtime.claude_code import RenderedFile
@@ -46,6 +47,13 @@ def _link_problems(rendered: RenderedFile, repository: Path) -> list[Problem]:
         )
         for link in local_links(rendered.text)
         if not resolves(link, folder, repository)
+    ]
+
+
+def rendered_problems(rendered: Sequence[RenderedFile], repository: Path) -> list[Problem]:
+    return [
+        *size_problems(rendered, repository),
+        *(problem for entry in rendered for problem in _link_problems(entry, repository)),
     ]
 
 
@@ -94,10 +102,7 @@ def _generated(repository: Path, *, proposals: bool) -> RuntimeReport:
         return _without_a_graph(repository, result, report.notes, report.problems)
     rendered = render_files(build_view(report.compiled))
     notes = [*report.notes, *instruction_notes(repository)]
-    problems = [
-        *size_problems(rendered, repository),
-        *(problem for entry in rendered for problem in _link_problems(entry, repository)),
-    ]
+    problems = rendered_problems(rendered, repository)
     files = tuple(entry.path for entry in rendered)
     if problems:
         return RuntimeReport(result, files, (), (), notes, sorted(problems))

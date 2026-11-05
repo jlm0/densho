@@ -21,6 +21,7 @@ from knowledge_architecture.governance.entities import (
     NODE_FIELDS_WITHOUT_REVIEW,
 )
 from knowledge_architecture.graph.structure import ACYCLIC_EDGES, MAX_POINTER_HOPS
+from knowledge_architecture.interface import ACCEPT_CODES, VIEW_CODES, VIEW_FOLDER
 from knowledge_architecture.language import check_items
 from knowledge_architecture.language.profile import (
     LISTING_ENTRY_CAP,
@@ -401,6 +402,7 @@ def test_the_compiled_page_names_each_output_file(name: str) -> None:
     assert f"`{name}`" in COMPILED_PAGE.read_text(encoding="utf-8")
 
 
+INTERFACE_PAGE = DOCS / "human-interface.md"
 RUNTIME_PAGE = DOCS / "runtime-files.md"
 
 
@@ -418,6 +420,32 @@ def test_the_runtime_page_names_the_review_folder_and_each_review_name() -> None
 
 
 TEMPLATE_PAGE = DOCS / "template-packaging.md"
+
+
+@pytest.mark.parametrize("code", [*ACCEPT_CODES, *VIEW_CODES])
+def test_the_interface_page_names_each_code(code: str) -> None:
+    assert f"`{code}`" in INTERFACE_PAGE.read_text(encoding="utf-8")
+
+
+def test_the_interface_page_names_the_view_folder() -> None:
+    assert f"`{VIEW_FOLDER}/" in INTERFACE_PAGE.read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize(
+    "sentence",
+    [
+        "A person runs this command.",
+        "No check proves who ran it.",
+    ],
+)
+def test_the_interface_page_states_who_runs_the_command(sentence: str) -> None:
+    text = " ".join(INTERFACE_PAGE.read_text(encoding="utf-8").split())
+    assert sentence in text
+
+
+@pytest.mark.parametrize("command", [".ka/ka view", ".ka/ka accept", "uv run ka view"])
+def test_the_interface_page_names_each_form_of_the_command(command: str) -> None:
+    assert command in INTERFACE_PAGE.read_text(encoding="utf-8")
 
 
 @pytest.mark.parametrize("code", [*ADOPT_CODES, *HISTORY_CODES])

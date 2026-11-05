@@ -94,6 +94,10 @@ def parse_source(text: str, path: Path) -> ParsedNode | list[Problem]:
     return ParsedNode(path, node, locations)
 
 
+def universal_newlines(text: str) -> str:
+    return text.replace("\r\n", "\n").replace("\r", "\n")
+
+
 def parse_file(path: Path) -> ParsedNode | list[Problem]:
     try:
         text = path.read_text(encoding="utf-8")

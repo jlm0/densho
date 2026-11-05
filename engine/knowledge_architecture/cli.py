@@ -8,6 +8,12 @@ from knowledge_architecture.compiler.output import NOTICES
 from knowledge_architecture.directives import check_directives, resolve_directives
 from knowledge_architecture.governance import check_governance, pending_entities
 from knowledge_architecture.graph import check_tree
+from knowledge_architecture.interface import (
+    VIEW_FOLDER,
+    accept_entities,
+    command_prefix,
+    write_view,
+)
 from knowledge_architecture.language import check_language
 from knowledge_architecture.parser import parse_tree
 from knowledge_architecture.runtime import generate_runtime
@@ -191,6 +197,66 @@ def runtime(
         typer.echo(f"removed {path}")
     summary = f"{report.result.value}: {len(report.files)} files, {len(report.written)} written"
     _finish(f"{summary}, {len(report.removed)} removed", report.problems)
+
+
+@app.command()
+def view(
+    repository: Annotated[
+        Path, typer.Argument(help="The folder that holds knowledge/, skills/, and governance/.")
+    ] = Path(),
+) -> None:
+    """Run each check, then write a read-only site for people to build/view/."""
+    report = write_view(repository)
+    for note in report.notes:
+        typer.echo(f"note: {note}")
+    if report.files:
+        typer.echo(f"Open {repository / VIEW_FOLDER / 'index.html'} in a browser.")
+    summary = f"{len(report.files)} pages, {len(report.written)} written"
+    _finish(f"{summary}, {len(report.removed)} removed", report.problems)
+
+
+@app.command()
+def accept(
+    names: Annotated[
+        list[str] | None,
+        typer.Argument(
+            help="The IDs to accept. An ID names one node or one directive. "
+            "An exception has the name <node>:<directive>."
+        ),
+    ] = None,
+    subtree: Annotated[
+        list[str] | None,
+        typer.Option(
+            help="Accept this node, each node under it, and each directive and exception on them."
+        ),
+    ] = None,
+    repository: Annotated[
+        Path, typer.Option(help="The folder that holds knowledge/, skills/, and governance/.")
+    ] = Path(),
+    *,
+    dry_run: Annotated[
+        bool,
+        typer.Option("--dry-run", help="List what the command would accept, and write nothing."),
+    ] = False,
+) -> None:
+    """Set named proposals to accepted, and write no commit. A person runs this command."""
+    if not names and not subtree:
+        typer.echo("Name an ID, or use --subtree with a node ID.")
+        raise typer.Exit(2)
+    report = accept_entities(repository, names or [], subtree or [], dry_run=dry_run)
+    for note in report.notes:
+        typer.echo(f"note: {note}")
+    verb = "would be" if dry_run else "is now"
+    for entity in report.accepted:
+        typer.echo(f"{entity.path}:{entity.line}: {entity.label} {verb} accepted")
+    if report.accepted and not dry_run:
+        command = command_prefix(repository)
+        typer.echo(
+            "This command wrote no commit. Read git diff, "
+            f"run {command} runtime, stage the files, and commit them."
+        )
+    count = f"{len(report.accepted)} entities {'to accept' if dry_run else 'accepted'}"
+    _finish(f"{count}, {report.not_proposed} not proposed", report.problems)
 
 
 @app.command()

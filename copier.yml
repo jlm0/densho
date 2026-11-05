@@ -31,6 +31,14 @@ _message_after_copy: |
     pre-commit install
 
   Then stage the files and commit them. Each clone of the project needs the second command.
+
+  Each directive starts as a proposal, so nothing is in force yet. To read and accept them:
+
+    .ka/ka view
+    .ka/ka accept --subtree <node-id>
+
+  The first command writes a site to build/view/. A person runs the second one, reads git diff,
+  runs .ka/ka runtime, and commits the result.
 _message_after_update: |
   Resolve each conflict, and remove each conflict marker. Then run:
 

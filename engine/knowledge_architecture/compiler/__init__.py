@@ -8,8 +8,10 @@ from knowledge_architecture.compiler.output import (
 from knowledge_architecture.compiler.tree import (
     BUILD_CODES,
     BuildReport,
+    CheckedTree,
     CompileReport,
     build_tree,
+    checked_tree,
     compile_tree,
 )
 
@@ -18,9 +20,11 @@ __all__ = [
     "OUTPUT_FOLDER",
     "BuildOutput",
     "BuildReport",
+    "CheckedTree",
     "CompileReport",
     "CompiledGraph",
     "build_tree",
+    "checked_tree",
     "compile_items",
     "compile_tree",
     "file_names",

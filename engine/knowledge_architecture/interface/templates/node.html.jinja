@@ -1,0 +1,113 @@
+{% extends "_layout.html.jinja" %}
+{% import "_macros.html.jinja" as ui %}
+{% block title %}{{ page.link.target.label }} - {{ title }}{% endblock %}
+{% block main %}
+{% if page.trail %}
+<p class="trail">{{ ui.route(base, page.trail) }}</p>
+{% endif %}
+<h1>{{ page.link.target.label }}</h1>
+<div class="meta">
+{{ ui.status(page.link.status) }}
+<span>{{ page.link.kind }}</span>
+<code>{{ page.link.id }}</code>
+<span>origin: {{ page.origin }}</span>
+{% if page.knowledge_type %}<span>knowledge: {{ page.knowledge_type }}</span>{% endif %}
+</div>
+<p class="meta"><span>source: <code>{{ page.path }}</code></span></p>
+{% for source in page.sources %}
+<p class="meta"><span>reference: <code>{{ source }}</code></span></p>
+{% endfor %}
+{% if page.description %}
+<h2>Description</h2>
+<p>{{ page.description }}</p>
+{% endif %}
+{% if page.definition %}
+<h2>Definition</h2>
+{{ page.definition | block | safe }}
+{% endif %}
+<h2>What applies here</h2>
+{% if page.in_force %}
+<h3>In force</h3>
+<ul class="entries">
+{% for entry in page.in_force %}
+<li>{{ ui.applied(base, entry) }}</li>
+{% endfor %}
+</ul>
+{% else %}
+<p>No directive is in force at this node.</p>
+{% endif %}
+{% if page.on_acceptance %}
+<h3>In force only after acceptance</h3>
+<p class="notice notice-proposed">Not in force. A person has not accepted these directives.</p>
+<ul class="entries">
+{% for entry in page.on_acceptance %}
+<li>{{ ui.applied(base, entry) }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+{% if page.stopped %}
+<h3>Stopped here after acceptance</h3>
+<p>A proposed exception stops each of these directives at this node when a person accepts it: {{ ui.targets(base, page.stopped) }}.</p>
+{% endif %}
+{% if page.directives %}
+<h2>Directives this node holds</h2>
+<ul class="entries">
+{% for entry in page.directives %}
+<li id="directive-{{ entry.id }}">{{ ui.directive(base, entry) }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+{% if page.exceptions %}
+<h2>Exceptions</h2>
+<ul class="entries">
+{% for entry in page.exceptions %}
+<li>
+<span class="entry-text">{{ ui.target(base, entry.directive) }} does not apply here. {{ entry.reason }}</span>
+<div class="meta">{{ ui.status(entry.status) }}</div>
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+{% if page.deprecated %}
+<h2>Deprecated directives</h2>
+<p class="muted">These directives stay only for reference.</p>
+<ul class="entries">
+{% for entry in page.deprecated %}
+<li id="directive-{{ entry.id }}">{{ ui.directive(base, entry) }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+{% if page.pointers %}
+<h2>Pointers</h2>
+{{ ui.pointers(base, page.pointers) }}
+{% endif %}
+{% if page.children %}
+<h2>Under this node</h2>
+<ul class="entries">
+{% for child in page.children %}
+<li><a href="{{ base }}{{ child.target.href }}">{{ child.target.label }}</a> <span class="muted">{{ child.kind }}</span> {{ ui.status(child.status) }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+{% if page.edges %}
+<h2>Edges</h2>
+<dl>
+{% for row in page.edges %}
+<dt>{{ row.label }}</dt>
+<dd>{{ ui.targets(base, row.targets) }}</dd>
+{% endfor %}
+</dl>
+{% endif %}
+{% if page.body %}
+<h2>Supporting text</h2>
+{{ page.body | block | safe }}
+{% endif %}
+{% if page.files %}
+<h2>Generated files</h2>
+<ul class="entries">
+{% for file in page.files %}
+<li><code>{{ file }}</code></li>
+{% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

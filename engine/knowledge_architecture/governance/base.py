@@ -4,7 +4,12 @@ import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
 
-from knowledge_architecture.parser.node import GOVERNANCE_FOLDER, NODE_FILE_NAME, parse_source
+from knowledge_architecture.parser.node import (
+    GOVERNANCE_FOLDER,
+    NODE_FILE_NAME,
+    parse_source,
+    universal_newlines,
+)
 from knowledge_architecture.parser.result import ParsedNode, Problem
 
 TREE_FOLDERS = ("knowledge", "skills", GOVERNANCE_FOLDER)
@@ -81,7 +86,7 @@ def _parse_blobs(repository: Path, blobs: list[tuple[str, bytes]]) -> Base:
     for path, content in blobs:
         location = repository / path
         try:
-            parsed = parse_source(content.decode("utf-8"), location)
+            parsed = parse_source(universal_newlines(content.decode("utf-8")), location)
         except UnicodeDecodeError:
             unreadable.add(location)
             continue

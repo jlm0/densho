@@ -1,0 +1,86 @@
+{% extends "_layout.html.jinja" %}
+{% import "_macros.html.jinja" as ui %}
+{% block title %}Review queue - {{ title }}{% endblock %}
+{% block main %}
+<h1>Review queue</h1>
+<p>{{ state }}</p>
+{% if not pending %}
+<p class="notice">No entity waits for review.</p>
+{% else %}
+<p class="notice notice-proposed">{{ waiting }} Nothing on this page is in force.</p>
+<p>A person reads each entity, then accepts what the person approves. This page cannot accept anything. Run the command yourself in a terminal, read <code>git diff</code>, run <code>{{ command }} runtime</code>, stage the files, and commit them.</p>
+<p>Each effect below assumes that a person accepts each proposal. A proposed exception that stays proposed does not stop its directive. Each accepted directive or exception also changes the count at the top of <code>AGENTS.md</code>.</p>
+<h2>Branches</h2>
+<ul class="entries">
+<li><a href="#node-{{ root.id }}">{{ root.target.label }}</a> <span class="muted">the whole graph, {{ pending }} waiting</span><code class="command">{{ command }} accept --subtree {{ root.id }}</code></li>
+{% for branch in branches %}
+<li><a href="#node-{{ branch.link.id }}">{{ branch.link.target.label }}</a> <span class="muted">{{ branch.count }} waiting</span><code class="command">{{ command }} accept --subtree {{ branch.link.id }}</code></li>
+{% endfor %}
+</ul>
+<h2>By node</h2>
+{% for group in groups %}
+<section class="group" id="node-{{ group.page.link.id }}">
+{% if group.page.trail %}
+<p class="trail">{{ ui.route(base, group.page.trail) }}</p>
+{% endif %}
+<h3><a href="{{ base }}{{ group.page.link.target.href }}">{{ group.page.link.target.label }}</a></h3>
+<div class="meta">
+{{ ui.status(group.page.link.status) }}
+<span>{{ group.page.link.kind }}</span>
+<code>{{ group.page.link.id }}</code>
+<span>source: <code>{{ group.page.path }}</code></span>
+</div>
+{% if group.page.description %}
+<p>{{ group.page.description }}</p>
+{% endif %}
+{% if group.page.definition %}
+{{ group.page.definition | block | safe }}
+{% endif %}
+{% if group.node_location %}
+<p class="muted">The status of this node covers its definition and its place in the tree. Acceptance changes no directive and no generated file. Status line: <code>{{ group.node_location }}</code></p>
+{% endif %}
+{% if group.directives %}
+<h4>Directives</h4>
+<ul class="entries">
+{% for item in group.directives %}
+<li>
+{{ ui.directive(base, item.entry) }}
+<div class="meta"><span>status line: <code>{{ item.location }}</code></span></div>
+<div class="meta"><span>on acceptance: reaches {{ item.reached.node_count }} {{ "node" if item.reached.node_count == 1 else "nodes" }}: {{ ui.targets(base, item.reached.nodes) }}{% if item.reached.node_count > item.reached.nodes | length %}, and {{ item.reached.node_count - item.reached.nodes | length }} more{% endif %}</span></div>
+<div class="meta"><span>{{ item.reached.file_count }} generated {{ "file lists" if item.reached.file_count == 1 else "files list" }} it: {% for file in item.reached.files %}{% if not loop.first %}, {% endif %}<code>{{ file }}</code>{% endfor %}{% if item.reached.file_count > item.reached.files | length %}, and {{ item.reached.file_count - item.reached.files | length }} more{% endif %}</span></div>
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+{% if group.exceptions %}
+<h4>Exceptions</h4>
+<ul class="entries">
+{% for item in group.exceptions %}
+<li>
+<span class="entry-text">{{ ui.target(base, item.entry.directive) }} does not apply here. {{ item.entry.reason }}</span>
+<div class="meta">{{ ui.status(item.entry.status) }}<span>status line: <code>{{ item.location }}</code></span></div>
+<div class="meta"><span>on acceptance: stops the directive at this node, and below it where no other route reaches.{% if item.files %} This changes {% for file in item.files %}{% if not loop.first %}, {% endif %}<code>{{ file }}</code>{% endfor %}.{% endif %}</span></div>
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+{% if group.page.pointers %}
+<details><summary>Pointers ({{ group.page.pointers | length }})</summary>
+{{ ui.pointers(base, group.page.pointers) }}
+</details>
+{% endif %}
+{% if group.page.body %}
+<details><summary>Supporting text</summary>
+{{ group.page.body | block | safe }}
+</details>
+{% endif %}
+<h4>Accept</h4>
+<code class="command">{{ command }} accept {{ group.names | join(" ") }}</code>
+{% if group.branch_id %}
+<p class="muted">Or accept this branch, with {{ group.branch_count }} waiting:</p>
+<code class="command">{{ command }} accept --subtree {{ group.branch_id }}</code>
+{% endif %}
+</section>
+{% endfor %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "_layout.html.jinja" %}
+{% import "_macros.html.jinja" as ui %}
+{% block title %}{{ title }}{% endblock %}
+{% block main %}
+<h1>{{ title }}</h1>
+<p>{{ state }}</p>
+{% if pending %}
+<p class="notice notice-proposed">{{ waiting }} Read them in the <a href="review.html">review queue</a>.</p>
+{% else %}
+<p class="notice">No entity waits for review.</p>
+{% endif %}
+<p class="muted">This site only reads. It holds what the node files held when <code>ka view</code> last ran.</p>
+<h2>Knowledge tree</h2>
+<ul class="tree">
+{% for entry in tree %}
+<li>
+{% if entry.row.opens %}
+<details{% if entry.open %} open{% endif %}><summary>
+{% else %}
+<div class="leaf">
+{% endif %}
+<a href="nodes/{{ entry.link.target.href }}">{{ entry.link.target.label }}</a>
+<span class="muted">{{ entry.link.kind }}{% if entry.row.repeated %}, also listed above{% endif %}{% if entry.directive_count %}, {{ entry.directive_count }} {{ "directive" if entry.directive_count == 1 else "directives" }}{% endif %}</span>
+{{ ui.status(entry.link.status) }}
+{% if entry.row.opens %}
+</summary>
+<ul>
+{% else %}
+</div>
+</li>
+{% endif %}
+{% for _ in range(entry.row.closes) %}
+</ul>
+</details>
+</li>
+{% endfor %}
+{% endfor %}
+</ul>
+<h2>Skills</h2>
+{% if skills %}
+<ul class="entries">
+{% for skill in skills %}
+<li>
+<a href="nodes/{{ skill.link.target.href }}">{{ skill.title }}</a>
+{{ ui.status(skill.link.status) }}
+{% if skill.description %}<br><span class="muted">{{ skill.description }}</span>{% endif %}
+</li>
+{% endfor %}
+</ul>
+{% else %}
+<p class="muted">The graph holds no skill.</p>
+{% endif %}
+{% endblock %}

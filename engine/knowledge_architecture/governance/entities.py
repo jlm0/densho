@@ -48,6 +48,10 @@ class Entity:
     def label(self) -> str:
         return f"{self.kind} {self.name}"
 
+    @property
+    def holder(self) -> str:
+        return str(self.reviewed["holder"]) if self.kind == DIRECTIVE else self.key[1]
+
 
 def normal_text(value: str) -> str:
     return " ".join(_MARKDOWN.render(value).split())

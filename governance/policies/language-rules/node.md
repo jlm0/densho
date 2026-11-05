@@ -25,7 +25,7 @@ The controlled language of each directive, trigger, and skill description. The r
   - scope: node
   - status: proposed
   - origin: template
-- Add each new opening verb to `governance/language/vocabulary.yaml`. ^add-the-verb
+- Add each new opening verb to `governance/language/vocabulary.yaml` or to the branch file of the node. ^add-the-verb
   - scope: node
   - status: proposed
   - origin: template

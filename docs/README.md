@@ -16,7 +16,7 @@ Think of the system as a library, where each node is a book. The first two layer
 | [Language checks](language-checks.md)                           | The copy editor                               | Built   |
 | [Directive semantics](directive-semantics.md)                   | The rules about which signs cover which rooms | Built   |
 | [Governance workflow](governance-workflow.md)                   | The acquisitions policy                       | Built   |
-| [Seed knowledge](seed-knowledge.md)                             | The first real books                          | Planned |
+| [Seed knowledge](seed-knowledge.md)                             | The first real books                          | Built   |
 | [Compiled outputs](compiled-outputs.md)                         | The printed catalog                           | Planned |
 | [Runtime files](runtime-files.md)                               | The signs that lead visitors to the shelf     | Planned |
 | [Template packaging](template-packaging.md)                     | The library in a box                          | Planned |

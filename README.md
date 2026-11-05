@@ -6,7 +6,7 @@ Knowledge lives in a tree of Markdown files that runs from domain to discipline 
 
 A build generates `AGENTS.md` from the tree as its root node. Agent tools such as Claude Code load it at the start of each session and follow the tree from there.
 
-The repo is early. The schema, the node parser, the graph checks, the language checks, the directive semantics, and the governance workflow are in place. The seed knowledge and the build that generates `AGENTS.md` and the skills are not built yet.
+The repo is early. The schema, the node parser, the graph checks, the language checks, the directive semantics, the governance workflow, and the seed knowledge are in place. The build that generates `AGENTS.md` and the skills is not built yet.
 
 ## Setup
 

@@ -1,0 +1,15 @@
+---
+approved_verbs: [design]
+prohibited:
+  vague design term:
+    - beautiful
+    - clean
+    - delightful
+    - easy
+    - elegant
+    - intuitive
+    - modern
+    - polished
+    - simple
+    - sleek
+    - user-friendly

@@ -13,7 +13,7 @@ from rdflib import RDF, SH, BNode, Graph, Namespace, URIRef
 
 from knowledge_architecture.generated import metamodel_rdf
 from knowledge_architecture.generated.metamodel import KnowledgeGraph, Root
-from knowledge_architecture.graph.references import problem_at
+from knowledge_architecture.graph.references import exceptions_of, problem_at
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -122,6 +122,9 @@ def _focus_entity(
 ) -> _Entity | None:
     if not isinstance(focus, BNode):
         return entities.get(_local_id(focus))
+    excepting = entities.get(_local_id(data.value(predicate=KA.exceptions, object=focus)))
+    if excepting is not None:
+        return _exception_entity(excepting, value)
     holder = entities.get(_local_id(data.value(predicate=KA.pointers, object=focus)))
     if holder is None:
         return None
@@ -129,6 +132,13 @@ def _focus_entity(
     for index, pointer in enumerate(holder.item.node.pointers or []):
         if pointer.target == _local_id(value) and pointer.kind == kind:
             return _Entity(holder.item, pointer, ("pointers", index), kind)
+    return None
+
+
+def _exception_entity(holder: _Entity, value: RdfTerm | None) -> _Entity | None:
+    for index, exception in enumerate(exceptions_of(holder.item)):
+        if exception.directive == _local_id(value):
+            return _Entity(holder.item, exception, ("exceptions", index), "ka:DirectiveException")
     return None
 
 

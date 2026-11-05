@@ -301,12 +301,15 @@ class KnowledgeNode(Node):
     kind: Union[str, URIorCURIE] = None
     title: str = None
     knowledge_type: Union[str, "KnowledgeType"] = None
+    exceptions: Optional[Union[Union[dict, "DirectiveException"], list[Union[dict, "DirectiveException"]]]] = empty_list()
 
     def __post_init__(self, *_: str, **kwargs: Any):
         if self._is_empty(self.knowledge_type):
             self.MissingRequiredField("knowledge_type")
         if not isinstance(self.knowledge_type, KnowledgeType):
             self.knowledge_type = KnowledgeType(self.knowledge_type)
+
+        self._normalize_inlined_as_list(slot_name="exceptions", slot_type=DirectiveException, key_name="reason", keyed=False)
 
         super().__post_init__(**kwargs)
         if self._is_empty(self.kind):
@@ -585,6 +588,8 @@ class Directive(GovernedEntity):
     text: str = None
     scope: Union[str, "DirectiveScope"] = None
     also_attached_to: Optional[Union[Union[str, NodeId], list[Union[str, NodeId]]]] = empty_list()
+    refines: Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]] = empty_list()
+    conflicts_with: Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]] = empty_list()
 
     def __post_init__(self, *_: str, **kwargs: Any):
         if self._is_empty(self.id):
@@ -605,6 +610,43 @@ class Directive(GovernedEntity):
         if not isinstance(self.also_attached_to, list):
             self.also_attached_to = [self.also_attached_to] if self.also_attached_to is not None else []
         self.also_attached_to = [v if isinstance(v, NodeId) else NodeId(v) for v in self.also_attached_to]
+
+        if not isinstance(self.refines, list):
+            self.refines = [self.refines] if self.refines is not None else []
+        self.refines = [v if isinstance(v, DirectiveId) else DirectiveId(v) for v in self.refines]
+
+        if not isinstance(self.conflicts_with, list):
+            self.conflicts_with = [self.conflicts_with] if self.conflicts_with is not None else []
+        self.conflicts_with = [v if isinstance(v, DirectiveId) else DirectiveId(v) for v in self.conflicts_with]
+
+        super().__post_init__(**kwargs)
+
+
+@dataclass(repr=False)
+class DirectiveException(YAMLRoot):
+    """
+    A statement that a node steps out of a directive that it would otherwise inherit.
+    """
+    _inherited_slots: ClassVar[list[str]] = []
+
+    class_class_uri: ClassVar[URIRef] = KA["DirectiveException"]
+    class_class_curie: ClassVar[str] = "ka:DirectiveException"
+    class_name: ClassVar[str] = "DirectiveException"
+    class_model_uri: ClassVar[URIRef] = KA.DirectiveException
+
+    directive: Union[str, DirectiveId] = None
+    reason: str = None
+
+    def __post_init__(self, *_: str, **kwargs: Any):
+        if self._is_empty(self.directive):
+            self.MissingRequiredField("directive")
+        if not isinstance(self.directive, DirectiveId):
+            self.directive = DirectiveId(self.directive)
+
+        if self._is_empty(self.reason):
+            self.MissingRequiredField("reason")
+        if not isinstance(self.reason, str):
+            self.reason = str(self.reason)
 
         super().__post_init__(**kwargs)
 
@@ -832,10 +874,10 @@ class DirectiveScope(EnumDefinitionImpl):
     """
     node = PermissibleValue(
         text="node",
-        description="The directive applies only to the nodes that it attaches to.")
+        description="""The directive applies only to the nodes that it attaches to and to each skill that uses one of them.""")
     subtree = PermissibleValue(
         text="subtree",
-        description="""The directive applies to the attached nodes and to each node under them. Each node is under the root.""")
+        description="""The directive applies to the attached nodes and to each node under them. Each node is under the root. A skill is under each node that it uses.""")
 
     _defn = EnumDefinition(
         name="DirectiveScope",
@@ -886,6 +928,16 @@ slots.body = Slot(uri=KA.body, name="body", curie=KA.curie('body'),
 slots.knowledge_type = Slot(uri=KA.knowledge_type, name="knowledge_type", curie=KA.curie('knowledge_type'),
                    model_uri=KA.knowledge_type, domain=None, range=Union[str, "KnowledgeType"])
 
+slots.exceptions = Slot(uri=KA.exceptions, name="exceptions", curie=KA.curie('exceptions'),
+                   model_uri=KA.exceptions, domain=None, range=Optional[Union[Union[dict, DirectiveException], list[Union[dict, DirectiveException]]]])
+
+slots.directive = Slot(uri=KA.directive, name="directive", curie=KA.curie('directive'),
+                   model_uri=KA.directive, domain=None, range=Union[str, DirectiveId])
+
+slots.reason = Slot(uri=KA.reason, name="reason", curie=KA.curie('reason'),
+                   model_uri=KA.reason, domain=None, range=str,
+                   pattern=re.compile(r'^\S(?: *\S)*(?!\n)$'))
+
 slots.definition = Slot(uri=SKOS.definition, name="definition", curie=SKOS.curie('definition'),
                    model_uri=KA.definition, domain=None, range=str,
                    pattern=re.compile(r'\S'))
@@ -903,6 +955,12 @@ slots.scope = Slot(uri=KA.scope, name="scope", curie=KA.curie('scope'),
 
 slots.also_attached_to = Slot(uri=KA.also_attached_to, name="also_attached_to", curie=KA.curie('also_attached_to'),
                    model_uri=KA.also_attached_to, domain=None, range=Optional[Union[Union[str, NodeId], list[Union[str, NodeId]]]])
+
+slots.refines = Slot(uri=KA.refines, name="refines", curie=KA.curie('refines'),
+                   model_uri=KA.refines, domain=None, range=Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]])
+
+slots.conflicts_with = Slot(uri=KA.conflicts_with, name="conflicts_with", curie=KA.curie('conflicts_with'),
+                   model_uri=KA.conflicts_with, domain=None, range=Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]])
 
 slots.target = Slot(uri=KA.target, name="target", curie=KA.curie('target'),
                    model_uri=KA.target, domain=None, range=Union[str, NodeId])

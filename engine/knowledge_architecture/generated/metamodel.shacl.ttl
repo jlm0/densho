@@ -8,104 +8,110 @@
 skos:Concept a sh:NodeShape ;
 	rdfs:comment "A node in the classification from domain to concept." ;
 	sh:closed false ;
-	sh:ignoredProperties _:c14n107 ;
-	sh:property _:c14n0 , _:c14n104 , _:c14n128 , _:c14n131 , _:c14n140 , _:c14n152 , _:c14n157 , _:c14n39 , _:c14n47 , _:c14n58 , _:c14n62 , _:c14n67 , _:c14n68 , _:c14n74 , _:c14n8 , _:c14n87 ;
+	sh:ignoredProperties _:c14n105 ;
+	sh:property _:c14n0 , _:c14n10 , _:c14n108 , _:c14n148 , _:c14n149 , _:c14n174 , _:c14n179 , _:c14n25 , _:c14n3 , _:c14n40 , _:c14n42 , _:c14n59 , _:c14n66 , _:c14n70 , _:c14n73 , _:c14n77 , _:c14n93 ;
 	sh:targetClass skos:Concept .
 ka:AlwaysPointer a sh:NodeShape ;
 	rdfs:comment "A pointer to a node that the harness loads at session start." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n158 ;
-	sh:property _:c14n109 , _:c14n56 , _:c14n98 ;
+	sh:ignoredProperties _:c14n176 ;
+	sh:property _:c14n110 , _:c14n64 , _:c14n99 ;
 	sh:targetClass ka:AlwaysPointer .
 ka:Concept a sh:NodeShape ;
 	rdfs:comment "A principle, a technique, or a body of knowledge." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n161 ;
-	sh:property _:c14n100 , _:c14n103 , _:c14n115 , _:c14n116 , _:c14n122 , _:c14n137 , _:c14n164 , _:c14n174 , _:c14n181 , _:c14n28 , _:c14n3 , _:c14n31 , _:c14n40 , _:c14n77 , _:c14n78 , _:c14n86 , _:c14n94 ;
+	sh:ignoredProperties _:c14n180 ;
+	sh:property _:c14n100 , _:c14n107 , _:c14n119 , _:c14n136 , _:c14n145 , _:c14n157 , _:c14n172 , _:c14n182 , _:c14n195 , _:c14n29 , _:c14n33 , _:c14n46 , _:c14n55 , _:c14n6 , _:c14n72 , _:c14n79 , _:c14n89 , _:c14n90 ;
 	sh:targetClass ka:Concept .
 ka:Directive a sh:NodeShape ;
 	rdfs:comment "An atomic instruction with its own identity. A directive lives in the file of one node." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n154 ;
-	sh:property _:c14n118 , _:c14n135 , _:c14n170 , _:c14n177 , _:c14n179 , _:c14n71 , _:c14n92 ;
+	sh:ignoredProperties _:c14n168 ;
+	sh:property _:c14n121 , _:c14n122 , _:c14n129 , _:c14n14 , _:c14n167 , _:c14n191 , _:c14n193 , _:c14n27 , _:c14n52 ;
 	sh:targetClass ka:Directive .
+ka:DirectiveException a sh:NodeShape ;
+	rdfs:comment "A statement that a node steps out of a directive that it would otherwise inherit." ;
+	sh:closed true ;
+	sh:ignoredProperties _:c14n164 ;
+	sh:property _:c14n124 , _:c14n131 ;
+	sh:targetClass ka:DirectiveException .
 ka:Discipline a sh:NodeShape ;
 	rdfs:comment "A field of work in a domain." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n117 ;
-	sh:property _:c14n12 , _:c14n124 , _:c14n132 , _:c14n139 , _:c14n155 , _:c14n160 , _:c14n163 , _:c14n165 , _:c14n167 , _:c14n20 , _:c14n34 , _:c14n46 , _:c14n60 , _:c14n65 , _:c14n73 , _:c14n79 , _:c14n83 ;
+	sh:ignoredProperties _:c14n120 ;
+	sh:property _:c14n1 , _:c14n111 , _:c14n112 , _:c14n146 , _:c14n15 , _:c14n155 , _:c14n166 , _:c14n171 , _:c14n177 , _:c14n183 , _:c14n185 , _:c14n2 , _:c14n22 , _:c14n38 , _:c14n57 , _:c14n69 , _:c14n84 , _:c14n95 ;
 	sh:targetClass ka:Discipline .
 ka:Domain a sh:NodeShape ;
 	rdfs:comment "The top level of the taxonomy. A domain has no broader node." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n22 ;
-	sh:property _:c14n105 , _:c14n106 , _:c14n110 , _:c14n125 , _:c14n129 , _:c14n149 , _:c14n15 , _:c14n159 , _:c14n36 , _:c14n43 , _:c14n44 , _:c14n50 , _:c14n51 , _:c14n61 , _:c14n97 , _:c14n99 ;
+	sh:ignoredProperties _:c14n24 ;
+	sh:property _:c14n102 , _:c14n104 , _:c14n115 , _:c14n130 , _:c14n133 , _:c14n137 , _:c14n143 , _:c14n41 , _:c14n44 , _:c14n48 , _:c14n53 , _:c14n54 , _:c14n60 , _:c14n61 , _:c14n68 , _:c14n71 , _:c14n98 ;
 	sh:targetClass ka:Domain .
 ka:GovernedEntity a sh:NodeShape ;
 	rdfs:comment "An addressable entity that governance tracks." ;
 	sh:closed false ;
-	sh:ignoredProperties _:c14n69 ;
-	sh:property _:c14n112 , _:c14n126 , _:c14n16 , _:c14n33 ;
+	sh:ignoredProperties _:c14n75 ;
+	sh:property _:c14n114 , _:c14n134 , _:c14n18 , _:c14n37 ;
 	sh:targetClass ka:GovernedEntity .
 ka:KnowledgeGraph a sh:NodeShape ;
 	rdfs:comment "The root and the knowledge nodes of one repository. A graph has exactly one root." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n142 ;
-	sh:property _:c14n171 , _:c14n26 ;
+	sh:ignoredProperties _:c14n152 ;
+	sh:property _:c14n187 , _:c14n31 ;
 	sh:targetClass ka:KnowledgeGraph .
 ka:KnowledgeNode a sh:NodeShape ;
 	rdfs:comment "A node that holds domain knowledge or workspace knowledge." ;
 	sh:closed false ;
-	sh:ignoredProperties _:c14n18 ;
-	sh:property _:c14n123 , _:c14n141 , _:c14n168 , _:c14n54 , _:c14n55 , _:c14n63 , _:c14n66 , _:c14n82 , _:c14n88 , _:c14n93 ;
+	sh:ignoredProperties _:c14n20 ;
+	sh:property _:c14n103 , _:c14n118 , _:c14n127 , _:c14n132 , _:c14n139 , _:c14n169 , _:c14n175 , _:c14n186 , _:c14n8 , _:c14n80 , _:c14n88 ;
 	sh:targetClass ka:KnowledgeNode .
 ka:Node a sh:NodeShape ;
 	rdfs:comment "One file in the graph. A node holds its knowledge, its directives, and its pointers." ;
 	sh:closed false ;
-	sh:ignoredProperties _:c14n21 ;
-	sh:property _:c14n10 , _:c14n11 , _:c14n121 , _:c14n136 , _:c14n162 , _:c14n173 , _:c14n24 , _:c14n37 , _:c14n85 ;
+	sh:ignoredProperties _:c14n23 ;
+	sh:property _:c14n12 , _:c14n128 , _:c14n13 , _:c14n144 , _:c14n181 , _:c14n188 , _:c14n28 , _:c14n43 , _:c14n87 ;
 	sh:targetClass ka:Node .
 ka:PathPointer a sh:NodeShape ;
 	rdfs:comment "A pointer to a node that the harness loads when the agent opens a matching file." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n175 ;
-	sh:property _:c14n180 , _:c14n30 , _:c14n45 , _:c14n81 ;
+	sh:ignoredProperties _:c14n189 ;
+	sh:property _:c14n194 , _:c14n35 , _:c14n56 , _:c14n82 ;
 	sh:targetClass ka:PathPointer .
 ka:Pointer a sh:NodeShape ;
 	rdfs:comment "A route that tells an agent when and how to load a node." ;
 	sh:closed false ;
-	sh:ignoredProperties _:c14n38 ;
-	sh:property _:c14n108 , _:c14n119 , _:c14n84 ;
+	sh:ignoredProperties _:c14n47 ;
+	sh:property _:c14n106 , _:c14n123 , _:c14n85 ;
 	sh:targetClass ka:Pointer .
 ka:PracticeArea a sh:NodeShape ;
 	rdfs:comment "A narrower area of work." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n145 ;
-	sh:property _:c14n102 , _:c14n138 , _:c14n150 , _:c14n151 , _:c14n153 , _:c14n166 , _:c14n169 , _:c14n19 , _:c14n25 , _:c14n29 , _:c14n41 , _:c14n48 , _:c14n59 , _:c14n72 , _:c14n80 , _:c14n90 , _:c14n91 ;
+	sh:ignoredProperties _:c14n158 ;
+	sh:property _:c14n140 , _:c14n141 , _:c14n154 , _:c14n16 , _:c14n163 , _:c14n165 , _:c14n170 , _:c14n184 , _:c14n34 , _:c14n45 , _:c14n49 , _:c14n50 , _:c14n67 , _:c14n76 , _:c14n81 , _:c14n86 , _:c14n92 , _:c14n96 ;
 	sh:targetClass ka:PracticeArea .
 ka:Root a sh:NodeShape ;
 	rdfs:comment "The top node of the graph. Agents load the root first." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n14 ;
-	sh:property _:c14n1 , _:c14n114 , _:c14n130 , _:c14n144 , _:c14n147 , _:c14n5 , _:c14n75 , _:c14n89 , _:c14n95 ;
+	sh:ignoredProperties _:c14n17 ;
+	sh:property _:c14n117 , _:c14n138 , _:c14n156 , _:c14n161 , _:c14n4 , _:c14n7 , _:c14n78 , _:c14n91 , _:c14n94 ;
 	sh:targetClass ka:Root .
 ka:Skill a sh:NodeShape ;
 	rdfs:comment "A reusable capability that composes knowledge from any branch of the taxonomy." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n134 ;
-	sh:property _:c14n13 , _:c14n133 , _:c14n143 , _:c14n146 , _:c14n17 , _:c14n172 , _:c14n35 , _:c14n4 , _:c14n6 , _:c14n64 , _:c14n7 , _:c14n70 , _:c14n76 ;
+	sh:ignoredProperties _:c14n142 ;
+	sh:property _:c14n126 , _:c14n147 , _:c14n150 , _:c14n151 , _:c14n153 , _:c14n159 , _:c14n160 , _:c14n19 , _:c14n21 , _:c14n30 , _:c14n39 , _:c14n74 , _:c14n83 , _:c14n9 ;
 	sh:targetClass ka:Skill .
 ka:SkillPointer a sh:NodeShape ;
 	rdfs:comment "A pointer to a skill that the agent selects from the skill listing." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n156 ;
-	sh:property _:c14n2 , _:c14n27 , _:c14n42 ;
+	sh:ignoredProperties _:c14n173 ;
+	sh:property _:c14n32 , _:c14n5 , _:c14n51 ;
 	sh:targetClass ka:SkillPointer .
 ka:TextPointer a sh:NodeShape ;
 	rdfs:comment "A pointer to a node that the agent opens when it reads the pointer text." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n23 ;
-	sh:property _:c14n111 , _:c14n127 , _:c14n178 ;
+	sh:ignoredProperties _:c14n26 ;
+	sh:property _:c14n113 , _:c14n135 , _:c14n192 ;
 	sh:targetClass ka:TextPointer .
 _:c14n0 sh:class skos:Concept ;
 	sh:description "The nodes with an association to this node. This edge is symmetric." ;
@@ -116,266 +122,301 @@ _:c14n1 sh:datatype xsd:string ;
 	sh:description "The stable identifier. The identifier does not change when a file moves." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
-	sh:order 5 ;
+	sh:order 14 ;
 	sh:path ka:id ;
 	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n10 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
+_:c14n10 sh:class ka:Node ;
+	sh:description "The nodes that this node sets rules for. A governance node can name itself." ;
 	sh:nodeKind sh:IRI ;
-	sh:order 0 ;
-	sh:path rdf:type .
+	sh:order 4 ;
+	sh:path ka:governs .
 _:c14n100 sh:description "The kind of knowledge in the node." ;
-	sh:in _:c14n291 ;
+	sh:in _:c14n303 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 7 ;
 	sh:path ka:knowledge_type .
 _:c14n101 rdf:first ka:scope ;
-	rdf:rest _:c14n57 .
-_:c14n102 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n240 ;
+	rdf:rest _:c14n65 .
+_:c14n102 sh:datatype xsd:string ;
+	sh:description "The supporting prose of the node." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 12 ;
+	sh:path ka:body ;
+	sh:pattern "\\S" .
+_:c14n103 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n267 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 9 ;
+	sh:path ka:origin .
+_:c14n104 sh:datatype xsd:string ;
+	sh:description "The preferred name of the node." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 9 ;
+	sh:path skos:prefLabel ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n105 rdf:first rdf:type ;
+	rdf:rest _:c14n162 .
+_:c14n106 sh:class ka:Node ;
+	sh:description "The node that the pointer routes to." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 1 ;
+	sh:path ka:target .
+_:c14n107 sh:datatype xsd:string ;
+	sh:description "The supporting prose of the node." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 13 ;
+	sh:path ka:body ;
+	sh:pattern "\\S" .
+_:c14n108 sh:class ka:Directive ;
+	sh:description "The directives that live in this file." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 11 ;
+	sh:path ka:directives .
+_:c14n109 rdf:first ka:refines ;
+	rdf:rest _:c14n101 .
+_:c14n11 rdf:first ka:directives ;
+	rdf:rest _:c14n282 .
+_:c14n110 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 0 ;
+	sh:path rdf:type .
+_:c14n111 sh:class ka:Directive ;
+	sh:description "The directives that live in this file." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 12 ;
+	sh:path ka:directives .
+_:c14n112 sh:class ka:Pointer ;
+	sh:description "The routes from this node to other nodes." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 11 ;
+	sh:path ka:pointers .
+_:c14n113 sh:class ka:Node ;
+	sh:description "The node that the pointer routes to." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 1 ;
+	sh:path ka:target .
+_:c14n114 sh:description "The lifecycle state." ;
+	sh:in _:c14n223 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 1 ;
+	sh:path ka:status .
+_:c14n115 sh:class ka:Pointer ;
+	sh:description "The routes from this node to other nodes." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 10 ;
+	sh:path ka:pointers .
+_:c14n116 rdf:first ka:pointers ;
+	rdf:rest _:c14n109 .
+_:c14n117 sh:description "The lifecycle state." ;
+	sh:in _:c14n250 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 6 ;
+	sh:path ka:status .
+_:c14n118 sh:class ka:Pointer ;
+	sh:description "The routes from this node to other nodes." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 4 ;
+	sh:path ka:pointers .
+_:c14n119 sh:class skos:Concept ;
+	sh:description "The nodes with an association to this node. This edge is symmetric." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 2 ;
+	sh:path skos:related .
+_:c14n12 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 0 ;
+	sh:path rdf:type .
+_:c14n120 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n121 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n263 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 7 ;
+	sh:path ka:origin .
+_:c14n122 sh:class ka:Node ;
+	sh:description "The nodes that the directive attaches to, in addition to the node that holds it." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 2 ;
+	sh:path ka:also_attached_to .
+_:c14n123 sh:datatype xsd:string ;
+	sh:description "The condition that tells an agent to follow the pointer." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 2 ;
+	sh:path ka:trigger ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n124 sh:class ka:Directive ;
+	sh:description "The directive that the exception stops." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 0 ;
+	sh:path ka:directive .
+_:c14n125 rdf:first ka:also_attached_to ;
+	rdf:rest _:c14n275 .
+_:c14n126 sh:description "The lifecycle state." ;
+	sh:in _:c14n220 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 11 ;
+	sh:path ka:status .
+_:c14n127 sh:datatype xsd:string ;
+	sh:description "The preferred name of the node." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 3 ;
+	sh:path skos:prefLabel ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n128 sh:datatype xsd:string ;
+	sh:description "The preferred name of the node." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 1 ;
+	sh:path skos:prefLabel ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n129 sh:datatype xsd:string ;
+	sh:description "The stable identifier. The identifier does not change when a file moves." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 5 ;
+	sh:path ka:id ;
+	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
+_:c14n13 sh:class ka:Pointer ;
+	sh:description "The routes from this node to other nodes." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 2 ;
+	sh:path ka:pointers .
+_:c14n130 sh:datatype xsd:string ;
+	sh:description "The stable identifier. The identifier does not change when a file moves." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 13 ;
+	sh:path ka:id ;
+	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
+_:c14n131 sh:datatype xsd:string ;
+	sh:description "The reason that the directive does not apply at this node." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 1 ;
+	sh:path ka:reason ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n132 sh:description "The kind of knowledge in the node." ;
+	sh:in _:c14n301 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 0 ;
+	sh:path ka:knowledge_type .
+_:c14n133 sh:class skos:Concept ;
+	sh:description "The nodes that this node needs." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 3 ;
+	sh:path ka:depends_on .
+_:c14n134 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n257 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 2 ;
+	sh:path ka:origin .
+_:c14n135 sh:datatype xsd:string ;
+	sh:description "The condition that tells an agent to follow the pointer." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 2 ;
+	sh:path ka:trigger ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n136 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n259 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 16 ;
+	sh:path ka:origin .
+_:c14n137 sh:description "The kind of knowledge in the node." ;
+	sh:in _:c14n297 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 6 ;
+	sh:path ka:knowledge_type .
+_:c14n138 sh:class ka:Pointer ;
+	sh:description "The routes from this node to other nodes." ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 2 ;
+	sh:path ka:pointers .
+_:c14n139 sh:description "The lifecycle state." ;
+	sh:in _:c14n244 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 8 ;
+	sh:path ka:status .
+_:c14n14 sh:class ka:Directive ;
+	sh:description "The broader directives that this directive makes more specific. Both directives apply." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 3 ;
+	sh:path ka:refines .
+_:c14n140 sh:class ka:Pointer ;
+	sh:description "The routes from this node to other nodes." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 11 ;
+	sh:path ka:pointers .
+_:c14n141 sh:description "The lifecycle state." ;
+	sh:in _:c14n229 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 15 ;
-	sh:path ka:origin .
-_:c14n103 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
+	sh:path ka:status .
+_:c14n142 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n143 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 8 ;
 	sh:path rdf:type .
-_:c14n104 sh:datatype xsd:string ;
-	sh:description "The stable identifier. The identifier does not change when a file moves." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 12 ;
-	sh:path ka:id ;
-	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n105 sh:datatype xsd:string ;
-	sh:description "The supporting prose of the node." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 11 ;
-	sh:path ka:body ;
-	sh:pattern "\\S" .
-_:c14n106 sh:description "The lifecycle state." ;
-	sh:in _:c14n223 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 13 ;
-	sh:path ka:status .
-_:c14n107 rdf:first rdf:type ;
-	rdf:rest _:c14n148 .
-_:c14n108 sh:class ka:Node ;
-	sh:description "The node that the pointer routes to." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 1 ;
-	sh:path ka:target .
-_:c14n109 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 0 ;
-	sh:path rdf:type .
-_:c14n11 sh:class ka:Pointer ;
-	sh:description "The routes from this node to other nodes." ;
-	sh:nodeKind sh:BlankNodeOrIRI ;
-	sh:order 2 ;
-	sh:path ka:pointers .
-_:c14n110 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 7 ;
-	sh:path rdf:type .
-_:c14n111 sh:class ka:Node ;
-	sh:description "The node that the pointer routes to." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 1 ;
-	sh:path ka:target .
-_:c14n112 sh:description "The lifecycle state." ;
-	sh:in _:c14n226 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 1 ;
-	sh:path ka:status .
-_:c14n113 rdf:first ka:pointers ;
-	rdf:rest _:c14n101 .
-_:c14n114 sh:description "The lifecycle state." ;
-	sh:in _:c14n205 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 6 ;
-	sh:path ka:status .
-_:c14n115 sh:datatype xsd:string ;
-	sh:description "The stable identifier. The identifier does not change when a file moves." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 13 ;
-	sh:path ka:id ;
-	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n116 sh:class skos:Concept ;
-	sh:description "The nodes with an association to this node. This edge is symmetric." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 2 ;
-	sh:path skos:related .
-_:c14n117 rdf:first rdf:type ;
-	rdf:rest rdf:nil .
-_:c14n118 sh:class ka:Node ;
-	sh:description "The nodes that the directive attaches to, in addition to the node that holds it." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 2 ;
-	sh:path ka:also_attached_to .
-_:c14n119 sh:datatype xsd:string ;
-	sh:description "The condition that tells an agent to follow the pointer." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 2 ;
-	sh:path ka:trigger ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n12 sh:description "The kind of knowledge in the node." ;
-	sh:in _:c14n285 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 7 ;
-	sh:path ka:knowledge_type .
-_:c14n120 rdf:first ka:also_attached_to ;
-	rdf:rest _:c14n260 .
-_:c14n121 sh:datatype xsd:string ;
-	sh:description "The preferred name of the node." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 1 ;
-	sh:path skos:prefLabel ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n122 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n242 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 15 ;
-	sh:path ka:origin .
-_:c14n123 sh:description "The kind of knowledge in the node." ;
-	sh:in _:c14n293 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 0 ;
-	sh:path ka:knowledge_type .
-_:c14n124 sh:datatype xsd:string ;
-	sh:description "The supporting prose of the node." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 12 ;
-	sh:path ka:body ;
-	sh:pattern "\\S" .
-_:c14n125 sh:class skos:Concept ;
-	sh:description "The nodes that this node needs." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 3 ;
-	sh:path ka:depends_on .
-_:c14n126 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n252 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 2 ;
-	sh:path ka:origin .
-_:c14n127 sh:datatype xsd:string ;
-	sh:description "The condition that tells an agent to follow the pointer." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 2 ;
-	sh:path ka:trigger ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n128 sh:datatype xsd:string ;
-	sh:description "The supporting prose of the node." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 11 ;
-	sh:path ka:body ;
-	sh:pattern "\\S" .
-_:c14n129 sh:description "The kind of knowledge in the node." ;
-	sh:in _:c14n281 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 6 ;
-	sh:path ka:knowledge_type .
-_:c14n13 sh:datatype xsd:string ;
-	sh:description "The stable identifier. The identifier does not change when a file moves." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 9 ;
-	sh:path ka:id ;
-	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n130 sh:class ka:Pointer ;
-	sh:description "The routes from this node to other nodes." ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:BlankNodeOrIRI ;
-	sh:order 2 ;
-	sh:path ka:pointers .
-_:c14n131 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 7 ;
-	sh:path rdf:type .
-_:c14n132 sh:datatype xsd:string ;
-	sh:description "The stable identifier. The identifier does not change when a file moves." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 13 ;
-	sh:path ka:id ;
-	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n133 sh:datatype xsd:string ;
-	sh:description "The preferred name of the node." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 5 ;
-	sh:path skos:prefLabel ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n134 rdf:first rdf:type ;
-	rdf:rest rdf:nil .
-_:c14n135 sh:datatype xsd:string ;
-	sh:description "The stable identifier. The identifier does not change when a file moves." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 3 ;
-	sh:path ka:id ;
-	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n136 sh:datatype xsd:string ;
+_:c14n144 sh:datatype xsd:string ;
 	sh:description "The URLs, repository paths, or citations that support the entity." ;
 	sh:nodeKind sh:Literal ;
 	sh:order 8 ;
 	sh:path dcterms:source ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n137 sh:datatype xsd:string ;
-	sh:description "The preferred name of the node." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 9 ;
-	sh:path skos:prefLabel ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n138 sh:class ka:Directive ;
-	sh:description "The directives that live in this file." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 11 ;
-	sh:path ka:directives .
-_:c14n139 sh:class skos:Concept ;
+_:c14n145 sh:class ka:DirectiveException ;
+	sh:description "The inherited directives that stop at this node." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 8 ;
+	sh:path ka:exceptions .
+_:c14n146 sh:class skos:Concept ;
 	sh:description "The domain nodes that this workspace node gives project values for." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 6 ;
 	sh:path ka:implements .
-_:c14n14 rdf:first rdf:type ;
-	rdf:rest rdf:nil .
-_:c14n140 sh:datatype xsd:string ;
+_:c14n147 sh:datatype xsd:string ;
+	sh:description "The URLs, repository paths, or citations that support the entity." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 13 ;
+	sh:path dcterms:source ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n148 sh:datatype xsd:string ;
 	sh:description "The meaning of the node." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -383,133 +424,194 @@ _:c14n140 sh:datatype xsd:string ;
 	sh:order 0 ;
 	sh:path skos:definition ;
 	sh:pattern "\\S" .
-_:c14n141 sh:datatype xsd:string ;
-	sh:description "The preferred name of the node." ;
+_:c14n149 sh:class ka:DirectiveException ;
+	sh:description "The inherited directives that stop at this node." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 7 ;
+	sh:path ka:exceptions .
+_:c14n15 sh:description "The kind of knowledge in the node." ;
+	sh:in _:c14n309 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
+	sh:order 7 ;
+	sh:path ka:knowledge_type .
+_:c14n150 sh:class ka:Directive ;
+	sh:description "The directives that live in this file." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 8 ;
+	sh:path ka:directives .
+_:c14n151 sh:datatype xsd:string ;
+	sh:description "The stable identifier. The identifier does not change when a file moves." ;
+	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
-	sh:order 2 ;
-	sh:path skos:prefLabel ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n142 rdf:first rdf:type ;
+	sh:order 10 ;
+	sh:path ka:id ;
+	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
+_:c14n152 rdf:first rdf:type ;
 	rdf:rest rdf:nil .
-_:c14n143 sh:description "The kind of knowledge in the node." ;
-	sh:in _:c14n287 ;
+_:c14n153 sh:description "The kind of knowledge in the node." ;
+	sh:in _:c14n307 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 3 ;
 	sh:path ka:knowledge_type .
-_:c14n144 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 0 ;
-	sh:path rdf:type .
-_:c14n145 rdf:first rdf:type ;
-	rdf:rest rdf:nil .
-_:c14n146 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 4 ;
-	sh:path rdf:type .
-_:c14n147 sh:datatype xsd:string ;
-	sh:description "The URLs, repository paths, or citations that support the entity." ;
-	sh:nodeKind sh:Literal ;
-	sh:order 8 ;
-	sh:path dcterms:source ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n148 rdf:first skos:broader ;
-	rdf:rest rdf:nil .
-_:c14n149 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n256 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 14 ;
-	sh:path ka:origin .
-_:c14n15 sh:datatype xsd:string ;
-	sh:description "The stable identifier. The identifier does not change when a file moves." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 12 ;
-	sh:path ka:id ;
-	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n150 sh:datatype xsd:string ;
-	sh:description "The URLs, repository paths, or citations that support the entity." ;
-	sh:nodeKind sh:Literal ;
-	sh:order 16 ;
-	sh:path dcterms:source ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n151 sh:description "The broader nodes in the taxonomy." ;
-	sh:minCount 1 ;
-	sh:or _:c14n267 ;
-	sh:order 0 ;
-	sh:path skos:broader .
-_:c14n152 sh:description "The lifecycle state." ;
-	sh:in _:c14n214 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 13 ;
-	sh:path ka:status .
-_:c14n153 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 8 ;
-	sh:path rdf:type .
-_:c14n154 rdf:first rdf:type ;
-	rdf:rest rdf:nil .
-_:c14n155 sh:class ka:Node ;
-	sh:description "The nodes that this node sets rules for. A governance node can name itself." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 5 ;
-	sh:path ka:governs .
-_:c14n156 rdf:first rdf:type ;
-	rdf:rest rdf:nil .
-_:c14n157 sh:class skos:Concept ;
-	sh:description "The nodes that this node has an influence on." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 2 ;
-	sh:path ka:informs .
-_:c14n158 rdf:first rdf:type ;
-	rdf:rest rdf:nil .
-_:c14n159 sh:class ka:Directive ;
+_:c14n154 sh:class ka:Directive ;
 	sh:description "The directives that live in this file." ;
 	sh:nodeKind sh:IRI ;
-	sh:order 10 ;
+	sh:order 12 ;
 	sh:path ka:directives .
+_:c14n155 sh:datatype xsd:string ;
+	sh:description "The preferred name of the node." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 10 ;
+	sh:path skos:prefLabel ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n156 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 0 ;
+	sh:path rdf:type .
+_:c14n157 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 9 ;
+	sh:path rdf:type .
+_:c14n158 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n159 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 5 ;
+	sh:path rdf:type .
 _:c14n16 sh:datatype xsd:string ;
 	sh:description "The stable identifier. The identifier does not change when a file moves." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
-	sh:order 0 ;
+	sh:order 14 ;
 	sh:path ka:id ;
 	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n160 sh:class ka:Domain ;
+_:c14n160 sh:datatype xsd:string ;
+	sh:description "The supporting prose of the node." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 9 ;
+	sh:path ka:body ;
+	sh:pattern "\\S" .
+_:c14n161 sh:datatype xsd:string ;
+	sh:description "The URLs, repository paths, or citations that support the entity." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 8 ;
+	sh:path dcterms:source ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n162 rdf:first skos:broader ;
+	rdf:rest rdf:nil .
+_:c14n163 sh:class ka:DirectiveException ;
+	sh:description "The inherited directives that stop at this node." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 8 ;
+	sh:path ka:exceptions .
+_:c14n164 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n165 sh:description "The broader nodes in the taxonomy." ;
+	sh:minCount 1 ;
+	sh:or _:c14n283 ;
+	sh:order 0 ;
+	sh:path skos:broader .
+_:c14n166 sh:datatype xsd:string ;
+	sh:description "The supporting prose of the node." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 13 ;
+	sh:path ka:body ;
+	sh:pattern "\\S" .
+_:c14n167 sh:datatype xsd:string ;
+	sh:description "The URLs, repository paths, or citations that support the entity." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 8 ;
+	sh:path dcterms:source ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n168 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n169 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 2 ;
+	sh:path rdf:type .
+_:c14n17 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n170 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 9 ;
+	sh:path rdf:type .
+_:c14n171 sh:class ka:Node ;
+	sh:description "The nodes that this node sets rules for. A governance node can name itself." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 5 ;
+	sh:path ka:governs .
+_:c14n172 sh:description "The lifecycle state." ;
+	sh:in _:c14n235 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 15 ;
+	sh:path ka:status .
+_:c14n173 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n174 sh:class skos:Concept ;
+	sh:description "The nodes that this node has an influence on." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 2 ;
+	sh:path ka:informs .
+_:c14n175 sh:datatype xsd:string ;
+	sh:description "The supporting prose of the node." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 6 ;
+	sh:path ka:body ;
+	sh:pattern "\\S" .
+_:c14n176 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n177 sh:class ka:Domain ;
 	sh:description "The broader nodes in the taxonomy." ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 0 ;
 	sh:path skos:broader .
-_:c14n161 rdf:first rdf:type ;
-	rdf:rest rdf:nil .
-_:c14n162 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n244 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 7 ;
-	sh:path ka:origin .
-_:c14n163 sh:class ka:Pointer ;
+_:c14n178 rdf:first ka:conflicts_with ;
+	rdf:rest _:c14n206 .
+_:c14n179 sh:class ka:Pointer ;
 	sh:description "The routes from this node to other nodes." ;
 	sh:nodeKind sh:BlankNodeOrIRI ;
 	sh:order 10 ;
 	sh:path ka:pointers .
-_:c14n164 sh:class skos:Concept ;
+_:c14n18 sh:datatype xsd:string ;
+	sh:description "The stable identifier. The identifier does not change when a file moves." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 0 ;
+	sh:path ka:id ;
+	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
+_:c14n180 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n181 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n269 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 7 ;
+	sh:path ka:origin .
+_:c14n182 sh:class skos:Concept ;
 	sh:description "The nodes that this node needs." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 4 ;
 	sh:path ka:depends_on .
-_:c14n165 sh:datatype xsd:string ;
+_:c14n183 sh:datatype xsd:string ;
 	sh:description "The meaning of the node." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -517,84 +619,57 @@ _:c14n165 sh:datatype xsd:string ;
 	sh:order 1 ;
 	sh:path skos:definition ;
 	sh:pattern "\\S" .
-_:c14n166 sh:class ka:Node ;
+_:c14n184 sh:class ka:Node ;
 	sh:description "The nodes that this node sets rules for. A governance node can name itself." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 5 ;
 	sh:path ka:governs .
-_:c14n167 sh:class skos:Concept ;
+_:c14n185 sh:class skos:Concept ;
 	sh:description "The nodes with an association to this node. This edge is symmetric." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 2 ;
 	sh:path skos:related .
-_:c14n168 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n254 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 8 ;
-	sh:path ka:origin .
-_:c14n169 sh:datatype xsd:string ;
-	sh:description "The supporting prose of the node." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 12 ;
-	sh:path ka:body ;
-	sh:pattern "\\S" .
-_:c14n17 sh:class ka:Directive ;
-	sh:description "The directives that the skill applies." ;
+_:c14n186 sh:class ka:Directive ;
+	sh:description "The directives that live in this file." ;
 	sh:nodeKind sh:IRI ;
-	sh:order 2 ;
-	sh:path ka:applies .
-_:c14n170 sh:description "The lifecycle state." ;
-	sh:in _:c14n220 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 4 ;
-	sh:path ka:status .
-_:c14n171 sh:class ka:Root ;
+	sh:order 5 ;
+	sh:path ka:directives .
+_:c14n187 sh:class ka:Root ;
 	sh:description "The top node of the graph." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 0 ;
 	sh:path ka:root .
-_:c14n172 sh:datatype xsd:string ;
-	sh:description "The URLs, repository paths, or citations that support the entity." ;
-	sh:nodeKind sh:Literal ;
-	sh:order 12 ;
-	sh:path dcterms:source ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n173 sh:datatype xsd:string ;
+_:c14n188 sh:datatype xsd:string ;
 	sh:description "The supporting prose of the node." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 4 ;
 	sh:path ka:body ;
 	sh:pattern "\\S" .
-_:c14n174 sh:datatype xsd:string ;
-	sh:description "The supporting prose of the node." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 12 ;
-	sh:path ka:body ;
-	sh:pattern "\\S" .
-_:c14n175 rdf:first rdf:type ;
+_:c14n189 rdf:first rdf:type ;
 	rdf:rest rdf:nil .
-_:c14n176 rdf:first ka:body ;
-	rdf:rest _:c14n203 .
-_:c14n177 sh:description "The nodes that the directive applies to. This field has no default, because inheritance is explicit." ;
-	sh:in _:c14n52 ;
+_:c14n19 sh:class ka:Directive ;
+	sh:description "The directives that the skill applies." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 2 ;
+	sh:path ka:applies .
+_:c14n190 rdf:first ka:body ;
+	rdf:rest _:c14n178 .
+_:c14n191 sh:description "The nodes that the directive applies to. This field has no default, because inheritance is explicit." ;
+	sh:in _:c14n62 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 1 ;
 	sh:path ka:scope .
-_:c14n178 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
+_:c14n192 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 0 ;
 	sh:path rdf:type .
-_:c14n179 sh:datatype xsd:string ;
+_:c14n193 sh:datatype xsd:string ;
 	sh:description "The instruction." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -602,9 +677,7 @@ _:c14n179 sh:datatype xsd:string ;
 	sh:order 0 ;
 	sh:path ka:text ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n18 rdf:first rdf:type ;
-	rdf:rest _:c14n191 .
-_:c14n180 sh:datatype xsd:string ;
+_:c14n194 sh:datatype xsd:string ;
 	sh:description "The condition that tells an agent to follow the pointer." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -612,110 +685,80 @@ _:c14n180 sh:datatype xsd:string ;
 	sh:order 3 ;
 	sh:path ka:trigger ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n181 sh:class skos:Concept ;
+_:c14n195 sh:class skos:Concept ;
 	sh:description "The domain nodes that this workspace node gives project values for." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 6 ;
 	sh:path ka:implements .
-_:c14n182 rdf:first ka:depends_on ;
-	rdf:rest _:c14n183 .
-_:c14n183 rdf:first ka:description ;
-	rdf:rest _:c14n184 .
-_:c14n184 rdf:first ka:governs ;
-	rdf:rest _:c14n185 .
-_:c14n185 rdf:first ka:implements ;
-	rdf:rest _:c14n186 .
-_:c14n186 rdf:first ka:informs ;
-	rdf:rest _:c14n187 .
-_:c14n187 rdf:first ka:uses ;
-	rdf:rest rdf:nil .
-_:c14n188 rdf:first ka:applies ;
-	rdf:rest _:c14n182 .
-_:c14n189 rdf:first skos:related ;
-	rdf:rest _:c14n188 .
-_:c14n19 sh:datatype xsd:string ;
-	sh:description "The stable identifier. The identifier does not change when a file moves." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 13 ;
-	sh:path ka:id ;
-	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n190 rdf:first skos:definition ;
-	rdf:rest _:c14n189 .
-_:c14n191 rdf:first skos:broader ;
-	rdf:rest _:c14n190 .
-_:c14n192 rdf:first ka:depends_on ;
-	rdf:rest _:c14n193 .
-_:c14n193 rdf:first ka:description ;
-	rdf:rest _:c14n194 .
-_:c14n194 rdf:first ka:governs ;
-	rdf:rest _:c14n195 .
-_:c14n195 rdf:first ka:implements ;
-	rdf:rest _:c14n196 .
-_:c14n196 rdf:first ka:informs ;
+_:c14n196 rdf:first ka:depends_on ;
 	rdf:rest _:c14n197 .
-_:c14n197 rdf:first ka:knowledge_type ;
+_:c14n197 rdf:first ka:description ;
 	rdf:rest _:c14n198 .
-_:c14n198 rdf:first ka:uses ;
-	rdf:rest rdf:nil .
-_:c14n199 rdf:first ka:applies ;
-	rdf:rest _:c14n192 .
-_:c14n2 sh:class ka:Skill ;
-	sh:description "The node that the pointer routes to." ;
+_:c14n198 rdf:first ka:governs ;
+	rdf:rest _:c14n199 .
+_:c14n199 rdf:first ka:implements ;
+	rdf:rest _:c14n200 .
+_:c14n2 sh:description "The lifecycle state." ;
+	sh:in _:c14n238 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 1 ;
-	sh:path ka:target .
-_:c14n20 sh:class skos:Concept ;
+	sh:order 15 ;
+	sh:path ka:status .
+_:c14n20 rdf:first rdf:type ;
+	rdf:rest _:c14n205 .
+_:c14n200 rdf:first ka:informs ;
+	rdf:rest _:c14n201 .
+_:c14n201 rdf:first ka:uses ;
+	rdf:rest rdf:nil .
+_:c14n202 rdf:first ka:applies ;
+	rdf:rest _:c14n196 .
+_:c14n203 rdf:first skos:related ;
+	rdf:rest _:c14n202 .
+_:c14n204 rdf:first skos:definition ;
+	rdf:rest _:c14n203 .
+_:c14n205 rdf:first skos:broader ;
+	rdf:rest _:c14n204 .
+_:c14n206 rdf:first ka:depends_on ;
+	rdf:rest _:c14n207 .
+_:c14n207 rdf:first ka:description ;
+	rdf:rest _:c14n11 .
+_:c14n208 rdf:first ka:depends_on ;
+	rdf:rest _:c14n209 .
+_:c14n209 rdf:first ka:description ;
+	rdf:rest _:c14n210 .
+_:c14n21 sh:datatype xsd:string ;
+	sh:description "The preferred name of the node." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 6 ;
+	sh:path skos:prefLabel ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n210 rdf:first ka:exceptions ;
+	rdf:rest _:c14n211 .
+_:c14n211 rdf:first ka:governs ;
+	rdf:rest _:c14n212 .
+_:c14n212 rdf:first ka:implements ;
+	rdf:rest _:c14n213 .
+_:c14n213 rdf:first ka:informs ;
+	rdf:rest _:c14n214 .
+_:c14n214 rdf:first ka:knowledge_type ;
+	rdf:rest _:c14n215 .
+_:c14n215 rdf:first ka:uses ;
+	rdf:rest rdf:nil .
+_:c14n216 rdf:first ka:applies ;
+	rdf:rest _:c14n208 .
+_:c14n217 rdf:first skos:related ;
+	rdf:rest _:c14n216 .
+_:c14n218 rdf:first skos:definition ;
+	rdf:rest _:c14n217 .
+_:c14n219 rdf:first skos:broader ;
+	rdf:rest _:c14n218 .
+_:c14n22 sh:class skos:Concept ;
 	sh:description "The nodes that this node has an influence on." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 3 ;
 	sh:path ka:informs .
-_:c14n200 rdf:first skos:related ;
-	rdf:rest _:c14n199 .
-_:c14n201 rdf:first skos:definition ;
-	rdf:rest _:c14n200 .
-_:c14n202 rdf:first skos:broader ;
-	rdf:rest _:c14n201 .
-_:c14n203 rdf:first ka:depends_on ;
-	rdf:rest _:c14n204 .
-_:c14n204 rdf:first ka:description ;
-	rdf:rest _:c14n9 .
-_:c14n205 rdf:first "proposed" ;
-	rdf:rest _:c14n206 .
-_:c14n206 rdf:first "accepted" ;
-	rdf:rest _:c14n207 .
-_:c14n207 rdf:first "deprecated" ;
-	rdf:rest rdf:nil .
-_:c14n208 rdf:first "proposed" ;
-	rdf:rest _:c14n209 .
-_:c14n209 rdf:first "accepted" ;
-	rdf:rest _:c14n210 .
-_:c14n21 rdf:first rdf:type ;
-	rdf:rest _:c14n202 .
-_:c14n210 rdf:first "deprecated" ;
-	rdf:rest rdf:nil .
-_:c14n211 rdf:first "proposed" ;
-	rdf:rest _:c14n212 .
-_:c14n212 rdf:first "accepted" ;
-	rdf:rest _:c14n213 .
-_:c14n213 rdf:first "deprecated" ;
-	rdf:rest rdf:nil .
-_:c14n214 rdf:first "proposed" ;
-	rdf:rest _:c14n215 .
-_:c14n215 rdf:first "accepted" ;
-	rdf:rest _:c14n216 .
-_:c14n216 rdf:first "deprecated" ;
-	rdf:rest rdf:nil .
-_:c14n217 rdf:first "proposed" ;
-	rdf:rest _:c14n218 .
-_:c14n218 rdf:first "accepted" ;
-	rdf:rest _:c14n219 .
-_:c14n219 rdf:first "deprecated" ;
-	rdf:rest rdf:nil .
-_:c14n22 rdf:first rdf:type ;
-	rdf:rest rdf:nil .
 _:c14n220 rdf:first "proposed" ;
 	rdf:rest _:c14n221 .
 _:c14n221 rdf:first "accepted" ;
@@ -737,7 +780,7 @@ _:c14n228 rdf:first "deprecated" ;
 _:c14n229 rdf:first "proposed" ;
 	rdf:rest _:c14n230 .
 _:c14n23 rdf:first rdf:type ;
-	rdf:rest rdf:nil .
+	rdf:rest _:c14n219 .
 _:c14n230 rdf:first "accepted" ;
 	rdf:rest _:c14n231 .
 _:c14n231 rdf:first "deprecated" ;
@@ -754,37 +797,245 @@ _:c14n236 rdf:first "accepted" ;
 	rdf:rest _:c14n237 .
 _:c14n237 rdf:first "deprecated" ;
 	rdf:rest rdf:nil .
-_:c14n238 rdf:first "template" ;
+_:c14n238 rdf:first "proposed" ;
 	rdf:rest _:c14n239 .
-_:c14n239 rdf:first "project" ;
+_:c14n239 rdf:first "accepted" ;
+	rdf:rest _:c14n240 .
+_:c14n24 rdf:first rdf:type ;
 	rdf:rest rdf:nil .
-_:c14n24 sh:description "The lifecycle state." ;
-	sh:in _:c14n232 ;
+_:c14n240 rdf:first "deprecated" ;
+	rdf:rest rdf:nil .
+_:c14n241 rdf:first "proposed" ;
+	rdf:rest _:c14n242 .
+_:c14n242 rdf:first "accepted" ;
+	rdf:rest _:c14n243 .
+_:c14n243 rdf:first "deprecated" ;
+	rdf:rest rdf:nil .
+_:c14n244 rdf:first "proposed" ;
+	rdf:rest _:c14n245 .
+_:c14n245 rdf:first "accepted" ;
+	rdf:rest _:c14n246 .
+_:c14n246 rdf:first "deprecated" ;
+	rdf:rest rdf:nil .
+_:c14n247 rdf:first "proposed" ;
+	rdf:rest _:c14n248 .
+_:c14n248 rdf:first "accepted" ;
+	rdf:rest _:c14n249 .
+_:c14n249 rdf:first "deprecated" ;
+	rdf:rest rdf:nil .
+_:c14n25 sh:datatype xsd:string ;
+	sh:description "The stable identifier. The identifier does not change when a file moves." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 13 ;
+	sh:path ka:id ;
+	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
+_:c14n250 rdf:first "proposed" ;
+	rdf:rest _:c14n251 .
+_:c14n251 rdf:first "accepted" ;
+	rdf:rest _:c14n252 .
+_:c14n252 rdf:first "deprecated" ;
+	rdf:rest rdf:nil .
+_:c14n253 rdf:first "template" ;
+	rdf:rest _:c14n254 .
+_:c14n254 rdf:first "project" ;
+	rdf:rest rdf:nil .
+_:c14n255 rdf:first "template" ;
+	rdf:rest _:c14n256 .
+_:c14n256 rdf:first "project" ;
+	rdf:rest rdf:nil .
+_:c14n257 rdf:first "template" ;
+	rdf:rest _:c14n258 .
+_:c14n258 rdf:first "project" ;
+	rdf:rest rdf:nil .
+_:c14n259 rdf:first "template" ;
+	rdf:rest _:c14n260 .
+_:c14n26 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n260 rdf:first "project" ;
+	rdf:rest rdf:nil .
+_:c14n261 rdf:first "template" ;
+	rdf:rest _:c14n262 .
+_:c14n262 rdf:first "project" ;
+	rdf:rest rdf:nil .
+_:c14n263 rdf:first "template" ;
+	rdf:rest _:c14n264 .
+_:c14n264 rdf:first "project" ;
+	rdf:rest rdf:nil .
+_:c14n265 rdf:first "template" ;
+	rdf:rest _:c14n266 .
+_:c14n266 rdf:first "project" ;
+	rdf:rest rdf:nil .
+_:c14n267 rdf:first "template" ;
+	rdf:rest _:c14n268 .
+_:c14n268 rdf:first "project" ;
+	rdf:rest rdf:nil .
+_:c14n269 rdf:first "template" ;
+	rdf:rest _:c14n270 .
+_:c14n27 sh:description "The lifecycle state." ;
+	sh:in _:c14n241 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 6 ;
 	sh:path ka:status .
-_:c14n240 rdf:first "template" ;
-	rdf:rest _:c14n241 .
-_:c14n241 rdf:first "project" ;
+_:c14n270 rdf:first "project" ;
 	rdf:rest rdf:nil .
-_:c14n242 rdf:first "template" ;
-	rdf:rest _:c14n243 .
-_:c14n243 rdf:first "project" ;
+_:c14n271 rdf:first "template" ;
+	rdf:rest _:c14n272 .
+_:c14n272 rdf:first "project" ;
 	rdf:rest rdf:nil .
-_:c14n244 rdf:first "template" ;
-	rdf:rest _:c14n245 .
-_:c14n245 rdf:first "project" ;
+_:c14n273 rdf:first "template" ;
+	rdf:rest _:c14n274 .
+_:c14n274 rdf:first "project" ;
 	rdf:rest rdf:nil .
-_:c14n246 rdf:first "template" ;
-	rdf:rest _:c14n247 .
-_:c14n247 rdf:first "project" ;
+_:c14n275 rdf:first ka:applies ;
+	rdf:rest _:c14n190 .
+_:c14n276 rdf:first skos:broader ;
+	rdf:rest _:c14n277 .
+_:c14n277 rdf:first skos:definition ;
+	rdf:rest _:c14n97 .
+_:c14n278 rdf:first ka:knowledge_type ;
+	rdf:rest _:c14n116 .
+_:c14n279 rdf:first ka:informs ;
+	rdf:rest _:c14n278 .
+_:c14n28 sh:description "The lifecycle state." ;
+	sh:in _:c14n226 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 6 ;
+	sh:path ka:status .
+_:c14n280 rdf:first ka:implements ;
+	rdf:rest _:c14n279 .
+_:c14n281 rdf:first ka:governs ;
+	rdf:rest _:c14n280 .
+_:c14n282 rdf:first ka:exceptions ;
+	rdf:rest _:c14n281 .
+_:c14n283 rdf:first _:c14n288 ;
+	rdf:rest _:c14n284 .
+_:c14n284 rdf:first _:c14n287 ;
+	rdf:rest _:c14n285 .
+_:c14n285 rdf:first _:c14n286 ;
 	rdf:rest rdf:nil .
-_:c14n248 rdf:first "template" ;
-	rdf:rest _:c14n249 .
-_:c14n249 rdf:first "project" ;
+_:c14n286 sh:class ka:PracticeArea .
+_:c14n287 sh:class ka:Discipline .
+_:c14n288 sh:class ka:Domain .
+_:c14n289 rdf:first _:c14n295 ;
+	rdf:rest _:c14n290 .
+_:c14n29 sh:datatype xsd:string ;
+	sh:description "The URLs, repository paths, or citations that support the entity." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 17 ;
+	sh:path dcterms:source ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n290 rdf:first _:c14n294 ;
+	rdf:rest _:c14n291 .
+_:c14n291 rdf:first _:c14n293 ;
+	rdf:rest _:c14n292 .
+_:c14n292 rdf:first _:c14n58 ;
 	rdf:rest rdf:nil .
-_:c14n25 sh:datatype xsd:string ;
+_:c14n293 sh:class ka:PracticeArea .
+_:c14n294 sh:class ka:Discipline .
+_:c14n295 sh:class ka:Domain .
+_:c14n296 rdf:first "workspace" ;
+	rdf:rest rdf:nil .
+_:c14n297 rdf:first "domain" ;
+	rdf:rest _:c14n296 .
+_:c14n298 rdf:first "workspace" ;
+	rdf:rest rdf:nil .
+_:c14n299 rdf:first "domain" ;
+	rdf:rest _:c14n298 .
+_:c14n3 sh:datatype xsd:string ;
+	sh:description "The supporting prose of the node." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 12 ;
+	sh:path ka:body ;
+	sh:pattern "\\S" .
+_:c14n30 sh:class ka:DirectiveException ;
+	sh:description "The inherited directives that stop at this node." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 4 ;
+	sh:path ka:exceptions .
+_:c14n300 rdf:first "workspace" ;
+	rdf:rest rdf:nil .
+_:c14n301 rdf:first "domain" ;
+	rdf:rest _:c14n300 .
+_:c14n302 rdf:first "workspace" ;
+	rdf:rest rdf:nil .
+_:c14n303 rdf:first "domain" ;
+	rdf:rest _:c14n302 .
+_:c14n304 rdf:first "workspace" ;
+	rdf:rest rdf:nil .
+_:c14n305 rdf:first "domain" ;
+	rdf:rest _:c14n304 .
+_:c14n306 rdf:first "workspace" ;
+	rdf:rest rdf:nil .
+_:c14n307 rdf:first "domain" ;
+	rdf:rest _:c14n306 .
+_:c14n308 rdf:first "workspace" ;
+	rdf:rest rdf:nil .
+_:c14n309 rdf:first "domain" ;
+	rdf:rest _:c14n308 .
+_:c14n31 sh:class ka:KnowledgeNode ;
+	sh:description "The knowledge nodes of the graph." ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 1 ;
+	sh:path ka:nodes .
+_:c14n310 rdf:first ka:uses ;
+	rdf:rest rdf:nil .
+_:c14n311 rdf:first skos:related ;
+	rdf:rest _:c14n125 .
+_:c14n32 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 0 ;
+	sh:path rdf:type .
+_:c14n33 sh:description "The broader nodes in the taxonomy." ;
+	sh:minCount 1 ;
+	sh:or _:c14n289 ;
+	sh:order 0 ;
+	sh:path skos:broader .
+_:c14n34 sh:class skos:Concept ;
+	sh:description "The nodes that this node needs." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 4 ;
+	sh:path ka:depends_on .
+_:c14n35 sh:class ka:Node ;
+	sh:description "The node that the pointer routes to." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 2 ;
+	sh:path ka:target .
+_:c14n36 rdf:first ka:paths ;
+	rdf:rest rdf:nil .
+_:c14n37 sh:datatype xsd:string ;
+	sh:description "The URLs, repository paths, or citations that support the entity." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 3 ;
+	sh:path dcterms:source ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n38 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 9 ;
+	sh:path rdf:type .
+_:c14n39 sh:class skos:Concept ;
+	sh:description "The knowledge that the skill composes." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 1 ;
+	sh:path ka:uses .
+_:c14n4 sh:datatype xsd:string ;
+	sh:description "The stable identifier. The identifier does not change when a file moves." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 5 ;
+	sh:path ka:id ;
+	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
+_:c14n40 sh:datatype xsd:string ;
 	sh:description "The preferred name of the node." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -792,182 +1043,61 @@ _:c14n25 sh:datatype xsd:string ;
 	sh:order 9 ;
 	sh:path skos:prefLabel ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n250 rdf:first "template" ;
-	rdf:rest _:c14n251 .
-_:c14n251 rdf:first "project" ;
-	rdf:rest rdf:nil .
-_:c14n252 rdf:first "template" ;
-	rdf:rest _:c14n253 .
-_:c14n253 rdf:first "project" ;
-	rdf:rest rdf:nil .
-_:c14n254 rdf:first "template" ;
-	rdf:rest _:c14n255 .
-_:c14n255 rdf:first "project" ;
-	rdf:rest rdf:nil .
-_:c14n256 rdf:first "template" ;
-	rdf:rest _:c14n257 .
-_:c14n257 rdf:first "project" ;
-	rdf:rest rdf:nil .
-_:c14n258 rdf:first "template" ;
-	rdf:rest _:c14n259 .
-_:c14n259 rdf:first "project" ;
-	rdf:rest rdf:nil .
-_:c14n26 sh:class ka:KnowledgeNode ;
-	sh:description "The knowledge nodes of the graph." ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 1 ;
-	sh:path ka:nodes .
-_:c14n260 rdf:first ka:applies ;
-	rdf:rest _:c14n176 .
-_:c14n261 rdf:first skos:broader ;
-	rdf:rest _:c14n262 .
-_:c14n262 rdf:first skos:definition ;
-	rdf:rest _:c14n96 .
-_:c14n263 rdf:first ka:knowledge_type ;
-	rdf:rest _:c14n113 .
-_:c14n264 rdf:first ka:informs ;
-	rdf:rest _:c14n263 .
-_:c14n265 rdf:first ka:implements ;
-	rdf:rest _:c14n264 .
-_:c14n266 rdf:first ka:governs ;
-	rdf:rest _:c14n265 .
-_:c14n267 rdf:first _:c14n272 ;
-	rdf:rest _:c14n268 .
-_:c14n268 rdf:first _:c14n271 ;
-	rdf:rest _:c14n269 .
-_:c14n269 rdf:first _:c14n270 ;
-	rdf:rest rdf:nil .
-_:c14n27 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 0 ;
-	sh:path rdf:type .
-_:c14n270 sh:class ka:PracticeArea .
-_:c14n271 sh:class ka:Discipline .
-_:c14n272 sh:class ka:Domain .
-_:c14n273 rdf:first _:c14n279 ;
-	rdf:rest _:c14n274 .
-_:c14n274 rdf:first _:c14n278 ;
-	rdf:rest _:c14n275 .
-_:c14n275 rdf:first _:c14n277 ;
-	rdf:rest _:c14n276 .
-_:c14n276 rdf:first _:c14n49 ;
-	rdf:rest rdf:nil .
-_:c14n277 sh:class ka:PracticeArea .
-_:c14n278 sh:class ka:Discipline .
-_:c14n279 sh:class ka:Domain .
-_:c14n28 sh:description "The broader nodes in the taxonomy." ;
-	sh:minCount 1 ;
-	sh:or _:c14n273 ;
-	sh:order 0 ;
-	sh:path skos:broader .
-_:c14n280 rdf:first "workspace" ;
-	rdf:rest rdf:nil .
-_:c14n281 rdf:first "domain" ;
-	rdf:rest _:c14n280 .
-_:c14n282 rdf:first "workspace" ;
-	rdf:rest rdf:nil .
-_:c14n283 rdf:first "domain" ;
-	rdf:rest _:c14n282 .
-_:c14n284 rdf:first "workspace" ;
-	rdf:rest rdf:nil .
-_:c14n285 rdf:first "domain" ;
-	rdf:rest _:c14n284 .
-_:c14n286 rdf:first "workspace" ;
-	rdf:rest rdf:nil .
-_:c14n287 rdf:first "domain" ;
-	rdf:rest _:c14n286 .
-_:c14n288 rdf:first "workspace" ;
-	rdf:rest rdf:nil .
-_:c14n289 rdf:first "domain" ;
-	rdf:rest _:c14n288 .
-_:c14n29 sh:class skos:Concept ;
-	sh:description "The nodes that this node needs." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 4 ;
-	sh:path ka:depends_on .
-_:c14n290 rdf:first "workspace" ;
-	rdf:rest rdf:nil .
-_:c14n291 rdf:first "domain" ;
-	rdf:rest _:c14n290 .
-_:c14n292 rdf:first "workspace" ;
-	rdf:rest rdf:nil .
-_:c14n293 rdf:first "domain" ;
-	rdf:rest _:c14n292 .
-_:c14n294 rdf:first ka:uses ;
-	rdf:rest rdf:nil .
-_:c14n295 rdf:first skos:related ;
-	rdf:rest _:c14n120 .
-_:c14n3 sh:class ka:Node ;
-	sh:description "The nodes that this node sets rules for. A governance node can name itself." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 5 ;
-	sh:path ka:governs .
-_:c14n30 sh:class ka:Node ;
-	sh:description "The node that the pointer routes to." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 2 ;
-	sh:path ka:target .
-_:c14n31 sh:description "The lifecycle state." ;
-	sh:in _:c14n208 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 14 ;
-	sh:path ka:status .
-_:c14n32 rdf:first ka:paths ;
-	rdf:rest rdf:nil .
-_:c14n33 sh:datatype xsd:string ;
-	sh:description "The URLs, repository paths, or citations that support the entity." ;
-	sh:nodeKind sh:Literal ;
-	sh:order 3 ;
-	sh:path dcterms:source ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n34 sh:class ka:Directive ;
-	sh:description "The directives that live in this file." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 11 ;
-	sh:path ka:directives .
-_:c14n35 sh:class skos:Concept ;
-	sh:description "The knowledge that the skill composes." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 1 ;
-	sh:path ka:uses .
-_:c14n36 sh:class ka:Node ;
+_:c14n41 sh:class ka:Node ;
 	sh:description "The nodes that this node sets rules for. A governance node can name itself." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 4 ;
 	sh:path ka:governs .
-_:c14n37 sh:class ka:Directive ;
-	sh:description "The directives that live in this file." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 3 ;
-	sh:path ka:directives .
-_:c14n38 rdf:first rdf:type ;
-	rdf:rest _:c14n32 .
-_:c14n39 sh:datatype xsd:string ;
-	sh:description "The URLs, repository paths, or citations that support the entity." ;
-	sh:nodeKind sh:Literal ;
+_:c14n42 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n273 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
 	sh:order 15 ;
-	sh:path dcterms:source ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n4 sh:datatype xsd:string ;
-	sh:description "The supporting prose of the node." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 8 ;
-	sh:path ka:body ;
-	sh:pattern "\\S" .
-_:c14n40 sh:datatype xsd:string ;
+	sh:path ka:origin .
+_:c14n43 sh:class ka:Directive ;
+	sh:description "The directives that live in this file." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 3 ;
+	sh:path ka:directives .
+_:c14n44 sh:datatype xsd:string ;
 	sh:description "The URLs, repository paths, or citations that support the entity." ;
 	sh:nodeKind sh:Literal ;
 	sh:order 16 ;
 	sh:path dcterms:source ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n41 sh:datatype xsd:string ;
+_:c14n45 sh:datatype xsd:string ;
+	sh:description "The supporting prose of the node." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 13 ;
+	sh:path ka:body ;
+	sh:pattern "\\S" .
+_:c14n46 sh:class ka:Pointer ;
+	sh:description "The routes from this node to other nodes." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 11 ;
+	sh:path ka:pointers .
+_:c14n47 rdf:first rdf:type ;
+	rdf:rest _:c14n36 .
+_:c14n48 sh:class ka:DirectiveException ;
+	sh:description "The inherited directives that stop at this node." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 7 ;
+	sh:path ka:exceptions .
+_:c14n49 sh:datatype xsd:string ;
+	sh:description "The URLs, repository paths, or citations that support the entity." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 17 ;
+	sh:path dcterms:source ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n5 sh:class ka:Skill ;
+	sh:description "The node that the pointer routes to." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 1 ;
+	sh:path ka:target .
+_:c14n50 sh:datatype xsd:string ;
 	sh:description "The meaning of the node." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -975,7 +1105,7 @@ _:c14n41 sh:datatype xsd:string ;
 	sh:order 1 ;
 	sh:path skos:definition ;
 	sh:pattern "\\S" .
-_:c14n42 sh:datatype xsd:string ;
+_:c14n51 sh:datatype xsd:string ;
 	sh:description "The condition that tells an agent to follow the pointer." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -983,12 +1113,17 @@ _:c14n42 sh:datatype xsd:string ;
 	sh:order 2 ;
 	sh:path ka:trigger ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n43 sh:class skos:Concept ;
+_:c14n52 sh:class ka:Directive ;
+	sh:description "The directives that must not apply at the same node as this directive. This relationship is symmetric." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 4 ;
+	sh:path ka:conflicts_with .
+_:c14n53 sh:class skos:Concept ;
 	sh:description "The nodes that this node has an influence on." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 2 ;
 	sh:path ka:informs .
-_:c14n44 sh:datatype xsd:string ;
+_:c14n54 sh:datatype xsd:string ;
 	sh:description "The meaning of the node." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -996,144 +1131,210 @@ _:c14n44 sh:datatype xsd:string ;
 	sh:order 0 ;
 	sh:path skos:definition ;
 	sh:pattern "\\S" .
-_:c14n45 sh:datatype xsd:string ;
+_:c14n55 sh:datatype xsd:string ;
+	sh:description "The stable identifier. The identifier does not change when a file moves." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 14 ;
+	sh:path ka:id ;
+	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
+_:c14n56 sh:datatype xsd:string ;
 	sh:description "The file patterns that load the target." ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 0 ;
 	sh:path ka:paths ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n46 sh:datatype xsd:string ;
-	sh:description "The URLs, repository paths, or citations that support the entity." ;
-	sh:nodeKind sh:Literal ;
+_:c14n57 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n261 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
 	sh:order 16 ;
-	sh:path dcterms:source ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n47 sh:datatype xsd:string ;
-	sh:description "The preferred name of the node." ;
+	sh:path ka:origin .
+_:c14n58 sh:class ka:Concept .
+_:c14n59 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 8 ;
-	sh:path skos:prefLabel ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n48 sh:description "The lifecycle state." ;
-	sh:in _:c14n229 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 14 ;
-	sh:path ka:status .
-_:c14n49 sh:class ka:Concept .
-_:c14n5 sh:class ka:Directive ;
-	sh:description "The directives that live in this file." ;
 	sh:nodeKind sh:IRI ;
-	sh:order 3 ;
-	sh:path ka:directives .
-_:c14n50 sh:class skos:Concept ;
+	sh:order 8 ;
+	sh:path rdf:type .
+_:c14n6 sh:class ka:Node ;
+	sh:description "The nodes that this node sets rules for. A governance node can name itself." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 5 ;
+	sh:path ka:governs .
+_:c14n60 sh:class skos:Concept ;
 	sh:description "The nodes with an association to this node. This edge is symmetric." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 1 ;
 	sh:path skos:related .
-_:c14n51 sh:class skos:Concept ;
+_:c14n61 sh:class skos:Concept ;
 	sh:description "The domain nodes that this workspace node gives project values for." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 5 ;
 	sh:path ka:implements .
-_:c14n52 rdf:first "node" ;
-	rdf:rest _:c14n53 .
-_:c14n53 rdf:first "subtree" ;
+_:c14n62 rdf:first "node" ;
+	rdf:rest _:c14n63 .
+_:c14n63 rdf:first "subtree" ;
 	rdf:rest rdf:nil .
-_:c14n54 sh:datatype xsd:string ;
-	sh:description "The stable identifier. The identifier does not change when a file moves." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 6 ;
-	sh:path ka:id ;
-	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n55 sh:class ka:Pointer ;
-	sh:description "The routes from this node to other nodes." ;
-	sh:nodeKind sh:BlankNodeOrIRI ;
-	sh:order 3 ;
-	sh:path ka:pointers .
-_:c14n56 sh:class ka:Node ;
+_:c14n64 sh:class ka:Node ;
 	sh:description "The node that the pointer routes to." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 1 ;
 	sh:path ka:target .
-_:c14n57 rdf:first ka:text ;
-	rdf:rest _:c14n294 .
-_:c14n58 sh:class ka:Pointer ;
-	sh:description "The routes from this node to other nodes." ;
-	sh:nodeKind sh:BlankNodeOrIRI ;
-	sh:order 9 ;
-	sh:path ka:pointers .
-_:c14n59 sh:class skos:Concept ;
+_:c14n65 rdf:first ka:text ;
+	rdf:rest _:c14n310 .
+_:c14n66 sh:description "The lifecycle state." ;
+	sh:in _:c14n247 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 14 ;
+	sh:path ka:status .
+_:c14n67 sh:class skos:Concept ;
 	sh:description "The nodes that this node has an influence on." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 3 ;
 	sh:path ka:informs .
-_:c14n6 sh:description "The lifecycle state." ;
-	sh:in _:c14n217 ;
+_:c14n68 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n271 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
-	sh:order 10 ;
-	sh:path ka:status .
-_:c14n60 sh:class skos:Concept ;
+	sh:order 15 ;
+	sh:path ka:origin .
+_:c14n69 sh:class skos:Concept ;
 	sh:description "The nodes that this node needs." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 4 ;
 	sh:path ka:depends_on .
-_:c14n61 sh:datatype xsd:string ;
-	sh:description "The URLs, repository paths, or citations that support the entity." ;
-	sh:nodeKind sh:Literal ;
-	sh:order 15 ;
-	sh:path dcterms:source ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n62 sh:class skos:Concept ;
+_:c14n7 sh:class ka:Directive ;
+	sh:description "The directives that live in this file." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 3 ;
+	sh:path ka:directives .
+_:c14n70 sh:class skos:Concept ;
 	sh:description "The domain nodes that this workspace node gives project values for." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 5 ;
 	sh:path ka:implements .
-_:c14n63 sh:class ka:Directive ;
+_:c14n71 sh:class ka:Directive ;
 	sh:description "The directives that live in this file." ;
 	sh:nodeKind sh:IRI ;
-	sh:order 4 ;
-	sh:path ka:directives .
-_:c14n64 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n238 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
 	sh:order 11 ;
-	sh:path ka:origin .
-_:c14n65 sh:description "The lifecycle state." ;
-	sh:in _:c14n235 ;
+	sh:path ka:directives .
+_:c14n72 sh:datatype xsd:string ;
+	sh:description "The preferred name of the node." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
-	sh:order 14 ;
-	sh:path ka:status .
-_:c14n66 sh:datatype xsd:string ;
-	sh:description "The supporting prose of the node." ;
-	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
-	sh:order 5 ;
-	sh:path ka:body ;
-	sh:pattern "\\S" .
-_:c14n67 sh:class skos:Concept ;
+	sh:order 10 ;
+	sh:path skos:prefLabel ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n73 sh:class skos:Concept ;
 	sh:description "The nodes that this node needs." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 3 ;
 	sh:path ka:depends_on .
-_:c14n68 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n258 ;
+_:c14n74 sh:class ka:Pointer ;
+	sh:description "The routes from this node to other nodes." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 7 ;
+	sh:path ka:pointers .
+_:c14n75 rdf:first rdf:type ;
+	rdf:rest _:c14n276 .
+_:c14n76 sh:class skos:Concept ;
+	sh:description "The domain nodes that this workspace node gives project values for." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 6 ;
+	sh:path ka:implements .
+_:c14n77 sh:description "The kind of knowledge in the node." ;
+	sh:in _:c14n299 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
-	sh:order 14 ;
+	sh:order 6 ;
+	sh:path ka:knowledge_type .
+_:c14n78 sh:datatype xsd:string ;
+	sh:description "The supporting prose of the node." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 4 ;
+	sh:path ka:body ;
+	sh:pattern "\\S" .
+_:c14n79 sh:datatype xsd:string ;
+	sh:description "The meaning of the node." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 1 ;
+	sh:path skos:definition ;
+	sh:pattern "\\S" .
+_:c14n8 sh:datatype xsd:string ;
+	sh:description "The stable identifier. The identifier does not change when a file moves." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 7 ;
+	sh:path ka:id ;
+	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
+_:c14n80 sh:datatype xsd:string ;
+	sh:description "The URLs, repository paths, or citations that support the entity." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 10 ;
+	sh:path dcterms:source ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n81 sh:description "The kind of knowledge in the node." ;
+	sh:in _:c14n305 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 7 ;
+	sh:path ka:knowledge_type .
+_:c14n82 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 1 ;
+	sh:path rdf:type .
+_:c14n83 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n253 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 12 ;
 	sh:path ka:origin .
-_:c14n69 rdf:first rdf:type ;
-	rdf:rest _:c14n261 .
-_:c14n7 sh:datatype xsd:string ;
+_:c14n84 sh:class ka:DirectiveException ;
+	sh:description "The inherited directives that stop at this node." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 8 ;
+	sh:path ka:exceptions .
+_:c14n85 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 0 ;
+	sh:path rdf:type .
+_:c14n86 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n265 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 16 ;
+	sh:path ka:origin .
+_:c14n87 sh:datatype xsd:string ;
+	sh:description "The stable identifier. The identifier does not change when a file moves." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 5 ;
+	sh:path ka:id ;
+	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
+_:c14n88 sh:class ka:DirectiveException ;
+	sh:description "The inherited directives that stop at this node." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 1 ;
+	sh:path ka:exceptions .
+_:c14n89 sh:class skos:Concept ;
+	sh:description "The nodes that this node has an influence on." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 3 ;
+	sh:path ka:informs .
+_:c14n9 sh:datatype xsd:string ;
 	sh:description "The text that an agent reads to select the skill." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -1141,126 +1342,12 @@ _:c14n7 sh:datatype xsd:string ;
 	sh:order 0 ;
 	sh:path ka:description ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n70 sh:class ka:Directive ;
+_:c14n90 sh:class ka:Directive ;
 	sh:description "The directives that live in this file." ;
 	sh:nodeKind sh:IRI ;
-	sh:order 7 ;
+	sh:order 12 ;
 	sh:path ka:directives .
-_:c14n71 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n250 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 5 ;
-	sh:path ka:origin .
-_:c14n72 sh:class skos:Concept ;
-	sh:description "The domain nodes that this workspace node gives project values for." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 6 ;
-	sh:path ka:implements .
-_:c14n73 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 8 ;
-	sh:path rdf:type .
-_:c14n74 sh:description "The kind of knowledge in the node." ;
-	sh:in _:c14n283 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 6 ;
-	sh:path ka:knowledge_type .
-_:c14n75 sh:datatype xsd:string ;
-	sh:description "The supporting prose of the node." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 4 ;
-	sh:path ka:body ;
-	sh:pattern "\\S" .
-_:c14n76 sh:class ka:Pointer ;
-	sh:description "The routes from this node to other nodes." ;
-	sh:nodeKind sh:BlankNodeOrIRI ;
-	sh:order 6 ;
-	sh:path ka:pointers .
-_:c14n77 sh:class ka:Pointer ;
-	sh:description "The routes from this node to other nodes." ;
-	sh:nodeKind sh:BlankNodeOrIRI ;
-	sh:order 10 ;
-	sh:path ka:pointers .
-_:c14n78 sh:datatype xsd:string ;
-	sh:description "The meaning of the node." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 1 ;
-	sh:path skos:definition ;
-	sh:pattern "\\S" .
-_:c14n79 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n248 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 15 ;
-	sh:path ka:origin .
-_:c14n8 sh:class ka:Node ;
-	sh:description "The nodes that this node sets rules for. A governance node can name itself." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 4 ;
-	sh:path ka:governs .
-_:c14n80 sh:description "The kind of knowledge in the node." ;
-	sh:in _:c14n289 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 7 ;
-	sh:path ka:knowledge_type .
-_:c14n81 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 1 ;
-	sh:path rdf:type .
-_:c14n82 sh:description "The lifecycle state." ;
-	sh:in _:c14n211 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 7 ;
-	sh:path ka:status .
-_:c14n83 sh:datatype xsd:string ;
-	sh:description "The preferred name of the node." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 9 ;
-	sh:path skos:prefLabel ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n84 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 0 ;
-	sh:path rdf:type .
-_:c14n85 sh:datatype xsd:string ;
-	sh:description "The stable identifier. The identifier does not change when a file moves." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 5 ;
-	sh:path ka:id ;
-	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n86 sh:class skos:Concept ;
-	sh:description "The nodes that this node has an influence on." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 3 ;
-	sh:path ka:informs .
-_:c14n87 sh:class ka:Directive ;
-	sh:description "The directives that live in this file." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 10 ;
-	sh:path ka:directives .
-_:c14n88 sh:description "The class of the entity. The value is the class CURIE, for example ka:Concept." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 1 ;
-	sh:path rdf:type .
-_:c14n89 sh:datatype xsd:string ;
+_:c14n91 sh:datatype xsd:string ;
 	sh:description "The preferred name of the node." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -1268,52 +1355,46 @@ _:c14n89 sh:datatype xsd:string ;
 	sh:order 1 ;
 	sh:path skos:prefLabel ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n9 rdf:first ka:directives ;
-	rdf:rest _:c14n266 .
-_:c14n90 sh:class ka:Pointer ;
-	sh:description "The routes from this node to other nodes." ;
-	sh:nodeKind sh:BlankNodeOrIRI ;
-	sh:order 10 ;
-	sh:path ka:pointers .
-_:c14n91 sh:class skos:Concept ;
+_:c14n92 sh:class skos:Concept ;
 	sh:description "The nodes with an association to this node. This edge is symmetric." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 2 ;
 	sh:path skos:related .
-_:c14n92 sh:datatype xsd:string ;
-	sh:description "The URLs, repository paths, or citations that support the entity." ;
-	sh:nodeKind sh:Literal ;
-	sh:order 6 ;
-	sh:path dcterms:source ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
 _:c14n93 sh:datatype xsd:string ;
 	sh:description "The URLs, repository paths, or citations that support the entity." ;
 	sh:nodeKind sh:Literal ;
-	sh:order 9 ;
+	sh:order 16 ;
 	sh:path dcterms:source ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n94 sh:class ka:Directive ;
-	sh:description "The directives that live in this file." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 11 ;
-	sh:path ka:directives .
-_:c14n95 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n246 ;
+_:c14n94 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n255 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 7 ;
 	sh:path ka:origin .
-_:c14n96 rdf:first skos:prefLabel ;
-	rdf:rest _:c14n295 .
-_:c14n97 sh:datatype xsd:string ;
+_:c14n95 sh:datatype xsd:string ;
+	sh:description "The URLs, repository paths, or citations that support the entity." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 17 ;
+	sh:path dcterms:source ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n96 sh:datatype xsd:string ;
 	sh:description "The preferred name of the node." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:Literal ;
-	sh:order 8 ;
+	sh:order 10 ;
 	sh:path skos:prefLabel ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n98 sh:datatype xsd:string ;
+_:c14n97 rdf:first skos:prefLabel ;
+	rdf:rest _:c14n311 .
+_:c14n98 sh:description "The lifecycle state." ;
+	sh:in _:c14n232 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 14 ;
+	sh:path ka:status .
+_:c14n99 sh:datatype xsd:string ;
 	sh:description "The condition that tells an agent to follow the pointer." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -1321,9 +1402,4 @@ _:c14n98 sh:datatype xsd:string ;
 	sh:order 2 ;
 	sh:path ka:trigger ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n99 sh:class ka:Pointer ;
-	sh:description "The routes from this node to other nodes." ;
-	sh:nodeKind sh:BlankNodeOrIRI ;
-	sh:order 9 ;
-	sh:path ka:pointers .
 

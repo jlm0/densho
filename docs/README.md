@@ -14,7 +14,7 @@ Think of the system as a library, where each node is a book. The first two layer
 | [Node format](node-format.md)                                   | The scanner that rejects a badly filled card  | Built   |
 | [Graph checks](graph-checks.md)                                 | The walk through the whole building           | Built   |
 | [Language checks](language-checks.md)                           | The copy editor                               | Built   |
-| [Directive semantics](directive-semantics.md)                   | The rules about which signs cover which rooms | Planned |
+| [Directive semantics](directive-semantics.md)                   | The rules about which signs cover which rooms | Built   |
 | [Governance workflow](governance-workflow.md)                   | The acquisitions policy                       | Planned |
 | [Seed knowledge](seed-knowledge.md)                             | The first real books                          | Planned |
 | [Compiled outputs](compiled-outputs.md)                         | The printed catalog                           | Planned |

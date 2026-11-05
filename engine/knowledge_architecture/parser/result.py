@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 type FieldPath = tuple[str | int, ...]
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True, slots=True, order=True)
 class Problem:
     path: Path
     line: int

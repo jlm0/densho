@@ -153,6 +153,7 @@ Governance rules are directives too, so a node under `governance/` goes through 
 - Meaning. No automated semantic review exists yet. See the table above.
 - Verbs other than the opening verb of a directive or a description
 - A command with no mark of one, such as the word `pytest` outside backticks
+- The `reason` of a directive exception. See [directive semantics](directive-semantics.md).
 - A rule repeated in other words
 - The grammar rules in `grammar.yaml` when you run `ka language`. Only the test suite lints them, so a project that does not run the tests does not lint them.
 - The structure of nodes under `governance/`. The [graph checks](graph-checks.md) read only `knowledge/` and `skills/`.

@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Annotated
 
 import typer
 
+from knowledge_architecture.directives import check_directives, resolve_directives
 from knowledge_architecture.graph import check_tree
 from knowledge_architecture.language import check_language
 from knowledge_architecture.parser import parse_tree
@@ -52,3 +53,31 @@ def language(
     """Check the language of each directive, trigger, and skill description."""
     count, problems = check_language(repository)
     _finish(f"{count} texts checked", problems)
+
+
+@app.command()
+def directives(
+    repository: Annotated[
+        Path, typer.Argument(help="The folder that holds knowledge/ and skills/.")
+    ] = Path(),
+    at: Annotated[
+        str | None, typer.Option(help="List the directives that apply at this node ID.")
+    ] = None,
+) -> None:
+    """Check how directives reach the nodes, or list what applies at one node."""
+    if at is None:
+        count, problems = check_directives(repository)
+        _finish(f"{count} directives checked", problems)
+        return
+    items, problems = check_tree(repository)
+    if problems:
+        _finish("0 directives listed", problems)
+    if at not in {item.node.id for item in items}:
+        typer.echo(f"No node has the ID {at!a}.")
+        raise typer.Exit(1)
+    applied = resolve_directives(items).at(at)
+    for entry in applied:
+        directive = entry.directive
+        route = " -> ".join(entry.route)
+        typer.echo(f"{directive.id} ({directive.scope}) from {route}: {directive.text}")
+    _finish(f"{len(applied)} directives apply at {at}", [])

@@ -7,6 +7,7 @@ from knowledge_architecture.generated.metamodel import (
     AlwaysPointer,
     Concept,
     Directive,
+    DirectiveException,
     Discipline,
     Domain,
     KnowledgeGraph,
@@ -369,3 +370,37 @@ def test_each_kind_holds_prose(model: type[BaseModel], sample: Sample) -> None:
 def test_directive_attaches_to_each_kind(model: type[BaseModel], sample: Sample) -> None:
     data = {**sample, "directives": [{**DIRECTIVE, "also_attached_to": ["other"]}]}
     assert model.model_validate(data).model_dump(exclude_none=True) == data
+
+
+EXCEPTION: Sample = {"directive": "other", "reason": "This node holds a prototype."}
+
+
+@pytest.mark.parametrize("field", ["directive", "reason"])
+def test_exception_requires_field(field: str) -> None:
+    assert (field, "missing") in errors_of(DirectiveException, without(EXCEPTION, field))
+
+
+def test_exception_rejects_an_unknown_field() -> None:
+    assert ("extra", "extra_forbidden") in errors_of(DirectiveException, {**EXCEPTION, "extra": 1})
+
+
+@pytest.mark.parametrize("reason", ["", " a", "a ", "a\nb", "a\n", "a\tb"])
+def test_exception_reason_is_one_line(reason: str) -> None:
+    assert errors_of(DirectiveException, {**EXCEPTION, "reason": reason})
+
+
+@pytest.mark.parametrize(("model", "sample"), KNOWLEDGE_SAMPLES, ids=sample_id)
+def test_knowledge_node_accepts_exceptions(model: type[BaseModel], sample: Sample) -> None:
+    node = model.model_validate({**sample, "exceptions": [EXCEPTION]})
+    assert getattr(node, "exceptions") == [DirectiveException(**EXCEPTION)]  # noqa: B009
+
+
+def test_root_rejects_exceptions() -> None:
+    assert ("exceptions", "extra_forbidden") in errors_of(Root, {**ROOT, "exceptions": [EXCEPTION]})
+
+
+@pytest.mark.parametrize("field", ["refines", "conflicts_with", "also_attached_to"])
+def test_directive_accepts_a_list_of_references(field: str) -> None:
+    directive = Directive.model_validate({**DIRECTIVE, field: ["other"]})
+    assert getattr(directive, field) == ["other"]
+    assert errors_of(Directive, {**DIRECTIVE, field: "other"})

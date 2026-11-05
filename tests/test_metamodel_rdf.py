@@ -185,6 +185,18 @@ def test_related_edge_is_symmetric() -> None:
     assert VIEW.get_slot("related").symmetric is True
 
 
+def test_conflicts_with_is_symmetric() -> None:
+    assert VIEW.get_slot("conflicts_with").symmetric is True
+
+
+@pytest.mark.parametrize(
+    ("slot", "expected"),
+    [("refines", "Directive"), ("conflicts_with", "Directive"), ("directive", "Directive")],
+)
+def test_directive_references_declare_their_range(slot: str, expected: str) -> None:
+    assert VIEW.get_slot(slot).range == expected
+
+
 def test_taxonomy_nodes_are_skos_concepts() -> None:
     assert VIEW.get_class("TaxonomyNode").class_uri == "skos:Concept"
 

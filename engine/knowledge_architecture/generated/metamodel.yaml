@@ -56,6 +56,7 @@ classes:
     is_a: Node
     slots:
       - knowledge_type
+      - exceptions
 
   TaxonomyNode:
     description: A node in the classification from domain to concept.
@@ -123,6 +124,14 @@ classes:
       - text
       - scope
       - also_attached_to
+      - refines
+      - conflicts_with
+
+  DirectiveException:
+    description: A statement that a node steps out of a directive that it would otherwise inherit.
+    slots:
+      - directive
+      - reason
 
   Pointer:
     description: A route that tells an agent when and how to load a node.
@@ -211,6 +220,19 @@ slots:
     description: The kind of knowledge in the node.
     range: KnowledgeType
     required: true
+  exceptions:
+    description: The inherited directives that stop at this node.
+    range: DirectiveException
+    multivalued: true
+    inlined_as_list: true
+  directive:
+    description: The directive that the exception stops.
+    range: Directive
+    required: true
+  reason:
+    description: The reason that the directive does not apply at this node.
+    required: true
+    pattern: *single-line
   definition:
     description: The meaning of the node.
     slot_uri: skos:definition
@@ -231,6 +253,15 @@ slots:
   also_attached_to:
     description: The nodes that the directive attaches to, in addition to the node that holds it.
     range: Node
+    multivalued: true
+  refines:
+    description: The broader directives that this directive makes more specific. Both directives apply.
+    range: Directive
+    multivalued: true
+  conflicts_with:
+    description: The directives that must not apply at the same node as this directive. This relationship is symmetric.
+    symmetric: true
+    range: Directive
     multivalued: true
   target:
     description: The node that the pointer routes to.
@@ -324,6 +355,6 @@ enums:
     description: The nodes that a directive applies to.
     permissible_values:
       node:
-        description: The directive applies only to the nodes that it attaches to.
+        description: The directive applies only to the nodes that it attaches to and to each skill that uses one of them.
       subtree:
-        description: The directive applies to the attached nodes and to each node under them. Each node is under the root.
+        description: The directive applies to the attached nodes and to each node under them. Each node is under the root. A skill is under each node that it uses.

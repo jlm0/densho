@@ -30,3 +30,4 @@ The other checks prove that knowledge is well formed. This layer decides whether
 - Whether agents can propose concepts or directives
 - How experimental knowledge stays apart from authoritative knowledge
 - How a change gets promoted from `proposed` to `accepted`
+- Whether a directive exception needs approval, and whether a `proposed` directive or the `status` of a node changes what applies. See [directive semantics](directive-semantics.md).

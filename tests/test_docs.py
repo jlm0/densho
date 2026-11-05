@@ -8,6 +8,7 @@ from linkml_runtime.utils.schemaview import SchemaView
 from markdown_it import MarkdownIt
 
 from knowledge_architecture.cli import app
+from knowledge_architecture.directives import DIRECTIVE_CODES
 from knowledge_architecture.generated.metamodel import Concept
 from knowledge_architecture.graph.structure import ACYCLIC_EDGES, MAX_POINTER_HOPS
 from knowledge_architecture.language import check_items
@@ -274,6 +275,41 @@ def test_the_node_format_example_passes_the_language_checks() -> None:
     text = (DOCS / "node-format.md").read_text(encoding="utf-8")
     example = text.split("```markdown\n")[1].split("\n```\n")[0]
     result = parse_source(f"{example}\n", Path("node.md"))
+    assert isinstance(result, ParsedNode), result
+    assert check_items([result], language_profile())[1] == []
+
+
+def directive_page() -> str:
+    return (DOCS / "directive-semantics.md").read_text(encoding="utf-8")
+
+
+def directive_examples() -> list[str]:
+    blocks = directive_page().split("```markdown\n")[1:]
+    return [block.split("\n```\n")[0] for block in blocks]
+
+
+DIRECTIVE_NODE = (
+    "---\nid: a\nkind: ka:Domain\ntitle: A\nstatus: accepted\norigin: template\n"
+    "knowledge_type: domain\n---\n\n## Definition\n\nA.\n\n"
+)
+
+
+@pytest.mark.parametrize("code", DIRECTIVE_CODES)
+def test_the_directive_page_names_each_code(code: str) -> None:
+    assert f"| `{code}`" in directive_page()
+
+
+def test_the_directive_page_has_each_kind_of_example() -> None:
+    examples = "\n".join(directive_examples())
+    assert "exceptions:" in examples
+    assert "refines:" in examples
+    assert "conflicts_with:" in examples
+
+
+@pytest.mark.parametrize("example", directive_examples())
+def test_each_directive_example_parses_and_passes_the_language_checks(example: str) -> None:
+    source = example if example.startswith("---") else f"{DIRECTIVE_NODE}{example}"
+    result = parse_source(f"{source}\n", Path("node.md"))
     assert isinstance(result, ParsedNode), result
     assert check_items([result], language_profile())[1] == []
 

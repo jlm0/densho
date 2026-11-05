@@ -48,6 +48,12 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: directive-checks
+        name: check how directives reach the nodes
+        entry: uv run --frozen ka directives
+        language: system
+        pass_filenames: false
+        files: ^(knowledge|skills|governance|engine)/|^uv\.lock$
       - id: language-checks
         name: check the language of the knowledge nodes
         entry: uv run --frozen ka language

@@ -23,7 +23,7 @@ An empty tree passes, so a new copy of the template starts clean.
 | Identity     | `duplicate-id` | Two nodes or directives share an ID                                                                                                                  |
 | Root         | `root`         | Nodes exist, but none of them is a `ka:Root`                                                                                                         |
 | Placement    | `placement`    | A node's kind does not match its folder, including a second root                                                                                     |
-| References   | `reference`    | An edge, a pointer, or `also_attached_to` names an ID that does not exist                                                                            |
+| References   | `reference`    | An edge, a pointer, an exception, or a directive field such as `also_attached_to` names an ID that does not exist                                    |
 | Types        | `type`         | A reference names a kind the [schema](schema.md) does not allow, such as a `broader` target of the wrong rank, or a non-skill behind a skill pointer |
 | Skills       | `skill`        | A skill has neither `uses` nor `applies`                                                                                                             |
 | Ownership    | `implements`   | `implements` starts from a node that is not workspace knowledge                                                                                      |
@@ -72,7 +72,7 @@ The type check uses SHACL, with shapes generated from the [schema](schema.md), s
 
 ## How it fits
 
-This layer needs the [schema](schema.md) and the [parser](node-format.md). Every later layer relies on its result: inheritance needs a sound hierarchy, and the build needs references that resolve.
+This layer needs the [schema](schema.md) and the [parser](node-format.md). Every later layer relies on its result: [directive semantics](directive-semantics.md) needs a sound hierarchy, and the build needs references that resolve.
 
 ## What it does not check yet
 

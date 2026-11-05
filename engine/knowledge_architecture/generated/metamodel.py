@@ -120,11 +120,11 @@ class DirectiveScope(str, Enum):
     """
     node = "node"
     """
-    The directive applies only to the nodes that it attaches to.
+    The directive applies only to the nodes that it attaches to and to each skill that uses one of them.
     """
     subtree = "subtree"
     """
-    The directive applies to the attached nodes and to each node under them. Each node is under the root.
+    The directive applies to the attached nodes and to each node under them. Each node is under the root. A skill is under each node that it uses.
     """
 
 
@@ -312,6 +312,7 @@ class KnowledgeNode(Node):
     A node that holds domain knowledge or workspace knowledge.
     """
     knowledge_type: KnowledgeType = Field(default=..., description="""The kind of knowledge in the node.""")
+    exceptions: Optional[list[DirectiveException]] = Field(default=None, description="""The inherited directives that stop at this node.""")
     kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/KnowledgeNode","ka:KnowledgeNode"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")
     pointers: Optional[list[Union[AlwaysPointer,PathPointer,SkillPointer,TextPointer]]] = Field(default=None, description="""The routes from this node to other nodes.""")
@@ -386,6 +387,7 @@ class TaxonomyNode(KnowledgeNode):
     governs: Optional[list[str]] = Field(default=None, description="""The nodes that this node sets rules for. A governance node can name itself.""")
     implements: Optional[list[str]] = Field(default=None, description="""The domain nodes that this workspace node gives project values for.""")
     knowledge_type: KnowledgeType = Field(default=..., description="""The kind of knowledge in the node.""")
+    exceptions: Optional[list[DirectiveException]] = Field(default=None, description="""The inherited directives that stop at this node.""")
     kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/TaxonomyNode","http://www.w3.org/2004/02/skos/core#Concept","ka:TaxonomyNode","skos:Concept"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")
     pointers: Optional[list[Union[AlwaysPointer,PathPointer,SkillPointer,TextPointer]]] = Field(default=None, description="""The routes from this node to other nodes.""")
@@ -473,6 +475,7 @@ class Domain(TaxonomyNode):
     governs: Optional[list[str]] = Field(default=None, description="""The nodes that this node sets rules for. A governance node can name itself.""")
     implements: Optional[list[str]] = Field(default=None, description="""The domain nodes that this workspace node gives project values for.""")
     knowledge_type: KnowledgeType = Field(default=..., description="""The kind of knowledge in the node.""")
+    exceptions: Optional[list[DirectiveException]] = Field(default=None, description="""The inherited directives that stop at this node.""")
     kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/Domain","ka:Domain"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")
     pointers: Optional[list[Union[AlwaysPointer,PathPointer,SkillPointer,TextPointer]]] = Field(default=None, description="""The routes from this node to other nodes.""")
@@ -561,6 +564,7 @@ class Discipline(TaxonomyNode):
     governs: Optional[list[str]] = Field(default=None, description="""The nodes that this node sets rules for. A governance node can name itself.""")
     implements: Optional[list[str]] = Field(default=None, description="""The domain nodes that this workspace node gives project values for.""")
     knowledge_type: KnowledgeType = Field(default=..., description="""The kind of knowledge in the node.""")
+    exceptions: Optional[list[DirectiveException]] = Field(default=None, description="""The inherited directives that stop at this node.""")
     kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/Discipline","ka:Discipline"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")
     pointers: Optional[list[Union[AlwaysPointer,PathPointer,SkillPointer,TextPointer]]] = Field(default=None, description="""The routes from this node to other nodes.""")
@@ -649,6 +653,7 @@ class PracticeArea(TaxonomyNode):
     governs: Optional[list[str]] = Field(default=None, description="""The nodes that this node sets rules for. A governance node can name itself.""")
     implements: Optional[list[str]] = Field(default=None, description="""The domain nodes that this workspace node gives project values for.""")
     knowledge_type: KnowledgeType = Field(default=..., description="""The kind of knowledge in the node.""")
+    exceptions: Optional[list[DirectiveException]] = Field(default=None, description="""The inherited directives that stop at this node.""")
     kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/PracticeArea","ka:PracticeArea"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")
     pointers: Optional[list[Union[AlwaysPointer,PathPointer,SkillPointer,TextPointer]]] = Field(default=None, description="""The routes from this node to other nodes.""")
@@ -737,6 +742,7 @@ class Concept(TaxonomyNode):
     governs: Optional[list[str]] = Field(default=None, description="""The nodes that this node sets rules for. A governance node can name itself.""")
     implements: Optional[list[str]] = Field(default=None, description="""The domain nodes that this workspace node gives project values for.""")
     knowledge_type: KnowledgeType = Field(default=..., description="""The kind of knowledge in the node.""")
+    exceptions: Optional[list[DirectiveException]] = Field(default=None, description="""The inherited directives that stop at this node.""")
     kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/Concept","ka:Concept"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")
     pointers: Optional[list[Union[AlwaysPointer,PathPointer,SkillPointer,TextPointer]]] = Field(default=None, description="""The routes from this node to other nodes.""")
@@ -821,6 +827,7 @@ class Skill(KnowledgeNode):
     uses: Optional[list[str]] = Field(default=None, description="""The knowledge that the skill composes.""")
     applies: Optional[list[str]] = Field(default=None, description="""The directives that the skill applies.""")
     knowledge_type: KnowledgeType = Field(default=..., description="""The kind of knowledge in the node.""")
+    exceptions: Optional[list[DirectiveException]] = Field(default=None, description="""The inherited directives that stop at this node.""")
     kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/Skill","ka:Skill"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")
     pointers: Optional[list[Union[AlwaysPointer,PathPointer,SkillPointer,TextPointer]]] = Field(default=None, description="""The routes from this node to other nodes.""")
@@ -904,6 +911,8 @@ class Directive(GovernedEntity):
     text: str = Field(default=..., description="""The instruction.""")
     scope: DirectiveScope = Field(default=..., description="""The nodes that the directive applies to. This field has no default, because inheritance is explicit.""")
     also_attached_to: Optional[list[str]] = Field(default=None, description="""The nodes that the directive attaches to, in addition to the node that holds it.""")
+    refines: Optional[list[str]] = Field(default=None, description="""The broader directives that this directive makes more specific. Both directives apply.""")
+    conflicts_with: Optional[list[str]] = Field(default=None, description="""The directives that must not apply at the same node as this directive. This relationship is symmetric.""")
     id: str = Field(default=..., description="""The stable identifier. The identifier does not change when a file moves.""")
     status: Status = Field(default=..., description="""The lifecycle state.""")
     origin: Origin = Field(default=..., description="""The source of the entity in this repository.""")
@@ -945,6 +954,27 @@ class Directive(GovernedEntity):
                     raise ValueError(err_msg)
         elif isinstance(v, str) and not pattern.search(v):
             err_msg = f"Invalid sources format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+
+class DirectiveException(ConfiguredBaseModel):
+    """
+    A statement that a node steps out of a directive that it would otherwise inherit.
+    """
+    directive: str = Field(default=..., description="""The directive that the exception stops.""")
+    reason: str = Field(default=..., description="""The reason that the directive does not apply at this node.""")
+
+    @field_validator('reason')
+    def pattern_reason(cls, v):
+        pattern=re.compile(r"^\S(?: *\S)*(?!\n)$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.search(element):
+                    err_msg = f"Invalid reason format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.search(v):
+            err_msg = f"Invalid reason format: {v}"
             raise ValueError(err_msg)
         return v
 
@@ -1087,6 +1117,7 @@ PracticeArea.model_rebuild()
 Concept.model_rebuild()
 Skill.model_rebuild()
 Directive.model_rebuild()
+DirectiveException.model_rebuild()
 Pointer.model_rebuild()
 AlwaysPointer.model_rebuild()
 PathPointer.model_rebuild()

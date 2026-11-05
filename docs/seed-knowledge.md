@@ -2,7 +2,7 @@
 
 > **In the library:** the first real books. Until they arrive, every check has only ever run on test samples.
 
-**Status:** Planned. Nothing on this page exists yet. `knowledge/` and `skills/` are empty.
+**Status:** Planned. Nothing on this page exists yet. `knowledge/` holds only the root node, and `skills/` is empty.
 
 ## What it does
 
@@ -12,7 +12,7 @@ This layer will add the first domain, with its concepts and directives, as real 
 
 The nodes will follow the taxonomy from domain to discipline to practice area to concept. Branch depth can vary, because the hierarchy expresses real classification and does not force every branch to the same number of levels. Directives can attach at any of those levels.
 
-Each knowledge node here carries `knowledge_type: domain` and `origin: template`. A project adds its own knowledge next to it with `knowledge_type: workspace` and `origin: project`.
+Each knowledge node here carries `knowledge_type: domain` and `origin: template`, and it starts as `proposed` like everything new. A project adds its own knowledge next to it with `knowledge_type: workspace` and `origin: project`.
 
 ## How it fits
 

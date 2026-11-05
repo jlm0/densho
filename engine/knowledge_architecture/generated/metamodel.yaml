@@ -128,10 +128,11 @@ classes:
       - conflicts_with
 
   DirectiveException:
-    description: A statement that a node steps out of a directive that it would otherwise inherit.
+    description: A statement that a node steps out of a directive that it would otherwise inherit. Only an accepted exception stops the directive.
     slots:
       - directive
       - reason
+      - status
 
   Pointer:
     description: A route that tells an agent when and how to load a node.
@@ -346,9 +347,9 @@ enums:
     description: The lifecycle states.
     permissible_values:
       proposed:
-        description: An author recommends the entity. No reviewer approved it.
+        description: An author recommends the entity. No reviewer approved it. A proposed directive or exception is not in force.
       accepted:
-        description: A reviewer approved the entity.
+        description: A reviewer approved the entity. An accepted directive or exception is in force.
       deprecated:
         description: The entity stays for reference. Do not apply it to new work.
   DirectiveScope:

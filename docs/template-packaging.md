@@ -22,3 +22,4 @@ This layer takes the checked knowledge, the checks, and the [runtime files](runt
 
 - The tool that installs the template and records its commit
 - How the engine reaches a project
+- How an install into a repo with history brings its knowledge in as `proposed`, as the [governance workflow](governance-workflow.md#knowledge-from-the-template) requires

@@ -26,6 +26,8 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 NODE_FILE_NAME = "node.md"
+GOVERNANCE_FOLDER = "governance"
+POLICY_FOLDER = "governance/policies"
 MARKDOWN_SUFFIXES = frozenset({".md", ".markdown", ".mdown", ".mkd"})
 CONTROL_CHARACTER = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]")
 NODE_CLASSES: tuple[type[Node], ...] = (Root, Domain, Discipline, PracticeArea, Concept, Skill)
@@ -99,6 +101,12 @@ def parse_file(path: Path) -> ParsedNode | list[Problem]:
     except OSError as error:
         return [Problem(path, 1, "read", str(error))]
     return parse_source(text, path)
+
+
+def node_folders(repository: Path) -> list[Path]:
+    folders = [repository / "knowledge", repository / "skills"]
+    governance = repository / GOVERNANCE_FOLDER
+    return [*folders, governance] if governance.is_dir() else folders
 
 
 def parse_tree(roots: Iterable[Path]) -> tuple[list[ParsedNode], list[Problem]]:

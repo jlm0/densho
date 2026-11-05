@@ -87,11 +87,14 @@ def _links(items: Sequence[ParsedNode]) -> tuple[Children, Children]:
     return under, users
 
 
-def _stops_by_directive(items: Sequence[ParsedNode]) -> dict[str, set[str]]:
+def _stops_by_directive(
+    items: Sequence[ParsedNode], live: Collection[Status]
+) -> dict[str, set[str]]:
     stops: defaultdict[str, set[str]] = defaultdict(set)
     for item in items:
         for exception in exceptions_of(item):
-            stops[exception.directive].add(item.node.id)
+            if exception.status in live:
+                stops[exception.directive].add(item.node.id)
     return stops
 
 
@@ -103,15 +106,16 @@ def _skills_applying(items: Sequence[ParsedNode]) -> dict[str, set[str]]:
     return skills
 
 
-def resolve_directives(items: Sequence[ParsedNode]) -> Resolution:
+def resolve_directives(items: Sequence[ParsedNode], *, proposals: bool = False) -> Resolution:
+    live = (Status.accepted, Status.proposed) if proposals else (Status.accepted,)
     under, users = _links(items)
-    stops = _stops_by_directive(items)
+    stops = _stops_by_directive(items, live)
     applying = _skills_applying(items)
     reaches: list[Reach] = []
     for item in items:
         for position, directive in enumerate(item.node.directives or []):
             attached: set[str] = set()
-            if directive.status != Status.deprecated:
+            if directive.status in live:
                 attached = {
                     item.node.id,
                     *(directive.also_attached_to or []),

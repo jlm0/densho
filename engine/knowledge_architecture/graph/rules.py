@@ -7,7 +7,7 @@ from knowledge_architecture.graph.references import (
     problem_at,
     references_of,
 )
-from knowledge_architecture.parser.node import NODE_FILE_NAME
+from knowledge_architecture.parser.node import GOVERNANCE_FOLDER, NODE_FILE_NAME, POLICY_FOLDER
 from knowledge_architecture.parser.result import FieldPath, ParsedNode, Problem
 
 if TYPE_CHECKING:
@@ -34,23 +34,29 @@ def root_nodes(items: Sequence[ParsedNode]) -> list[ParsedNode]:
     return [item for item in items if isinstance(item.node, Root)]
 
 
-def check_placement(items: Sequence[ParsedNode], *, knowledge: Path, skills: Path) -> list[Problem]:
-    root_file = knowledge / NODE_FILE_NAME
-    problems = [_placement_problem(item, root_file, skills) for item in items]
+def check_placement(items: Sequence[ParsedNode], repository: Path) -> list[Problem]:
+    root_file = repository / "knowledge" / NODE_FILE_NAME
+    problems = [_placement_problem(item, root_file, repository) for item in items]
     if not root_nodes(items):
         problems.append(Problem(root_file, 1, "root", "Add the root node to this file."))
     return [problem for problem in problems if problem is not None]
 
 
-def _placement_problem(item: ParsedNode, root_file: Path, skills: Path) -> Problem | None:
+def _placement_problem(item: ParsedNode, root_file: Path, repository: Path) -> Problem | None:
+    skills = repository / "skills"
+    policies = repository / POLICY_FOLDER
     if isinstance(item.node, Root):
         message = None if item.path == root_file else f"Move the root node to {root_file}."
     elif item.path == root_file:
         message = "Only the root node can use this file. Set kind to ka:Root or move this node."
     elif isinstance(item.node, Skill):
         message = None if item.path.is_relative_to(skills) else f"Move this skill to {skills}."
+    elif item.path.is_relative_to(skills):
+        message = f"Move this node out of {skills}."
+    elif item.path.is_relative_to(repository / GOVERNANCE_FOLDER):
+        message = None if item.path.is_relative_to(policies) else f"Move this node to {policies}."
     else:
-        message = f"Move this node out of {skills}." if item.path.is_relative_to(skills) else None
+        message = None
     return None if message is None else problem_at(item, ("kind",), "placement", message)
 
 

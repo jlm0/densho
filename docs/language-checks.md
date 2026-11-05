@@ -14,7 +14,7 @@ The checks judge form only. A rule can pass every check and still be a bad rule,
 uv run ka language
 ```
 
-The command reads `knowledge/`, `skills/`, and `governance/` in the current folder, or in a folder you name after `language`. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. A node that fails to parse stops the checks, as it does for the [graph checks](graph-checks.md).
+The command reads `knowledge/`, `skills/`, and `governance/` in the current folder, or in a folder you name after `language`. It also lints each rule in `governance/language/grammar.yaml` as a directive. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. A node that fails to parse stops the checks, as it does for the [graph checks](graph-checks.md).
 
 The git hook runs the same command when a commit touches `knowledge/`, `skills/`, `governance/`, `engine/`, or `uv.lock`. A commit that changes only docs or tests skips it. So does a commit that only deletes files, so a branch vocabulary left behind by a deleted node fails on the next run, not on that commit.
 
@@ -38,7 +38,7 @@ The grammar has these rules:
 - Write one directive, with at most one condition and one `unless`.
 - Do not use a modal, a hedge, a vague qualifier, or a reason marker. The [vocabulary](#vocabularies) lists them.
 - Put each command, path, and literal value in backticks. A number counts as a literal value, so write `` `30` `` and not 30.
-- Do not repeat a rule anywhere in the tree. If a second node needs a rule, use `also_attached_to`.
+- Do not repeat a rule anywhere in the tree, or a rule in `grammar.yaml`. If a second node needs a rule, use `also_attached_to`.
 
 ## Pointer triggers
 
@@ -140,13 +140,13 @@ Each text goes through two stages. The first reads its Markdown, replaces each c
 
 The STE findings come from a vendored copy of `ste-lint.py` in `engine/knowledge_architecture/vendor/`, kept byte for byte with its license. Its advisory findings, passive voice and the present perfect, do not fail a check. The grammar's word limit replaces its sentence limit.
 
-spaCy loads only when the tree has text to check, so an empty tree does not pay for it. When it does load, it adds about half a second to the run. A commit that touches none of the paths above does not run the hook.
+spaCy loads only when there is text to check, and the rules in `grammar.yaml` count as text. It adds about half a second to the run. A commit that touches none of the paths above does not run the hook.
 
 The model is statistical, so it can misread a sentence. It often reads the last word of `The build passes.` as a plural noun. The check accepts that shape when the sentence has a determiner, which means a fragment such as `The test files.` also passes. If a good sentence fails a structure check, reword it.
 
 ## How it fits
 
-Governance rules are directives too, so a node under `governance/` goes through these checks like any other. That makes the system recursive: the rules for writing rules follow their own rules. The test suite also checks each rule in `grammar.yaml` against the grammar, and a change to the grammar has to pass it.
+Governance rules are directives too, so a node under `governance/` goes through these checks like any other, and so does each rule in `grammar.yaml`. That makes the system recursive: the rules for writing rules follow their own rules. The `language-rules` [policy](governance-workflow.md#the-policies) names these files as its sources.
 
 ## What it does not check yet
 
@@ -155,5 +155,3 @@ Governance rules are directives too, so a node under `governance/` goes through 
 - A command with no mark of one, such as the word `pytest` outside backticks
 - The `reason` of a directive exception. See [directive semantics](directive-semantics.md).
 - A rule repeated in other words
-- The grammar rules in `grammar.yaml` when you run `ka language`. Only the test suite lints them, so a project that does not run the tests does not lint them.
-- The structure of nodes under `governance/`. The [graph checks](graph-checks.md) read only `knowledge/` and `skills/`.

@@ -38,7 +38,7 @@ repos:
         always_run: true
       - id: node-format
         name: parse the knowledge nodes
-        entry: uv run --frozen ka parse knowledge skills
+        entry: uv run --frozen ka parse knowledge skills governance
         language: system
         pass_filenames: false
         always_run: true
@@ -54,6 +54,12 @@ repos:
         language: system
         pass_filenames: false
         files: ^(knowledge|skills|governance|engine)/|^uv\.lock$
+      - id: governance-checks
+        name: check the lifecycle and the change rules
+        entry: uv run --frozen ka governance
+        language: system
+        pass_filenames: false
+        always_run: true
       - id: language-checks
         name: check the language of the knowledge nodes
         entry: uv run --frozen ka language

@@ -8,7 +8,7 @@ Each node is one Markdown file with YAML front matter. The parser in `engine/kno
 
 ## Where nodes live
 
-Each node is a file with the name `node.md`, in its own folder. The root node is `knowledge/node.md`. Other knowledge nodes go under `knowledge/`, and skills go under `skills/`.
+Each node is a file with the name `node.md`, in its own folder. The root node is `knowledge/node.md`. Other knowledge nodes go under `knowledge/`, skills go under `skills/`, and policies go under `governance/policies/`.
 
 The folder path is only for navigation. Identity and relationships come from `id` and the edges, so a file can move without changing what it means.
 

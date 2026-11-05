@@ -23,7 +23,7 @@ GovernedEntity            id, status, origin, sources
 │     └─ Skill            description, uses, applies
 └─ Directive              text, scope, also_attached_to, refines, conflicts_with
 
-DirectiveException        directive, reason
+DirectiveException        directive, reason, status
 
 Pointer                   kind, target, trigger
 ├─ AlwaysPointer
@@ -90,11 +90,11 @@ A pointer is a route to a node: it names a `target`, the `trigger` that tells an
 
 A directive is one instruction with its own ID. It lives in the file of one node, and other nodes attach to it with `also_attached_to`. `scope` has no default, so every directive states how far it reaches. A directive on the root with `scope: subtree` applies to the whole graph.
 
-`refines` names a broader directive that this one makes more specific. `conflicts_with` names a directive that must not apply at the same node. A knowledge node or a skill steps out of an inherited directive with an entry in `exceptions`, which holds a `directive` and a one-line `reason`. The root cannot hold one. [Directive semantics](directive-semantics.md) explains each of these.
+`refines` names a broader directive that this one makes more specific. `conflicts_with` names a directive that must not apply at the same node. A knowledge node or a skill steps out of an inherited directive with an entry in `exceptions`, which holds a `directive`, a one-line `reason`, and its own `status`. The root cannot hold one. [Directive semantics](directive-semantics.md) explains each of these.
 
 ## Rules for rules
 
-Governance is written in the same classes as everything else: a governance node is an ordinary node, and `governs` names what it sets rules for, which can include itself. Only `metamodel.yaml` stays outside the graph, because it defines what a node is.
+Governance is written in the same classes as everything else: a governance node is an ordinary node under `governance/policies/`, and `governs` names what it sets rules for, which can include itself. Only `metamodel.yaml` stays outside the graph, because it defines what a node is. The [`schema-rules` policy](governance-workflow.md#the-policies) names it as a source.
 
 ## What the models do not check
 

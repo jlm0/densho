@@ -20,6 +20,8 @@ if TYPE_CHECKING:
 
 PROFILE_CODE = "language-profile"
 LISTING_ENTRY_CAP = 1536
+GRAMMAR_FILE = "grammar.yaml"
+RULE_SECTIONS = ("directive_rules", "trigger_rules", "description_rules")
 BRANCH_FOLDER = "branches"
 BRANCH_SUFFIX = ".yaml"
 FOLDER_MARKER = ".gitkeep"
@@ -128,7 +130,7 @@ class LanguageProfile:
 
 
 def read_profile(folder: Path) -> LanguageProfile | list[Problem]:
-    grammar = _read_model(folder / "grammar.yaml", Grammar)
+    grammar = _read_model(folder / GRAMMAR_FILE, Grammar)
     vocabulary = _read_model(folder / "vocabulary.yaml", Vocabulary)
     problems: list[Problem] = []
     branches: dict[str, Vocabulary] = {}
@@ -151,6 +153,16 @@ def read_profile(folder: Path) -> LanguageProfile | list[Problem]:
     if isinstance(grammar, list) or isinstance(vocabulary, list) or problems:
         return problems
     return LanguageProfile(grammar, vocabulary, branches, branch_paths)
+
+
+def rule_locations(path: Path, grammar: Grammar) -> list[tuple[str, int]]:
+    yaml: Any = YAML(typ="rt")
+    data = cast("object", yaml.load(path.read_text(encoding="utf-8")))
+    return [
+        (rule.text, _line_of(data, (section, index, "text")))
+        for section in RULE_SECTIONS
+        for index, rule in enumerate(cast("tuple[GrammarRule, ...]", getattr(grammar, section)))
+    ]
 
 
 def _branch_files(folder: Path) -> list[Path]:

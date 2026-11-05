@@ -1,6 +1,6 @@
 # Overview
 
-Agent instructions usually live in long prose files that repeat themselves, are hard to apply consistently, and get no automated checks. Governed knowledge treats that material like code. Each piece of knowledge is a small file with a stable ID and a declared place in a graph, and each rule is one short sentence in a restricted grammar. Automated checks refuse anything that breaks the structure, language, or approval rules, and the rules for writing rules pass those same checks.
+Agent instructions usually live in long prose files that repeat themselves, are hard to apply consistently, and get no automated checks. Governed knowledge treats that material like code. Each piece of knowledge is a small file with a stable ID and a declared place in a graph, and each rule is one short sentence in a restricted grammar. Automated checks refuse anything that breaks the structure, language, or change rules, and the rules for writing rules pass those same checks.
 
 The goal is one source of truth that people can read and review, that agents load piece by piece as a task needs it, and that any project can copy and make its own. It can't make a model obey, but it does control what the agent can find and how it finds it.
 
@@ -15,7 +15,7 @@ Think of the system as a library, where each node is a book. The first two layer
 | [Graph checks](graph-checks.md)                                 | The walk through the whole building           | Built   |
 | [Language checks](language-checks.md)                           | The copy editor                               | Built   |
 | [Directive semantics](directive-semantics.md)                   | The rules about which signs cover which rooms | Built   |
-| [Governance workflow](governance-workflow.md)                   | The acquisitions policy                       | Planned |
+| [Governance workflow](governance-workflow.md)                   | The acquisitions policy                       | Built   |
 | [Seed knowledge](seed-knowledge.md)                             | The first real books                          | Planned |
 | [Compiled outputs](compiled-outputs.md)                         | The printed catalog                           | Planned |
 | [Runtime files](runtime-files.md)                               | The signs that lead visitors to the shelf     | Planned |

@@ -34,8 +34,12 @@ def rule(directive_id: str, scope: str = "subtree", **fields: object) -> Spec:
     return {"id": directive_id, "scope": scope, "status": "accepted", **fields}
 
 
-def stop(directive_id: str) -> Spec:
-    return {"directive": directive_id, "reason": "This node is a throwaway prototype."}
+def stop(directive_id: str, status: str = "accepted") -> Spec:
+    return {
+        "directive": directive_id,
+        "reason": "This node is a throwaway prototype.",
+        "status": status,
+    }
 
 
 def domain(node_id: str, **fields: object) -> Spec:
@@ -82,6 +86,7 @@ def front_matter(spec: Spec, others: list[str]) -> list[str]:
         lines.append("exceptions:")
         for entry in spec["exceptions"]:
             lines += [f"  - directive: {entry['directive']}", f"    reason: {entry['reason']}"]
+            lines.append(f"    status: {entry['status']}")
     return lines
 
 
@@ -295,10 +300,156 @@ def test_a_deprecated_directive_applies_nowhere() -> None:
     assert problems_of(*specs) == []
 
 
-def test_a_proposed_directive_applies_and_shows_its_status() -> None:
+def test_a_proposed_directive_is_not_in_force() -> None:
     specs = (domain("design", rules=[rule("a", status="proposed")]), concept("ui", "design"))
-    entry = applied_at("ui", *specs)[0]
+    assert routes_at("design", *specs) == {}
+    assert routes_at("ui", *specs) == {}
+    assert problems_of(*specs) == []
+
+
+def test_a_proposed_directive_applies_when_the_caller_asks_for_proposals() -> None:
+    specs = (domain("design", rules=[rule("a", status="proposed")]), concept("ui", "design"))
+    entry = resolve_directives(parsed(*specs), proposals=True).at("ui")[0]
     assert entry.directive.status == "proposed"
+    assert entry.route == ("design", "ui")
+
+
+def test_a_deprecated_directive_stays_out_of_the_proposals() -> None:
+    specs = (domain("design", rules=[rule("a", status="deprecated")]),)
+    assert resolve_directives(parsed(*specs), proposals=True).at("design") == []
+
+
+def test_a_proposed_exception_does_not_stop_the_directive() -> None:
+    specs = (
+        domain("design", rules=[rule("a")]),
+        concept("ui", "design", exceptions=[stop("a", "proposed")]),
+    )
+    assert routes_at("ui", *specs) == {"a": ("design", "ui")}
+    assert problems_of(*specs) == []
+
+
+def test_a_proposed_exception_stops_the_directive_when_the_caller_asks_for_proposals() -> None:
+    specs = (
+        domain("design", rules=[rule("a")]),
+        concept("ui", "design", exceptions=[stop("a", "proposed")]),
+    )
+    assert resolve_directives(parsed(*specs), proposals=True).at("ui") == []
+
+
+def test_a_deprecated_exception_stops_nothing_and_passes() -> None:
+    specs = (
+        domain("design", rules=[rule("a")]),
+        concept("ui", "design", exceptions=[stop("a", "deprecated")]),
+    )
+    assert routes_at("ui", *specs) == {"a": ("design", "ui")}
+    assert resolve_directives(parsed(*specs), proposals=True).at("ui") != []
+    assert problems_of(*specs) == []
+
+
+def test_a_deprecated_exception_with_no_route_passes() -> None:
+    specs = (
+        domain("design"),
+        domain("other", rules=[rule("a")]),
+        concept("ui", "design", exceptions=[stop("a", "deprecated")]),
+    )
+    assert problems_of(*specs) == []
+
+
+def test_a_deprecated_exception_counts_as_a_repeat() -> None:
+    specs = (
+        domain("design", rules=[rule("a")]),
+        concept("ui", "design", exceptions=[stop("a", "deprecated"), stop("a")]),
+    )
+    assert codes_of(*specs) == ["exception-repeated"]
+
+
+def test_a_proposed_exception_with_no_route_fails() -> None:
+    specs = (
+        domain("design"),
+        domain("other", rules=[rule("a")]),
+        concept("ui", "design", exceptions=[stop("a", "proposed")]),
+    )
+    assert codes_of(*specs) == ["exception-unused"]
+
+
+def test_an_exception_for_a_proposed_directive_passes() -> None:
+    specs = (
+        domain("design", rules=[rule("a", status="proposed")]),
+        concept("ui", "design", exceptions=[stop("a", "proposed")]),
+    )
+    assert problems_of(*specs) == []
+
+
+def test_a_proposal_that_conflicts_fails_before_a_review() -> None:
+    specs = (
+        domain("design", rules=[rule("a"), rule("b", status="proposed", conflicts_with=["a"])]),
+    )
+    assert codes_of(*specs) == ["conflict"]
+
+
+def test_a_proposal_with_a_proposed_exception_settles_the_conflict_for_review() -> None:
+    specs = (
+        domain("design", rules=[rule("a")]),
+        concept(
+            "ui",
+            "design",
+            exceptions=[stop("a", "proposed")],
+            rules=[rule("b", status="proposed", conflicts_with=["a"])],
+        ),
+    )
+    assert problems_of(*specs) == []
+
+
+def test_accepting_a_rule_before_its_exception_fails_as_a_conflict() -> None:
+    specs = (
+        domain("design", rules=[rule("a")]),
+        concept(
+            "ui",
+            "design",
+            exceptions=[stop("a", "proposed")],
+            rules=[rule("b", conflicts_with=["a"])],
+        ),
+    )
+    assert codes_of(*specs) == ["conflict"]
+
+
+def test_a_proposed_exception_on_one_route_reports_the_route_conflict() -> None:
+    specs = (
+        domain("design", rules=[rule("a")]),
+        concept("ui", "design", exceptions=[stop("a", "proposed")]),
+        concept("ux", "design"),
+        concept("join", "ui", "ux"),
+    )
+    assert codes_of(*specs) == ["route-conflict"]
+
+
+def test_an_accepted_rule_cannot_refine_a_proposed_rule() -> None:
+    specs = (domain("design", rules=[rule("a", status="proposed"), rule("b", refines=["a"])]),)
+    assert codes_of(*specs) == ["refines-outside"]
+
+
+def test_a_proposed_rule_can_refine_an_accepted_rule() -> None:
+    specs = (domain("design", rules=[rule("a"), rule("b", status="proposed", refines=["a"])]),)
+    assert problems_of(*specs) == []
+
+
+def test_a_proposed_rule_can_refine_a_proposed_rule() -> None:
+    specs = (
+        domain(
+            "design",
+            rules=[rule("a", status="proposed"), rule("b", status="proposed", refines=["a"])],
+        ),
+    )
+    assert problems_of(*specs) == []
+
+
+def test_a_proposed_refinement_outside_the_broader_rule_fails() -> None:
+    specs = (
+        domain("design"),
+        concept("ui", "design", rules=[rule("a")]),
+        concept("ux", "design", rules=[rule("b", status="proposed", refines=["a"])]),
+    )
+    assert codes_of(*specs) == ["refines-outside"]
 
 
 def test_what_applies_at_a_skill() -> None:
@@ -1187,12 +1338,16 @@ def test_a_dangling_exception_reports_its_own_line(tmp_path: Path) -> None:
     [
         "exceptions: a\n",
         "exceptions:\n  - a\n",
-        "exceptions:\n  - directive: a\n    reason: A reason.\n    extra: 1\n",
-        "exceptions:\n  - directive: a\n    reason: 12\n",
-        "exceptions:\n  - directive: [a]\n    reason: A reason.\n",
-        'exceptions:\n  - directive: a\n    reason: "Two\\nlines."\n',
+        (
+            "exceptions:\n  - directive: a\n    reason: A reason.\n"
+            "    status: accepted\n    extra: 1\n"
+        ),
+        "exceptions:\n  - directive: a\n    reason: 12\n    status: accepted\n",
+        "exceptions:\n  - directive: [a]\n    reason: A reason.\n    status: accepted\n",
+        'exceptions:\n  - directive: a\n    reason: "Two\\nlines."\n    status: accepted\n',
+        "exceptions:\n  - directive: a\n    reason: A reason.\n    status: maybe\n",
     ],
-    ids=["a string", "a string entry", "an extra key", "a number", "a list", "two lines"],
+    ids=["a string", "a string entry", "an extra key", "a number", "a list", "two lines", "status"],
 )
 def test_a_bad_exception_is_a_schema_problem(front: str) -> None:
     source = sources((domain("design"),))["design"][1]
@@ -1203,7 +1358,10 @@ def test_a_bad_exception_is_a_schema_problem(front: str) -> None:
 
 def test_a_root_cannot_hold_an_exception() -> None:
     source = sources((root(), domain("design")))["root"][1]
-    text = source.removesuffix("---\n") + "exceptions:\n  - directive: a\n    reason: No.\n---\n"
+    text = (
+        source.removesuffix("---\n")
+        + "exceptions:\n  - directive: a\n    reason: No.\n    status: accepted\n---\n"
+    )
     result = parse_source(text, Path("knowledge/node.md"))
     assert isinstance(result, list)
     assert [problem.code for problem in result] == ["schema"]
@@ -1212,7 +1370,11 @@ def test_a_root_cannot_hold_an_exception() -> None:
 
 @pytest.mark.parametrize(
     ("entry", "missing"),
-    [("directive: a", "reason"), ("reason: A reason.", "directive")],
+    [
+        ("directive: a\n    reason: A reason.", "status"),
+        ("directive: a\n    status: accepted", "reason"),
+        ("reason: A reason.\n    status: accepted", "directive"),
+    ],
 )
 def test_an_exception_needs_each_field(entry: str, missing: str) -> None:
     source = sources((domain("design"),))["design"][1]
@@ -1221,7 +1383,9 @@ def test_an_exception_needs_each_field(entry: str, missing: str) -> None:
     assert isinstance(result, list)
     assert [problem.code for problem in result] == ["schema"]
     assert f"exceptions[0].{missing}" in result[0].message
-    assert result[0].line == text.split("\n").index(f"  - {entry}") + 1
+    assert (
+        result[0].line == text.split("\n").index(f"  - {entry.split(chr(10), maxsplit=1)[0]}") + 1
+    )
 
 
 @pytest.mark.parametrize("key", ["refines", "conflicts_with"])

@@ -5,11 +5,15 @@ from typing import TYPE_CHECKING
 from typer.testing import CliRunner
 
 from knowledge_architecture.cli import app
+from knowledge_architecture.language.profile import LanguageProfile, read_profile
 
 if TYPE_CHECKING:
     import pytest
 
 LANGUAGE = Path(__file__).resolve().parents[1] / "governance/language"
+PROFILE = read_profile(LANGUAGE)
+assert isinstance(PROFILE, LanguageProfile)
+GRAMMAR = PROFILE.grammar
 RUNNER = CliRunner()
 NODE = """---
 id: sample
@@ -112,17 +116,27 @@ def test_graph_reads_the_current_folder_by_default(
     assert result.output.startswith("knowledge/node.md:1: root: ")
 
 
+RULES = sum(
+    len(rules)
+    for rules in (
+        GRAMMAR.directive_rules,
+        GRAMMAR.trigger_rules,
+        GRAMMAR.description_rules,
+    )
+)
+
+
 def language_tree(repository: Path) -> None:
     shutil.copytree(LANGUAGE, repository / "governance/language")
     (repository / "knowledge").mkdir()
     (repository / "skills").mkdir()
 
 
-def test_language_passes_on_an_empty_tree(tmp_path: Path) -> None:
+def test_language_reads_the_grammar_rules_on_an_empty_tree(tmp_path: Path) -> None:
     language_tree(tmp_path)
     result = RUNNER.invoke(app, ["language", str(tmp_path)])
     assert result.exit_code == 0
-    assert result.output == "0 texts checked, 0 problems\n"
+    assert result.output == f"{RULES} texts checked, 0 problems\n"
 
 
 def test_language_passes_on_good_text(tmp_path: Path) -> None:
@@ -130,7 +144,7 @@ def test_language_passes_on_good_text(tmp_path: Path) -> None:
     write_node(tmp_path / "knowledge/a", ROOT)
     result = RUNNER.invoke(app, ["language", str(tmp_path)])
     assert result.exit_code == 0, result.output
-    assert result.output == "1 texts checked, 0 problems\n"
+    assert result.output == f"{RULES + 1} texts checked, 0 problems\n"
 
 
 def test_language_fails_and_prints_each_location(tmp_path: Path) -> None:
@@ -139,7 +153,7 @@ def test_language_fails_and_prints_each_location(tmp_path: Path) -> None:
     result = RUNNER.invoke(app, ["language", str(tmp_path)])
     assert result.exit_code == 1
     assert f"{path}:10: trigger-form: " in result.output
-    assert result.output.endswith("1 texts checked, 1 problems\n")
+    assert result.output.endswith(f"{RULES + 1} texts checked, 1 problems\n")
 
 
 def test_language_reads_the_current_folder_by_default(
@@ -175,6 +189,7 @@ broader: [sample]
 exceptions:
   - directive: run-tests
     reason: This node holds a prototype.
+    status: accepted
 ---
 
 ## Definition
@@ -240,7 +255,7 @@ def test_directives_lists_what_applies_at_a_node(tmp_path: Path) -> None:
     assert result.exit_code == 0, result.output
     assert result.output == (
         "run-tests (subtree) from sample: Run `pytest` before you commit.\n"
-        "1 directives apply at sample, 0 problems\n"
+        "1 directives apply at sample, 0 proposed, 0 problems\n"
     )
 
 
@@ -248,7 +263,7 @@ def test_directives_lists_nothing_at_a_node_that_steps_out(tmp_path: Path) -> No
     directive_tree(tmp_path)
     result = RUNNER.invoke(app, ["directives", str(tmp_path), "--at", "child"])
     assert result.exit_code == 0, result.output
-    assert result.output == "0 directives apply at child, 0 problems\n"
+    assert result.output == "0 directives apply at child, 0 proposed, 0 problems\n"
 
 
 def test_directives_prints_the_whole_route(tmp_path: Path) -> None:

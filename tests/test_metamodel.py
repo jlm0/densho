@@ -372,10 +372,14 @@ def test_directive_attaches_to_each_kind(model: type[BaseModel], sample: Sample)
     assert model.model_validate(data).model_dump(exclude_none=True) == data
 
 
-EXCEPTION: Sample = {"directive": "other", "reason": "This node holds a prototype."}
+EXCEPTION: Sample = {
+    "directive": "other",
+    "reason": "This node holds a prototype.",
+    "status": "proposed",
+}
 
 
-@pytest.mark.parametrize("field", ["directive", "reason"])
+@pytest.mark.parametrize("field", ["directive", "reason", "status"])
 def test_exception_requires_field(field: str) -> None:
     assert (field, "missing") in errors_of(DirectiveException, without(EXCEPTION, field))
 

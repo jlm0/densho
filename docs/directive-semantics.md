@@ -14,7 +14,7 @@ The checks read structure and declarations. They cannot tell whether two sentenc
 uv run ka directives
 ```
 
-The command reads `knowledge/` and `skills/` in the current folder, or in a folder you name after `directives`. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. An empty tree passes.
+The command reads `knowledge/`, `skills/`, and `governance/` in the current folder, or in a folder you name after `directives`. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. An empty tree passes.
 
 These checks need a sound hierarchy, so the command runs the [graph checks](graph-checks.md) first. A parse or graph problem prints and stops the directive checks.
 
@@ -28,7 +28,7 @@ uv run ka directives --at unit-tests
 
 ```text
 write-test-first (subtree) from software-testing -> unit-tests: Write a failing test before you change behavior.
-1 directives apply at unit-tests, 0 problems
+1 directives apply at unit-tests, 0 proposed, 0 problems
 ```
 
 ## What applies where
@@ -46,7 +46,9 @@ One node is under another through `broader` edges, followed down from parent to 
 
 No other edge carries a directive. `related`, `informs`, `depends_on`, `governs`, `implements`, and pointers state a relationship or a route, and nothing more. To reach a node across one of them, use `also_attached_to`.
 
-A `deprecated` directive applies nowhere. A `proposed` directive applies, and the `status` of a node does not change what it carries. See [governance workflow](governance-workflow.md).
+Only an `accepted` directive is in force. A `proposed` directive binds nobody until a reviewer accepts it, and a `deprecated` directive applies nowhere. The `status` of a node does not change what it carries. See [governance workflow](governance-workflow.md).
+
+The checks read two states: what is in force, and what would apply if a reviewer accepted every proposal. So a proposal that conflicts with an accepted rule fails before the review.
 
 ## Skills
 
@@ -63,7 +65,7 @@ Nothing can sit under a skill, so `node` and `subtree` mean the same thing on on
 
 ## Stepping out
 
-A node can step out of a directive it would otherwise inherit. List the directive under `exceptions` in the front matter, with a reason:
+A node can step out of a directive it would otherwise inherit. List the directive under `exceptions` in the front matter, with a reason and a status:
 
 ```markdown
 ---
@@ -77,6 +79,7 @@ broader: [software-testing]
 exceptions:
   - directive: write-test-first
     reason: A prototype is thrown away before it ships.
+    status: accepted
 ---
 
 ## Definition
@@ -84,7 +87,7 @@ exceptions:
 Code written to try out an idea.
 ```
 
-The directive stops at this node and at each node it could only reach through this node. Exceptions name one directive at a time. There is no switch that stops all inheritance, because that would also hide every rule added above the node later.
+The directive stops at this node and at each node it could only reach through this node, once the exception is `accepted`. A `proposed` exception stops nothing, so a rule can't be switched off without a review, and a `deprecated` one stays only for reference. The [governance workflow](governance-workflow.md) has the steps. Exceptions name one directive at a time. There is no switch that stops all inheritance, because that would also hide every rule added above the node later.
 
 The narrower node holds the exception, so a project can step out of a template rule without editing the template's file. The root cannot hold one, because nothing is above it.
 
@@ -151,7 +154,9 @@ The check also compares text in one narrow way. It reports two directives that a
 | `refines-cycle`      | A chain of `refines` leads back to its start                                  |
 | `applies-deprecated` | A skill names a `deprecated` directive in `applies`                           |
 
-An exception under another exception fails as `exception-unused`, because the one above already stopped the route. So does an exception for a `deprecated` directive.
+An exception under another exception fails as `exception-unused`, because the one above already stopped the route. So does an exception for a `deprecated` directive. These checks read a `proposed` exception as if it were accepted, and they skip a `deprecated` one.
+
+An `accepted` directive that refines a `proposed` one fails `refines-outside`, because only the narrower rule is in force.
 
 A `refines`, a `conflicts_with`, or an exception that names a missing ID, or an ID that is not a directive, fails earlier as a `reference` or `type` problem from the [graph checks](graph-checks.md).
 
@@ -159,12 +164,12 @@ A `refines`, a `conflicts_with`, or an exception that names a missing ID, or an 
 
 A check can read the graph and the declarations. It cannot read meaning.
 
-| Question                                 | A check catches                                    | Review still decides                             |
-| ---------------------------------------- | -------------------------------------------------- | ------------------------------------------------ |
-| Do two directives contradict each other? | A declared pair, and an exact `Do not` mirror      | Any contradiction in other words                 |
-| Does a directive refine another?         | A refinement that reaches outside the broader rule | Whether the narrower rule is narrower in meaning |
-| Should this node step out?               | An exception that stops nothing                    | Whether the reason is sound                      |
-| Is `scope` right for this directive?     | Nothing                                            | All of it                                        |
+| Question                                 | A check catches                                    | Review still decides                               |
+| ---------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| Do two directives contradict each other? | A declared pair, and an exact `Do not` mirror      | Any contradiction in other words                   |
+| Does a directive refine another?         | A refinement that reaches outside the broader rule | Whether the narrower rule is narrower in meaning   |
+| Should this node step out?               | An exception that stops nothing                    | Whether the reason is sound, before it is accepted |
+| Is `scope` right for this directive?     | Nothing                                            | All of it                                          |
 
 `uv run ka directives --at <node-id>` gives a reviewer the list to read.
 
@@ -176,7 +181,7 @@ from knowledge_architecture.directives import resolve_directives
 applied = resolve_directives(items).at("write-tests")
 ```
 
-`items` are parsed nodes that passed the graph checks. Each entry has the `directive`, the `holder` (the ID of the node whose file holds it), and the `route` from the attached node to this one. The route is the shortest one, with a fixed order on a tie, because a graph can hold too many routes to list. The longest route comes first, so broad rules come before narrow ones.
+`items` are parsed nodes that passed the graph checks. The result holds what is in force. Pass `proposals=True` to see what would apply if a reviewer accepted every proposal. Each entry has the `directive`, the `holder` (the ID of the node whose file holds it), and the `route` from the attached node to this one. The route is the shortest one, with a fixed order on a tie, because a graph can hold too many routes to list. The longest route comes first, so broad rules come before narrow ones.
 
 ## How it fits
 
@@ -186,6 +191,4 @@ This layer needs the sound hierarchy from [graph checks](graph-checks.md). The [
 
 - Meaning. See the table above.
 - The `reason` of an exception, beyond being one line. The [language checks](language-checks.md) do not read it.
-- Whether an exception needs approval, and how the `status` of a node affects what it carries. See [governance workflow](governance-workflow.md).
-- Nodes outside `knowledge/` and `skills/`, such as policy nodes under `governance/policies/`
 - What a commit will hold. The command reads the working tree, so an untracked node counts.

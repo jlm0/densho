@@ -13,10 +13,10 @@ from knowledge_architecture.language.form import (
     directive_findings,
     trigger_findings,
 )
-from knowledge_architecture.language.profile import read_profile
+from knowledge_architecture.language.profile import GRAMMAR_FILE, read_profile, rule_locations
 from knowledge_architecture.language.prose import read_prose
 from knowledge_architecture.language.tagging import Tagger
-from knowledge_architecture.parser.node import parse_tree
+from knowledge_architecture.parser.node import node_folders, parse_tree
 from knowledge_architecture.parser.result import Problem
 
 if TYPE_CHECKING:
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from knowledge_architecture.language.profile import Grammar, LanguageProfile, Terms
-    from knowledge_architecture.parser.result import FieldPath, ParsedNode
+    from knowledge_architecture.parser.result import ParsedNode
 
 MAX_TEXT_CHARACTERS = 2000
 
@@ -32,12 +32,13 @@ MAX_TEXT_CHARACTERS = 2000
 @dataclass(frozen=True, slots=True)
 class _Text:
     kind: Literal["directive", "trigger", "description"]
-    item: ParsedNode
-    field_path: FieldPath
+    path: Path
+    line: int
     source: str
+    node_id: str | None = None
 
     def problem(self, finding: Finding) -> Problem:
-        return problem_at(self.item, self.field_path, *finding)
+        return Problem(self.path, self.line, *finding)
 
 
 @dataclass(frozen=True, slots=True)
@@ -50,25 +51,35 @@ class _Entry:
 
 def _texts_of(item: ParsedNode) -> list[_Text]:
     node = item.node
+
+    def text(
+        kind: Literal["directive", "trigger", "description"], *field_path: str | int, source: str
+    ) -> _Text:
+        return _Text(kind, item.path, item.line_of(field_path), source, node.id)
+
     texts = [
-        _Text("directive", item, ("directives", index, "text"), directive.text)
+        text("directive", "directives", index, "text", source=directive.text)
         for index, directive in enumerate(node.directives or [])
     ]
     texts += [
-        _Text("trigger", item, ("pointers", index, "trigger"), pointer.trigger)
+        text("trigger", "pointers", index, "trigger", source=pointer.trigger)
         for index, pointer in enumerate(node.pointers or [])
     ]
     if isinstance(node, Skill):
-        texts.append(_Text("description", item, ("description",), node.description))
+        texts.append(text("description", "description", source=node.description))
     return texts
 
 
-def _terms_by_node(items: Sequence[ParsedNode], profile: LanguageProfile) -> dict[str, Terms]:
+def _terms_by_node(
+    items: Sequence[ParsedNode], profile: LanguageProfile
+) -> dict[str | None, Terms]:
     broader = edge_graph(items, "broader")
-    return {
+    terms: dict[str | None, Terms] = {
         item.node.id: profile.terms_for({item.node.id, *nx.descendants(broader, item.node.id)})
         for item in items
     }
+    terms[None] = profile.terms_for(())
+    return terms
 
 
 def _unknown_branches(items: Sequence[ParsedNode], profile: LanguageProfile) -> list[Problem]:
@@ -101,8 +112,7 @@ def _duplicate(text: _Text, plain: str, seen: dict[str, _Text]) -> list[Finding]
     first = seen.setdefault(key, text)
     if first is text:
         return []
-    location = f"{first.item.path}:{first.item.line_of(first.field_path)}"
-    return [("duplicate-rule", f"This rule repeats the rule at {location}.")]
+    return [("duplicate-rule", f"This rule repeats the rule at {first.path}:{first.line}.")]
 
 
 def _form_findings(entry: _Entry, grammar: Grammar) -> list[Finding]:
@@ -125,10 +135,12 @@ def _tagged_findings(entry: _Entry, grammar: Grammar, tagger: Tagger) -> list[Fi
     return [*findings, *tagger.description(entry.masked, grammar)]
 
 
-def check_items(items: Sequence[ParsedNode], profile: LanguageProfile) -> tuple[int, list[Problem]]:
+def check_items(
+    items: Sequence[ParsedNode], profile: LanguageProfile, rules: Sequence[_Text] = ()
+) -> tuple[int, list[Problem]]:
     grammar = profile.grammar
     problems = [*_unknown_branches(items, profile), *_listing_budget(items, profile)]
-    texts = [text for item in items for text in _texts_of(item)]
+    texts = [*rules, *(text for item in items for text in _texts_of(item))]
     terms_by_node = _terms_by_node(items, profile)
     seen: dict[str, _Text] = {}
     entries: list[_Entry] = []
@@ -138,7 +150,7 @@ def check_items(items: Sequence[ParsedNode], profile: LanguageProfile) -> tuple[
             problems.append(text.problem(("word-count", message)))
             continue
         masked, plain = read_prose(text.source)
-        entry = _Entry(text, masked, terms_by_node[text.item.node.id])
+        entry = _Entry(text, masked, terms_by_node[text.node_id])
         findings = [*_form_findings(entry, grammar), *_duplicate(text, plain, seen)]
         problems += [text.problem(finding) for finding in findings]
         entries.append(replace(entry, form_passed=not findings))
@@ -157,11 +169,16 @@ def _sort_key(problem: Problem) -> tuple[str, int, str, str]:
 
 
 def check_language(repository: Path) -> tuple[int, list[Problem]]:
-    profile = read_profile(repository / "governance/language")
+    folder = repository / "governance/language"
+    profile = read_profile(folder)
     if isinstance(profile, list):
         return 0, sorted(profile, key=_sort_key)
-    folders = [repository / "knowledge", repository / "skills", repository / "governance"]
-    items, problems = parse_tree(folders)
+    items, problems = parse_tree(node_folders(repository))
     if problems:
         return 0, problems
-    return check_items(items, profile)
+    grammar_file = folder / GRAMMAR_FILE
+    rules = [
+        _Text("directive", grammar_file, line, text)
+        for text, line in rule_locations(grammar_file, profile.grammar)
+    ]
+    return check_items(items, profile, rules)

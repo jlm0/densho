@@ -29,7 +29,7 @@ Each file puts its directives first, then its procedures, then its references.
 
 The agent still chooses which pointers to follow, so the [graph checks](graph-checks.md) prove that every node can be found, not that it gets read. The system does not pick the knowledge for a task on the agent's behalf.
 
-A skill is an entry point in the middle of the tree, so the build has to give it the directives that apply to it. [Directive semantics](directive-semantics.md) defines that list and returns it with the route of each directive.
+A skill is an entry point in the middle of the tree, so the build has to give it the directives that apply to it. [Directive semantics](directive-semantics.md) defines that list and returns it with the route of each directive. The list holds only what the [governance workflow](governance-workflow.md) puts in force.
 
 ## Not settled yet
 

@@ -10,6 +10,12 @@ from markdown_it import MarkdownIt
 from knowledge_architecture.cli import app
 from knowledge_architecture.directives import DIRECTIVE_CODES
 from knowledge_architecture.generated.metamodel import Concept
+from knowledge_architecture.governance import GOVERNANCE_CODES
+from knowledge_architecture.governance.checks import RESTING_FIELDS
+from knowledge_architecture.governance.entities import (
+    DIRECTIVE_FIELDS_WITHOUT_REVIEW,
+    NODE_FIELDS_WITHOUT_REVIEW,
+)
 from knowledge_architecture.graph.structure import ACYCLIC_EDGES, MAX_POINTER_HOPS
 from knowledge_architecture.language import check_items
 from knowledge_architecture.language.profile import (
@@ -18,7 +24,7 @@ from knowledge_architecture.language.profile import (
     LanguageProfile,
     read_profile,
 )
-from knowledge_architecture.parser import ParsedNode, parse_source
+from knowledge_architecture.parser import ParsedNode, parse_source, parse_tree
 
 REPO = Path(__file__).resolve().parents[1]
 README = REPO / "README.md"
@@ -312,6 +318,56 @@ def test_each_directive_example_parses_and_passes_the_language_checks(example: s
     result = parse_source(f"{source}\n", Path("node.md"))
     assert isinstance(result, ParsedNode), result
     assert check_items([result], language_profile())[1] == []
+
+
+def governance_page() -> str:
+    return (DOCS / "governance-workflow.md").read_text(encoding="utf-8")
+
+
+def table_row(page: str, start: str) -> str:
+    return next(line for line in page.splitlines() if line.startswith(start))
+
+
+@pytest.mark.parametrize("code", GOVERNANCE_CODES)
+def test_the_governance_page_names_each_code(code: str) -> None:
+    assert f"| `{code}`" in governance_page()
+
+
+def test_the_governance_page_names_each_field_without_review() -> None:
+    page = governance_page()
+    node_row = table_row(page, "| Node ")
+    directive_row = table_row(page, "| Directive ")
+    identity = {"id", "status", "origin"}
+    assert NODE_FIELDS_WITHOUT_REVIEW - identity
+    for field in NODE_FIELDS_WITHOUT_REVIEW - identity:
+        assert f"`{field}`" in node_row.rsplit("|", 2)[1]
+    assert DIRECTIVE_FIELDS_WITHOUT_REVIEW - identity == {"sources"}
+    assert "`sources`" in directive_row.rsplit("|", 2)[1]
+
+
+def test_the_governance_page_names_each_resting_field() -> None:
+    row = table_row(governance_page(), "| `deprecated-reference`")
+    for field in RESTING_FIELDS:
+        assert f"`{field}`" in row
+
+
+def policy_ids() -> list[str]:
+    items, problems = parse_tree([REPO / "governance/policies"])
+    assert problems == []
+    return [item.node.id for item in items]
+
+
+def test_the_governance_page_names_each_policy() -> None:
+    assert policy_ids()
+    for node_id in policy_ids():
+        assert f"| `{node_id}`" in governance_page()
+
+
+def test_the_governance_page_names_a_real_directive() -> None:
+    items, _ = parse_tree([REPO / "governance/policies"])
+    directives = {directive.id for item in items for directive in item.node.directives or []}
+    assert "no-personal-data" in directives
+    assert "`no-personal-data`" in governance_page()
 
 
 def documented_commands() -> set[str]:

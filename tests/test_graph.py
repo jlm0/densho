@@ -212,7 +212,7 @@ def test_an_empty_tree_passes(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -
 
 
 def test_check_graph_passes_with_no_nodes() -> None:
-    assert check_graph([], knowledge=Path("knowledge"), skills=Path("skills")) == []
+    assert check_graph([], Path()) == []
 
 
 def test_a_missing_folder_is_a_parse_problem(
@@ -358,6 +358,59 @@ def test_a_knowledge_node_cannot_be_under_skills(tree: Tree) -> None:
     assert tree.problems() == [
         tree.expect("motion", "kind: ka:Concept", "placement", "Move this node out of skills.")
     ]
+
+
+def test_a_policy_node_joins_the_graph(tree: Tree) -> None:
+    tree.change("motion", file="governance/policies/motion/node.md")
+    assert tree.problems() == []
+    assert "motion" in {item.node.id for item in check_tree(Path())[0]}
+
+
+def test_a_node_in_another_governance_folder_fails(tree: Tree) -> None:
+    tree.change("motion", file="governance/language/motion/node.md")
+    assert tree.problems() == [
+        tree.expect(
+            "motion", "kind: ka:Concept", "placement", "Move this node to governance/policies."
+        )
+    ]
+
+
+def test_a_node_beside_the_policy_folder_fails(tree: Tree) -> None:
+    tree.change("motion", file="governance/node.md")
+    assert tree.codes() == ["placement"]
+
+
+def test_a_skill_cannot_be_a_policy(tree: Tree) -> None:
+    tree.change("review", file="governance/policies/review/node.md")
+    assert tree.problems() == [
+        tree.expect("review", "kind: ka:Skill", "placement", "Move this skill to skills.")
+    ]
+
+
+def test_the_root_cannot_be_a_policy(tree: Tree) -> None:
+    tree.change("root", file="governance/policies/node.md")
+    assert "placement" in tree.codes()
+
+
+def test_a_parse_problem_in_a_policy_stops_the_graph_checks(tree: Tree) -> None:
+    write_tree(tree.repository, tree.nodes)
+    path = tree.repository / "governance/policies/bad/node.md"
+    path.parent.mkdir(parents=True)
+    path.write_text("no front matter\n", encoding="utf-8")
+    assert [problem.code for problem in check_tree(Path())[1]] == ["front-matter"]
+
+
+def test_a_misnamed_file_under_governance_is_a_problem(tree: Tree) -> None:
+    write_tree(tree.repository, tree.nodes)
+    path = tree.repository / "governance/schema/notes.md"
+    path.parent.mkdir(parents=True)
+    path.write_text("# Notes\n", encoding="utf-8")
+    assert [problem.code for problem in check_tree(Path())[1]] == ["file-name"]
+
+
+def test_a_missing_governance_folder_passes(tree: Tree) -> None:
+    assert not (tree.repository / "governance").exists()
+    assert tree.problems() == []
 
 
 def test_the_folder_check_reads_a_repository_path(tmp_path: Path) -> None:

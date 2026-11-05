@@ -51,6 +51,8 @@ def _exception_problems(items: Sequence[ParsedNode], by_id: dict[str, Reach]) ->
             if directive_id in seen:
                 code = "exception-repeated"
                 message = f"This node already has an exception for {directive_id}."
+            elif exception.status == Status.deprecated:
+                pass
             elif item.node.id in reach.attached:
                 code = "exception-attached"
                 message = (
@@ -179,18 +181,31 @@ def _deprecated_applies(items: Sequence[ParsedNode], by_id: dict[str, Reach]) ->
     ]
 
 
-def check_items(items: Sequence[ParsedNode]) -> list[Problem]:
-    reaches = resolve_directives(items).reaches
-    by_id = {reach.directive.id: reach for reach in reaches}
-    problems = [
-        *_exception_problems(items, by_id),
+def _by_id(reaches: Sequence[Reach]) -> dict[str, Reach]:
+    return {reach.directive.id: reach for reach in reaches}
+
+
+def _state_problems(items: Sequence[ParsedNode], reaches: Sequence[Reach]) -> list[Problem]:
+    by_id = _by_id(reaches)
+    return [
         *_route_conflicts(items, reaches),
         *_declared_conflicts(reaches, by_id),
         *_opposites(reaches),
         *_refinements(reaches, by_id),
-        *_refinement_cycles(reaches, by_id),
-        *_deprecated_applies(items, by_id),
     ]
+
+
+def check_items(items: Sequence[ParsedNode]) -> list[Problem]:
+    in_force = resolve_directives(items).reaches
+    projected = resolve_directives(items, proposals=True).reaches
+    by_id = _by_id(projected)
+    problems = {
+        *_state_problems(items, in_force),
+        *_state_problems(items, projected),
+        *_exception_problems(items, by_id),
+        *_refinement_cycles(projected, by_id),
+        *_deprecated_applies(items, by_id),
+    }
     return sorted(problems)
 
 

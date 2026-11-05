@@ -625,7 +625,8 @@ class Directive(GovernedEntity):
 @dataclass(repr=False)
 class DirectiveException(YAMLRoot):
     """
-    A statement that a node steps out of a directive that it would otherwise inherit.
+    A statement that a node steps out of a directive that it would otherwise inherit. Only an accepted exception stops
+    the directive.
     """
     _inherited_slots: ClassVar[list[str]] = []
 
@@ -636,6 +637,7 @@ class DirectiveException(YAMLRoot):
 
     directive: Union[str, DirectiveId] = None
     reason: str = None
+    status: Union[str, "Status"] = None
 
     def __post_init__(self, *_: str, **kwargs: Any):
         if self._is_empty(self.directive):
@@ -647,6 +649,11 @@ class DirectiveException(YAMLRoot):
             self.MissingRequiredField("reason")
         if not isinstance(self.reason, str):
             self.reason = str(self.reason)
+
+        if self._is_empty(self.status):
+            self.MissingRequiredField("status")
+        if not isinstance(self.status, Status):
+            self.status = Status(self.status)
 
         super().__post_init__(**kwargs)
 
@@ -855,10 +862,10 @@ class Status(EnumDefinitionImpl):
     """
     proposed = PermissibleValue(
         text="proposed",
-        description="An author recommends the entity. No reviewer approved it.")
+        description="""An author recommends the entity. No reviewer approved it. A proposed directive or exception is not in force.""")
     accepted = PermissibleValue(
         text="accepted",
-        description="A reviewer approved the entity.")
+        description="A reviewer approved the entity. An accepted directive or exception is in force.")
     deprecated = PermissibleValue(
         text="deprecated",
         description="The entity stays for reference. Do not apply it to new work.")

@@ -13,7 +13,7 @@ This layer will add a company-level skill with two jobs:
 
 ## How it works
 
-Migration is how a real project adopts the system: its existing rules and docs become nodes that pass the checks. Reconciliation reads the template's change history and uses stable IDs to find each node, even if the project moved its file. The project decides what to pull.
+Migration is how a real project adopts the system: its existing rules and docs become nodes that pass the checks. Reconciliation reads the template's change history and uses stable IDs to find each node, even if the project moved its file. The project decides what to pull, and a pulled change goes through the project's own [governance workflow](governance-workflow.md).
 
 ## How it fits
 

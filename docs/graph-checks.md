@@ -12,7 +12,7 @@ The parser checks each file on its own, so `broader: [does-not-exist]` passes it
 uv run ka graph
 ```
 
-The command reads `knowledge/` and `skills/` in the current folder, or in a folder you name after `graph`. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. The git hook runs the same command on each commit.
+The command reads `knowledge/`, `skills/`, and `governance/` in the current folder, or in a folder you name after `graph`. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. The git hook runs the same command on each commit.
 
 An empty tree passes, so a new copy of the template starts clean.
 
@@ -40,9 +40,10 @@ The kind of a node sets where its file goes:
 
 - The root is `knowledge/node.md`, and no other node can use that file.
 - A skill goes under `skills/`.
+- A policy goes under `governance/policies/`, and no node can go anywhere else under `governance/`.
 - Every other node goes under `knowledge/`.
 
-Inside those folders the path is free. It stays a navigation aid, so a file can move without changing what it means.
+These checks do not need a `governance/` folder, and a project can delete the policies it received. Inside those folders the path is free. It stays a navigation aid, so a file can move without changing what it means.
 
 ## Reachability and depth
 
@@ -81,6 +82,5 @@ This layer needs the [schema](schema.md) and the [parser](node-format.md). Every
 - Links in the body text of a node. Only edges and pointers count as references.
 - Whether the target of `implements` is domain knowledge. Only the source is checked.
 - A node that names itself in `related`
-- The `status` of a node. A pointer to a `deprecated` node passes. See [governance workflow](governance-workflow.md).
-- Nodes outside `knowledge/` and `skills/`, such as policy nodes under `governance/policies/`
+- The `status` of a node. The [governance workflow](governance-workflow.md) reads it, and a pointer to a `deprecated` node passes.
 - What a commit will hold. The command reads the working tree, so an untracked node counts.

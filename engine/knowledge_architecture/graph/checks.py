@@ -14,7 +14,7 @@ from knowledge_architecture.graph.structure import (
     check_cycles,
     check_reachability,
 )
-from knowledge_architecture.parser.node import parse_tree
+from knowledge_architecture.parser.node import node_folders, parse_tree
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -23,13 +23,13 @@ if TYPE_CHECKING:
     from knowledge_architecture.parser.result import ParsedNode, Problem
 
 
-def check_graph(items: Sequence[ParsedNode], *, knowledge: Path, skills: Path) -> list[Problem]:
+def check_graph(items: Sequence[ParsedNode], repository: Path) -> list[Problem]:
     if not items:
         return []
     identity = check_identity(items)
     problems = [
         *identity,
-        *check_placement(items, knowledge=knowledge, skills=skills),
+        *check_placement(items, repository),
         *check_skills(items),
         *check_implements(items),
     ]
@@ -46,8 +46,7 @@ def _sort_key(problem: Problem) -> tuple[str, int, str, str]:
 
 
 def check_tree(repository: Path) -> tuple[list[ParsedNode], list[Problem]]:
-    knowledge, skills = repository / "knowledge", repository / "skills"
-    items, problems = parse_tree([knowledge, skills])
+    items, problems = parse_tree(node_folders(repository))
     if problems:
         return items, problems
-    return items, check_graph(items, knowledge=knowledge, skills=skills)
+    return items, check_graph(items, repository)

@@ -102,11 +102,11 @@ class Status(str, Enum):
     """
     proposed = "proposed"
     """
-    An author recommends the entity. No reviewer approved it.
+    An author recommends the entity. No reviewer approved it. A proposed directive or exception is not in force.
     """
     accepted = "accepted"
     """
-    A reviewer approved the entity.
+    A reviewer approved the entity. An accepted directive or exception is in force.
     """
     deprecated = "deprecated"
     """
@@ -960,10 +960,11 @@ class Directive(GovernedEntity):
 
 class DirectiveException(ConfiguredBaseModel):
     """
-    A statement that a node steps out of a directive that it would otherwise inherit.
+    A statement that a node steps out of a directive that it would otherwise inherit. Only an accepted exception stops the directive.
     """
     directive: str = Field(default=..., description="""The directive that the exception stops.""")
     reason: str = Field(default=..., description="""The reason that the directive does not apply at this node.""")
+    status: Status = Field(default=..., description="""The lifecycle state.""")
 
     @field_validator('reason')
     def pattern_reason(cls, v):

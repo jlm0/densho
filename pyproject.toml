@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
+    "jinja2>=3.1.6",
     "linkml-runtime>=1.12.1",
     "markdown-it-py>=3",
     "networkx>=3.7",

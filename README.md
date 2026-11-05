@@ -6,7 +6,7 @@ Knowledge lives in a tree of Markdown files that runs from domain to discipline 
 
 A build generates `AGENTS.md` from the tree as its root node. Agent tools such as Claude Code load it at the start of each session and follow the tree from there.
 
-The repo is early. The schema, the node parser, the graph checks, the language checks, the directive semantics, the governance workflow, the seed knowledge, and the compiled outputs are in place. The build that generates `AGENTS.md` and the skills is not built yet.
+The repo is early. The schema, the node parser, the graph checks, the language checks, the directive semantics, the governance workflow, the seed knowledge, the compiled outputs, and the runtime files are in place. Every seed directive is still a proposal, so no directive is in force yet.
 
 ## Setup
 
@@ -22,25 +22,28 @@ uv run pre-commit run --all-files
 
 ## Structure
 
-| Path                                        | Contents                                                             |
-| ------------------------------------------- | -------------------------------------------------------------------- |
-| `governance/schema/`                        | The metamodel: node kinds, relationship kinds, and required fields   |
-| `governance/language/`                      | The directive grammar and the vocabularies                           |
-| `governance/policies/`                      | Lifecycle, approval, and change rules, written as nodes              |
-| `knowledge/`                                | The knowledge nodes: concepts and directives                         |
-| `skills/`                                   | Skill sources built from the knowledge tree                          |
-| `engine/knowledge_architecture/`            | The Python engine: validators, compiler, and packager                |
-| `engine/knowledge_architecture/generated/`  | Models and shapes generated from the schema. Do not edit them.       |
-| `engine/knowledge_architecture/parser/`     | Reads `node.md` files into the models, with line numbers             |
-| `engine/knowledge_architecture/graph/`      | Checks the structure of the whole graph                              |
-| `engine/knowledge_architecture/language/`   | Checks directives, triggers, and skill descriptions                  |
-| `engine/knowledge_architecture/directives/` | Works out which directives apply at each node, and checks the result |
-| `engine/knowledge_architecture/governance/` | Checks the lifecycle, and compares each change with the last commit  |
-| `engine/knowledge_architecture/compiler/`   | Compiles the checked graph to JSON and RDF, with digests             |
-| `engine/knowledge_architecture/vendor/`     | A third-party linter, kept unchanged with its license                |
-| `tests/`                                    | Tests for the engine                                                 |
-| `docs/`                                     | The overview and a page for each layer                               |
-| `build/`                                    | Generated output. Git ignores it.                                    |
+| Path                                          | Contents                                                             |
+| --------------------------------------------- | -------------------------------------------------------------------- |
+| `governance/schema/`                          | The metamodel: node kinds, relationship kinds, and required fields   |
+| `governance/language/`                        | The directive grammar and the vocabularies                           |
+| `governance/policies/`                        | Lifecycle, approval, and change rules, written as nodes              |
+| `knowledge/`                                  | The knowledge nodes: concepts and directives                         |
+| `skills/`                                     | Skill sources built from the knowledge tree                          |
+| `engine/knowledge_architecture/`              | The Python engine: validators, compiler, and packager                |
+| `engine/knowledge_architecture/generated/`    | Models and shapes generated from the schema. Do not edit them.       |
+| `engine/knowledge_architecture/parser/`       | Reads `node.md` files into the models, with line numbers             |
+| `engine/knowledge_architecture/graph/`        | Checks the structure of the whole graph                              |
+| `engine/knowledge_architecture/language/`     | Checks directives, triggers, and skill descriptions                  |
+| `engine/knowledge_architecture/directives/`   | Works out which directives apply at each node, and checks the result |
+| `engine/knowledge_architecture/governance/`   | Checks the lifecycle, and compares each change with the last commit  |
+| `engine/knowledge_architecture/compiler/`     | Compiles the checked graph to JSON and RDF, with digests             |
+| `engine/knowledge_architecture/runtime/`      | Generates the files that an agent tool loads                         |
+| `engine/knowledge_architecture/vendor/`       | A third-party linter, kept unchanged with its license                |
+| `tests/`                                      | Tests for the engine                                                 |
+| `docs/`                                       | The overview and a page for each layer                               |
+| `build/`                                      | Generated output. Git ignores it.                                    |
+| `AGENTS.md`                                   | Generated from the root node. Do not edit it.                        |
+| `.claude/rules/knowledge/`, `.claude/skills/` | Generated path rules and skills. Do not edit them.                   |
 
 ## Docs
 
@@ -70,9 +73,11 @@ The template holds two kinds of knowledge under one governance:
 | `uv run ka governance --pending`              | Lists what waits for review          |
 | `uv run ka build`                             | Runs the checks, then compiles       |
 | `uv run ka build --proposals`                 | Compiles what acceptance would add   |
+| `uv run ka runtime`                           | Writes the files an agent tool loads |
+| `uv run ka runtime --proposals`               | Writes a review copy of those files  |
 | `uv run pytest`                               | Runs the tests                       |
 | `uv run pyright`                              | Checks types in strict mode          |
 | `uv run ruff check`                           | Lints the Python code                |
 | `uv run ruff format`                          | Formats the Python code              |
 
-The git hook runs these checks on each commit: file hygiene, the lock file, the schema lint, the generated models, the knowledge nodes, the graph checks, the directive checks, the governance checks, the language checks, the compiled outputs, Ruff lint and format, Markdown format, Pyright, and the tests.
+The git hook runs these checks on each commit: file hygiene, the lock file, the schema lint, the generated models, the knowledge nodes, the graph checks, the directive checks, the governance checks, the language checks, the compiled outputs, the runtime files, Ruff lint and format, Markdown format, Pyright, and the tests.

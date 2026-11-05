@@ -1,7 +1,7 @@
 # pyright: reportUnknownMemberType=false, reportUnknownVariableType=false, reportUnknownArgumentType=false, reportMissingTypeStubs=false, reportOptionalMemberAccess=false
 import re
 from dataclasses import replace
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import get_args
 
 import pytest
@@ -28,6 +28,7 @@ from knowledge_architecture.language.profile import (
     read_profile,
 )
 from knowledge_architecture.parser import ParsedNode, parse_source, parse_tree
+from knowledge_architecture.runtime import REVIEW_FOLDER, RUNTIME_CODES, review_path
 
 REPO = Path(__file__).resolve().parents[1]
 README = REPO / "README.md"
@@ -395,6 +396,22 @@ def test_the_compiled_page_names_each_code(code: str) -> None:
 @pytest.mark.parametrize("name", [name for result in CompiledResult for name in file_names(result)])
 def test_the_compiled_page_names_each_output_file(name: str) -> None:
     assert f"`{name}`" in COMPILED_PAGE.read_text(encoding="utf-8")
+
+
+RUNTIME_PAGE = DOCS / "runtime-files.md"
+
+
+@pytest.mark.parametrize("code", RUNTIME_CODES)
+def test_the_runtime_page_names_each_code(code: str) -> None:
+    assert f"`{code}`" in RUNTIME_PAGE.read_text(encoding="utf-8")
+
+
+def test_the_runtime_page_names_the_review_folder_and_each_review_name() -> None:
+    text = RUNTIME_PAGE.read_text(encoding="utf-8")
+    assert f"`{REVIEW_FOLDER.as_posix()}/`" in text
+    for name in ("AGENTS.md", ".claude/skills/<id>/SKILL.md", ".claude/rules/knowledge/<id>.md"):
+        assert f"`{name}`" in text
+        assert f"`{REVIEW_FOLDER.as_posix()}/{review_path(PurePosixPath(name))}`" in text
 
 
 def test_the_compiled_page_names_the_output_folder() -> None:

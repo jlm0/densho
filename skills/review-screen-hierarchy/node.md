@@ -32,7 +32,7 @@ pointers:
 
 ## Procedure
 
-1. Read each directive that applies to this skill. `uv run ka directives --at review-screen-hierarchy` lists them.
+1. Read each directive that this skill lists.
 2. Name the element that a viewer sees first, then second, then third.
 3. Compare that order with the order of importance for the task.
 4. Mark each group that the spacing shows, and compare it with the groups that the task needs.

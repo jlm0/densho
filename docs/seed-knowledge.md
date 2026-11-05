@@ -40,7 +40,7 @@ The hierarchy is not the only structure. `informs`, `depends_on`, and `related` 
 | `design-settings-interface` | You design or change a settings screen | Progressive disclosure, Information hierarchy, Visual grouping, Accessibility, Brand and Responsive design |
 | `review-screen-hierarchy`   | A screen design is ready for review    | Information hierarchy, Visual grouping, Visual communication, and two contrast rules through `applies`     |
 
-A skill names knowledge and does not copy it. Its body holds only the inputs, the procedure, the output, and how to validate the result. To see every rule a skill carries:
+A skill source names knowledge and does not copy it. Its body holds only the inputs, the procedure, the output, and how to validate the result. The [generated skill file](runtime-files.md#why-a-skill-holds-a-copy) holds the directives in force. To see every rule a skill carries, with each proposal labeled:
 
 ```sh
 uv run ka directives --at design-settings-interface

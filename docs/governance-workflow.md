@@ -86,6 +86,7 @@ Promotion takes two commits, so a reviewer approves exactly the text that the la
 1. An author commits the entity as `proposed`.
 2. A reviewer runs `uv run ka governance --pending` and reads the entity, its reasons, and `uv run ka directives --at <node-id>`.
 3. A later commit changes `status` to `accepted` and changes nothing else that needs review.
+4. That commit also holds the [runtime files](runtime-files.md) that `uv run ka runtime` writes, because the accepted directive now reaches them.
 
 One commit can promote any number of entities, so a person can accept a whole batch at once.
 

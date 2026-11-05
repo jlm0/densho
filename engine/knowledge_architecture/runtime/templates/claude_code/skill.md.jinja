@@ -1,0 +1,14 @@
+---
+name: {{ node.link.id }}
+description: {{ node.description | yaml_string }}
+---
+{% include "_title.md.jinja" %}
+
+If compaction cuts this skill, invoke the skill again.
+
+{% include "_directives.md.jinja" %}
+{% if node.body %}
+
+{{ node.body }}
+{% endif %}
+{% include "_references.md.jinja" %}

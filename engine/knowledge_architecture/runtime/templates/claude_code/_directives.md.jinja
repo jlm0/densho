@@ -1,0 +1,18 @@
+## Directives
+
+{% if not node.groups %}
+{% if notice %}
+No directive applies at this node.
+{% else %}
+No directive is in force at this node.
+{% endif %}
+{% endif %}
+{% include "_groups.md.jinja" %}
+{% if node.exceptions %}
+
+## Exceptions
+
+{% for exception in node.exceptions %}
+- `{{ exception.directive }}` does not apply at this node. {{ exception.reason }}{% if exception.status != "accepted" %} ({{ exception.status }}){% endif +%}
+{% endfor %}
+{% endif %}

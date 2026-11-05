@@ -10,6 +10,7 @@ from knowledge_architecture.governance import check_governance, pending_entities
 from knowledge_architecture.graph import check_tree
 from knowledge_architecture.language import check_language
 from knowledge_architecture.parser import parse_tree
+from knowledge_architecture.runtime import generate_runtime
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -153,3 +154,39 @@ def build(
             f"compiled, {report.compiled.left_out['directives']} directives left out"
         )
     _finish(summary, report.problems)
+
+
+@app.command()
+def runtime(
+    repository: Annotated[
+        Path, typer.Argument(help="The folder that holds knowledge/, skills/, and governance/.")
+    ] = Path(),
+    *,
+    proposals: Annotated[
+        bool,
+        typer.Option(
+            "--proposals",
+            help="Write a review copy that also holds the proposals, in a folder under build/.",
+        ),
+    ] = False,
+    verify: Annotated[
+        bool,
+        typer.Option(
+            "--verify",
+            help="Also fail when a file changed, or when the git index does not hold a file.",
+        ),
+    ] = False,
+) -> None:
+    """Run each check, then write the files that an agent tool loads."""
+    if proposals and verify:
+        typer.echo("--verify checks the committed files, so it cannot run with --proposals.")
+        raise typer.Exit(2)
+    report = generate_runtime(repository, proposals=proposals, verify=verify)
+    for note in report.notes:
+        typer.echo(f"note: {note}")
+    for path in report.written:
+        typer.echo(f"wrote {path}")
+    for path in report.removed:
+        typer.echo(f"removed {path}")
+    summary = f"{report.result.value}: {len(report.files)} files, {len(report.written)} written"
+    _finish(f"{summary}, {len(report.removed)} removed", report.problems)

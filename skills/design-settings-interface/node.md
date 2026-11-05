@@ -53,7 +53,7 @@ pointers:
 
 ## Procedure
 
-1. Read each directive that applies to this skill. `uv run ka directives --at design-settings-interface` lists them.
+1. Read each directive that this skill lists.
 2. Rank the settings by how frequently people change them.
 3. Split the settings into a first screen and a secondary screen.
 4. Group the settings on each screen, and name each group.

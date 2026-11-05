@@ -1,4 +1,4 @@
-exclude: ^engine/knowledge_architecture/(generated/metamodel|vendor/ste_lint)
+exclude: ^engine/knowledge_architecture/(generated/metamodel|vendor/ste_lint)|(^|/)AGENTS\.md$|^\.claude/(rules/knowledge|skills)/
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -72,6 +72,12 @@ repos:
         language: system
         pass_filenames: false
         files: ^(knowledge|skills|governance|engine)/|^uv\.lock$
+      - id: runtime-files
+        name: generate the runtime files
+        entry: uv run --frozen ka runtime --verify
+        language: system
+        pass_filenames: false
+        always_run: true
       - id: ruff-check
         name: ruff check
         entry: uv run --frozen ruff check --fix

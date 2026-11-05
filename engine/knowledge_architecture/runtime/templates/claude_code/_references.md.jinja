@@ -1,0 +1,8 @@
+{% if node.pointers %}
+
+## References
+
+{% for pointer in node.pointers %}
+{% include "_pointer.md.jinja" %}
+{% endfor %}
+{% endif %}

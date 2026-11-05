@@ -128,3 +128,13 @@ def read_base(repository: Path) -> Base:
     if contents is None:
         return _failure(repository, b"An object is missing.")
     return _parse_blobs(repository, [(path, contents[i]) for i, (_, path) in enumerate(blobs)])
+
+
+def tracked_files(repository: Path) -> frozenset[str] | None:
+    program = shutil.which("git")
+    if program is None:
+        return None
+    listing = _git(program, repository, "ls-files", "-z")
+    if listing.returncode != 0:
+        return None
+    return frozenset(os.fsdecode(name) for name in listing.stdout.split(b"\0") if name)

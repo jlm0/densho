@@ -185,7 +185,7 @@ applied = resolve_directives(items).at("write-tests")
 
 ## How it fits
 
-This layer needs the sound hierarchy from [graph checks](graph-checks.md). The [runtime files](runtime-files.md) will use its result, because a skill has to carry the rules that apply to it.
+This layer needs the sound hierarchy from [graph checks](graph-checks.md). The [runtime files](runtime-files.md) use its result, because a skill has to carry the rules that apply to it.
 
 ## What it does not check yet
 

@@ -19,6 +19,7 @@ from knowledge_architecture.generated.metamodel import (
 )
 from knowledge_architecture.parser.body import read_body
 from knowledge_architecture.parser.front_matter import read_front_matter
+from knowledge_architecture.parser.generated import is_generated_file
 from knowledge_architecture.parser.result import FieldPath, ParsedNode, Problem, line_of
 
 if TYPE_CHECKING:
@@ -136,6 +137,8 @@ def _read_folder(root: Path, nodes: list[ParsedNode], problems: list[Problem]) -
 
 def _read_node_file(path: Path, nodes: list[ParsedNode], problems: list[Problem]) -> None:
     if path.name != NODE_FILE_NAME:
+        if is_generated_file(path):
+            return
         message = f"A Markdown file in this folder must have the name {NODE_FILE_NAME}."
         problems.append(Problem(path, 1, "file-name", message))
         return

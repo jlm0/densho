@@ -1,0 +1,10 @@
+- {% if pointer.trigger %}{{ pointer.trigger }} {% endif -%}
+{% if pointer.mechanism == "skill" -%}
+Use the skill `{{ pointer.target.id }}`.
+{%- elif pointer.mechanism == "path" -%}
+[{{ pointer.target.title | link_text }}]({{ link(pointer.target.path) }}) loads by itself.
+{%- elif pointer.mechanism == "always" -%}
+[{{ pointer.target.title | link_text }}]({{ link(pointer.target.path) }}) is always loaded.
+{%- else -%}
+Read [{{ pointer.target.title | link_text }}]({{ link(pointer.target.path) }}).
+{%- endif +%}

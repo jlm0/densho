@@ -18,7 +18,7 @@ Think of the system as a library, where each node is a book. The first two layer
 | [Governance workflow](governance-workflow.md)                   | The acquisitions policy                       | Built   |
 | [Seed knowledge](seed-knowledge.md)                             | The first real books                          | Built   |
 | [Compiled outputs](compiled-outputs.md)                         | The printed catalog                           | Built   |
-| [Runtime files](runtime-files.md)                               | The signs that lead visitors to the shelf     | Planned |
+| [Runtime files](runtime-files.md)                               | The signs that lead visitors to the shelf     | Built   |
 | [Template packaging](template-packaging.md)                     | The library in a box                          | Planned |
 | [Migration and reconciliation](migration-and-reconciliation.md) | The moving crew                               | Planned |
 | [Human interface](human-interface.md)                           | The reading room                              | Planned |

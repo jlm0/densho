@@ -1,0 +1,51 @@
+{% include "_title.md.jinja" %}
+
+A build generates this file from the node files. Change a node file, not this file.
+
+## Directives
+
+{{ state }}
+
+Treat a directive as a rule only when its `status` is `accepted`. A generated file lists only the directives that apply at its own node.
+{% if node.groups %}
+
+{% include "_groups.md.jinja" %}
+{% endif %}
+{% if node.body %}
+
+{{ node.body }}
+{% endif %}
+{% if view.domains %}
+
+## Domains
+
+{% for pointer in view.domains %}
+{% include "_pointer.md.jinja" %}
+{% endfor %}
+{% endif %}
+{% if view.governance %}
+
+## Governance
+
+{% for pointer in view.governance %}
+{% include "_pointer.md.jinja" %}
+{% endfor %}
+{% endif %}
+{% if view.skills %}
+
+## Skills
+
+If compaction removes a skill, invoke the skill again.
+
+{% for skill in view.skills %}
+- `{{ skill.link.id }}`: {{ skill.description }}
+{% endfor %}
+{% endif %}
+{% if view.references %}
+
+## References
+
+{% for pointer in view.references %}
+{% include "_pointer.md.jinja" %}
+{% endfor %}
+{% endif %}

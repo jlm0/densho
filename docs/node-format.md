@@ -10,6 +10,8 @@ Each node is one Markdown file with YAML front matter. The parser in `engine/kno
 
 Each node is a file with the name `node.md`, in its own folder. The root node is `knowledge/node.md`. Other knowledge nodes go under `knowledge/`, skills go under `skills/`, and policies go under `governance/policies/`.
 
+A folder can also hold a generated `AGENTS.md`. The parser skips a Markdown file that holds the marker of a [generated file](runtime-files.md#hand-written-files), and any other Markdown file with another name fails with `file-name`.
+
 The folder path is only for navigation. Identity and relationships come from `id` and the edges, so a file can move without changing what it means.
 
 Any other Markdown file, and any symbolic link, in these folders is an error, so a misnamed node cannot escape the checks.

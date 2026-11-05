@@ -1,0 +1,22 @@
+{% if node.paths %}
+---
+paths:
+{% for pattern in node.paths %}
+  - {{ pattern | yaml_string }}
+{% endfor %}
+---
+{% endif %}
+{% include "_title.md.jinja" %}
+
+{% include "_directives.md.jinja" %}
+{% if node.definition %}
+
+## Definition
+
+{{ node.definition }}
+{% endif %}
+{% if node.body %}
+
+{{ node.body }}
+{% endif %}
+{% include "_references.md.jinja" %}

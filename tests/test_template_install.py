@@ -116,7 +116,17 @@ def test_a_planted_path_does_not_reach_a_project(installed: Path, name: str) -> 
 
 
 @pytest.mark.parametrize(
-    "name", ["engine", "tests", "docs", "build", "README.md", "pyproject.toml", "uv.lock"]
+    "name",
+    [
+        "engine",
+        "tests",
+        "docs",
+        "build",
+        "company-skills",
+        "README.md",
+        "pyproject.toml",
+        "uv.lock",
+    ],
 )
 def test_the_source_of_the_engine_does_not_reach_a_project(installed: Path, name: str) -> None:
     assert not (installed / name).exists()

@@ -20,7 +20,7 @@ Think of the system as a library, where each node is a book. The first two layer
 | [Compiled outputs](compiled-outputs.md)                         | The printed catalog                           | Built   |
 | [Runtime files](runtime-files.md)                               | The signs that lead visitors to the shelf     | Built   |
 | [Template packaging](template-packaging.md)                     | The library in a box                          | Built   |
-| [Migration and reconciliation](migration-and-reconciliation.md) | The moving crew                               | Planned |
+| [Migration and reconciliation](migration-and-reconciliation.md) | The moving crew                               | Built   |
 | [Human interface](human-interface.md)                           | The reading room                              | Planned |
 
 A `Built` page explains how to use what exists today. A `Planned` page describes what a layer will do. Unless the page says otherwise, nothing on it exists yet.

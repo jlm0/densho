@@ -161,7 +161,7 @@ For a moved node that the template also changed, the line names both `path` and 
 
 ## The change history
 
-`.ka/history.jsonl` lists each change to the template, one entity on each line, for an agent to read. A search for an ID finds every change to that entity, wherever its file sits now. The [migration and reconciliation skill](migration-and-reconciliation.md) will read this file.
+`.ka/history.jsonl` lists each change to the template, one entity on each line, for an agent to read. A search for an ID finds every change to that entity, wherever its file sits now. The [migration and reconciliation skill](migration-and-reconciliation.md) reads this file.
 
 ```json
 {"change":3,"kind":"directive","id":"limit-color-palette","action":"changed","fields":["text"],"path":"knowledge/digital-product-development/ui-ux-design/visual-design/node.md","status":"proposed","content":{"holder":"83a83f3fa4a73c2e","scope":"f1d3984b3638714f","sources":"7ca2a8e719470e72","text":"9f9068e089663fe3"}}

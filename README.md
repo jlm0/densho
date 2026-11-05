@@ -6,7 +6,7 @@ Knowledge lives in a tree of Markdown files that runs from domain to discipline 
 
 A build generates `AGENTS.md` from the tree as its root node. Agent tools such as Claude Code load it at the start of each session and follow the tree from there.
 
-The repo is early. The schema, the node parser, the graph checks, the language checks, the directive semantics, the governance workflow, the seed knowledge, the compiled outputs, the runtime files, and the template packaging are in place. Every seed directive is still a proposal, so no directive is in force yet.
+The repo is early. The schema, the node parser, the graph checks, the language checks, the directive semantics, the governance workflow, the seed knowledge, the compiled outputs, the runtime files, the template packaging, and the migration and reconciliation skill are in place. Every seed directive is still a proposal, so no directive is in force yet.
 
 ## Setup
 
@@ -47,6 +47,7 @@ uv run pre-commit run --all-files
 | `.claude/rules/knowledge/`, `.claude/skills/` | Generated path rules and skills. Do not edit them.                   |
 | `copier.yml`, `*.jinja`                       | What a project receives, and the files only a project holds          |
 | `.ka/`                                        | The way to the engine in a project, and the change history           |
+| `company-skills/`                             | A skill you install yourself. A project doesn't receive it.          |
 
 ## Docs
 
@@ -68,7 +69,7 @@ pre-commit install
 
 Run `git init` before `pre-commit install` if the folder has no repo. In a project, `.ka/ka` takes the place of `uv run ka`. To pull a later template change, run `uvx --python 3.14 copier update --trust --defaults --vcs-ref=HEAD`, then `.ka/ka adopt`.
 
-[Template packaging](docs/template-packaging.md) explains each step, what a project receives, and what happens to a node that both sides changed.
+[Template packaging](docs/template-packaging.md) explains each step, what a project receives, and what happens to a node that both sides changed. To convert the rules a project already has, or to get help with a pull, install the [migration and reconciliation skill](docs/migration-and-reconciliation.md).
 
 The template holds two kinds of knowledge under one governance:
 

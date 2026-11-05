@@ -1,4 +1,5 @@
 # pyright: reportUnknownMemberType=false, reportUnknownVariableType=false, reportUnknownArgumentType=false, reportMissingTypeStubs=false, reportOptionalMemberAccess=false
+import re
 from pathlib import Path
 
 import pytest
@@ -11,7 +12,14 @@ from knowledge_architecture.parser import ParsedNode, parse_source
 REPO = Path(__file__).resolve().parents[1]
 README = REPO / "README.md"
 DOCS = REPO / "docs"
-PAGES = sorted(DOCS.glob("*.md"))
+OVERVIEW = DOCS / "README.md"
+FILES = sorted(DOCS.glob("*.md"))
+PAGES = [path for path in FILES if path != OVERVIEW]
+ANALOGY_LINE = re.compile(r"^> \*\*In the library:\*\* \S", re.MULTILINE)
+STATUS_LINE = re.compile(r"^\*\*Status:\*\* (Built|Planned)\.", re.MULTILINE)
+OVERVIEW_ROW = re.compile(
+    r"^\| \[[^\]]+\]\((?P<page>[^)]+)\) *\|[^|]+\| (?P<status>\w+) *\|$", re.MULTILINE
+)
 VIEW = SchemaView(str(REPO / "governance/schema/metamodel.yaml"))
 
 
@@ -56,15 +64,65 @@ def test_the_link_check_finds_a_missing_file_and_a_missing_heading(tmp_path: Pat
     assert broken_links(page) == ["missing.md", "#no-heading"]
 
 
-@pytest.mark.parametrize("path", [README, *PAGES], ids=lambda path: path.name)
+@pytest.mark.parametrize("path", [README, *FILES], ids=lambda path: str(path.relative_to(REPO)))
 def test_each_local_link_resolves(path: Path) -> None:
     assert broken_links(path) == []
 
 
-def test_the_readme_links_to_each_page() -> None:
+def test_the_readme_links_to_the_overview() -> None:
     linked = {(REPO / link).resolve() for link in local_links(README)}
+    assert OVERVIEW in linked
+
+
+def test_the_overview_links_to_each_page() -> None:
+    linked = {(DOCS / link).resolve() for link in local_links(OVERVIEW)}
     assert PAGES
     assert set(PAGES) <= linked
+
+
+def page_status(text: str) -> str | None:
+    if len(ANALOGY_LINE.findall(text)) != 1:
+        return None
+    statuses = STATUS_LINE.findall(text)
+    return statuses[0] if len(statuses) == 1 else None
+
+
+def overview_statuses(text: str) -> dict[str, str]:
+    return {row["page"]: row["status"] for row in OVERVIEW_ROW.finditer(text)}
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "**Status:** Built.\n",
+        "> **In the library:** a book.\n",
+        "> **In the library:** a book.\n\n**Status:** Unknown.\n",
+        "> **In the library:** a book.\n\n**Status:** Built.\n\n**Status:** Planned.\n",
+        "> **In the library:** a book.\n\n> **In the library:** a shelf.\n\n**Status:** Built.\n",
+    ],
+)
+def test_the_page_check_rejects_a_bad_page(text: str) -> None:
+    assert page_status(text) is None
+
+
+def test_the_page_check_reads_a_good_page() -> None:
+    text = "> **In the library:** a book.\n\n**Status:** Planned. Not yet.\n"
+    assert page_status(text) == "Planned"
+
+
+@pytest.mark.parametrize("path", PAGES, ids=lambda path: path.name)
+def test_each_page_has_one_analogy_and_one_status(path: Path) -> None:
+    assert page_status(path.read_text(encoding="utf-8")) is not None
+
+
+def test_the_overview_check_reads_the_rows() -> None:
+    text = "| [A](a.md) | A book | Built |\n| [B](b.md)   | A shelf | Planned |\n| A | B | C |\n"
+    assert overview_statuses(text) == {"a.md": "Built", "b.md": "Planned"}
+
+
+def test_the_overview_shows_the_status_of_each_page() -> None:
+    expected = {path.name: page_status(path.read_text(encoding="utf-8")) for path in PAGES}
+    assert overview_statuses(OVERVIEW.read_text(encoding="utf-8")) == expected
 
 
 def concrete_classes() -> list[str]:

@@ -29,21 +29,16 @@ uv run pre-commit run --all-files
 | `governance/policies/`                     | Lifecycle, approval, and change rules                              |
 | `knowledge/`                               | The knowledge nodes: concepts and directives                       |
 | `skills/`                                  | Skill sources built from the knowledge tree                        |
-| `engine/knowledge_architecture/`           | The Python engine: validators, compiler, resolver, and packager    |
+| `engine/knowledge_architecture/`           | The Python engine: validators, compiler, and packager              |
 | `engine/knowledge_architecture/generated/` | Python models generated from the schema. Do not edit them.         |
 | `engine/knowledge_architecture/parser/`    | Reads `node.md` files into the models, with line numbers           |
 | `tests/`                                   | Tests for the engine                                               |
-| `docs/`                                    | A page for each built layer                                        |
+| `docs/`                                    | The overview and a page for each layer                             |
 | `build/`                                   | Generated output. Git ignores it.                                  |
 
 ## Docs
 
-Each layer has its own page, added as the layer is built.
-
-| Page                               | What it covers                                                          |
-| ---------------------------------- | ----------------------------------------------------------------------- |
-| [Schema](docs/schema.md)           | The node kinds, edges, pointers, and directives, and how to change them |
-| [Node format](docs/node-format.md) | How to write a node, and how to check it                                |
+Start with the [overview](docs/README.md). It explains the system as a library and links to a page for each layer, built or planned.
 
 ## Usage
 

@@ -1,5 +1,9 @@
 # Node format
 
+> **In the library:** the scanner at the front desk. It reads one card at a time and rejects a badly filled one, with the line that is wrong. It does not know whether the books a card names exist.
+
+**Status:** Built.
+
 Each node is one Markdown file with YAML front matter. The parser in `engine/knowledge_architecture/parser/` reads it into the models described in [Schema](schema.md).
 
 ## Where nodes live

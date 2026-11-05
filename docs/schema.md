@@ -1,5 +1,9 @@
 # Schema
 
+> **In the library:** the design of the catalog card. It sets what a card must say about a book and how books can refer to each other. It holds no books itself.
+
+**Status:** Built.
+
 `governance/schema/metamodel.yaml` defines what can exist in the knowledge graph: the node kinds, the fields they hold, and how they connect. It holds no knowledge itself. The Python models in `engine/knowledge_architecture/generated/` are generated from it, and the parser validates each node against those models.
 
 Each class inherits the fields of the class above it:
@@ -90,7 +94,7 @@ Governance is written in the same classes as everything else: a governance node 
 
 ## What the models do not check yet
 
-The models read one node at a time and hold each reference as a plain string. Nothing yet checks that:
+The models read one node at a time and hold each reference as a plain string. [Graph checks](graph-checks.md) will cover these points. Nothing yet checks that:
 
 - an ID is unique
 - a reference names something that exists

@@ -7,10 +7,12 @@ from typing import get_args
 import pytest
 from linkml_runtime.utils.schemaview import SchemaView
 from markdown_it import MarkdownIt
+from rdflib import Graph, Variable
 
 from knowledge_architecture.cli import app
+from knowledge_architecture.compiler import BUILD_CODES, OUTPUT_FOLDER, file_names
 from knowledge_architecture.directives import DIRECTIVE_CODES
-from knowledge_architecture.generated.metamodel import Concept
+from knowledge_architecture.generated.metamodel import CompiledResult, Concept
 from knowledge_architecture.governance import GOVERNANCE_CODES
 from knowledge_architecture.governance.checks import RESTING_FIELDS
 from knowledge_architecture.governance.entities import (
@@ -380,3 +382,40 @@ def test_each_documented_command_exists() -> None:
     commands = {command.callback.__name__ for command in app.registered_commands}
     assert documented_commands()
     assert documented_commands() <= commands
+
+
+COMPILED_PAGE = DOCS / "compiled-outputs.md"
+
+
+@pytest.mark.parametrize("code", BUILD_CODES)
+def test_the_compiled_page_names_each_code(code: str) -> None:
+    assert f"`{code}`" in COMPILED_PAGE.read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("name", [name for result in CompiledResult for name in file_names(result)])
+def test_the_compiled_page_names_each_output_file(name: str) -> None:
+    assert f"`{name}`" in COMPILED_PAGE.read_text(encoding="utf-8")
+
+
+def test_the_compiled_page_names_the_output_folder() -> None:
+    assert f"`{OUTPUT_FOLDER.as_posix()}/`" in COMPILED_PAGE.read_text(encoding="utf-8")
+
+
+def test_the_compiled_page_query_runs_on_a_compiled_graph() -> None:
+    blocks = [
+        token.content
+        for token in MarkdownIt("commonmark").parse(COMPILED_PAGE.read_text(encoding="utf-8"))
+        if token.type == "fence" and token.info == "sparql"
+    ]
+    assert len(blocks) == 1
+    data = Graph().parse(
+        data="""
+        @prefix ka: <https://github.com/jlm0/knowledge-architecture/schema/> .
+        @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+        ka:a skos:broader ka:b ; ka:status "accepted" .
+        ka:c skos:broader ka:b ; ka:status "proposed" .
+        """,
+        format="turtle",
+    )
+    children = [binding[Variable("child")] for binding in data.query(blocks[0]).bindings]
+    assert [str(child).rpartition("/")[2] for child in children] == ["a"]

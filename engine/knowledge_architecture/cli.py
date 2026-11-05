@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING, Annotated
 
 import typer
 
+from knowledge_architecture.compiler import build_tree
+from knowledge_architecture.compiler.output import NOTICES
 from knowledge_architecture.directives import check_directives, resolve_directives
 from knowledge_architecture.governance import check_governance, pending_entities
 from knowledge_architecture.graph import check_tree
@@ -118,3 +120,36 @@ def governance(
     for note in report.notes:
         typer.echo(f"note: {note}")
     _finish(f"{report.count} entities checked", report.problems)
+
+
+@app.command()
+def build(
+    repository: Annotated[
+        Path, typer.Argument(help="The folder that holds knowledge/, skills/, and governance/.")
+    ] = Path(),
+    *,
+    proposals: Annotated[
+        bool,
+        typer.Option(
+            "--proposals",
+            help="Also hold the proposed directives, in separate files marked as not in force.",
+        ),
+    ] = False,
+) -> None:
+    """Run each check, then write the JSON and RDF output with digests."""
+    report = build_tree(repository, proposals=proposals)
+    for note in report.notes:
+        typer.echo(f"note: {note}")
+    summary = "0 nodes compiled"
+    if report.compiled is not None and report.output is not None:
+        result = report.output.result
+        typer.echo(f"{result.value}: {NOTICES[result]}")
+        for name, digest in report.output.digests.items():
+            typer.echo(f"{name} {digest}")
+        typer.echo(f"digest {report.output.digest}")
+        graph = report.compiled.graph
+        summary = (
+            f"{len(graph.nodes) + 1} nodes and {len(report.compiled.directives)} directives "
+            f"compiled, {report.compiled.left_out['directives']} directives left out"
+        )
+    _finish(summary, report.problems)

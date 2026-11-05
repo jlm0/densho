@@ -21,6 +21,7 @@ classes:
     slots:
       - root
       - nodes
+      - result
 
   GovernedEntity:
     description: An addressable entity that governance tracks.
@@ -176,6 +177,9 @@ slots:
     inlined_as_list: true
     required: true
     minimum_cardinality: 1
+  result:
+    description: The directives that a compiled graph holds. A source graph has no value.
+    range: CompiledResult
   id:
     description: The stable identifier. The identifier does not change when a file moves.
     identifier: true
@@ -329,6 +333,13 @@ slots:
     multivalued: true
 
 enums:
+  CompiledResult:
+    description: The kinds of compiled graph.
+    permissible_values:
+      in_force:
+        description: The graph holds only the accepted directives and exceptions.
+      proposals:
+        description: The graph also holds the proposed directives and exceptions, which are not in force.
   KnowledgeType:
     description: The kinds of knowledge.
     permissible_values:

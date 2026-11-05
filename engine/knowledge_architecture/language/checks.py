@@ -174,14 +174,17 @@ def _sort_key(problem: Problem) -> tuple[str, int, str, str]:
     return (str(problem.path), problem.line, problem.code, problem.message)
 
 
-def check_language(repository: Path) -> tuple[int, list[Problem]]:
+def check_language(
+    repository: Path, items: Sequence[ParsedNode] | None = None
+) -> tuple[int, list[Problem]]:
     folder = repository / "governance/language"
     profile = read_profile(folder)
     if isinstance(profile, list):
         return 0, sorted(profile, key=_sort_key)
-    items, problems = parse_tree(node_folders(repository))
-    if problems:
-        return 0, problems
+    if items is None:
+        items, problems = parse_tree(node_folders(repository))
+        if problems:
+            return 0, problems
     grammar_file = folder / GRAMMAR_FILE
     rules = [
         _Text("directive", grammar_file, line, text)

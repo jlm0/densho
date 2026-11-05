@@ -6,7 +6,7 @@ Knowledge lives in a tree of Markdown files that runs from domain to discipline 
 
 A build generates `AGENTS.md` from the tree as its root node. Agent tools such as Claude Code load it at the start of each session and follow the tree from there.
 
-The repo is early. The schema, the node parser, the graph checks, the language checks, the directive semantics, the governance workflow, and the seed knowledge are in place. The build that generates `AGENTS.md` and the skills is not built yet.
+The repo is early. The schema, the node parser, the graph checks, the language checks, the directive semantics, the governance workflow, the seed knowledge, and the compiled outputs are in place. The build that generates `AGENTS.md` and the skills is not built yet.
 
 ## Setup
 
@@ -36,6 +36,7 @@ uv run pre-commit run --all-files
 | `engine/knowledge_architecture/language/`   | Checks directives, triggers, and skill descriptions                  |
 | `engine/knowledge_architecture/directives/` | Works out which directives apply at each node, and checks the result |
 | `engine/knowledge_architecture/governance/` | Checks the lifecycle, and compares each change with the last commit  |
+| `engine/knowledge_architecture/compiler/`   | Compiles the checked graph to JSON and RDF, with digests             |
 | `engine/knowledge_architecture/vendor/`     | A third-party linter, kept unchanged with its license                |
 | `tests/`                                    | Tests for the engine                                                 |
 | `docs/`                                     | The overview and a page for each layer                               |
@@ -67,9 +68,11 @@ The template holds two kinds of knowledge under one governance:
 | `uv run ka directives`                        | Checks which directives apply where  |
 | `uv run ka governance`                        | Checks the lifecycle and each change |
 | `uv run ka governance --pending`              | Lists what waits for review          |
+| `uv run ka build`                             | Runs the checks, then compiles       |
+| `uv run ka build --proposals`                 | Compiles what acceptance would add   |
 | `uv run pytest`                               | Runs the tests                       |
 | `uv run pyright`                              | Checks types in strict mode          |
 | `uv run ruff check`                           | Lints the Python code                |
 | `uv run ruff format`                          | Formats the Python code              |
 
-The git hook runs these checks on each commit: file hygiene, the lock file, the schema lint, the generated models, the knowledge nodes, the graph checks, the directive checks, the governance checks, the language checks, Ruff lint and format, Markdown format, Pyright, and the tests.
+The git hook runs these checks on each commit: file hygiene, the lock file, the schema lint, the generated models, the knowledge nodes, the graph checks, the directive checks, the governance checks, the language checks, the compiled outputs, Ruff lint and format, Markdown format, Pyright, and the tests.

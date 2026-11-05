@@ -77,7 +77,7 @@ A `sources` value names a page that was read when the rule was written: the Web 
 
 ## How it fits
 
-This is the first real content for the [schema](schema.md), the [format](node-format.md), and the checks. The [compiled outputs](compiled-outputs.md) and [runtime files](runtime-files.md) build from it next.
+This is the first real content for the [schema](schema.md), the [format](node-format.md), and the checks. The [compiled outputs](compiled-outputs.md) read it now, and the [runtime files](runtime-files.md) build from it next. While a seed directive is `proposed`, only `uv run ka build --proposals` holds it.
 
 ## What it does not check yet
 

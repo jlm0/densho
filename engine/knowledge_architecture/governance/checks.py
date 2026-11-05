@@ -121,10 +121,13 @@ def check_items(items: Sequence[ParsedNode], repository: Path) -> list[Problem]:
     ]
 
 
-def check_governance(repository: Path) -> GovernanceReport:
-    items, problems = parse_tree(node_folders(repository))
-    if problems:
-        return GovernanceReport(0, [], problems)
+def check_governance(
+    repository: Path, items: Sequence[ParsedNode] | None = None
+) -> GovernanceReport:
+    if items is None:
+        items, problems = parse_tree(node_folders(repository))
+        if problems:
+            return GovernanceReport(0, [], problems)
     current = governed_entities(items)
     base = read_base(repository)
     found = {*check_items(items, repository), *base.problems}

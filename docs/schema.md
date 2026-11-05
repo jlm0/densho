@@ -9,7 +9,7 @@
 Each class inherits the fields of the class above it:
 
 ```text
-KnowledgeGraph            one root and the knowledge nodes
+KnowledgeGraph            one root, the knowledge nodes, and the result of a build
 
 GovernedEntity            id, status, origin, sources
 ├─ Node                   kind, title, pointers, directives, body
@@ -57,6 +57,7 @@ A node's `kind` selects its class. The value is the class name with the `ka:` pr
 | `origin`         | `template`, `project`                | Whether the template or the project added the entity                              |
 | `knowledge_type` | `domain`, `workspace`                | Universal knowledge, or knowledge specific to one project                         |
 | `scope`          | `node`, `subtree`                    | A directive applies to the nodes it attaches to, or also to every node under them |
+| `result`         | `in_force`, `proposals`              | What a [compiled graph](compiled-outputs.md) holds. A source graph has no value.  |
 
 An `id` is a lowercase hyphenated slug. It stays the same when a file moves.
 

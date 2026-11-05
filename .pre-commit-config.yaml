@@ -66,6 +66,12 @@ repos:
         language: system
         pass_filenames: false
         files: ^(knowledge|skills|governance|engine)/|^uv\.lock$
+      - id: compiled-outputs
+        name: compile the checked graph
+        entry: uv run --frozen ka build
+        language: system
+        pass_filenames: false
+        files: ^(knowledge|skills|governance|engine)/|^uv\.lock$
       - id: ruff-check
         name: ruff check
         entry: uv run --frozen ruff check --fix

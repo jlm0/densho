@@ -106,8 +106,12 @@ def _skills_applying(items: Sequence[ParsedNode]) -> dict[str, set[str]]:
     return skills
 
 
+def live_statuses(*, proposals: bool) -> tuple[Status, ...]:
+    return (Status.accepted, Status.proposed) if proposals else (Status.accepted,)
+
+
 def resolve_directives(items: Sequence[ParsedNode], *, proposals: bool = False) -> Resolution:
-    live = (Status.accepted, Status.proposed) if proposals else (Status.accepted,)
+    live = live_statuses(proposals=proposals)
     under, users = _links(items)
     stops = _stops_by_directive(items, live)
     applying = _skills_applying(items)

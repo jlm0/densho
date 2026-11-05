@@ -128,6 +128,7 @@ class KnowledgeGraph(YAMLRoot):
 
     root: Union[dict, "Root"] = None
     nodes: Union[dict[Union[str, KnowledgeNodeId], Union[dict, "KnowledgeNode"]], list[Union[dict, "KnowledgeNode"]]] = empty_dict()
+    result: Optional[Union[str, "CompiledResult"]] = None
 
     def __post_init__(self, *_: str, **kwargs: Any):
         if self._is_empty(self.root):
@@ -138,6 +139,9 @@ class KnowledgeGraph(YAMLRoot):
         if self._is_empty(self.nodes):
             self.MissingRequiredField("nodes")
         self._normalize_inlined_as_list(slot_name="nodes", slot_type=KnowledgeNode, key_name="id", keyed=True)
+
+        if self.result is not None and not isinstance(self.result, CompiledResult):
+            self.result = CompiledResult(self.result)
 
         super().__post_init__(**kwargs)
 
@@ -824,6 +828,22 @@ class TextPointer(Pointer):
 
 
 # Enumerations
+class CompiledResult(EnumDefinitionImpl):
+    """
+    The kinds of compiled graph.
+    """
+    in_force = PermissibleValue(
+        text="in_force",
+        description="The graph holds only the accepted directives and exceptions.")
+    proposals = PermissibleValue(
+        text="proposals",
+        description="The graph also holds the proposed directives and exceptions, which are not in force.")
+
+    _defn = EnumDefinition(
+        name="CompiledResult",
+        description="The kinds of compiled graph.",
+    )
+
 class KnowledgeType(EnumDefinitionImpl):
     """
     The kinds of knowledge.
@@ -900,6 +920,9 @@ slots.root = Slot(uri=KA.root, name="root", curie=KA.curie('root'),
 
 slots.nodes = Slot(uri=KA.nodes, name="nodes", curie=KA.curie('nodes'),
                    model_uri=KA.nodes, domain=None, range=Union[dict[Union[str, KnowledgeNodeId], Union[dict, KnowledgeNode]], list[Union[dict, KnowledgeNode]]])
+
+slots.result = Slot(uri=KA.result, name="result", curie=KA.curie('result'),
+                   model_uri=KA.result, domain=None, range=Optional[Union[str, "CompiledResult"]])
 
 slots.id = Slot(uri=KA.id, name="id", curie=KA.curie('id'),
                    model_uri=KA.id, domain=None, range=URIRef,

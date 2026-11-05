@@ -68,6 +68,20 @@ class LinkMLMeta(RootModel):
 
 linkml_meta = None
 
+class CompiledResult(str, Enum):
+    """
+    The kinds of compiled graph.
+    """
+    in_force = "in_force"
+    """
+    The graph holds only the accepted directives and exceptions.
+    """
+    proposals = "proposals"
+    """
+    The graph also holds the proposed directives and exceptions, which are not in force.
+    """
+
+
 class KnowledgeType(str, Enum):
     """
     The kinds of knowledge.
@@ -135,6 +149,7 @@ class KnowledgeGraph(ConfiguredBaseModel):
     """
     root: Root = Field(default=..., description="""The top node of the graph.""")
     nodes: list[Union[Skill,Domain,Discipline,PracticeArea,Concept]] = Field(default=..., description="""The knowledge nodes of the graph.""", min_length=1)
+    result: Optional[CompiledResult] = Field(default=None, description="""The directives that a compiled graph holds. A source graph has no value.""")
 
 
 class GovernedEntity(ConfiguredBaseModel):

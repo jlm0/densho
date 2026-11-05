@@ -61,6 +61,8 @@ proposed: an exception stops run-tests here
 1 directives apply at child, 1 proposed, 0 problems
 ```
 
+[`uv run ka build`](compiled-outputs.md) follows the same rule: its default output holds only what is in force.
+
 A proposal is not exempt from the checks. The [directive checks](directive-semantics.md) run twice, once on what is in force and once as if every proposal were accepted, so a conflict shows up before the review and not after it.
 
 There is one cost. When you reopen an accepted rule to change it, the rule is out of force until a reviewer accepts the new text. The diff shows that gap, and the alternative is a rule that binds with text nobody has approved.

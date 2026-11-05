@@ -1,6 +1,7 @@
 # pyright: reportUnknownMemberType=false, reportUnknownVariableType=false, reportUnknownArgumentType=false, reportMissingTypeStubs=false, reportOptionalMemberAccess=false
 import re
 from pathlib import Path
+from typing import get_args
 
 import pytest
 from linkml_runtime.utils.schemaview import SchemaView
@@ -9,6 +10,13 @@ from markdown_it import MarkdownIt
 from knowledge_architecture.cli import app
 from knowledge_architecture.generated.metamodel import Concept
 from knowledge_architecture.graph.structure import ACYCLIC_EDGES, MAX_POINTER_HOPS
+from knowledge_architecture.language import check_items
+from knowledge_architecture.language.profile import (
+    LISTING_ENTRY_CAP,
+    CheckCode,
+    LanguageProfile,
+    read_profile,
+)
 from knowledge_architecture.parser import ParsedNode, parse_source
 
 REPO = Path(__file__).resolve().parents[1]
@@ -190,6 +198,84 @@ def test_the_graph_page_states_the_depth_limit() -> None:
 @pytest.mark.parametrize("edge", ACYCLIC_EDGES)
 def test_the_graph_page_names_each_acyclic_edge(edge: str) -> None:
     assert f"`{edge}` edges" in graph_page()
+
+
+def language_page() -> str:
+    return (DOCS / "language-checks.md").read_text(encoding="utf-8")
+
+
+def language_profile() -> LanguageProfile:
+    profile = read_profile(REPO / "governance/language")
+    assert isinstance(profile, LanguageProfile), profile
+    return profile
+
+
+@pytest.mark.parametrize(
+    "code", [*get_args(CheckCode.__value__), "vocabulary-branch", "language-profile"]
+)
+def test_the_language_page_names_each_code(code: str) -> None:
+    assert f"| `{code}`" in language_page()
+
+
+def test_the_language_page_states_each_limit() -> None:
+    grammar = language_profile().grammar
+    page = language_page()
+    assert f"in {grammar.directive.max_words} words or fewer" in page
+    assert f"sentence of {grammar.trigger.max_words} words or fewer" in page
+    limits = grammar.skill_description
+    assert f"Each sentence has at most {limits.max_sentence_words} words" in page
+    assert f"| {limits.max_characters} characters" in page
+    assert f"| {limits.max_listing_characters:,} characters" in page
+    assert f"| {LISTING_ENTRY_CAP:,} characters" in page
+
+
+def language_examples() -> list[str]:
+    blocks = language_page().split("```text\n")[1:]
+    return [line for block in blocks for line in block.split("\n```")[0].splitlines()]
+
+
+LANGUAGE_NODE = "---\nid: a\ntitle: A\nstatus: accepted\norigin: template\n"
+LANGUAGE_TRIGGERS = {
+    "You edit a test file.",
+    "The build fails.",
+    "`pytest` fails.",
+    "A file is open.",
+}
+
+
+def language_example_source(example: str) -> str:
+    if example.endswith("changes code."):
+        fields = f"knowledge_type: domain\nkind: ka:Skill\ndescription: {example}\nuses: [b]\n"
+        return f"{LANGUAGE_NODE}{fields}---\n"
+    if example in LANGUAGE_TRIGGERS:
+        pointer = f'  - kind: ka:TextPointer\n    target: b\n    trigger: "{example}"\n'
+        return f"{LANGUAGE_NODE}kind: ka:Root\npointers:\n{pointer}---\n"
+    return (
+        f"{LANGUAGE_NODE}kind: ka:Domain\nknowledge_type: domain\n---\n\n"
+        "## Definition\n\nA.\n\n## Directives\n\n"
+        f"- {example} ^b\n  - scope: node\n  - status: accepted\n  - origin: template\n"
+    )
+
+
+def test_the_language_page_has_examples() -> None:
+    assert set(language_examples()) >= LANGUAGE_TRIGGERS
+    assert any(example.endswith("changes code.") for example in language_examples())
+    assert "Do not commit a secret." in language_examples()
+
+
+@pytest.mark.parametrize("example", language_examples())
+def test_each_language_example_passes_as_its_kind(example: str) -> None:
+    result = parse_source(language_example_source(example), Path("node.md"))
+    assert isinstance(result, ParsedNode), result
+    assert check_items([result], language_profile())[1] == []
+
+
+def test_the_node_format_example_passes_the_language_checks() -> None:
+    text = (DOCS / "node-format.md").read_text(encoding="utf-8")
+    example = text.split("```markdown\n")[1].split("\n```\n")[0]
+    result = parse_source(f"{example}\n", Path("node.md"))
+    assert isinstance(result, ParsedNode), result
+    assert check_items([result], language_profile())[1] == []
 
 
 def documented_commands() -> set[str]:

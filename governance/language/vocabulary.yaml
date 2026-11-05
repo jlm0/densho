@@ -1,0 +1,143 @@
+approved_verbs:
+  [
+    add, apply, approve, archive, ask, assert, assign, attach, avoid, block,
+    build, call, cancel, capture, change, check, choose, cite, clear, close,
+    collect, combine, commit, compare, compile, compute, configure, confirm,
+    connect, convert, copy, correct, count, create, debug, declare, define,
+    delete, deploy, deprecate, describe, detect, disable, document, download,
+    drop, edit, emit, enable, encode, end, escape, exclude, exit, explain,
+    export, expose, extend, extract, fail, fetch, fill, filter, find, finish,
+    fix, flag, follow, force, format, generate, give, group, hide, hold,
+    ignore, import, include, increase, index, inherit, inject, insert, inspect,
+    install, isolate, keep, label, leave, limit, link, lint, list, load, lock,
+    log, make, map, mark, match, measure, merge, migrate, mock, monitor, move,
+    name, normalize, note, open, order, parse, pass, patch, pin, place, print,
+    protect, publish, pull, push, put, query, raise, read, rebase, record,
+    reduce, refactor, register, reject, release, remove, rename, render,
+    repeat, replace, report, request, require, reset, resolve, restart,
+    restore, retry, return, reuse, review, revert, rotate, run, save, scan,
+    search, select, send, separate, set, show, skip, sort, split, start,
+    state, stop, store, strip, submit, tag, take, tell, test, trace, track,
+    transform, treat, trim, type, undo, update, upgrade, upload, use, validate,
+    verify, wait, warn, wrap, write,
+  ]
+
+prohibited:
+  modal:
+    - can
+    - cannot
+    - could
+    - had better
+    - has to
+    - have to
+    - may
+    - might
+    - must
+    - need to
+    - needs to
+    - ought
+    - shall
+    - should
+    - will
+    - would
+  hedge:
+    - almost
+    - approximately
+    - attempt to
+    - consider
+    - generally
+    - ideally
+    - if possible
+    - largely
+    - likely
+    - mainly
+    - maybe
+    - mostly
+    - nearly
+    - normally
+    - often
+    - perhaps
+    - possibly
+    - preferably
+    - probably
+    - roughly
+    - seem
+    - sometimes
+    - tries to
+    - try to
+    - typically
+    - usually
+    - when possible
+    - where possible
+    - whenever possible
+  vague qualifier:
+    - adequate
+    - adequately
+    - and so forth
+    - and so on
+    - and the like
+    - appropriate
+    - appropriately
+    - as appropriate
+    - as necessary
+    - as needed
+    - as required
+    - best
+    - better
+    - etc
+    - fairly
+    - if appropriate
+    - if necessary
+    - if needed
+    - if required
+    - just
+    - many
+    - or similar
+    - proper
+    - properly
+    - quite
+    - rather
+    - really
+    - reasonable
+    - reasonably
+    - relevant
+    - several
+    - simply
+    - some
+    - somewhat
+    - sufficient
+    - sufficiently
+    - suitable
+    - suitably
+    - various
+    - very
+    - when appropriate
+    - when necessary
+    - when needed
+    - where appropriate
+    - where necessary
+    - where needed
+  reason or explanation:
+    - as a result
+    - because
+    - due to
+    - e.g.
+    - for example
+    - for instance
+    - hence
+    - historically
+    - i.e.
+    - in order to
+    - note that
+    - originally
+    - previously
+    - since
+    - so that
+    - that way
+    - therefore
+    - thereby
+    - this means
+  avoided verb:
+    - ensure
+    - leverage
+    - utilize

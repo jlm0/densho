@@ -5,6 +5,7 @@ description = "Governed knowledge architecture for human and agent workspaces."
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
     "linkml-runtime>=1.12.1",
     "markdown-it-py>=3",
     "networkx>=3.7",
@@ -12,6 +13,7 @@ dependencies = [
     "pyshacl>=0.40.2",
     "rdflib>=7.6.0",
     "ruamel-yaml>=0.18",
+    "spacy>=3.8.18",
     "typer>=0.27.3",
 ]
 
@@ -30,7 +32,7 @@ module-root = "engine"
 target-version = "py314"
 line-length = 100
 src = ["engine", "tests"]
-extend-exclude = ["engine/knowledge_architecture/generated"]
+extend-exclude = ["engine/knowledge_architecture/generated", "engine/knowledge_architecture/vendor"]
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -41,7 +43,7 @@ ignore = ["COM812", "CPY", "D"]
 
 [tool.pyright]
 include = ["engine", "tests"]
-ignore = ["engine/knowledge_architecture/generated"]
+ignore = ["engine/knowledge_architecture/generated", "engine/knowledge_architecture/vendor"]
 pythonVersion = "3.14"
 typeCheckingMode = "strict"
 

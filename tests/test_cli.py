@@ -1,3 +1,5 @@
+import shutil
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from typer.testing import CliRunner
@@ -5,10 +7,9 @@ from typer.testing import CliRunner
 from knowledge_architecture.cli import app
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     import pytest
 
+LANGUAGE = Path(__file__).resolve().parents[1] / "governance/language"
 RUNNER = CliRunner()
 NODE = """---
 id: sample
@@ -109,3 +110,44 @@ def test_graph_reads_the_current_folder_by_default(
     result = RUNNER.invoke(app, ["graph"])
     assert result.exit_code == 1
     assert result.output.startswith("knowledge/node.md:1: root: ")
+
+
+def language_tree(repository: Path) -> None:
+    shutil.copytree(LANGUAGE, repository / "governance/language")
+    (repository / "knowledge").mkdir()
+    (repository / "skills").mkdir()
+
+
+def test_language_passes_on_an_empty_tree(tmp_path: Path) -> None:
+    language_tree(tmp_path)
+    result = RUNNER.invoke(app, ["language", str(tmp_path)])
+    assert result.exit_code == 0
+    assert result.output == "0 texts checked, 0 problems\n"
+
+
+def test_language_passes_on_good_text(tmp_path: Path) -> None:
+    language_tree(tmp_path)
+    write_node(tmp_path / "knowledge/a", ROOT)
+    result = RUNNER.invoke(app, ["language", str(tmp_path)])
+    assert result.exit_code == 0, result.output
+    assert result.output == "1 texts checked, 0 problems\n"
+
+
+def test_language_fails_and_prints_each_location(tmp_path: Path) -> None:
+    language_tree(tmp_path)
+    path = write_node(tmp_path / "knowledge/a", ROOT.replace("You need", "Find"))
+    result = RUNNER.invoke(app, ["language", str(tmp_path)])
+    assert result.exit_code == 1
+    assert f"{path}:10: trigger-form: " in result.output
+    assert result.output.endswith("1 texts checked, 1 problems\n")
+
+
+def test_language_reads_the_current_folder_by_default(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    language_tree(tmp_path)
+    write_node(tmp_path / "knowledge/a", ROOT.replace("You need", "Find"))
+    result = RUNNER.invoke(app, ["language"])
+    assert result.exit_code == 1
+    assert result.output.startswith("knowledge/a/node.md:10: trigger-form: ")

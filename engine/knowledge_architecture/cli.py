@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Annotated
 import typer
 
 from knowledge_architecture.graph import check_tree
+from knowledge_architecture.language import check_language
 from knowledge_architecture.parser import parse_tree
 
 if TYPE_CHECKING:
@@ -40,3 +41,14 @@ def graph(
     """Parse each node file, then check the whole graph."""
     items, problems = check_tree(repository)
     _finish(f"{len(items)} nodes checked", problems)
+
+
+@app.command()
+def language(
+    repository: Annotated[
+        Path, typer.Argument(help="The folder that holds governance/language/ and the nodes.")
+    ] = Path(),
+) -> None:
+    """Check the language of each directive, trigger, and skill description."""
+    count, problems = check_language(repository)
+    _finish(f"{count} texts checked", problems)

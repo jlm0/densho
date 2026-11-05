@@ -1,0 +1,88 @@
+conditions: [if, when, whenever, while, before, after, once, until]
+scopes: [in, for, "on", under, inside, outside, within, across, during]
+
+directive:
+  max_words: 20
+  max_conditions: 1
+  max_unless: 1
+
+trigger:
+  max_words: 20
+
+skill_description:
+  max_sentence_words: 20
+  max_characters: 400
+  max_listing_characters: 8000
+
+directive_rules:
+  - text: Write each rule as one sentence that ends with a period.
+    checks: [sentence]
+  - text: Write each rule in `20` words or fewer.
+    checks: [word-count]
+  - text: Start each rule with a verb, `Do not`, `Prefer`, a condition, or a scope.
+    checks: [opening, imperative]
+  - text: After a condition or a scope, put a comma before the directive.
+    checks: [opening]
+  - text: Follow `Do not` with a verb.
+    checks: [opening]
+  - text: Write one directive in each rule.
+    checks: [second-directive]
+    review: true
+  - text: Put at most `1` condition in a rule.
+    checks: [condition-count]
+    review: true
+  - text: Put at most `1` `unless` in a rule.
+    checks: [unless-count]
+  - text: Write each condition as a state or an event that the reader observes.
+    review: true
+  - text: Name the concrete object of each rule.
+    review: true
+  - text: Do not use a modal, a hedge, or a vague qualifier such as `should`, `usually`, or `as needed`.
+    checks: [prohibited]
+    review: true
+  - text: Do not put a reason, a history, or an explanation in a rule.
+    checks: [prohibited]
+    review: true
+  - text: Put each command, path, and literal value in backticks.
+    checks: [literal]
+    review: true
+  - text: Use `Prefer` only for a default that allows a deviation.
+    review: true
+  - text: Do not repeat a rule.
+    checks: [duplicate-rule]
+    review: true
+  - text: Do not leave a violation of `ASD-STE100` in a rule.
+    checks: [ste]
+    review: true
+
+trigger_rules:
+  - text: Write each trigger as one sentence that ends with a period.
+    checks: [sentence]
+  - text: Write each trigger in `20` words or fewer.
+    checks: [word-count]
+  - text: Start each trigger with the subject of its condition.
+    checks: [trigger-form]
+  - text: Write each trigger in the present tense.
+    checks: [trigger-form]
+  - text: Do not put a second condition in a trigger.
+    checks: [condition-count]
+    review: true
+  - text: Write each trigger as a state or an event that the reader observes.
+    review: true
+  - text: Apply the vocabulary rules to each trigger and each skill description.
+    checks: [prohibited, literal, ste]
+    review: true
+
+description_rules:
+  - text: Write each skill description as `2` sentences.
+    checks: [description-form]
+  - text: Start the first sentence of a skill description with an approved verb.
+    checks: [description-form, imperative]
+  - text: Start the second sentence of a skill description with `Use when` and a trigger.
+    checks: [description-form, trigger-form, condition-count]
+  - text: Write each sentence of a skill description in `20` words or fewer.
+    checks: [word-count]
+  - text: Write each skill description in `400` characters or fewer.
+    checks: [description-length]
+  - text: Keep the skill listing at `8000` characters or fewer.
+    checks: [listing-budget]

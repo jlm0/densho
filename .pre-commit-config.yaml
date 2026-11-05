@@ -1,4 +1,4 @@
-exclude: ^engine/knowledge_architecture/generated/metamodel
+exclude: ^engine/knowledge_architecture/(generated/metamodel|vendor/ste_lint)
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -48,6 +48,12 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: language-checks
+        name: check the language of the knowledge nodes
+        entry: uv run --frozen ka language
+        language: system
+        pass_filenames: false
+        files: ^(knowledge|skills|governance|engine)/|^uv\.lock$
       - id: ruff-check
         name: ruff check
         entry: uv run --frozen ruff check --fix

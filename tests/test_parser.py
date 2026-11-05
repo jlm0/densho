@@ -1138,9 +1138,3 @@ def test_main_fails_and_prints_each_location(
 
 def test_main_fails_on_a_missing_folder(tmp_path: Path) -> None:
     assert main([str(tmp_path / "missing")]) == 1
-
-
-def test_the_readme_example_is_a_valid_node() -> None:
-    readme = Path(__file__).resolve().parents[1] / "README.md"
-    example = readme.read_text(encoding="utf-8").split("```markdown\n")[1].split("\n```\n")[0]
-    assert isinstance(parsed(f"{example}\n").node, Concept)

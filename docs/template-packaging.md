@@ -244,7 +244,7 @@ These codes come from `ka adopt` and `ka history`. Each other code comes from a 
 
 ## What hasn't been tested
 
-The install, both hooks, and a pull have run from a local clone of the template on macOS, with a clean home folder and a cold cache. Three things are still untested:
+The install, the hooks, and a pull have run from a local clone of the template on macOS, with a clean home folder and a cold cache. The install, the hooks, and a pull have also run from the private URL, on a machine with read access. Three things are still untested:
 
 - A machine with no read access to the private repo.
 - Linux and Windows. `.ka/ka` is a POSIX shell script, so Windows needs a shell that runs it.

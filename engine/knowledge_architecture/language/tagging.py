@@ -15,6 +15,7 @@ MODEL = "en_core_web_sm"
 SUBJECTS = frozenset({"nsubj", "nsubjpass", "csubj", "csubjpass", "expl"})
 AUXILIARIES = frozenset({"aux", "auxpass"})
 JOINED_VERBS = frozenset({"conj", "dep", "parataxis"})
+CLAUSE_BREAKS = frozenset({",", ":", "then"})
 VERB_PARTS = frozenset({"VERB", "AUX"})
 PRESENT_TAGS = frozenset({"VBZ", "VBP"})
 MISREAD_VERB_TAGS = frozenset({"NNS", "VBZ"})
@@ -45,11 +46,22 @@ def _starts_a_clause(token: Token) -> bool:
     return start.i == 0 or start.nbor(-1).text == ","
 
 
+def _is_misread_opening_verb(subject: Token) -> bool:
+    return subject.left_edge == subject
+
+
 def _imperative(doc: Doc) -> list[Finding]:
-    subject = _subject_of(_root(doc))
-    if subject is not None and _starts_a_clause(subject):
+    root = _root(doc)
+    subject = _subject_of(root)
+    if root.pos_ not in VERB_PARTS or subject is None or _is_misread_opening_verb(subject):
+        return []
+    if _starts_a_clause(subject):
         return [("imperative", "This reads as a statement. Write an instruction.")]
     return []
+
+
+def _root_follows_a_second_clause(doc: Doc, root: Token) -> bool:
+    return doc[0].pos_ == "VERB" and any(token.lower_ in CLAUSE_BREAKS for token in doc[1 : root.i])
 
 
 def _second_directive(doc: Doc) -> list[Finding]:
@@ -59,7 +71,7 @@ def _second_directive(doc: Doc) -> list[Finding]:
         for child in root.children
         if child.dep_ in JOINED_VERBS and child.pos_ == "VERB" and _subject_of(child) is None
     ]
-    if joined or (doc[0].pos_ == "VERB" and doc[0] != root):
+    if joined or _root_follows_a_second_clause(doc, root):
         return [("second-directive", "Split this into one rule for each action.")]
     return []
 

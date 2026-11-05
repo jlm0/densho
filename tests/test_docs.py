@@ -1,5 +1,6 @@
 # pyright: reportUnknownMemberType=false, reportUnknownVariableType=false, reportUnknownArgumentType=false, reportMissingTypeStubs=false, reportOptionalMemberAccess=false
 import re
+from dataclasses import replace
 from pathlib import Path
 from typing import get_args
 
@@ -214,7 +215,7 @@ def language_page() -> str:
 def language_profile() -> LanguageProfile:
     profile = read_profile(REPO / "governance/language")
     assert isinstance(profile, LanguageProfile), profile
-    return profile
+    return replace(profile, branches={}, branch_paths={})
 
 
 @pytest.mark.parametrize(

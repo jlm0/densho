@@ -33,10 +33,14 @@ LISTING_BUDGET = 8000
 GOOD_DESCRIPTION = "Review a pull request. Use when a pull request changes code."
 
 
+def base_only(folder: str, names: list[str]) -> list[str]:
+    return [name for name in names if Path(folder).name == "branches" and name != ".gitkeep"]
+
+
 def load_profile() -> LanguageProfile:
     profile = read_profile(LANGUAGE)
     assert isinstance(profile, LanguageProfile), profile
-    return profile
+    return replace(profile, branches={}, branch_paths={})
 
 
 PROFILE = load_profile()
@@ -168,6 +172,17 @@ def words(count: int) -> str:
         "Stop the build when a test fails and a reviewer is away.",
         "Use **each** fixture.",
         "Use [each](https://example.com/a_b) fixture.",
+        "Limit progressive disclosure to `2` levels.",
+        "Show content at a width of `320` CSS pixels, unless the content needs a large table.",
+        "Group fields by task.",
+        "Place labels above fields.",
+        "Label required fields.",
+        "Choose required fields.",
+        "Order menu items by task.",
+        "Review copy with a native speaker.",
+        "Format dates in the locale of the user.",
+        "Link help text to its field.",
+        "If a form fails, group fields by task.",
     ],
 )
 def test_a_good_directive_passes(text: str) -> None:
@@ -211,6 +226,8 @@ def test_a_good_directive_passes(text: str) -> None:
         ("Run the suite and stopped the build.", "second-directive"),
         ("Run the suite, stop.", "second-directive"),
         ("Run the suite: stop the build.", "second-directive"),
+        ("Run the suite, wait for the port.", "second-directive"),
+        ("Run the suite then wait for the port.", "second-directive"),
         ("Start the server, wait for the port, and run the tests.", "second-directive"),
         ("If a test fails, test files pass.", "imperative"),
         ("Stop the run if the build fails when the suite runs.", "condition-count"),
@@ -729,7 +746,7 @@ def test_a_masked_text_hides_code_but_the_plain_text_keeps_it() -> None:
 
 
 def write_tree(repository: Path, nodes: dict[str, str] | None = None) -> None:
-    shutil.copytree(LANGUAGE, repository / "governance/language")
+    shutil.copytree(LANGUAGE, repository / "governance/language", ignore=base_only)
     for folder in ("knowledge", "skills"):
         (repository / folder).mkdir()
     for relative, source in (nodes or {}).items():
@@ -869,7 +886,7 @@ def test_a_missing_profile_is_a_problem(tmp_path: Path) -> None:
 def test_a_bad_profile_file_is_a_problem(
     tmp_path: Path, name: str, content: str, line: int, fragment: str
 ) -> None:
-    shutil.copytree(LANGUAGE, tmp_path / "language")
+    shutil.copytree(LANGUAGE, tmp_path / "language", ignore=base_only)
     (tmp_path / "language" / name).write_text(content, encoding="utf-8")
     problems = read_profile(tmp_path / "language")
     assert isinstance(problems, list)
@@ -882,7 +899,7 @@ def test_a_bad_profile_file_is_a_problem(
 
 
 def test_a_profile_file_that_is_not_utf8_is_a_problem(tmp_path: Path) -> None:
-    shutil.copytree(LANGUAGE, tmp_path / "language")
+    shutil.copytree(LANGUAGE, tmp_path / "language", ignore=base_only)
     (tmp_path / "language/vocabulary.yaml").write_bytes(b"\xff\xfe")
     problems = read_profile(tmp_path / "language")
     assert isinstance(problems, list)
@@ -890,7 +907,7 @@ def test_a_profile_file_that_is_not_utf8_is_a_problem(tmp_path: Path) -> None:
 
 
 def test_a_folder_in_place_of_a_profile_file_is_a_problem(tmp_path: Path) -> None:
-    shutil.copytree(LANGUAGE, tmp_path / "language")
+    shutil.copytree(LANGUAGE, tmp_path / "language", ignore=base_only)
     (tmp_path / "language/vocabulary.yaml").unlink()
     (tmp_path / "language/vocabulary.yaml").mkdir()
     problems = read_profile(tmp_path / "language")
@@ -899,7 +916,7 @@ def test_a_folder_in_place_of_a_profile_file_is_a_problem(tmp_path: Path) -> Non
 
 
 def test_a_profile_value_that_yaml_cannot_read_is_a_problem(tmp_path: Path) -> None:
-    shutil.copytree(LANGUAGE, tmp_path / "language")
+    shutil.copytree(LANGUAGE, tmp_path / "language", ignore=base_only)
     (tmp_path / "language/vocabulary.yaml").write_text("a: 2001-13-45\n", encoding="utf-8")
     problems = read_profile(tmp_path / "language")
     assert isinstance(problems, list)
@@ -916,7 +933,7 @@ def test_a_profile_value_that_yaml_cannot_read_is_a_problem(tmp_path: Path) -> N
     ],
 )
 def test_a_bad_rule_is_a_problem(tmp_path: Path, rule: str) -> None:
-    shutil.copytree(LANGUAGE, tmp_path / "language")
+    shutil.copytree(LANGUAGE, tmp_path / "language", ignore=base_only)
     path = tmp_path / "language/grammar.yaml"
     text = path.read_text(encoding="utf-8")
     addition = textwrap.indent(rule, "  ")
@@ -929,7 +946,7 @@ def test_a_bad_rule_is_a_problem(tmp_path: Path, rule: str) -> None:
 
 
 def test_a_rule_without_a_check_or_review_says_why(tmp_path: Path) -> None:
-    shutil.copytree(LANGUAGE, tmp_path / "language")
+    shutil.copytree(LANGUAGE, tmp_path / "language", ignore=base_only)
     path = tmp_path / "language/grammar.yaml"
     text = path.read_text(encoding="utf-8")
     path.write_text(
@@ -939,6 +956,9 @@ def test_a_rule_without_a_check_or_review_says_why(tmp_path: Path) -> None:
     problems = read_profile(tmp_path / "language")
     assert isinstance(problems, list)
     assert "A rule needs at least one check, or review: true." in problems[0].message
+
+
+FROB_DESCRIPTION = "Frob a file. Use when a file changes."
 
 
 def branch_tree(repository: Path, branch: str, content: str) -> None:
@@ -958,6 +978,12 @@ def branch_tree(repository: Path, branch: str, content: str) -> None:
     (repository / f"governance/language/branches/{branch}.yaml").write_text(
         content, encoding="utf-8"
     )
+
+
+def add_skill(repository: Path, source: str) -> None:
+    folder = repository / "skills/s"
+    folder.mkdir(parents=True)
+    (folder / "node.md").write_text(source, encoding="utf-8")
 
 
 def problem_folders(repository: Path) -> list[str]:
@@ -982,6 +1008,56 @@ def test_a_branch_can_prohibit_a_term_for_its_nodes_only(tmp_path: Path) -> None
         for problem in problems
         if problem.code == "prohibited"
     } == {("mid", "prohibited"), ("low", "prohibited")}
+
+
+@pytest.mark.parametrize(
+    ("branch", "codes"),
+    [("other", set[str]()), ("low", {"description-form"}), ("nothing", {"description-form"})],
+)
+def test_a_skill_gets_the_verbs_of_the_nodes_it_uses(
+    tmp_path: Path, branch: str, codes: set[str]
+) -> None:
+    branch_tree(tmp_path, branch, "approved_verbs: [frob]\n")
+    add_skill(tmp_path, node_source("s", description=FROB_DESCRIPTION))
+    problems = check_language(tmp_path)[1]
+    assert {problem.code for problem in problems if problem.path.parent.name == "s"} == codes
+
+
+def test_a_skill_gets_the_verbs_above_the_nodes_it_uses(tmp_path: Path) -> None:
+    branch_tree(tmp_path, "top", "approved_verbs: [frob]\n")
+    skill = node_source("s", description=FROB_DESCRIPTION).replace("uses: [other]", "uses: [low]")
+    add_skill(tmp_path, skill)
+    assert problem_folders(tmp_path) == ["other"]
+
+
+def test_a_skill_keeps_its_own_branch_file(tmp_path: Path) -> None:
+    branch_tree(tmp_path, "s", "approved_verbs: [frob]\n")
+    add_skill(tmp_path, node_source("s", description=FROB_DESCRIPTION))
+    assert "s" not in problem_folders(tmp_path)
+
+
+def test_a_skill_gets_the_prohibited_terms_of_the_nodes_it_uses(tmp_path: Path) -> None:
+    branch_tree(tmp_path, "other", "prohibited:\n  x: [pull]\n")
+    add_skill(tmp_path, node_source("s", description=GOOD_DESCRIPTION))
+    assert any(
+        (problem.path.parent.name, problem.code) == ("s", "prohibited")
+        for problem in check_language(tmp_path)[1]
+    )
+
+
+def test_a_node_does_not_get_the_vocabulary_of_a_skill_that_uses_it(tmp_path: Path) -> None:
+    branch_tree(tmp_path, "s", "approved_verbs: [frob]\n")
+    add_skill(tmp_path, node_source("s", description=FROB_DESCRIPTION))
+    assert "other" in problem_folders(tmp_path)
+
+
+def test_a_bare_statement_passes_as_a_known_limit() -> None:
+    assert directive_codes("Build fails.") == set()
+
+
+def test_a_statement_with_a_longer_subject_still_fails() -> None:
+    assert directive_codes("The build fails.") == {"opening"}
+    assert directive_codes("Test files pass.") == {"imperative"}
 
 
 def test_a_branch_can_prohibit_a_base_verb() -> None:

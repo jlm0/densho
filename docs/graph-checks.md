@@ -14,7 +14,7 @@ uv run ka graph
 
 The command reads `knowledge/`, `skills/`, and `governance/` in the current folder, or in a folder you name after `graph`. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. The git hook runs the same command on each commit.
 
-An empty tree passes, so a new copy of the template starts clean.
+An empty tree passes, so a project can remove what it received and still start clean.
 
 ## What fails
 

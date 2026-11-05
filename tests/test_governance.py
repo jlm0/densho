@@ -1513,9 +1513,39 @@ def test_the_governance_check_reads_a_broken_policy(tmp_path: Path) -> None:
 def test_a_project_can_delete_the_policies(tmp_path: Path) -> None:
     repository = repository_copy(tmp_path)
     shutil.rmtree(repository / "governance/policies")
-    (repository / "knowledge/node.md").unlink()
+    shutil.rmtree(repository / "knowledge")
+    shutil.rmtree(repository / "skills")
+    (repository / "knowledge").mkdir()
+    (repository / "skills").mkdir()
+    for branch in (repository / "governance/language/branches").glob("*.yaml"):
+        branch.unlink()
     folders = [str(repository / name) for name in ("knowledge", "skills", "governance")]
     assert invoke("parse", *folders).exit_code == 0
+    assert check_tree(repository)[1] == []
+    assert check_directives(repository)[1] == []
+    assert check_language(repository)[1] == []
+    assert check_governance(repository).problems == []
+
+
+def test_a_project_can_point_the_root_at_its_own_domain(tmp_path: Path) -> None:
+    repository = repository_copy(tmp_path)
+    shutil.rmtree(repository / "governance/policies")
+    shutil.rmtree(repository / "knowledge")
+    shutil.rmtree(repository / "skills")
+    (repository / "skills").mkdir()
+    for branch in (repository / "governance/language/branches").glob("*.yaml"):
+        branch.unlink()
+    (repository / "knowledge/own").mkdir(parents=True)
+    (repository / "knowledge/node.md").write_text(
+        "---\nid: root\nkind: ka:Root\ntitle: Root\nstatus: proposed\norigin: project\n"
+        "pointers:\n  - kind: ka:TextPointer\n    target: own\n    trigger: You need it.\n---\n",
+        encoding="utf-8",
+    )
+    (repository / "knowledge/own/node.md").write_text(
+        "---\nid: own\nkind: ka:Domain\ntitle: Own\nstatus: proposed\norigin: project\n"
+        "knowledge_type: domain\n---\n\n## Definition\n\nA domain.\n",
+        encoding="utf-8",
+    )
     assert check_tree(repository)[1] == []
     assert check_directives(repository)[1] == []
     assert check_language(repository)[1] == []

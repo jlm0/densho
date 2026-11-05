@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Literal
 import networkx as nx
 
 from knowledge_architecture.generated.metamodel import Skill
-from knowledge_architecture.graph.references import problem_at
+from knowledge_architecture.graph.references import edge_targets, problem_at
 from knowledge_architecture.graph.structure import edge_graph
 from knowledge_architecture.language.form import (
     Finding,
@@ -74,8 +74,14 @@ def _terms_by_node(
     items: Sequence[ParsedNode], profile: LanguageProfile
 ) -> dict[str | None, Terms]:
     broader = edge_graph(items, "broader")
+
+    def branch_of(node_id: str) -> set[str]:
+        return {node_id, *nx.descendants(broader, node_id)} if node_id in broader else set()
+
     terms: dict[str | None, Terms] = {
-        item.node.id: profile.terms_for({item.node.id, *nx.descendants(broader, item.node.id)})
+        item.node.id: profile.terms_for(
+            branch_of(item.node.id).union(*map(branch_of, edge_targets(item, "uses")))
+        )
         for item in items
     }
     terms[None] = profile.terms_for(())

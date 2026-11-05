@@ -127,7 +127,9 @@ RULES = sum(
 
 
 def language_tree(repository: Path) -> None:
-    shutil.copytree(LANGUAGE, repository / "governance/language")
+    shutil.copytree(
+        LANGUAGE, repository / "governance/language", ignore=shutil.ignore_patterns("branches")
+    )
     (repository / "knowledge").mkdir()
     (repository / "skills").mkdir()
 

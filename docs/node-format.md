@@ -55,7 +55,7 @@ The front matter holds every field except the definition, the directives, and th
 
 ## Sections
 
-The sections come in this order: `## Definition`, `## Directives`, then any other text, which becomes the body.
+The sections come in this order: `## Definition`, `## Directives`, then any other text, which becomes the body. Text after the directives needs its own heading, such as `## Notes`. A loose paragraph there fails, because it could be a directive that lost its bullet.
 
 A line that looks like a section name but is not that exact top-level heading is an error, so a directive cannot turn into prose by accident. `## Directive`, `## **Directives**`, and `> ## Directives` all fail.
 

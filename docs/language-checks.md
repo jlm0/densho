@@ -115,7 +115,7 @@ A branch of the tree can extend this. Add `governance/language/branches/<node-id
 - A branch only adds. It can approve a verb or prohibit a term, but it cannot lift a prohibition from above.
 - A prohibition wins over an approval, so a branch can forbid a verb that the base approves.
 - A node with several `broader` parents gets the vocabulary of each of them.
-- A skill has no `broader` edge, so it uses the base vocabulary and its own branch file.
+- A skill has no `broader` edge, so it takes the vocabulary of each node in `uses` instead, along with its own branch file. That gives its text the same language as the knowledge it draws on.
 - A directive uses the vocabulary of the node that holds it, even when `also_attached_to` attaches it elsewhere.
 
 ## What a pass does not mean
@@ -142,7 +142,13 @@ The STE findings come from a vendored copy of `ste-lint.py` in `engine/knowledge
 
 spaCy loads only when there is text to check, and the rules in `grammar.yaml` count as text. It adds about half a second to the run. A commit that touches none of the paths above does not run the hook.
 
-The model is statistical, so it can misread a sentence. It often reads the last word of `The build passes.` as a plural noun. The check accepts that shape when the sentence has a determiner, which means a fragment such as `The test files.` also passes. If a good sentence fails a structure check, reword it.
+The model is statistical, so it can misread a sentence, and the checks lean toward letting a sentence through, because a false failure blocks a commit:
+
+- It often reads the last word of `The build passes.` as a plural noun. The check accepts that shape when the sentence has a determiner, which means a fragment such as `The test files.` also passes.
+- It can read the opening verb as a noun, so `Group fields by task.` looks like a group that fields something. A sentence reads as a statement only when its main word is a verb and its subject is more than one bare word. So `Test files pass.` fails, but `Build fails.` passes.
+- It can make a later word the main word of the sentence, as in `` Limit progressive disclosure to `2` levels. `` The check then reports a second action only if a comma, a colon, or `then` stands before that word.
+
+If a good sentence still fails a structure check, reword it.
 
 ## How it fits
 

@@ -95,7 +95,7 @@ A directive is one instruction with its own ID. It lives in the file of one node
 
 ## Rules for rules
 
-Governance is written in the same classes as everything else: a governance node is an ordinary node under `governance/policies/`, and `governs` names what it sets rules for, which can include itself. Only `metamodel.yaml` stays outside the graph, because it defines what a node is. The [`schema-rules` policy](governance-workflow.md#the-policies) names it as a source.
+Governance is written in the same classes as everything else: a governance node is an ordinary node under `governance/policies/`, and `governs` names what it sets rules for, which can include itself. `metamodel.yaml` and the files in `governance/language/` stay outside the graph. The first defines what a node is, and the second is data that the language checks read. The `schema-rules` and `language-rules` [policies](governance-workflow.md#the-policies) name them as sources.
 
 ## What the models do not check
 

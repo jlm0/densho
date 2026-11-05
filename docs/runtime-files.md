@@ -51,7 +51,7 @@ Each file puts its directives first, then its procedures, then its references.
 | Path rule   | Its directives and exceptions, the definition, the body, and its pointers                                            |
 | Folder file | Its directives and exceptions, and its pointers. The definition and the body are in the node                         |
 
-The root holds only what an agent can't work out from the files. It names each domain, the governance node and its policies, and each skill with its description, so an agent can still find a skill if the tool drops its description. Setup, paths, and commands stay in the README. The architecture facts come from the body of `knowledge/node.md`, so they go through review like any other node.
+The root holds only what an agent can't work out from the files. It names each domain, the governance node and its policies, and each skill with its description, so an agent can still find a skill if the tool drops its description. Setup, paths, and commands stay in the README and in these pages. The architecture facts come from the body of `knowledge/node.md`, so they go through review like any other node.
 
 A directive list holds what applies at that node and nothing else: inherited directives, attached ones, and `applies`, minus each one an [exception](directive-semantics.md#stepping-out) stops. Each directive keeps its `^id`, and each group links to the node that holds it. A list is complete for its own node, so the files for a node and its parent can repeat a line.
 
@@ -67,7 +67,7 @@ Treat a directive as a rule only when its `status` is `accepted`. A generated fi
 
 A node file still shows each proposal, with its `status`. That is the reason for the second sentence.
 
-After you accept something, run `uv run ka runtime` and stage the result in the same commit.
+After you [accept something](human-interface.md#accept-what-you-approve), run `uv run ka runtime` and stage the result in the same commit.
 
 ## See what acceptance would change
 
@@ -90,6 +90,8 @@ Claude Code also loads `AGENTS.md`, `.claude/rules/`, and `.claude/skills/` from
 | `.claude/rules/knowledge/<id>.md` | `build/runtime-proposals/claude/rules/knowledge/<id>.proposals.md` |
 
 Each link in the copy resolves from where the copy sits, so a line in the copy can hold more `../` than the committed line. A rejected tree removes the copy.
+
+The [review queue](human-interface.md#read-the-knowledge) lists the same effect for each entity, and names the generated files it reaches.
 
 ## Why a skill holds a copy
 

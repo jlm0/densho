@@ -69,7 +69,7 @@ There is one cost. When you reopen an accepted rule to change it, the rule is ou
 
 ## Who does what
 
-An agent can propose a concept, a directive, or an exception by adding it with `status: proposed`. A person approves it. An agent can write the status change once a person has approved it.
+An agent can propose a concept, a directive, or an exception by adding it with `status: proposed`. A person approves it and runs [`ka accept`](human-interface.md#accept-what-you-approve).
 
 The [`approval` policy](#the-policies) states this as directives. No check can enforce it, for the reasons [below](#what-a-check-can-and-cannot-prove). A project decides who its reviewers are, and a node never records a name or an email. Git history already holds the author of each commit.
 
@@ -84,8 +84,8 @@ Add the node, directive, or exception with `status: proposed`. Anything new with
 Promotion takes two commits, so a reviewer approves exactly the text that the last commit holds:
 
 1. An author commits the entity as `proposed`.
-2. A reviewer runs `uv run ka governance --pending` and reads the entity, its reasons, and `uv run ka directives --at <node-id>`.
-3. A later commit changes `status` to `accepted` and changes nothing else that needs review.
+2. A reviewer runs `uv run ka view` and reads the entity, its reasons, and what applies in `build/view/review.html`. In a terminal, `uv run ka governance --pending` and `uv run ka directives --at <node-id>` give the same facts.
+3. A later commit changes `status` to `accepted` and changes nothing else that needs review. [`uv run ka accept`](human-interface.md#accept-what-you-approve) makes that change in the working tree.
 4. That commit also holds the [runtime files](runtime-files.md) that `uv run ka runtime` writes, because the accepted directive now reaches them.
 
 One commit can promote any number of entities, so a person can accept a whole batch at once.
@@ -162,7 +162,7 @@ The checks also have gaps that a person can use, on purpose or by accident:
 - A commit with `--no-verify`, or a clone with no hook installed, skips every check.
 - `git commit --amend` compares with the commit it replaces, so proposing in one commit and promoting in an amend looks like a plain promotion.
 - A rebase or a fast-forward merge runs no hook, and nothing reads old commits later.
-- Anyone can write `status: accepted` in a second commit and call it approved.
+- Anyone can run `ka accept`, or write `status: accepted`, in a second commit and call it approved.
 
 So `accepted` is a claim that the project's history supports, not a proof. A reviewer who wants to check it reads `git log -p` for the commit that changed the `status`.
 
@@ -187,7 +187,7 @@ You can change or delete these policies in your own copy. The checks read them a
 
 ## How it fits
 
-This layer sits on top of the [graph checks](graph-checks.md) and the [directive semantics](directive-semantics.md), and it changes one answer from the latter: which directives are in force. The [runtime files](runtime-files.md) will use that answer, so a proposal does not reach an agent as a rule.
+This layer sits on top of the [graph checks](graph-checks.md) and the [directive semantics](directive-semantics.md), and it changes one answer from the latter: which directives are in force. The [runtime files](runtime-files.md) use that answer, so a proposal does not reach an agent as a rule, and the [human interface](human-interface.md) shows it to a person.
 
 ## What it does not check yet
 

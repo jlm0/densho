@@ -84,7 +84,7 @@ A value is plain text, so put one that holds Markdown syntax in backticks:
 ## Check your nodes
 
 ```sh
-uv run ka parse knowledge skills
+uv run ka parse knowledge skills governance
 ```
 
 Each problem prints as `path:line: code: message`. The git hook runs the same command on each commit.

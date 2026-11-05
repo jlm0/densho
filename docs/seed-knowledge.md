@@ -56,7 +56,7 @@ Every node, directive, and exception here is `proposed`, so the seed is checked 
 uv run ka governance --pending
 ```
 
-Read the list, then accept what you want in a commit that changes only `status`. You can do that in one batch. The [governance workflow](governance-workflow.md#make-a-change) has the steps.
+Or run `uv run ka view` and read `build/view/review.html`, which groups the list by node. Then run `uv run ka accept` on what you want, and commit a change that holds only `status` and the generated files. You can do that in one batch. The [human interface](human-interface.md#accept-what-you-approve) has the steps.
 
 ## Make it your own
 
@@ -77,7 +77,7 @@ A `sources` value names a page that was read when the rule was written: the Web 
 
 ## How it fits
 
-This is the first real content for the [schema](schema.md), the [format](node-format.md), and the checks. The [compiled outputs](compiled-outputs.md) read it now, and the [runtime files](runtime-files.md) build from it next. While a seed directive is `proposed`, only `uv run ka build --proposals` holds it.
+This is the first real content for the [schema](schema.md), the [format](node-format.md), and the checks. The [compiled outputs](compiled-outputs.md), the [runtime files](runtime-files.md), and the [human interface](human-interface.md) read it. While a seed directive is `proposed`, only `uv run ka build --proposals`, `uv run ka runtime --proposals`, and the site hold it, and each marks it as not in force.
 
 ## What it does not check yet
 

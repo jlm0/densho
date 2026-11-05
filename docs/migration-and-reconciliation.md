@@ -50,7 +50,7 @@ Project knowledge becomes workspace knowledge, with `knowledge_type: workspace` 
 
 ### What you get
 
-Everything arrives as `proposed`, so no migrated rule binds an agent until you accept it. The skill never changes a `status` to `accepted`. To read what waits, run `.ka/ka governance --pending`, and the [governance workflow](governance-workflow.md#make-a-change) has the steps from there.
+Everything arrives as `proposed`, so no migrated rule binds an agent until you accept it. The skill never changes a `status` to `accepted`. To read what waits, run `.ka/ka view`, or `.ka/ka governance --pending` in a terminal. The [human interface](human-interface.md#in-a-project) has the steps from there.
 
 Your old rules can stay in force in the meantime. A hand-written root `AGENTS.md` has to leave its path, because the generator owns it, so the agent moves it to `knowledge-migration/source/root-agents.md` and asks whether to keep it loading with this line in `CLAUDE.md`:
 

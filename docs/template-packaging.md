@@ -80,7 +80,7 @@ An install never overwrites these files:
 - `CLAUDE.local.md` is your private file, so the command doesn't touch it. It prints a note with the line to add.
 - An `AGENTS.md` that you wrote stays, and the install ends with `not-generated`, because the generator won't overwrite a file without its marker. Move your text to `CLAUDE.md` or to a node, delete the file, and run `.ka/ka adopt`.
 - A `.pre-commit-config.yaml` of your own stays, so the checks don't run until you add the hooks from [the git hook](#the-git-hook).
-- A `.gitignore` of your own stays. Add `build/` to it, or the compiled output shows up as untracked files.
+- A `.gitignore` of your own stays. Add `build/` to it, or the compiled output and the [site](human-interface.md) show up as untracked files.
 
 A rule directly in `.claude/rules/` and a skill folder of your own stay as well, as they do in [runtime files](runtime-files.md#hand-written-files).
 
@@ -91,6 +91,8 @@ Use `.ka/ka` wherever another page says `uv run ka`. It takes the same commands.
 ```sh
 .ka/ka runtime
 .ka/ka governance --pending
+.ka/ka view
+.ka/ka accept --subtree <node-id>
 ```
 
 The file runs `uvx --from git+<source>@<commit> ka`. The commit is the template commit that the project last pulled, so a pull moves the engine with no separate step. The pin covers the engine and not your knowledge. `.ka/engine-constraints.txt` holds the locked version of each dependency, because `uvx` doesn't read a lock file.

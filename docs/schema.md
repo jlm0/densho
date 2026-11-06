@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-`governance/schema/metamodel.yaml` defines what can exist in the knowledge graph: the node kinds, the fields they hold, and how they connect. It holds no knowledge itself. The files in `engine/knowledge_architecture/generated/` are generated from it. The parser validates each node against the Python models, and the [graph checks](graph-checks.md) validate the whole graph against the SHACL shapes.
+`governance/schema/metamodel.yaml` defines what can exist in the knowledge graph: the node kinds, the fields they hold, and how they connect. It holds no knowledge itself. The files in `engine/generated/` are generated from it. The parser validates each node against the Python models, and the [graph checks](graph-checks.md) validate the whole graph against the SHACL shapes.
 
 Each class inherits the fields of the class above it:
 
@@ -116,7 +116,7 @@ The models read one node at a time and hold each reference as a plain string, so
 
 The engine reads its own copy of the schema, so you change the schema in the template. A project's `governance/schema/metamodel.yaml` is a reference, and editing it changes no check.
 
-After you edit `metamodel.yaml`, regenerate the files in `engine/knowledge_architecture/generated/`:
+After you edit `metamodel.yaml`, regenerate the files in `engine/generated/`:
 
 ```sh
 uv run pre-commit run schema-models --all-files

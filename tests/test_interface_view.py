@@ -12,10 +12,10 @@ from urllib.parse import unquote, urlsplit
 import pytest
 from typer.testing import CliRunner
 
-from knowledge_architecture.cli import app
-from knowledge_architecture.compiler import compile_tree
-from knowledge_architecture.governance import pending_entities
-from knowledge_architecture.interface import (
+from engine.cli import app
+from engine.compiler import compile_tree
+from engine.governance import pending_entities
+from engine.interface import (
     REACH_LISTED,
     VIEW_FOLDER,
     is_safe_link,
@@ -24,9 +24,9 @@ from knowledge_architecture.interface import (
     render_site,
     write_view,
 )
-from knowledge_architecture.interface.tree import children_by_broader, subtree_ids, tree_rows
-from knowledge_architecture.parser import ParsedNode, parse_source
-from knowledge_architecture.parser.generated import MARKER, is_generated
+from engine.interface.tree import children_by_broader, subtree_ids, tree_rows
+from engine.parser import ParsedNode, parse_source
+from engine.parser.generated import MARKER, is_generated
 
 REPO = Path(__file__).resolve().parents[1]
 RUNNER = CliRunner()

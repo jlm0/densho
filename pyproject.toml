@@ -19,21 +19,21 @@ dependencies = [
 ]
 
 [project.scripts]
-ka = "knowledge_architecture.cli:app"
+ka = "engine.cli:app"
 
 [build-system]
 requires = ["uv_build>=0.8.4,<0.9"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
-module-name = "knowledge_architecture"
-module-root = "engine"
+module-name = "engine"
+module-root = ""
 
 [tool.ruff]
 target-version = "py314"
 line-length = 100
-src = ["engine", "tests"]
-extend-exclude = ["engine/knowledge_architecture/generated", "engine/knowledge_architecture/vendor"]
+src = [".", "tests"]
+extend-exclude = ["engine/generated", "engine/vendor"]
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -44,7 +44,7 @@ ignore = ["COM812", "CPY", "D"]
 
 [tool.pyright]
 include = ["engine", "tests"]
-ignore = ["engine/knowledge_architecture/generated", "engine/knowledge_architecture/vendor"]
+ignore = ["engine/generated", "engine/vendor"]
 pythonVersion = "3.14"
 typeCheckingMode = "strict"
 

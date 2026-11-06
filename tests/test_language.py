@@ -11,22 +11,22 @@ from typing import get_args
 
 import pytest
 
-from knowledge_architecture.generated.metamodel import Skill
-from knowledge_architecture.language import check_items, check_language
-from knowledge_architecture.language.profile import (
+from engine.generated.metamodel import Skill
+from engine.language import check_items, check_language
+from engine.language.profile import (
     LISTING_ENTRY_CAP,
     CheckCode,
     LanguageProfile,
     Vocabulary,
     read_profile,
 )
-from knowledge_architecture.language.prose import read_prose
-from knowledge_architecture.parser import ParsedNode, Problem, parse_source
-from knowledge_architecture.vendor import ste_lint
+from engine.language.prose import read_prose
+from engine.parser import ParsedNode, Problem, parse_source
+from engine.vendor import ste_lint
 
 REPO = Path(__file__).resolve().parents[1]
 LANGUAGE = REPO / "governance/language"
-VENDORED = REPO / "engine/knowledge_architecture/vendor"
+VENDORED = REPO / "engine/vendor"
 VENDORED_DIGEST = "fff04bf85c1e8bd8dc69dcedc63a5d88ed513dfa24e505f9cb8318a4596c99cd"
 HARNESS_ENTRY_CAP = 1536
 LISTING_BUDGET = 8000
@@ -1126,7 +1126,7 @@ NO_MODEL_SCRIPT = """
 import sys
 from pathlib import Path
 
-from knowledge_architecture.language import check_language
+from engine.language import check_language
 
 result = check_language(Path(sys.argv[1]))
 print(result[0], len(result[1]), "spacy" in sys.modules)

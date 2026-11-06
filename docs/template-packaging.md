@@ -207,7 +207,7 @@ Most of what you received is yours to delete. Three folders behave differently.
 ```python
 from pathlib import Path
 
-from knowledge_architecture.template import adopt_template, history_drift, record_history
+from engine.template import adopt_template, history_drift, record_history
 
 adopted = adopt_template(Path())
 adopted.proposed  # the entities that this run set to proposed

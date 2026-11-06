@@ -16,8 +16,8 @@ from rdflib import BNode, Graph, Literal, Namespace
 from rdflib.compare import isomorphic
 from typer.testing import CliRunner
 
-from knowledge_architecture.cli import app
-from knowledge_architecture.compiler import (
+from engine.cli import app
+from engine.compiler import (
     OUTPUT_FOLDER,
     CompiledGraph,
     build_tree,
@@ -26,16 +26,16 @@ from knowledge_architecture.compiler import (
     file_names,
     render_output,
 )
-from knowledge_architecture.directives import resolve_directives
-from knowledge_architecture.generated.metamodel import (
+from engine.directives import resolve_directives
+from engine.generated.metamodel import (
     CompiledResult,
     KnowledgeGraph,
     Status,
     TextPointer,
 )
-from knowledge_architecture.graph.rules import check_references
-from knowledge_architecture.graph.shapes import GENERATED, rdf_graph
-from knowledge_architecture.parser import ParsedNode, Problem, parse_source
+from engine.graph.rules import check_references
+from engine.graph.shapes import GENERATED, rdf_graph
+from engine.parser import ParsedNode, Problem, parse_source
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -59,7 +59,7 @@ REASON = "This node is a throwaway prototype."
 BUILD_ONE_TREE = """
 import sys
 from pathlib import Path
-from knowledge_architecture.compiler import build_tree
+from engine.compiler import build_tree
 for proposals in (False, True):
     report = build_tree(Path(sys.argv[1]), proposals=proposals)
     assert not report.problems, report.problems
@@ -1035,8 +1035,8 @@ def test_the_build_reads_the_tree_once(tmp_path: Path, monkeypatch: pytest.Monke
         pytest.fail("A check parsed the tree again.")
 
     write_tree(tmp_path)
-    monkeypatch.setattr("knowledge_architecture.governance.checks.parse_tree", fail)
-    monkeypatch.setattr("knowledge_architecture.language.checks.parse_tree", fail)
+    monkeypatch.setattr("engine.governance.checks.parse_tree", fail)
+    monkeypatch.setattr("engine.language.checks.parse_tree", fail)
     assert compile_tree(tmp_path).problems == []
 
 
@@ -1080,7 +1080,7 @@ def test_a_file_name_that_is_not_utf_8_stops_the_build_with_a_problem(
     def checked(_repository: Path) -> tuple[list[ParsedNode], list[Problem]]:
         return items, []
 
-    monkeypatch.setattr("knowledge_architecture.compiler.tree.check_tree", checked)
+    monkeypatch.setattr("engine.compiler.tree.check_tree", checked)
     result = RUNNER.invoke(app, ["build", str(tmp_path)])
     assert result.exit_code == 1, result.output
     assert f"{tmp_path}:1: path: The file name 'knowledge/\\udcff/node.md' is not " in result.output

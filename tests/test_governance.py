@@ -7,27 +7,27 @@ from typing import TYPE_CHECKING, Any
 import pytest
 from typer.testing import CliRunner
 
-from knowledge_architecture.cli import app
-from knowledge_architecture.directives import check_directives
-from knowledge_architecture.governance import (
+from engine.cli import app
+from engine.directives import check_directives
+from engine.governance import (
     GOVERNANCE_CODES,
     check_governance,
     check_items,
     pending_entities,
 )
-from knowledge_architecture.governance import base as base_module
-from knowledge_architecture.governance.base import (
+from engine.governance import base as base_module
+from engine.governance.base import (
     MERGE_NOTE,
     NO_COMMIT_NOTE,
     NO_GIT_NOTE,
     NO_REPOSITORY_NOTE,
     read_base,
 )
-from knowledge_architecture.governance.changes import check_changes
-from knowledge_architecture.governance.entities import governed_entities
-from knowledge_architecture.graph import check_tree
-from knowledge_architecture.language import check_language
-from knowledge_architecture.parser import ParsedNode, parse_source, parse_tree
+from engine.governance.changes import check_changes
+from engine.governance.entities import governed_entities
+from engine.graph import check_tree
+from engine.language import check_language
+from engine.parser import ParsedNode, parse_source, parse_tree
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, get_args
 import pytest
 from linkml_runtime.utils.schemaview import SchemaView
 
-from knowledge_architecture.parser.node import MARKDOWN_FIELDS, NODE_CLASSES, POINTER_CLASSES
+from engine.parser.node import MARKDOWN_FIELDS, NODE_CLASSES, POINTER_CLASSES
 
 if TYPE_CHECKING:
     from pydantic import BaseModel

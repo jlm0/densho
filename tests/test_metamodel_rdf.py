@@ -9,7 +9,7 @@ from linkml_runtime.utils.compile_python import compile_python
 from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import RDF, SKOS, Graph, Namespace, URIRef
 
-from knowledge_architecture.generated.metamodel import KnowledgeGraph
+from engine.generated.metamodel import KnowledgeGraph
 
 SCHEMA = Path(__file__).resolve().parents[1] / "governance/schema/metamodel.yaml"
 KA = Namespace("https://github.com/jlm0/knowledge-architecture/schema/")

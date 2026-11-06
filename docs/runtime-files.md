@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-This layer generates the files an agent tool loads: the root `AGENTS.md`, a folder `AGENTS.md` beside most nodes, path rules, and skills. Claude Code is the first target, and no hook injects context, because the tool loads these files with its own mechanisms. The code is in `engine/knowledge_architecture/runtime/`.
+This layer generates the files an agent tool loads: the root `AGENTS.md`, a folder `AGENTS.md` beside most nodes, path rules, and skills. Claude Code is the first target, and no hook injects context, because the tool loads these files with its own mechanisms. The code is in `engine/runtime/`.
 
 The generated files are output, and the repo still commits them, because an agent tool reads them straight from a clone. A node file stays the source, so a change goes in the node and the command writes the file again. A hand edit doesn't survive.
 
@@ -157,7 +157,7 @@ The **Project instructions** setting in Claude Code can turn off `AGENTS.md`, an
 ```python
 from pathlib import Path
 
-from knowledge_architecture.runtime import generate_runtime
+from engine.runtime import generate_runtime
 
 report = generate_runtime(Path(), proposals=False, verify=False)
 report.problems  # the same problems that ka runtime prints

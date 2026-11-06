@@ -5,14 +5,14 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
-from knowledge_architecture.cli import app
-from knowledge_architecture.generated.metamodel import Status
-from knowledge_architecture.governance import check_governance, pending_entities
-from knowledge_architecture.governance.entities import Entity
-from knowledge_architecture.governance.status_line import set_status_lines
-from knowledge_architecture.graph import check_tree
-from knowledge_architecture.interface import accept_entities, command_prefix
-from knowledge_architecture.runtime import claude_code, generate_runtime
+from engine.cli import app
+from engine.generated.metamodel import Status
+from engine.governance import check_governance, pending_entities
+from engine.governance.entities import Entity
+from engine.governance.status_line import set_status_lines
+from engine.graph import check_tree
+from engine.interface import accept_entities, command_prefix
+from engine.runtime import claude_code, generate_runtime
 
 REPO = Path(__file__).resolve().parents[1]
 RUNNER = CliRunner()

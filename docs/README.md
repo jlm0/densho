@@ -66,16 +66,16 @@ In this repo, the git hook runs these checks on each commit: file hygiene, the l
 
 ## Where the code lives
 
-| Path under `engine/knowledge_architecture/` | What it does                                                         |
-| ------------------------------------------- | -------------------------------------------------------------------- |
-| `generated/`                                | Models and shapes generated from the schema. Do not edit them.       |
-| `parser/`                                   | Reads `node.md` files into the models, with line numbers             |
-| `graph/`                                    | Checks the structure of the whole graph                              |
-| `language/`                                 | Checks directives, triggers, and skill descriptions                  |
-| `directives/`                               | Works out which directives apply at each node, and checks the result |
-| `governance/`                               | Checks the lifecycle, and compares each change with the last commit  |
-| `compiler/`                                 | Compiles the checked graph to JSON and RDF, with digests             |
-| `runtime/`                                  | Generates the files that an agent tool loads                         |
-| `template/`                                 | Takes in template knowledge, and records the history                 |
-| `interface/`                                | Writes the site for people, and accepts what a person approves       |
-| `vendor/`                                   | A third-party linter, kept unchanged with its license                |
+| Path under `engine/` | What it does                                                         |
+| -------------------- | -------------------------------------------------------------------- |
+| `generated/`         | Models and shapes generated from the schema. Do not edit them.       |
+| `parser/`            | Reads `node.md` files into the models, with line numbers             |
+| `graph/`             | Checks the structure of the whole graph                              |
+| `language/`          | Checks directives, triggers, and skill descriptions                  |
+| `directives/`        | Works out which directives apply at each node, and checks the result |
+| `governance/`        | Checks the lifecycle, and compares each change with the last commit  |
+| `compiler/`          | Compiles the checked graph to JSON and RDF, with digests             |
+| `runtime/`           | Generates the files that an agent tool loads                         |
+| `template/`          | Takes in template knowledge, and records the history                 |
+| `interface/`         | Writes the site for people, and accepts what a person approves       |
+| `vendor/`            | A third-party linter, kept unchanged with its license                |

@@ -10,28 +10,28 @@ from markdown_it import MarkdownIt
 from rdflib import Graph, Variable
 from ruamel.yaml import YAML
 
-from knowledge_architecture.cli import app
-from knowledge_architecture.compiler import BUILD_CODES, OUTPUT_FOLDER, file_names
-from knowledge_architecture.directives import DIRECTIVE_CODES
-from knowledge_architecture.generated.metamodel import CompiledResult, Concept
-from knowledge_architecture.governance import GOVERNANCE_CODES
-from knowledge_architecture.governance.checks import RESTING_FIELDS
-from knowledge_architecture.governance.entities import (
+from engine.cli import app
+from engine.compiler import BUILD_CODES, OUTPUT_FOLDER, file_names
+from engine.directives import DIRECTIVE_CODES
+from engine.generated.metamodel import CompiledResult, Concept
+from engine.governance import GOVERNANCE_CODES
+from engine.governance.checks import RESTING_FIELDS
+from engine.governance.entities import (
     DIRECTIVE_FIELDS_WITHOUT_REVIEW,
     NODE_FIELDS_WITHOUT_REVIEW,
 )
-from knowledge_architecture.graph.structure import ACYCLIC_EDGES, MAX_POINTER_HOPS
-from knowledge_architecture.interface import ACCEPT_CODES, VIEW_CODES, VIEW_FOLDER
-from knowledge_architecture.language import check_items
-from knowledge_architecture.language.profile import (
+from engine.graph.structure import ACYCLIC_EDGES, MAX_POINTER_HOPS
+from engine.interface import ACCEPT_CODES, VIEW_CODES, VIEW_FOLDER
+from engine.language import check_items
+from engine.language.profile import (
     LISTING_ENTRY_CAP,
     CheckCode,
     LanguageProfile,
     read_profile,
 )
-from knowledge_architecture.parser import ParsedNode, parse_source, parse_tree
-from knowledge_architecture.runtime import REVIEW_FOLDER, RUNTIME_CODES, review_path
-from knowledge_architecture.template import ADOPT_CODES, HISTORY_CODES, Entry
+from engine.parser import ParsedNode, parse_source, parse_tree
+from engine.runtime import REVIEW_FOLDER, RUNTIME_CODES, review_path
+from engine.template import ADOPT_CODES, HISTORY_CODES, Entry
 
 REPO = Path(__file__).resolve().parents[1]
 README = REPO / "README.md"

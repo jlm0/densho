@@ -10,15 +10,15 @@ import pytest
 from jinja2 import Environment
 from ruamel.yaml import YAML
 
-from knowledge_architecture.interface import (
+from engine.interface import (
     VIEW_FOLDER,
     accept_entities,
     command_prefix,
     write_view,
 )
-from knowledge_architecture.parser.generated import is_generated
-from knowledge_architecture.runtime import generate_runtime
-from knowledge_architecture.template.history import HISTORY_FILE
+from engine.parser.generated import is_generated
+from engine.runtime import generate_runtime
+from engine.template.history import HISTORY_FILE
 
 REPO = Path(__file__).resolve().parents[1]
 GIT = shutil.which("git") or "git"

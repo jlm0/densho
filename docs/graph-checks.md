@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-The parser checks each file on its own, so `broader: [does-not-exist]` passes it. This layer loads every node into one graph and checks what only the whole graph can show. The code is in `engine/knowledge_architecture/graph/`.
+The parser checks each file on its own, so `broader: [does-not-exist]` passes it. This layer loads every node into one graph and checks what only the whole graph can show. The code is in `engine/graph/`.
 
 ## Run the checks
 

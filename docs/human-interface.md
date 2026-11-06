@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-This layer gives a person two commands. `ka view` writes a site that shows the tree, what applies at each node, and everything that waits for review. `ka accept` changes `status` to `accepted` on what the person approves. The code is in `engine/knowledge_architecture/interface/`.
+This layer gives a person two commands. `ka view` writes a site that shows the tree, what applies at each node, and everything that waits for review. `ka accept` changes `status` to `accepted` on what the person approves. The code is in `engine/interface/`.
 
 Nothing here is a new source of knowledge. The site reads the same compiled graph as the [runtime files](runtime-files.md), so a person and an agent see one version of each node. A node is still a Markdown file that any editor can open and Git can review.
 
@@ -127,7 +127,7 @@ A node can arrive from a pull or from an agent, so the site treats each value as
 ```python
 from pathlib import Path
 
-from knowledge_architecture.interface import accept_entities, render_site, write_view
+from engine.interface import accept_entities, render_site, write_view
 
 write_view(Path())
 accept_entities(Path(), ["group-related-fields"], ["visual-design"], dry_run=True)

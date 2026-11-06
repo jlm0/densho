@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 from typer.testing import CliRunner
 
-from knowledge_architecture.cli import app
-from knowledge_architecture.language.profile import LanguageProfile, read_profile
+from engine.cli import app
+from engine.language.profile import LanguageProfile, read_profile
 
 if TYPE_CHECKING:
     import pytest

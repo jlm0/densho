@@ -3,7 +3,7 @@ from typing import Any
 import pytest
 from pydantic import BaseModel, ValidationError
 
-from knowledge_architecture.generated.metamodel import (
+from engine.generated.metamodel import (
     AlwaysPointer,
     Concept,
     Directive,

@@ -3,15 +3,15 @@ from typing import Any
 
 import pytest
 
-from knowledge_architecture.directives import (
+from engine.directives import (
     DIRECTIVE_CODES,
     AppliedDirective,
     check_directives,
     check_items,
     resolve_directives,
 )
-from knowledge_architecture.graph.references import references_of
-from knowledge_architecture.parser import ParsedNode, parse_source
+from engine.graph.references import references_of
+from engine.parser import ParsedNode, parse_source
 
 type Spec = dict[str, Any]
 

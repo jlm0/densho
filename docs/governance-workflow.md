@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-The other checks prove that knowledge is well formed. This layer decides whether it is in force: what a proposal can do before anyone reviews it, which changes reopen a review, and how a change gets promoted. The policies are nodes in `governance/policies/`, and the code is in `engine/knowledge_architecture/governance/`.
+The other checks prove that knowledge is well formed. This layer decides whether it is in force: what a proposal can do before anyone reviews it, which changes reopen a review, and how a change gets promoted. The policies are nodes in `governance/policies/`, and the code is in `engine/governance/`.
 
 A local check has limits here. It can compare a change with the last commit, but it can't tell who made the change or whether anyone read it. See [what a check can and cannot prove](#what-a-check-can-and-cannot-prove).
 

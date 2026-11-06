@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-This layer checks the text that agents act on: directives, pointer triggers, and skill descriptions. The grammar and the vocabularies are data in `governance/language/`, and the code is in `engine/knowledge_architecture/language/`.
+This layer checks the text that agents act on: directives, pointer triggers, and skill descriptions. The grammar and the vocabularies are data in `governance/language/`, and the code is in `engine/language/`.
 
 The checks judge form only. A rule can pass every check and still be a bad rule, so meaning stays a matter for review. See [what a pass does not mean](#what-a-pass-does-not-mean).
 
@@ -138,7 +138,7 @@ A check can decide form. It cannot decide meaning. Each rule in `governance/lang
 
 Each text goes through two stages. The first reads its Markdown, replaces each code span with a placeholder, and runs the form checks with regular expressions and the word lists. The second uses spaCy with the `en_core_web_sm` model to find the subject, the verbs, and the condition clauses, and to match the prohibited terms. Structure checks run only on a text that passed the form checks, so one broken sentence gives one clear report.
 
-The STE findings come from a vendored copy of `ste-lint.py` in `engine/knowledge_architecture/vendor/`, kept byte for byte with its license. Its advisory findings, passive voice and the present perfect, do not fail a check. The grammar's word limit replaces its sentence limit.
+The STE findings come from a vendored copy of `ste-lint.py` in `engine/vendor/`, kept byte for byte with its license. Its advisory findings, passive voice and the present perfect, do not fail a check. The grammar's word limit replaces its sentence limit.
 
 spaCy loads only when there is text to check, and the rules in `grammar.yaml` count as text. It adds about half a second to the run. A commit that touches none of the paths above does not run the hook.
 

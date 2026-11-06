@@ -10,10 +10,10 @@ import pytest
 from ruamel.yaml import YAML
 from typer.testing import CliRunner
 
-from knowledge_architecture.cli import app
-from knowledge_architecture.compiler import compile_items, compile_tree
-from knowledge_architecture.parser import ParsedNode, parse_source
-from knowledge_architecture.runtime import (
+from engine.cli import app
+from engine.compiler import compile_items, compile_tree
+from engine.parser import ParsedNode, parse_source
+from engine.runtime import (
     MARKER,
     REVIEW_FOLDER,
     LoadMechanism,
@@ -27,7 +27,7 @@ from knowledge_architecture.runtime import (
     resolves,
     review_path,
 )
-from knowledge_architecture.runtime.claude_code import (
+from engine.runtime.claude_code import (
     ON_DEMAND_CHARACTERS,
     SKILL_KEPT_CHARACTERS,
     SKILL_KEPT_TOKENS,
@@ -35,14 +35,14 @@ from knowledge_architecture.runtime.claude_code import (
     size_problems,
     state_sentence,
 )
-from knowledge_architecture.runtime.files import apply_files
-from knowledge_architecture.runtime.view import DirectiveCounts
+from engine.runtime.files import apply_files
+from engine.runtime.view import DirectiveCounts
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
 REPO = Path(__file__).resolve().parents[1]
-ENGINE = REPO / "engine/knowledge_architecture/runtime"
+ENGINE = REPO / "engine/runtime"
 RUNNER = CliRunner()
 GIT = shutil.which("git") or "git"
 REVIEW = REVIEW_FOLDER.as_posix()

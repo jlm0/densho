@@ -10,13 +10,13 @@ from ruamel.yaml import YAML
 from typer.core import TyperGroup
 from typer.main import get_command
 
-from knowledge_architecture.cli import app
-from knowledge_architecture.language import check_items
-from knowledge_architecture.language.form import HARD_LEVEL
-from knowledge_architecture.language.profile import LanguageProfile, read_profile
-from knowledge_architecture.parser import ParsedNode, parse_source
-from knowledge_architecture.runtime.claude_code import SKILL_KEPT_CHARACTERS
-from knowledge_architecture.vendor.ste_lint import lint
+from engine.cli import app
+from engine.language import check_items
+from engine.language.form import HARD_LEVEL
+from engine.language.profile import LanguageProfile, read_profile
+from engine.parser import ParsedNode, parse_source
+from engine.runtime.claude_code import SKILL_KEPT_CHARACTERS
+from engine.vendor.ste_lint import lint
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -25,7 +25,7 @@ REPO = Path(__file__).resolve().parents[1]
 SKILL_NAME = "migrate-and-reconcile-knowledge"
 SKILL = REPO / "company-skills" / SKILL_NAME / "SKILL.md"
 PAGE = REPO / "docs/migration-and-reconciliation.md"
-ENGINE = REPO / "engine/knowledge_architecture"
+ENGINE = REPO / "engine"
 RULE_SECTIONS = ("Directives", "Migration", "Reconciliation")
 RULE_LINE = re.compile(r"^(?:- |\d+\. )(?P<text>.+)$")
 SECTION = re.compile(r"^## (?P<name>.+)$")

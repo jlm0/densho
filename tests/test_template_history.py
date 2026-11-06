@@ -8,22 +8,22 @@ from typing import TYPE_CHECKING
 import pytest
 from typer.testing import CliRunner
 
-from knowledge_architecture.cli import app
-from knowledge_architecture.governance.base import read_head_file
-from knowledge_architecture.parser import ParsedNode, parse_source
-from knowledge_architecture.template import (
+from engine.cli import app
+from engine.governance.base import read_head_file
+from engine.parser import ParsedNode, parse_source
+from engine.template import (
     HISTORY_CODES,
     HISTORY_FILE,
     Entry,
     history_drift,
     record_history,
 )
-from knowledge_architecture.template import history as history_module
+from engine.template import history as history_module
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from knowledge_architecture.parser.result import Problem
+    from engine.parser.result import Problem
 
 REPO = Path(__file__).resolve().parents[1]
 RUNNER = CliRunner()

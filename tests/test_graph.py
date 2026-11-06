@@ -7,11 +7,11 @@ import pytest
 from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import RDF, SH, BNode, Graph, Literal, URIRef
 
-from knowledge_architecture.graph import check_graph, check_tree
-from knowledge_architecture.graph.references import EDGE_FIELDS, references_of
-from knowledge_architecture.graph.shapes import KA, NODE_NAMESPACE, check_shapes, report_problems
-from knowledge_architecture.graph.structure import MAX_POINTER_HOPS
-from knowledge_architecture.parser import ParsedNode, parse_tree
+from engine.graph import check_graph, check_tree
+from engine.graph.references import EDGE_FIELDS, references_of
+from engine.graph.shapes import KA, NODE_NAMESPACE, check_shapes, report_problems
+from engine.graph.structure import MAX_POINTER_HOPS
+from engine.parser import ParsedNode, parse_tree
 
 type Fields = dict[str, Any]
 

@@ -6,7 +6,7 @@ import mdformat
 import pytest
 from markdown_it import MarkdownIt
 
-from knowledge_architecture.generated.metamodel import (
+from engine.generated.metamodel import (
     Concept,
     Discipline,
     Domain,
@@ -16,8 +16,8 @@ from knowledge_architecture.generated.metamodel import (
     Skill,
     TextPointer,
 )
-from knowledge_architecture.parser import ParsedNode, parse_file, parse_source, parse_tree
-from knowledge_architecture.parser.generated import MARKER, is_generated_file
+from engine.parser import ParsedNode, parse_file, parse_source, parse_tree
+from engine.parser.generated import MARKER, is_generated_file
 
 PATH = Path("knowledge/sample/node.md")
 GOVERNED = "status: accepted\norigin: template\n"

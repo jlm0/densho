@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-This layer compiles the checked Markdown into JSON and RDF, so a tool can read the whole graph without parsing a node file. The same source always gives the same bytes, so a digest shows whether two builds hold the same knowledge. The code is in `engine/knowledge_architecture/compiler/`.
+This layer compiles the checked Markdown into JSON and RDF, so a tool can read the whole graph without parsing a node file. The same source always gives the same bytes, so a digest shows whether two builds hold the same knowledge. The code is in `engine/compiler/`.
 
 ## Build
 
@@ -102,7 +102,7 @@ SELECT ?child ?parent WHERE {
 }
 ```
 
-The classes are plain `ka:` classes, such as `ka:Concept`. To treat a taxonomy node as a `skos:Concept`, also load `engine/knowledge_architecture/generated/metamodel.owl.ttl`, which states that relationship.
+The classes are plain `ka:` classes, such as `ka:Concept`. To treat a taxonomy node as a `skos:Concept`, also load `engine/generated/metamodel.owl.ttl`, which states that relationship.
 
 ## Check a digest
 
@@ -120,7 +120,7 @@ These things don't change the bytes: the Python hash seed, the order of the file
 ```python
 from pathlib import Path
 
-from knowledge_architecture.compiler import compile_tree
+from engine.compiler import compile_tree
 
 report = compile_tree(Path(), proposals=False)
 report.problems  # the same problems that ka build prints

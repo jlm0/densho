@@ -29,7 +29,7 @@ uv run pre-commit run --all-files
 | `governance/policies/`                                     | Lifecycle, approval, and change rules, written as nodes            |
 | `knowledge/`                                               | The knowledge nodes: concepts and directives                       |
 | `skills/`                                                  | Skill sources built from the knowledge tree                        |
-| `engine/knowledge_architecture/`                           | The [Python engine](docs/README.md#where-the-code-lives)           |
+| `engine/`                                                  | The [Python engine](docs/README.md#where-the-code-lives)           |
 | `tests/`                                                   | Tests for the engine                                               |
 | `docs/`                                                    | The overview and a page for each layer                             |
 | `build/`                                                   | Generated output. Git ignores it.                                  |

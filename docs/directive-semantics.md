@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-This layer works out which directives apply at each node and checks that the answer holds together. The code is in `engine/knowledge_architecture/directives/`.
+This layer works out which directives apply at each node and checks that the answer holds together. The code is in `engine/directives/`.
 
 The checks read structure and declarations. They cannot tell whether two sentences contradict each other, so that stays a matter for review. See [what a pass does not mean](#what-a-pass-does-not-mean).
 
@@ -176,7 +176,7 @@ A check can read the graph and the declarations. It cannot read meaning.
 ## Use it from code
 
 ```python
-from knowledge_architecture.directives import resolve_directives
+from engine.directives import resolve_directives
 
 applied = resolve_directives(items).at("write-tests")
 ```

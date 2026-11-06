@@ -1,4 +1,4 @@
-exclude: ^engine/knowledge_architecture/(generated/metamodel|vendor/ste_lint)|(^|/)AGENTS\.md$|^\.claude/(rules/knowledge|skills)/
+exclude: ^engine/(generated/metamodel|vendor/ste_lint)|(^|/)AGENTS\.md$|^\.claude/(rules/knowledge|skills)/
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -38,7 +38,7 @@ repos:
           uv run --frozen gen-python --no-metadata governance/schema/metamodel.yaml > build/metamodel_rdf.py &&
           uv run --frozen gen-shacl --no-metadata governance/schema/metamodel.yaml > build/metamodel.shacl.ttl &&
           uv run --frozen gen-owl --no-metadata --no-use-native-uris --consolidate-cardinality-axioms --skip-vacuous-local-range-axioms --skip-vacuous-min-zero-cardinality-axioms governance/schema/metamodel.yaml > build/metamodel.owl.ttl &&
-          cp build/metamodel.py build/metamodel_rdf.py build/metamodel.shacl.ttl build/metamodel.owl.ttl governance/schema/metamodel.yaml engine/knowledge_architecture/generated/'
+          cp build/metamodel.py build/metamodel_rdf.py build/metamodel.shacl.ttl build/metamodel.owl.ttl governance/schema/metamodel.yaml engine/generated/'
         language: system
         pass_filenames: false
         always_run: true

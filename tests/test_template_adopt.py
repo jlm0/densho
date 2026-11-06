@@ -7,13 +7,13 @@ from typing import TYPE_CHECKING
 import pytest
 from typer.testing import CliRunner
 
-from knowledge_architecture.cli import app
-from knowledge_architecture.governance.base import Base
-from knowledge_architecture.parser.generated import MARKER
-from knowledge_architecture.parser.result import Problem
-from knowledge_architecture.runtime.claude_code import add_root_import, instruction_notes
-from knowledge_architecture.template import ADOPT_CODES, adopt_template
-from knowledge_architecture.template import adopt as adopt_module
+from engine.cli import app
+from engine.governance.base import Base
+from engine.parser.generated import MARKER
+from engine.parser.result import Problem
+from engine.runtime.claude_code import add_root_import, instruction_notes
+from engine.template import ADOPT_CODES, adopt_template
+from engine.template import adopt as adopt_module
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

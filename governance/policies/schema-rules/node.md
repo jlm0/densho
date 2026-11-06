@@ -24,7 +24,7 @@ The rules for the metamodel, which defines what a node is. The metamodel file st
   - scope: node
   - status: proposed
   - origin: template
-- Do not edit a file in `engine/knowledge_architecture/generated/` by hand. ^keep-the-generated-files
+- Do not edit a file in `engine/generated/` by hand. ^keep-the-generated-files
   - scope: node
   - status: proposed
   - origin: template

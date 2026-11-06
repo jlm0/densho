@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-Each node is one Markdown file with YAML front matter. The parser in `engine/knowledge_architecture/parser/` reads it into the models described in [Schema](schema.md).
+Each node is one Markdown file with YAML front matter. The parser in `engine/parser/` reads it into the models described in [Schema](schema.md).
 
 ## Where nodes live
 

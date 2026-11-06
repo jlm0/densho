@@ -4,15 +4,34 @@
 
 **Status:** Built.
 
-A project that [installs the template](template-packaging.md) receives this knowledge. It is ordinary content: one domain, six skills, and a few language terms, and it goes through the same checks and the same workflow as anything a project adds. Nothing in it binds an agent until a person accepts it.
+A project that [installs the template](template-packaging.md) receives this knowledge. It is ordinary content: one domain, eleven skills, and a few language terms, and it goes through the same checks and the same workflow as anything a project adds. Nothing in it binds an agent until a person accepts it.
 
 ## What ships
 
-The domain is Digital Product Development, under `knowledge/nodes/digital-product-development/`. All four disciplines are there, but only UI/UX Design and Software engineering go deep, because branch depth follows real classification and does not have to match:
+The domain is Digital Product Development, under `knowledge/nodes/digital-product-development/`. All four disciplines are there, but only Product strategy, UI/UX Design, and Software engineering go deep, because branch depth follows real classification and does not have to match:
 
 ```text
 Digital product development
 ├── Product strategy
+│   ├── Strategy
+│   │   └── Kernel of a strategy
+│   ├── Discovery
+│   │   ├── Jobs to be done
+│   │   ├── Opportunity solution tree
+│   │   ├── Four product risks
+│   │   ├── Assumption testing
+│   │   └── Product opportunity assessment
+│   ├── Positioning
+│   │   └── Components of positioning
+│   ├── Prioritization
+│   │   ├── RICE scoring
+│   │   ├── Kano model
+│   │   ├── Cost of delay
+│   │   └── MoSCoW prioritization
+│   └── Measurement
+│       ├── North star metric
+│       ├── HEART framework
+│       └── Objectives and key results
 ├── Brand design
 ├── UI/UX design
 │   ├── Information architecture
@@ -65,14 +84,19 @@ The hierarchy is not the only structure. `informs`, `depends_on`, and `related` 
 
 ## The skills
 
-| Skill                       | Use it when                                                   | What it draws on                                                                                                                          |
-| --------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `design-settings-interface` | You design or change a settings screen                        | Progressive disclosure, Information hierarchy, Visual grouping, Brand and Responsive design, and 17 accessibility rules through `applies` |
-| `review-screen-hierarchy`   | A screen design is ready for review                           | Information hierarchy, Visual grouping, Visual communication, and two contrast rules through `applies`                                    |
-| `review-usability`          | A flow is ready for a usability review                        | Usability heuristics, Fitts's law, Hick's law, Navigation, and Platform conventions                                                       |
-| `audit-accessibility`       | A screen, a component, or a flow needs an accessibility check | Accessibility, and the Reflow and Consistent Navigation rules through `applies`                                                           |
-| `review-code-change`        | A change is ready for review                                  | Code review, Testing, Security, Access control, and Injection                                                                             |
-| `write-decision-record`     | You make or change a decision about the structure of a system | Architecture decision record                                                                                                              |
+| Skill                       | Use it when                                                     | What it draws on                                                                                                                          |
+| --------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `design-settings-interface` | You design or change a settings screen                          | Progressive disclosure, Information hierarchy, Visual grouping, Brand and Responsive design, and 17 accessibility rules through `applies` |
+| `review-screen-hierarchy`   | A screen design is ready for review                             | Information hierarchy, Visual grouping, Visual communication, and two contrast rules through `applies`                                    |
+| `review-usability`          | A flow is ready for a usability review                          | Usability heuristics, Fitts's law, Hick's law, Navigation, and Platform conventions                                                       |
+| `audit-accessibility`       | A screen, a component, or a flow needs an accessibility check   | Accessibility, and the Reflow and Consistent Navigation rules through `applies`                                                           |
+| `review-code-change`        | A change is ready for review                                    | Code review, Testing, Security, Access control, and Injection                                                                             |
+| `write-decision-record`     | You make or change a decision about the structure of a system   | Architecture decision record                                                                                                              |
+| `write-strategy`            | You write the strategy of a product, a team, or a company       | Strategy and Kernel of a strategy                                                                                                         |
+| `map-opportunities`         | A team chooses the next customer need that it works on          | Opportunity solution tree, Jobs to be done, Assumption testing, and Four product risks                                                    |
+| `write-positioning`         | You write or change the positioning of a product                | Positioning and Components of positioning                                                                                                 |
+| `prioritize-work`           | You set the order of the work of a team                         | Prioritization, RICE scoring, Cost of delay, Kano model, and MoSCoW prioritization                                                        |
+| `define-success-metrics`    | You decide how to measure the success of a product or a feature | Measurement, HEART framework, North star metric, and Objectives and key results                                                           |
 
 `design-settings-interface` takes a subset of Accessibility. The whole node holds 61 rules and would bring the skill close to its [size limit](runtime-files.md#why-a-skill-holds-a-copy), while rules such as captions, flashing content, and sign-in have nothing to check on a settings screen. A skill source names knowledge and does not copy it. Its body holds only the inputs, the procedure, the output, and how to validate the result. The [generated skill file](runtime-files.md#why-a-skill-holds-a-copy) holds the directives in force. To see every rule a skill carries, with each proposal labeled:
 
@@ -118,17 +142,20 @@ A `sources` value names a page that was read when the rule was written. Where a 
 - Architecture: the C4 model site, Michael Nygard's post on architecture decision records, and The Twelve-Factor App
 - Reliability: the Google SRE book and workbook
 - Code review: Google's engineering practices guide
+- Product strategy: Richard Rumelt's article on bad strategy, Marty Cagan's articles on SVPG, Teresa Torres on Product Talk, the Christensen Institute and Tony Ulwick on jobs to be done, April Dunford, Intercom's article on RICE, Noriaki Kano's 1984 paper and Daniel Zacarias's guide to it, Joshua Arnold on cost of delay, DSDM on MoSCoW, Nielsen Norman Group, Amplitude, the HEART paper from Google, and What Matters with Google's OKR playbook
+
+Several product strategy frameworks come from books, such as *Good Strategy/Bad Strategy*, *Inspired*, *Continuous Discovery Habits*, and *Obviously Awesome*. A rule cites an article or a page by the author, not the book.
 
 A rule with no `sources` is a judgment call, so read it with more care.
 
 Each directive also states its `basis`, the kind of source behind it. In the domain and the skills:
 
-| `basis`        | Directives | Where they come from                                                                                                                                                                                                           |
-| -------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `standard`     | 111        | WCAG 2.2, the Design Tokens Format Module, the OWASP Top 10 and ASVS, Conventional Commits, and Semantic Versioning                                                                                                            |
-| `research`     | 31         | The Gestalt grouping research, Fitts's law, and Hick's law, mostly through Nielsen Norman Group articles, and the DORA research                                                                                                |
-| `practitioner` | 161        | Named methods and authors: Nielsen Norman Group, WCAG-EM, Apple, Android and Material Components, Brad Frost, MDN, an OWASP cheat sheet, martinfowler.com, Google, Paul Hammant, Simon Brown, Michael Nygard, and Adam Wiggins |
-| `judgment`     | 9          | No source                                                                                                                                                                                                                      |
+| `basis`        | Directives | Where they come from                                                                                                                                                                                                                                               |
+| -------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `standard`     | 111        | WCAG 2.2, the Design Tokens Format Module, the OWASP Top 10 and ASVS, Conventional Commits, and Semantic Versioning                                                                                                                                                |
+| `research`     | 37         | The Gestalt grouping research, Fitts's law, and Hick's law, mostly through Nielsen Norman Group articles, the DORA research, and the HEART paper from Google                                                                                                       |
+| `practitioner` | 236        | Named methods and authors: Nielsen Norman Group, WCAG-EM, Apple, Android and Material Components, Brad Frost, MDN, an OWASP cheat sheet, martinfowler.com, Google, Paul Hammant, Simon Brown, Michael Nygard, Adam Wiggins, and the product strategy authors above |
+| `judgment`     | 7          | No source                                                                                                                                                                                                                                                          |
 
 Every governance directive is `judgment`, because the policies come from this project's own design and cite nothing.
 

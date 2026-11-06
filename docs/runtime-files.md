@@ -65,7 +65,7 @@ A directive list holds what applies at that node and nothing else: inherited dir
 The default result holds only what the [governance workflow](governance-workflow.md) puts in force. Every seed entity is still `proposed`, so today the committed files hold the nodes and the pointers but no directive. The root says so plainly, so an agent doesn't assume a rule:
 
 ```text
-No directive is in force. The graph holds 346 directives and 1 exception that are not in force.
+No directive is in force. The graph holds 425 directives and 1 exception that are not in force.
 
 Treat a directive as a rule only when its `status` is `accepted`. A generated file lists only the directives that apply at its own node.
 ```

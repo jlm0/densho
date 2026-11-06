@@ -47,6 +47,18 @@ The organization of design elements so that the eye takes them in the order of t
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/
+- Mark the preferred button in a set of choices with a prominent style, not a larger size. ^mark-preferred-with-style
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://developer.apple.com/design/human-interface-guidelines/buttons
+- Do not give a secondary button the color of the primary button. ^distinct-primary-button-color
+  - scope: subtree
+  - basis: research
+  - status: proposed
+  - origin: template
+  - sources: https://www.nngroup.com/articles/gestalt-similarity/
 - Give each screen one primary action. ^one-primary-action
   - scope: subtree
   - basis: judgment

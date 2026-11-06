@@ -41,3 +41,15 @@ Designing a layout that adapts to each screen size and resolution and stays usab
   - status: proposed
   - origin: template
   - sources: https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design
+- Choose each layout from the width of the window, not from the type of device. ^layout-from-window-width
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://developer.android.com/develop/ui/compose/layouts/adaptive/use-window-size-classes
+- Keep the related elements of each group close together at each breakpoint. ^keep-groups-at-each-width
+  - scope: subtree
+  - basis: research
+  - status: proposed
+  - origin: template
+  - sources: https://www.nngroup.com/articles/gestalt-proximity/

@@ -14,6 +14,15 @@ pointers:
   - kind: ka:TextPointer
     target: navigation
     trigger: You design how people move between screens.
+  - kind: ka:TextPointer
+    target: usability-heuristics
+    trigger: You design feedback, an exit, a confirmation, an error message, or help.
+  - kind: ka:TextPointer
+    target: fitts-law
+    trigger: You choose the size or the position of a button, a link, or a menu.
+  - kind: ka:TextPointer
+    target: hicks-law
+    trigger: You choose the number of options in a menu, a step, or a first screen.
 ---
 
 ## Definition
@@ -28,3 +37,9 @@ The design of how an interface responds when people act on it: which controls ap
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/ten-usability-heuristics/
+- Give each custom button a visible pressed state. ^show-pressed-state
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://developer.apple.com/design/human-interface-guidelines/buttons

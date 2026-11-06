@@ -5,7 +5,7 @@ A build generates this file from the node files. Change a node file, not this fi
 
 ## Directives
 
-No directive is in force. The graph holds 195 directives and 1 exception that are not in force.
+No directive is in force. The graph holds 346 directives and 1 exception that are not in force.
 
 Treat a directive as a rule only when its `status` is `accepted`. A generated file lists only the directives that apply at its own node.
 
@@ -34,7 +34,9 @@ Treat a directive as a rule only when its `status` is `accepted`. A generated fi
 
 If compaction removes a skill, invoke the skill again.
 
+- `audit-accessibility`: Check an interface against the WCAG `2.2` success criteria of level A and AA. Use when a screen, a component, or a flow needs an accessibility check.
 - `design-settings-interface`: Design a settings interface from its options and its users. Use when you design or change a settings screen.
 - `review-code-change`: Review a code change for its design, its behavior, its tests, and its security. Use when a change is ready for review.
 - `review-screen-hierarchy`: Review a screen for its hierarchy, its grouping, and its use of prose. Use when a screen design is ready for review.
+- `review-usability`: Review a flow against the usability heuristics, the size and position of its targets, and its choices. Use when a flow is ready for a usability review.
 - `write-decision-record`: Write an architecture decision record for one decision. Use when you make or change a decision about the structure of a system.

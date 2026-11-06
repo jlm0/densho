@@ -11,9 +11,26 @@ uses:
   - progressive-disclosure
   - information-hierarchy
   - visual-grouping
-  - accessibility
   - brand-design
   - responsive-design
+applies:
+  - contrast-regular-text
+  - contrast-large-text
+  - contrast-ui-components
+  - no-color-only
+  - keyboard-operable
+  - keep-focus-visible
+  - logical-focus-order
+  - minimum-target-size
+  - text-alternative
+  - name-non-text-controls
+  - hide-decoration
+  - label-each-field
+  - label-in-name
+  - descriptive-headings-and-labels
+  - name-role-value
+  - no-change-on-input
+  - expose-status-messages
 exceptions:
   - directive: one-primary-action
     reason: A settings screen holds controls of equal rank.

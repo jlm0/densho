@@ -36,6 +36,18 @@ Using glyphs, images, and spatial composition to say what prose would otherwise 
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/icon-usability/
+- Do not use one glyph for two different functions. ^no-shared-glyph
+  - scope: subtree
+  - basis: research
+  - status: proposed
+  - origin: template
+  - sources: https://www.nngroup.com/articles/gestalt-similarity/
+- Test each new glyph with users for recognition before you use it. ^test-new-glyphs
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://www.nngroup.com/articles/icon-usability/
 
 ## Notes
 

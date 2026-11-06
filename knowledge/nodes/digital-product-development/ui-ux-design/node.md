@@ -21,16 +21,28 @@ pointers:
     trigger: You decide how a screen looks.
   - kind: ka:TextPointer
     target: accessibility
-    trigger: You build a control, a text style, or a color choice.
+    trigger: You build a control, a form, a text style, a color choice, or media.
   - kind: ka:TextPointer
     target: responsive-design
     trigger: You fit a layout to a screen size.
+  - kind: ka:TextPointer
+    target: platform-conventions
+    trigger: You design for a specific operating system or with its components.
+  - kind: ka:TextPointer
+    target: design-systems
+    trigger: You build or use the tokens and the components of a design system.
   - kind: ka:SkillPointer
     target: design-settings-interface
     trigger: You design or change a settings screen.
   - kind: ka:SkillPointer
     target: review-screen-hierarchy
     trigger: A screen design is ready for review.
+  - kind: ka:SkillPointer
+    target: review-usability
+    trigger: A flow is ready for a usability review.
+  - kind: ka:SkillPointer
+    target: audit-accessibility
+    trigger: A screen, a component, or a flow needs an accessibility check.
 ---
 
 ## Definition

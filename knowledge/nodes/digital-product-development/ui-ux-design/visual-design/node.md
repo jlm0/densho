@@ -13,7 +13,7 @@ pointers:
     trigger: You rank the elements of a screen.
   - kind: ka:TextPointer
     target: visual-grouping
-    trigger: You place related elements on a screen.
+    trigger: You place, style, or frame related elements on a screen.
   - kind: ka:TextPointer
     target: visual-communication
     trigger: You choose between prose and a visual form.

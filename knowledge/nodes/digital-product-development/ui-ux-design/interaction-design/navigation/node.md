@@ -27,6 +27,7 @@ The interface components that let people move between the parts of a product. Na
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/consistent-navigation.html
 - Show the current location of the user in the navigation. ^show-current-location
   - scope: subtree
-  - basis: judgment
+  - basis: practitioner
   - status: proposed
   - origin: template
+  - sources: https://www.nngroup.com/articles/ten-usability-heuristics/

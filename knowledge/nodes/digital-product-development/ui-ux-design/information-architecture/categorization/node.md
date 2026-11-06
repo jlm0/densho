@@ -31,6 +31,7 @@ Sorting content and functions into groups that match how users think about them.
   - sources: https://www.nngroup.com/articles/card-sorting-definition/
 - Name each category in words that users recognize. ^name-categories-for-users
   - scope: subtree
-  - basis: judgment
+  - basis: practitioner
   - status: proposed
   - origin: template
+  - sources: https://www.nngroup.com/articles/ten-usability-heuristics/

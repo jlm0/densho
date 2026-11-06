@@ -4,11 +4,11 @@
 
 **Status:** Built.
 
-A project that [installs the template](template-packaging.md) receives this knowledge. It is ordinary content: one domain, eleven skills, and a few language terms, and it goes through the same checks and the same workflow as anything a project adds. Nothing in it binds an agent until a person accepts it.
+A project that [installs the template](template-packaging.md) receives this knowledge. It is ordinary content: one domain, fourteen skills, and a few language terms, and it goes through the same checks and the same workflow as anything a project adds. Nothing in it binds an agent until a person accepts it.
 
 ## What ships
 
-The domain is Digital Product Development, under `knowledge/nodes/digital-product-development/`. All four disciplines are there, but only Product strategy, UI/UX Design, and Software engineering go deep, because branch depth follows real classification and does not have to match:
+The domain is Digital Product Development, under `knowledge/nodes/digital-product-development/`. All four disciplines are there, each with its own practice areas and concepts. They differ in depth, because branch depth follows real classification and does not have to match:
 
 ```text
 Digital product development
@@ -33,6 +33,21 @@ Digital product development
 │       ├── HEART framework
 │       └── Objectives and key results
 ├── Brand design
+│   ├── Brand strategy
+│   │   ├── Brand identity prism
+│   │   ├── Brand equity pyramid
+│   │   ├── Brand positioning statement
+│   │   ├── Brand personality
+│   │   └── Distinctive brand assets
+│   ├── Voice and tone
+│   │   └── Tone of voice dimensions
+│   ├── Visual identity
+│   │   ├── Logo
+│   │   ├── Color roles
+│   │   └── Type scale
+│   └── Brand systems
+│       ├── Brand guidelines
+│       └── Brand architecture
 ├── UI/UX design
 │   ├── Information architecture
 │   │   └── Categorization
@@ -97,6 +112,9 @@ The hierarchy is not the only structure. `informs`, `depends_on`, and `related` 
 | `write-positioning`         | You write or change the positioning of a product                | Positioning and Components of positioning                                                                                                 |
 | `prioritize-work`           | You set the order of the work of a team                         | Prioritization, RICE scoring, Cost of delay, Kano model, and MoSCoW prioritization                                                        |
 | `define-success-metrics`    | You decide how to measure the success of a product or a feature | Measurement, HEART framework, North star metric, and Objectives and key results                                                           |
+| `define-brand-voice`        | You define or change the voice of a brand                       | Voice and tone, Tone of voice dimensions, and Brand personality                                                                           |
+| `write-brand-guidelines`    | You write or update brand guidelines                            | Brand strategy, Visual identity, Voice and tone, Brand systems, seven of their concepts, and three contrast rules through `applies`       |
+| `audit-brand-consistency`   | You review the touchpoints of a brand for consistency           | Visual identity, Logo, Color roles, Type scale, Distinctive brand assets, Voice and tone, and Brand guidelines                            |
 
 `design-settings-interface` takes a subset of Accessibility. The whole node holds 61 rules and would bring the skill close to its [size limit](runtime-files.md#why-a-skill-holds-a-copy), while rules such as captions, flashing content, and sign-in have nothing to check on a settings screen. A skill source names knowledge and does not copy it. Its body holds only the inputs, the procedure, the output, and how to validate the result. The [generated skill file](runtime-files.md#why-a-skill-holds-a-copy) holds the directives in force. To see every rule a skill carries, with each proposal labeled:
 
@@ -142,20 +160,21 @@ A `sources` value names a page that was read when the rule was written. Where a 
 - Architecture: the C4 model site, Michael Nygard's post on architecture decision records, and The Twelve-Factor App
 - Reliability: the Google SRE book and workbook
 - Code review: Google's engineering practices guide
+- Brand design: Kevin Lane Keller's working paper on brand equity for the Marketing Science Institute, a peer-reviewed article on Kapferer's brand identity prism, publisher excerpts of Alice Tybout's chapter in *Kellogg on Branding in a Hyper-Connected World* and of Alina Wheeler's *Designing Brand Identity*, Jennifer Aaker on brand personality, Jenni Romaniuk of the Ehrenberg-Bass Institute on distinctive brand assets, Nielsen Norman Group on tone of voice, the voice guides of Mailchimp, Atlassian, and Microsoft, the logo guidance of Atlassian, Apple, and GitHub, the GitHub color page, the Material Components theming docs, and Tim Brown on modular scales
 - Product strategy: Richard Rumelt's article on bad strategy, Marty Cagan's articles on SVPG, Teresa Torres on Product Talk, the Christensen Institute and Tony Ulwick on jobs to be done, April Dunford, Intercom's article on RICE, Noriaki Kano's 1984 paper and Daniel Zacarias's guide to it, Joshua Arnold on cost of delay, DSDM on MoSCoW, Nielsen Norman Group, Amplitude, the HEART paper from Google, and What Matters with Google's OKR playbook
 
-Several product strategy frameworks come from books, such as *Good Strategy/Bad Strategy*, *Inspired*, *Continuous Discovery Habits*, and *Obviously Awesome*. A rule cites an article or a page by the author, not the book.
+Several product strategy and brand frameworks come from books, such as *Good Strategy/Bad Strategy*, *Inspired*, *Continuous Discovery Habits*, *Obviously Awesome*, *The New Strategic Brand Management*, and *Designing Brand Identity*. A rule cites a page that was read: an article by the author, a publisher excerpt of the book, or, for Kapferer, a peer-reviewed article that describes his model.
 
 A rule with no `sources` is a judgment call, so read it with more care.
 
 Each directive also states its `basis`, the kind of source behind it. In the domain and the skills:
 
-| `basis`        | Directives | Where they come from                                                                                                                                                                                                                                               |
-| -------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `standard`     | 111        | WCAG 2.2, the Design Tokens Format Module, the OWASP Top 10 and ASVS, Conventional Commits, and Semantic Versioning                                                                                                                                                |
-| `research`     | 37         | The Gestalt grouping research, Fitts's law, and Hick's law, mostly through Nielsen Norman Group articles, the DORA research, and the HEART paper from Google                                                                                                       |
-| `practitioner` | 236        | Named methods and authors: Nielsen Norman Group, WCAG-EM, Apple, Android and Material Components, Brad Frost, MDN, an OWASP cheat sheet, martinfowler.com, Google, Paul Hammant, Simon Brown, Michael Nygard, Adam Wiggins, and the product strategy authors above |
-| `judgment`     | 7          | No source                                                                                                                                                                                                                                                          |
+| `basis`        | Directives | Where they come from                                                                                                                                                                                                                                                                                                                  |
+| -------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `standard`     | 111        | WCAG 2.2, the Design Tokens Format Module, the OWASP Top 10 and ASVS, Conventional Commits, and Semantic Versioning                                                                                                                                                                                                                   |
+| `research`     | 47         | The Gestalt grouping research, Fitts's law, and Hick's law, mostly through Nielsen Norman Group articles, the DORA research, the HEART paper from Google, and the Ehrenberg-Bass Institute's research on distinctive brand assets                                                                                                     |
+| `practitioner` | 290        | Named methods and authors: Nielsen Norman Group, WCAG-EM, Apple, Android and Material Components, Brad Frost, MDN, an OWASP cheat sheet, martinfowler.com, Google, Paul Hammant, Simon Brown, Michael Nygard, Adam Wiggins, the voice guides of Mailchimp, Atlassian, and Microsoft, and the product strategy and brand authors above |
+| `judgment`     | 5          | No source                                                                                                                                                                                                                                                                                                                             |
 
 Every governance directive is `judgment`, because the policies come from this project's own design and cite nothing.
 

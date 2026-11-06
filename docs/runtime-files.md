@@ -17,8 +17,8 @@ uv run ka runtime
 ```text
 wrote AGENTS.md
 wrote .claude/skills/design-settings-interface/SKILL.md
-244 entities wait for review. Run uv run ka governance --pending to list them.
-in_force: 48 files, 2 written, 0 removed, 0 problems
+406 entities wait for review. Run uv run ka governance --pending to list them.
+in_force: 59 files, 2 written, 0 removed, 0 problems
 ```
 
 The command compiles the graph with the same code as `ka build`, so it runs every check on one reading of the tree. It writes each file that differs and removes each file of its own that no node generates any more. A second run changes nothing.
@@ -65,7 +65,7 @@ A directive list holds what applies at that node and nothing else: inherited dir
 The default result holds only what the [governance workflow](governance-workflow.md) puts in force. Every seed entity is still `proposed`, so today the committed files hold the nodes and the pointers but no directive. The root says so plainly, so an agent doesn't assume a rule:
 
 ```text
-No directive is in force. The graph holds 195 directives and 1 exception that are not in force.
+No directive is in force. The graph holds 346 directives and 1 exception that are not in force.
 
 Treat a directive as a rule only when its `status` is `accepted`. A generated file lists only the directives that apply at its own node.
 ```
@@ -103,7 +103,7 @@ The [review queue](human-interface.md#read-the-knowledge) lists the same effect 
 
 A skill is an entry point in the middle of the tree, so it has to carry the directives that reach it. The build copies them into the skill file. It links the page of each node in `uses` too, but the skill doesn't depend on a read.
 
-Compaction decides this. After compaction, Claude Code re-attaches each invoked skill and keeps the first 5,000 tokens, while it restores only a few of the files an agent read. A required read also leaves the choice to the agent, and a node file holds proposals and rules that an exception stops. `design-settings-interface` draws 39 directives from 11 nodes, so a list of reads would be the weaker answer.
+Compaction decides this. After compaction, Claude Code re-attaches each invoked skill and keeps the first 5,000 tokens, while it restores only a few of the files an agent read. A required read also leaves the choice to the agent, and a node file holds proposals and rules that an exception stops. `design-settings-interface` draws 63 directives from 11 nodes, so a list of reads would be the weaker answer.
 
 The directives sit directly after the title, so they are the part that compaction keeps. The build fails with `size` if the title and the directives of a skill take more than 15,000 characters. That is 3 characters for each of the 5,000 tokens, a low estimate on purpose, because the repo has no tokenizer. The procedure comes after the directives, so a long one can still be cut. A skill says near its top that the agent can invoke it again, and the root says the same, because the oldest skill can drop out entirely. A person skill tells the agent to ask the person instead.
 

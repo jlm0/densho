@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-A project that [installs the template](template-packaging.md) receives this knowledge. It is ordinary content: one domain, four skills, and a few language terms, and it goes through the same checks and the same workflow as anything a project adds. Nothing in it binds an agent until a person accepts it.
+A project that [installs the template](template-packaging.md) receives this knowledge. It is ordinary content: one domain, six skills, and a few language terms, and it goes through the same checks and the same workflow as anything a project adds. Nothing in it binds an agent until a person accepts it.
 
 ## What ships
 
@@ -19,13 +19,22 @@ Digital product development
 │   │   └── Categorization
 │   ├── Interaction design
 │   │   ├── Progressive disclosure
-│   │   └── Navigation
+│   │   ├── Navigation
+│   │   ├── Usability heuristics
+│   │   ├── Fitts's law
+│   │   └── Hick's law
 │   ├── Visual design
 │   │   ├── Information hierarchy
 │   │   ├── Visual grouping
 │   │   └── Visual communication
 │   ├── Accessibility
-│   └── Responsive design
+│   ├── Responsive design
+│   ├── Platform conventions
+│   │   ├── Apple Human Interface Guidelines
+│   │   └── Material Design
+│   └── Design systems
+│       ├── Design tokens
+│       └── Atomic design
 └── Software engineering
     ├── Security
     │   ├── Access control
@@ -56,14 +65,16 @@ The hierarchy is not the only structure. `informs`, `depends_on`, and `related` 
 
 ## The skills
 
-| Skill                       | Use it when                                                   | What it draws on                                                                                           |
-| --------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `design-settings-interface` | You design or change a settings screen                        | Progressive disclosure, Information hierarchy, Visual grouping, Accessibility, Brand and Responsive design |
-| `review-screen-hierarchy`   | A screen design is ready for review                           | Information hierarchy, Visual grouping, Visual communication, and two contrast rules through `applies`     |
-| `review-code-change`        | A change is ready for review                                  | Code review, Testing, Security, Access control, and Injection                                              |
-| `write-decision-record`     | You make or change a decision about the structure of a system | Architecture decision record                                                                               |
+| Skill                       | Use it when                                                   | What it draws on                                                                                                                          |
+| --------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `design-settings-interface` | You design or change a settings screen                        | Progressive disclosure, Information hierarchy, Visual grouping, Brand and Responsive design, and 17 accessibility rules through `applies` |
+| `review-screen-hierarchy`   | A screen design is ready for review                           | Information hierarchy, Visual grouping, Visual communication, and two contrast rules through `applies`                                    |
+| `review-usability`          | A flow is ready for a usability review                        | Usability heuristics, Fitts's law, Hick's law, Navigation, and Platform conventions                                                       |
+| `audit-accessibility`       | A screen, a component, or a flow needs an accessibility check | Accessibility, and the Reflow and Consistent Navigation rules through `applies`                                                           |
+| `review-code-change`        | A change is ready for review                                  | Code review, Testing, Security, Access control, and Injection                                                                             |
+| `write-decision-record`     | You make or change a decision about the structure of a system | Architecture decision record                                                                                                              |
 
-A skill source names knowledge and does not copy it. Its body holds only the inputs, the procedure, the output, and how to validate the result. The [generated skill file](runtime-files.md#why-a-skill-holds-a-copy) holds the directives in force. To see every rule a skill carries, with each proposal labeled:
+`design-settings-interface` takes a subset of Accessibility. The whole node holds 61 rules and would bring the skill close to its [size limit](runtime-files.md#why-a-skill-holds-a-copy), while rules such as captions, flashing content, and sign-in have nothing to check on a settings screen. A skill source names knowledge and does not copy it. Its body holds only the inputs, the procedure, the output, and how to validate the result. The [generated skill file](runtime-files.md#why-a-skill-holds-a-copy) holds the directives in force. To see every rule a skill carries, with each proposal labeled:
 
 ```sh
 uv run ka directives --at design-settings-interface
@@ -98,7 +109,9 @@ Two branches add terms in `knowledge/governance/language/branches/`. `ui-ux-desi
 
 A `sources` value names a page that was read when the rule was written. Where a framework has versions, the rule cites the version that was current then:
 
-- UI/UX design: the Web Content Accessibility Guidelines 2.2, Nielsen Norman Group articles, and MDN
+- UI/UX design: the Web Content Accessibility Guidelines 2.2 and their Understanding pages, the WCAG evaluation methodology WCAG-EM 2.0, Nielsen Norman Group articles, Laws of UX, the Interaction Design Foundation, Wertheimer's 1923 paper on perceptual grouping and a 2012 review of Gestalt research, and MDN
+- Platform conventions: the Apple Human Interface Guidelines, the Android design guides, and the Material Components for Android docs
+- Design systems: the Design Tokens Format Module 2025.10 and its glossary, and Brad Frost's *Atomic Design*
 - Security: the OWASP Top 10:2025, the OWASP Application Security Verification Standard 5.0.0, and the OWASP Secrets Management Cheat Sheet
 - Testing: the test pyramid pages on martinfowler.com, and the testing chapter of *Software Engineering at Google*
 - Delivery: trunkbaseddevelopment.com, the DORA guides, Conventional Commits 1.0.0, and Semantic Versioning 2.0.0
@@ -110,14 +123,16 @@ A rule with no `sources` is a judgment call, so read it with more care.
 
 Each directive also states its `basis`, the kind of source behind it. In the domain and the skills:
 
-| `basis`        | Directives | Where they come from                                                                                                                                              |
-| -------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `standard`     | 48         | WCAG 2.2, the OWASP Top 10 and ASVS, Conventional Commits, and Semantic Versioning                                                                                |
-| `research`     | 10         | The Gestalt grouping research, through a Nielsen Norman Group article, and the DORA research                                                                      |
-| `practitioner` | 91         | Named methods and authors: Nielsen Norman Group, MDN, an OWASP cheat sheet, martinfowler.com, Google, Paul Hammant, Simon Brown, Michael Nygard, and Adam Wiggins |
-| `judgment`     | 12         | No source                                                                                                                                                         |
+| `basis`        | Directives | Where they come from                                                                                                                                                                                                           |
+| -------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `standard`     | 111        | WCAG 2.2, the Design Tokens Format Module, the OWASP Top 10 and ASVS, Conventional Commits, and Semantic Versioning                                                                                                            |
+| `research`     | 31         | The Gestalt grouping research, Fitts's law, and Hick's law, mostly through Nielsen Norman Group articles, and the DORA research                                                                                                |
+| `practitioner` | 161        | Named methods and authors: Nielsen Norman Group, WCAG-EM, Apple, Android and Material Components, Brad Frost, MDN, an OWASP cheat sheet, martinfowler.com, Google, Paul Hammant, Simon Brown, Michael Nygard, and Adam Wiggins |
+| `judgment`     | 9          | No source                                                                                                                                                                                                                      |
 
 Every governance directive is `judgment`, because the policies come from this project's own design and cite nothing.
+
+The Design Tokens format counts as `standard` even though it is a W3C Community Group report rather than a W3C Recommendation, and its node says so. WCAG-EM is a W3C Group Note, so it counts as `practitioner`.
 
 ## How it fits
 

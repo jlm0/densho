@@ -1,0 +1,23 @@
+<!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
+# Distinctive brand assets
+
+## Directives
+
+No directive is in force at this node.
+
+## Definition
+
+A brand element, such as a color, a shape, a logo, a typeface, a character, or a jingle, that brings one brand to mind without its name. Jenni Romaniuk of the Ehrenberg-Bass Institute names two tests. An element is unique when it brings to mind only that brand. It is famous when the people who see it think of the brand. Uniqueness counts more. Her grid sorts each element into one of four groups:
+
+- Famous and unique: a distinctive asset. Use it or lose it.
+- Unique but not famous: invest to build its fame.
+- Famous but not unique: avoid it, because it also brings competitors to mind.
+- Neither: test it, or drop it.
+
+## Notes
+
+A measure of fame and uniqueness asks what customers hold in memory, not what the brand team believes. Romaniuk reports that few managers can name the distinctive assets of their brand, and fewer can measure them. Each new element starts low on both measures.
+
+A redesign can throw away an asset. When Tropicana replaced the orange with a straw on its packaging with a plain glass of juice, the brand became hard to recognize. The company brought the old design back within a month, at an estimated cost of `26.3` million dollars in sales.
+
+Inconsistent colors, typefaces, and logos work against asset building, because each exposure to a consistent element strengthens it. The visual identity practice area holds the rule that removes unlisted variants.

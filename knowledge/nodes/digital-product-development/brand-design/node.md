@@ -9,6 +9,28 @@ broader:
   - digital-product-development
 informs:
   - visual-design
+pointers:
+  - kind: ka:TextPointer
+    target: brand-strategy
+    trigger: You decide what a brand stands for, which associations it builds, or how it differs from other brands.
+  - kind: ka:TextPointer
+    target: brand-voice
+    trigger: You define the voice of a brand or set the tone of a message.
+  - kind: ka:TextPointer
+    target: visual-identity
+    trigger: You design or apply a logo, a brand color, or a type style.
+  - kind: ka:TextPointer
+    target: brand-systems
+    trigger: You write brand guidelines, store brand values as tokens, or relate the brands of a company.
+  - kind: ka:SkillPointer
+    target: define-brand-voice
+    trigger: You define or change the voice of a brand.
+  - kind: ka:SkillPointer
+    target: write-brand-guidelines
+    trigger: You write or update the brand guidelines of a product or a company.
+  - kind: ka:SkillPointer
+    target: audit-brand-consistency
+    trigger: You review the touchpoints of a brand for consistency.
 ---
 
 ## Definition
@@ -19,14 +41,17 @@ The identity that a product presents: its name, voice, logo, color, typography, 
 
 - Take each color, typeface, and logo from the brand definition of the project. ^use-brand-definition
   - scope: subtree
-  - basis: judgment
+  - basis: research
   - status: proposed
   - origin: template
+  - sources: https://marketingscience.info/news-and-insights/brands-of-distinction
 - Write each message to a user in the voice of the brand definition. ^write-in-brand-voice
   - scope: subtree
-  - basis: judgment
+  - basis: practitioner
   - status: proposed
   - origin: template
+  - sources: https://styleguide.mailchimp.com/voice-and-tone/
+  - sources: https://learn.microsoft.com/en-us/style-guide/brand-voice-above-all-simple-human
 
 ## Notes
 

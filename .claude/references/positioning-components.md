@@ -1,0 +1,16 @@
+<!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
+# Components of positioning
+
+## Directives
+
+No directive is in force at this node.
+
+## Definition
+
+The five parts of positioning in April Dunford's method. Competitive alternatives are what customers would do if the product did not exist, including nothing at all. Unique attributes are the capabilities that the product has and the alternatives lack. Value is the benefit that those attributes give to customers. Target customers are the customers who care a lot about that value. The market category is the context that makes the value obvious to those customers. Each component depends on the others, so the method starts with the alternatives and works through the list in order.
+
+## Notes
+
+Dunford took the starting point from Jobs to Be Done: what customers would do without the product decides what counts as unique. A spreadsheet, a manual process, or an intern can be the real alternative. In enterprise software, Dunford reports that about a quarter of deals end in no decision, so the status quo is a competitor.
+
+A phantom competitor is a company that could compete in theory but never shows up in deals. Positioning against it weakens the positioning. A new market category must first gain a meaning in the minds of customers before it gives any context, and the companies that create a category often lose it to later entrants.

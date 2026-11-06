@@ -58,10 +58,12 @@ The meaning of alpha.
 
 - Run the check. ^keep
   - scope: subtree
+  - basis: judgment
   - status: proposed
   - origin: template
 - Run the other check. ^wait
   - scope: subtree
+  - basis: judgment
   - status: proposed
   - origin: template
 """
@@ -88,6 +90,7 @@ The meaning of beta.
 
 - Run the third check. ^bound
   - scope: node
+  - basis: judgment
   - status: proposed
   - origin: template
 """
@@ -112,6 +115,7 @@ status: proposed
 origin: template
 knowledge_type: domain
 description: Review a sample. Use when a sample needs a review.
+invocation: agent
 uses:
   - beta
 ---
@@ -120,6 +124,7 @@ uses:
 
 - Run the skill check. ^own-rule
   - scope: node
+  - basis: judgment
   - status: proposed
   - origin: template
 
@@ -444,8 +449,8 @@ def test_an_accepted_name_counts_and_writes_nothing(repository: Path) -> None:
 def test_an_entity_that_head_does_not_hold_fails(repository: Path) -> None:
     path = repository / "knowledge/nodes/alpha/node.md"
     path.write_text(
-        path.read_text(encoding="utf-8")
-        + "- Run the new check. ^brand-new\n  - scope: node\n  - status: proposed\n"
+        path.read_text(encoding="utf-8") + "- Run the new check. ^brand-new\n  - scope: node\n"
+        "  - basis: judgment\n  - status: proposed\n"
         "  - origin: template\n",
         encoding="utf-8",
     )
@@ -460,8 +465,8 @@ def test_an_entity_that_head_does_not_hold_fails(repository: Path) -> None:
 def test_a_new_entity_in_a_subtree_stops_the_whole_run(repository: Path) -> None:
     path = repository / "knowledge/nodes/alpha/node.md"
     path.write_text(
-        path.read_text(encoding="utf-8")
-        + "- Run the new check. ^brand-new\n  - scope: node\n  - status: proposed\n"
+        path.read_text(encoding="utf-8") + "- Run the new check. ^brand-new\n  - scope: node\n"
+        "  - basis: judgment\n  - status: proposed\n"
         "  - origin: template\n",
         encoding="utf-8",
     )
@@ -552,7 +557,7 @@ def test_a_language_problem_stops_the_command(repository: Path) -> None:
     path = repository / "knowledge/nodes/gamma/node.md"
     path.write_text(
         GAMMA + "\n## Directives\n\n- This sentence has no verb first. ^bad-rule\n"
-        "  - scope: node\n  - status: proposed\n  - origin: template\n",
+        "  - scope: node\n  - basis: judgment\n  - status: proposed\n  - origin: template\n",
         encoding="utf-8",
     )
     before = source_bytes(repository)
@@ -576,8 +581,8 @@ def test_quoted_status_keeps_its_quotes(tmp_path: Path) -> None:
 def test_a_status_in_backticks_keeps_its_backticks(tmp_path: Path) -> None:
     tree = tree_with(
         "knowledge/nodes/alpha/node.md",
-        "^keep\n  - scope: subtree\n  - status: proposed",
-        "^keep\n  - scope: subtree\n  - status: `proposed`",
+        "^keep\n  - scope: subtree\n  - basis: judgment\n  - status: proposed",
+        "^keep\n  - scope: subtree\n  - basis: judgment\n  - status: `proposed`",
     )
     make_repository(tmp_path, tree)
     report = accept_entities(tmp_path, ["keep"])
@@ -716,9 +721,11 @@ def test_a_partial_acceptance_that_makes_a_conflict_writes_nothing(tmp_path: Pat
     tree = {
         **TREE,
         "knowledge/nodes/alpha/node.md": ALPHA.replace(
-            "- Run the check. ^keep\n  - scope: subtree\n  - status: proposed\n"
+            "- Run the check. ^keep\n  - scope: subtree\n"
+            "  - basis: judgment\n  - status: proposed\n"
             "  - origin: template\n",
-            "- Use tabs in each file. ^use-tabs\n  - scope: subtree\n  - status: proposed\n"
+            "- Use tabs in each file. ^use-tabs\n  - scope: subtree\n"
+            "  - basis: judgment\n  - status: proposed\n"
             "  - origin: template\n  - conflicts_with: use-spaces\n",
         ),
         "knowledge/nodes/alpha/beta/node.md": BETA.replace(
@@ -727,8 +734,8 @@ def test_a_partial_acceptance_that_makes_a_conflict_writes_nothing(tmp_path: Pat
             "exceptions:\n  - directive: use-tabs\n    reason: A reason for beta.\n"
             "    status: proposed\n",
         ).replace(
-            "- Run the third check. ^bound\n  - scope: node\n",
-            "- Use spaces in each file. ^use-spaces\n  - scope: subtree\n",
+            "- Run the third check. ^bound\n  - scope: node\n  - basis: judgment\n",
+            "- Use spaces in each file. ^use-spaces\n  - scope: subtree\n  - basis: judgment\n",
         ),
     }
     make_repository(tmp_path, tree)
@@ -819,8 +826,8 @@ def test_a_project_message_names_the_project_command(repository: Path) -> None:
     (repository / "knowledge/.ka/ka").write_text("#!/bin/sh\n", encoding="utf-8")
     path = repository / "knowledge/nodes/alpha/node.md"
     path.write_text(
-        path.read_text(encoding="utf-8")
-        + "- Run the new check. ^brand-new\n  - scope: node\n  - status: proposed\n"
+        path.read_text(encoding="utf-8") + "- Run the new check. ^brand-new\n  - scope: node\n"
+        "  - basis: judgment\n  - status: proposed\n"
         "  - origin: template\n",
         encoding="utf-8",
     )
@@ -951,3 +958,50 @@ def test_the_helper_leaves_another_word_alone(line: bytes) -> None:
 )
 def test_the_helper_keeps_each_form(line: bytes, expected: bytes) -> None:
     assert set_status_lines(line, [entity(Status.proposed, 1)], Status.accepted)[0] == expected
+
+
+def reject(folder: Path, relative: str, marker: str) -> None:
+    set_status(folder, relative, marker, "rejected")
+    path = folder / relative
+    lines = path.read_text(encoding="utf-8").split("\n")
+    start = next(index for index, line in enumerate(lines) if marker in line)
+    index = next(i for i in range(start, len(lines)) if "status: rejected" in lines[i])
+    prefix = lines[index].split("status:")[0]
+    lines.insert(index + 1, f"{prefix}rejection_reason: No need.")
+    path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def test_a_rejected_name_fails(repository: Path) -> None:
+    reject(repository, "knowledge/nodes/alpha/node.md", "^keep")
+    commit(repository)
+    before = source_bytes(repository)
+    report = accept_entities(repository, ["keep"])
+    assert codes(list(report.problems)) == ["not-proposed"]
+    assert report.problems[0].message == (
+        "directive keep is rejected. Commit it as proposed before you accept it."
+    )
+    assert source_bytes(repository) == before
+
+
+def test_a_status_rejected_at_head_fails(repository: Path) -> None:
+    reject(repository, "knowledge/nodes/alpha/node.md", "^keep")
+    commit(repository)
+    set_status(repository, "knowledge/nodes/alpha/node.md", "^keep", "proposed")
+    report = accept_entities(repository, ["keep"])
+    assert codes(list(report.problems)) == ["not-proposed"]
+    assert report.problems[0].message == (
+        "HEAD has directive keep as rejected. Commit it as proposed first."
+    )
+    commit(repository)
+    assert accept_entities(repository, ["keep"]).problems == []
+
+
+def test_a_subtree_skips_a_rejected_entity(repository: Path) -> None:
+    reject(repository, "knowledge/nodes/alpha/node.md", "^keep")
+    commit(repository)
+    report = accept_entities(repository, [], ["alpha"])
+    assert report.problems == []
+    assert "directive keep" not in [entity.label for entity in report.accepted]
+    assert status_after_line(read(repository, "knowledge/nodes/alpha/node.md"), "^keep") == (
+        "rejected"
+    )

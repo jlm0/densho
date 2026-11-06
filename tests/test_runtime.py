@@ -13,6 +13,7 @@ from typer.testing import CliRunner
 
 from engine.cli import app
 from engine.compiler import compile_items, compile_tree
+from engine.governance import pending_entities
 from engine.parser import ParsedNode, parse_source
 from engine.runtime import (
     MARKER,
@@ -51,8 +52,13 @@ SKILL_BODY = "## Procedure\n\n1. Read each directive that this skill lists.\n"
 TOOL_KEPT_TOKENS = 5_000
 LOW_CHARACTERS_PER_TOKEN = 3
 TOOL_ON_DEMAND_CHARACTERS = 40_000
+ROOT_LINES = 200
+SKILL_LINES = 500
 USAGE_ERROR = 2
-RULE_LINE = "- Run the {0} check. ^{0}\n  - scope: {1}\n  - status: {2}\n  - origin: template\n"
+RULE_LINE = (
+    "- Run the {0} check. ^{0}\n  - scope: {1}\n  - basis: judgment\n  - status: {2}\n"
+    "  - origin: template\n"
+)
 
 
 def rule(directive_id: str, status: str = "accepted", scope: str = "subtree") -> str:
@@ -89,7 +95,10 @@ def pointers(*entries: str) -> str:
     return "pointers:\n" + "".join(entries)
 
 
-SKILL_FRONT = "description: Review a sample. Use when a sample needs a review.\nuses: [gamma]\n"
+SKILL_FRONT = (
+    "description: Review a sample. Use when a sample needs a review.\n"
+    "invocation: agent\nuses: [gamma]\n"
+)
 SAMPLE = {
     "knowledge/node.md": node(
         "root",
@@ -560,7 +569,10 @@ def test_a_review_link_resolves_from_the_review_folder() -> None:
 
 
 def test_a_skill_links_each_node_that_it_uses() -> None:
-    front = "description: Review a sample. Use when a sample needs a review.\nuses: [gamma, beta]\n"
+    front = (
+        "description: Review a sample. Use when a sample needs a review.\n"
+        "invocation: agent\nuses: [gamma, beta]\n"
+    )
     sources = {
         **SAMPLE,
         "knowledge/skills/review/node.md": node(
@@ -639,7 +651,7 @@ def test_a_template_expression_in_a_node_stays_literal() -> None:
 
 def test_a_description_that_breaks_plain_yaml_stays_one_string() -> None:
     description = "'Review: \"a\" sample, #1. Use when\n  a sample: needs a review.'"
-    front = f"description: {description}\nuses: [gamma]\n"
+    front = f"description: {description}\ninvocation: agent\nuses: [gamma]\n"
     sources = {**SAMPLE, "knowledge/skills/review/node.md": node("review", "ka:Skill", front=front)}
     text = rendered(sources)[".claude/skills/review/SKILL.md"].text
     assert (
@@ -649,7 +661,10 @@ def test_a_description_that_breaks_plain_yaml_stays_one_string() -> None:
 
 
 def test_a_description_keeps_each_character_that_is_not_ascii() -> None:
-    front = "description: Review a café sample. Use when a sample needs a review.\nuses: [gamma]\n"
+    front = (
+        "description: Review a café sample. Use when a sample needs a review.\n"
+        "invocation: agent\nuses: [gamma]\n"
+    )
     sources = {**SAMPLE, "knowledge/skills/review/node.md": node("review", "ka:Skill", front=front)}
     assert (
         "café" in rendered(sources)[".claude/skills/review/SKILL.md"].text.partition("\n---\n")[0]
@@ -809,7 +824,7 @@ def test_the_kept_part_of_a_skill_holds_the_directives_and_not_the_rest() -> Non
 
 
 def test_too_many_directives_at_a_skill_give_a_size_problem(tmp_path: Path) -> None:
-    long_rules = [rule(f"rule-{number:03}", scope="node") for number in range(600)]
+    long_rules = [rule(f"rule-{number:03}", scope="node") for number in range(440)]
     sources = {
         **SAMPLE,
         "knowledge/skills/review/node.md": node(
@@ -817,7 +832,83 @@ def test_too_many_directives_at_a_skill_give_a_size_problem(tmp_path: Path) -> N
         ),
     }
     entries = rendered(sources)
-    assert codes(size_problems(entries.values(), tmp_path)) == ["size"]
+    entry = entries[".claude/skills/review/SKILL.md"]
+    assert len(entry.text.splitlines()) <= SKILL_LINES
+    problems = size_problems(entries.values(), tmp_path)
+    assert codes(problems) == ["size"]
+    assert "characters in the part that must stay whole" in problems[0].message
+
+
+def skill_with_body_lines(count: int) -> dict[str, str]:
+    body = SKILL_BODY + "\n## Notes\n\n" + "".join(f"- Note {n}.\n" for n in range(count))
+    return {
+        **SAMPLE,
+        "knowledge/skills/review/node.md": node("review", "ka:Skill", front=SKILL_FRONT, body=body),
+    }
+
+
+def test_a_skill_file_at_its_line_budget_passes(tmp_path: Path) -> None:
+    entries = rendered(skill_with_body_lines(1))
+    lines = len(entries[".claude/skills/review/SKILL.md"].text.splitlines())
+    entries = rendered(skill_with_body_lines(SKILL_LINES - lines + 1))
+    assert len(entries[".claude/skills/review/SKILL.md"].text.splitlines()) == SKILL_LINES
+    assert not size_problems(entries.values(), tmp_path)
+
+
+def test_a_skill_file_over_its_line_budget_fails(tmp_path: Path) -> None:
+    entries = rendered(skill_with_body_lines(1))
+    lines = len(entries[".claude/skills/review/SKILL.md"].text.splitlines())
+    entries = rendered(skill_with_body_lines(SKILL_LINES - lines + 2))
+    problems = size_problems(entries.values(), tmp_path)
+    assert [(problem.code, problem.path.name) for problem in problems] == [("size", "node.md")]
+    assert f"has {SKILL_LINES + 1} lines, over the budget of {SKILL_LINES}" in problems[0].message
+    assert problems[0].path == tmp_path / "knowledge/skills/review/node.md"
+
+
+def root_with_body_lines(count: int) -> dict[str, str]:
+    root = SAMPLE["knowledge/node.md"].rstrip("\n")
+    body = "\n\n## Notes\n\n" + "".join(f"- Note {n}.\n" for n in range(count))
+    return {**SAMPLE, "knowledge/node.md": root + body}
+
+
+def test_the_root_at_its_line_budget_passes(tmp_path: Path) -> None:
+    lines = len(rendered(root_with_body_lines(1))["AGENTS.md"].text.splitlines())
+    entries = rendered(root_with_body_lines(ROOT_LINES - lines + 1))
+    assert len(entries["AGENTS.md"].text.splitlines()) == ROOT_LINES
+    assert not size_problems(entries.values(), tmp_path)
+
+
+def test_the_root_over_its_line_budget_fails(tmp_path: Path) -> None:
+    lines = len(rendered(root_with_body_lines(1))["AGENTS.md"].text.splitlines())
+    entries = rendered(root_with_body_lines(ROOT_LINES - lines + 2))
+    problems = size_problems(entries.values(), tmp_path)
+    assert [problem.code for problem in problems] == ["size"]
+    assert f"AGENTS.md has {ROOT_LINES + 1} lines, over the budget of {ROOT_LINES}" in (
+        problems[0].message
+    )
+    assert problems[0].path == tmp_path / "knowledge/node.md"
+
+
+def test_a_line_separator_in_a_skill_body_does_not_end_a_line(tmp_path: Path) -> None:
+    body = f"{SKILL_BODY}\n## Notes\n\n- {'Note.\u2028' * SKILL_LINES}\n"
+    entries = rendered(
+        {
+            **SAMPLE,
+            "knowledge/skills/review/node.md": node(
+                "review", "ka:Skill", front=SKILL_FRONT, body=body
+            ),
+        }
+    )
+    assert entries[".claude/skills/review/SKILL.md"].text.count("\u2028") == SKILL_LINES
+    assert not size_problems(entries.values(), tmp_path)
+
+
+def test_a_reference_page_has_no_line_budget(tmp_path: Path) -> None:
+    alpha = SAMPLE["knowledge/nodes/alpha/node.md"].rstrip("\n")
+    body = "\n\n## Notes\n\n" + "".join(f"- Note {n}.\n" for n in range(SKILL_LINES * 2))
+    entries = rendered({**SAMPLE, "knowledge/nodes/alpha/node.md": alpha + body})
+    assert len(entries[".claude/references/alpha.md"].text.splitlines()) > SKILL_LINES
+    assert not size_problems(entries.values(), tmp_path)
 
 
 def test_a_long_procedure_gives_no_size_problem(tmp_path: Path) -> None:
@@ -1405,6 +1496,7 @@ def test_the_hook_runs_on_each_commit_and_verifies() -> None:
     assert hook["entry"] == "uv run --frozen ka runtime --verify"
     assert hook["always_run"] is True
     assert hook["pass_filenames"] is False
+    assert hook["verbose"] is True
 
 
 def test_the_real_root_names_the_domains_the_governance_and_each_skill() -> None:
@@ -1477,3 +1569,335 @@ def test_the_real_review_result_lists_directives_at_a_leaf_with_its_inherited_on
     found = set(re.findall(r" \^([a-z0-9-]+) \(proposed\)$", text, re.MULTILINE))
     assert found == expected
     assert "name-user-and-task" in found
+
+
+REVIEW_SOURCE = "knowledge/skills/review/node.md"
+PERSON_SAMPLE = {
+    **SAMPLE,
+    REVIEW_SOURCE: SAMPLE[REVIEW_SOURCE].replace("invocation: agent", "invocation: person"),
+}
+COPIES = ".claude/skills/review/scripts"
+REVIEW_COPIES = f"{REVIEW}/claude/skills/review/scripts"
+PERSON_LINE = "Only a person can start this skill."
+
+
+def test_a_person_skill_turns_off_the_model_invocation() -> None:
+    files = rendered(PERSON_SAMPLE)
+    text = files[".claude/skills/review/SKILL.md"].text
+    assert front_matter(text) == {
+        "name": "review",
+        "description": "Review a sample. Use when a sample needs a review.",
+        "disable-model-invocation": True,
+    }
+    assert text.index("ask the person to invoke the skill again") < text.index("## Directives")
+    assert (
+        f"- `review`: Review a sample. Use when a sample needs a review. {PERSON_LINE}\n"
+        in files["AGENTS.md"].text
+    )
+
+
+def test_an_agent_skill_keeps_the_model_invocation() -> None:
+    files = rendered()
+    assert "disable-model-invocation" not in files[".claude/skills/review/SKILL.md"].text
+    assert "ask the person" not in files[".claude/skills/review/SKILL.md"].text
+    assert PERSON_LINE not in files["AGENTS.md"].text
+
+
+def test_the_review_copy_of_a_person_skill_turns_off_the_model_invocation() -> None:
+    files = rendered(PERSON_SAMPLE, proposals=True)
+    text = files[f"{REVIEW}/claude/skills/review/SKILL.proposals.md"].text
+    assert front_matter(text)["disable-model-invocation"] is True
+    assert PERSON_LINE in files[f"{REVIEW}/AGENTS.proposals.md"].text
+
+
+def write_skill_scripts(repository: Path, scripts: dict[str, bytes], skill: str = "review") -> Path:
+    folder = repository / "knowledge/skills" / skill / "scripts"
+    for name, data in scripts.items():
+        path = folder / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(data)
+    return folder
+
+
+def is_executable(path: Path) -> bool:
+    return bool(path.stat().st_mode & 0o111)
+
+
+def test_a_run_copies_each_script_with_its_mode(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    source = write_skill_scripts(tmp_path, {"check.py": b"print(1)\n", "lib/notes.md": b"# N\n"})
+    (source / "check.py").chmod(0o755)
+    report = generate_runtime(tmp_path)
+    assert report.problems == []
+    copies = tmp_path / COPIES
+    assert (copies / "check.py").read_bytes() == b"print(1)\n"
+    assert (copies / "lib/notes.md").read_bytes() == b"# N\n"
+    assert is_executable(copies / "check.py")
+    assert not is_executable(copies / "lib/notes.md")
+    expected = {PurePosixPath(f"{COPIES}/check.py"), PurePosixPath(f"{COPIES}/lib/notes.md")}
+    assert expected <= set(report.files)
+    assert expected <= set(report.written)
+    again = generate_runtime(tmp_path)
+    assert (again.written, again.removed, again.problems) == ((), (), [])
+
+
+def test_a_mode_change_of_a_script_rewrites_its_copy(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    source = write_skill_scripts(tmp_path, {"check.py": b"x\n"})
+    generate_runtime(tmp_path)
+    copy = tmp_path / COPIES / "check.py"
+    assert not is_executable(copy)
+    (source / "check.py").chmod(0o755)
+    assert generate_runtime(tmp_path).written == (PurePosixPath(f"{COPIES}/check.py"),)
+    assert is_executable(copy)
+    copy.chmod(0o644)
+    assert generate_runtime(tmp_path).written == (PurePosixPath(f"{COPIES}/check.py"),)
+    assert is_executable(copy)
+    (source / "check.py").chmod(0o644)
+    assert generate_runtime(tmp_path).written == (PurePosixPath(f"{COPIES}/check.py"),)
+    assert not is_executable(copy)
+
+
+def test_a_hand_edit_of_a_copied_script_is_rewritten(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    write_skill_scripts(tmp_path, {"check.py": b"x\n"})
+    generate_runtime(tmp_path)
+    (tmp_path / COPIES / "check.py").write_bytes(b"changed\n")
+    assert generate_runtime(tmp_path).written == (PurePosixPath(f"{COPIES}/check.py"),)
+    assert (tmp_path / COPIES / "check.py").read_bytes() == b"x\n"
+
+
+def test_a_run_removes_a_stale_copied_script(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    source = write_skill_scripts(tmp_path, {"old.py": b"o\n", "keep.py": b"k\n", "deep/a.py": b"a"})
+    generate_runtime(tmp_path)
+    (source / "old.py").unlink()
+    shutil.rmtree(source / "deep")
+    (tmp_path / COPIES / "hand.py").write_bytes(b"h\n")
+    report = generate_runtime(tmp_path)
+    assert report.problems == []
+    assert report.removed == (
+        PurePosixPath(f"{COPIES}/deep/a.py"),
+        PurePosixPath(f"{COPIES}/hand.py"),
+        PurePosixPath(f"{COPIES}/old.py"),
+    )
+    assert sorted(path.name for path in (tmp_path / COPIES).iterdir()) == ["keep.py"]
+
+
+def test_a_removed_scripts_folder_removes_each_copy_and_the_folder(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    source = write_skill_scripts(tmp_path, {"a.py": b"a", "deep/b.py": b"b"})
+    generate_runtime(tmp_path)
+    shutil.rmtree(source)
+    report = generate_runtime(tmp_path)
+    assert set(report.removed) == {
+        PurePosixPath(f"{COPIES}/a.py"),
+        PurePosixPath(f"{COPIES}/deep/b.py"),
+    }
+    assert not (tmp_path / COPIES).exists()
+    assert (tmp_path / ".claude/skills/review/SKILL.md").is_file()
+
+
+def test_a_removed_skill_removes_its_copied_scripts(tmp_path: Path) -> None:
+    tool = node("tool", "ka:Skill", front=SKILL_FRONT, rules=[rule("tool-rule", scope="node")])
+    with_tool = {
+        **SAMPLE,
+        "knowledge/node.md": node(
+            "root",
+            "ka:Root",
+            front=pointers(
+                pointer("TextPointer", "alpha"),
+                pointer("PathPointer", "gamma", "src/**/*"),
+                pointer("AlwaysPointer", "delta"),
+                pointer("TextPointer", "policies"),
+                pointer("SkillPointer", "tool"),
+            ),
+        ),
+        "knowledge/skills/tool/node.md": tool,
+    }
+    write_tree(tmp_path, with_tool)
+    write_skill_scripts(tmp_path, {"run.sh": b"echo\n"}, skill="tool")
+    assert generate_runtime(tmp_path).problems == []
+    assert (tmp_path / ".claude/skills/tool/scripts/run.sh").is_file()
+    shutil.rmtree(tmp_path / "knowledge/skills/tool")
+    (tmp_path / "knowledge/node.md").write_text(SAMPLE["knowledge/node.md"], encoding="utf-8")
+    report = generate_runtime(tmp_path)
+    assert report.problems == []
+    assert set(report.removed) == {
+        PurePosixPath(".claude/skills/tool/SKILL.md"),
+        PurePosixPath(".claude/skills/tool/scripts/run.sh"),
+    }
+    assert not (tmp_path / ".claude/skills/tool").exists()
+
+
+def test_a_scripts_folder_of_a_hand_skill_stays(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    hand = tmp_path / ".claude/skills/mine"
+    (hand / "scripts").mkdir(parents=True)
+    (hand / "SKILL.md").write_bytes(b"---\nname: mine\n---\n# Mine\n")
+    (hand / "scripts/run.sh").write_bytes(f"{MARKER}\n".encode())
+    report = generate_runtime(tmp_path)
+    assert report.problems == []
+    assert (hand / "scripts/run.sh").is_file()
+
+
+def test_a_hand_file_at_a_copy_path_stops_the_run(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    write_skill_scripts(tmp_path, {"check.py": b"x\n"})
+    hand = tmp_path / COPIES / "check.py"
+    hand.parent.mkdir(parents=True)
+    hand.write_bytes(b"mine\n")
+    report = generate_runtime(tmp_path)
+    assert [(problem.path, problem.code) for problem in report.problems] == [
+        (hand, "not-generated")
+    ]
+    assert hand.read_bytes() == b"mine\n"
+
+
+def test_a_copy_of_a_skill_with_a_hand_skill_file_stops_the_run(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    write_skill_scripts(tmp_path, {"check.py": b"x\n"})
+    generate_runtime(tmp_path)
+    (tmp_path / ".claude/skills/review/SKILL.md").write_bytes(b"# Mine\n")
+    report = generate_runtime(tmp_path)
+    assert sorted(
+        (problem.path.relative_to(tmp_path).as_posix(), problem.code) for problem in report.problems
+    ) == [
+        (".claude/skills/review/SKILL.md", "not-generated"),
+        (f"{COPIES}/check.py", "not-generated"),
+    ]
+
+
+def test_a_git_ignored_file_in_a_copied_folder_stays(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    git(tmp_path, "init", "-q", "--template=", "--initial-branch=main")
+    (tmp_path / ".gitignore").write_text("__pycache__/\n", encoding="utf-8")
+    write_skill_scripts(tmp_path, {"check.py": b"x\n"})
+    generate_runtime(tmp_path)
+    cache = tmp_path / COPIES / "__pycache__/check.pyc"
+    cache.parent.mkdir()
+    cache.write_bytes(b"cache")
+    stale = tmp_path / COPIES / "stale.py"
+    stale.write_bytes(b"s")
+    report = generate_runtime(tmp_path)
+    assert report.problems == []
+    assert report.removed == (PurePosixPath(f"{COPIES}/stale.py"),)
+    assert cache.read_bytes() == b"cache"
+
+
+def test_an_anchored_ignore_works_with_a_relative_repository(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    repository = tmp_path / "repo"
+    write_tree(repository)
+    git(repository, "init", "-q", "--template=", "--initial-branch=main")
+    source = "knowledge/skills/review/scripts"
+    (repository / ".gitignore").write_text(
+        f"/{source}/local.bin\n/{COPIES}/cache.bin\n", encoding="utf-8"
+    )
+    write_skill_scripts(repository, {"check.py": b"x\n", "local.bin": b"l"})
+    monkeypatch.chdir(tmp_path)
+    assert generate_runtime(Path("repo")).problems == []
+    assert sorted(path.name for path in (repository / COPIES).iterdir()) == ["check.py"]
+    cache = repository / COPIES / "cache.bin"
+    cache.write_bytes(b"cache")
+    report = generate_runtime(Path("repo"))
+    assert (report.problems, report.removed) == ([], ())
+    assert cache.read_bytes() == b"cache"
+
+
+def test_a_body_link_to_a_script_resolves_only_when_the_script_exists(tmp_path: Path) -> None:
+    sources = {
+        **SAMPLE,
+        REVIEW_SOURCE: SAMPLE[REVIEW_SOURCE].replace(
+            SKILL_BODY, f"{SKILL_BODY}2. Run [the check](scripts/check.py).\n"
+        ),
+    }
+    write_tree(tmp_path, sources)
+    assert codes(generate_runtime(tmp_path).problems) == ["link"]
+    write_skill_scripts(tmp_path, {"check.py": b"x\n"})
+    assert generate_runtime(tmp_path).problems == []
+
+
+def test_the_review_copy_holds_the_scripts(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    source = write_skill_scripts(tmp_path, {"check.py": b"x\n", "old.sh": b"echo\n"})
+    (source / "check.py").chmod(0o755)
+    assert generate_runtime(tmp_path, proposals=True).problems == []
+    review = tmp_path / REVIEW_COPIES
+    assert (review / "check.py").read_bytes() == b"x\n"
+    assert is_executable(review / "check.py")
+    assert (review / "old.sh").read_bytes() == b"echo\n"
+    assert not (tmp_path / COPIES).exists()
+    (source / "old.sh").unlink()
+    report = generate_runtime(tmp_path, proposals=True)
+    assert report.removed == (PurePosixPath(f"{REVIEW_COPIES}/old.sh"),)
+
+
+def test_a_run_counts_the_entities_that_wait_for_review(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    entities, _ = pending_entities(tmp_path)
+    report = generate_runtime(tmp_path)
+    assert report.pending == len(entities) > 0
+
+
+def test_a_rejected_entity_is_not_counted(tmp_path: Path) -> None:
+    rejected = (
+        "- Run the old check. ^old\n  - scope: node\n  - basis: judgment\n"
+        "  - status: rejected\n  - origin: template\n  - rejection_reason: No need.\n"
+    )
+    write_tree(tmp_path)
+    before = generate_runtime(tmp_path).pending
+    (tmp_path / "knowledge/nodes/delta/node.md").write_text(
+        node("delta", rules=[rejected]), encoding="utf-8"
+    )
+    report = generate_runtime(tmp_path)
+    assert report.problems == []
+    assert report.pending == before
+    generated = {
+        path: data for path, data in disk_files(tmp_path).items() if MARKER.encode() in data
+    }
+    assert ".claude/rules/knowledge/delta.md" in generated
+    assert not [path for path, data in generated.items() if b"old check" in data]
+    assert generate_runtime(tmp_path, proposals=True).problems == []
+    review = {path: data for path, data in disk_files(tmp_path).items() if path.startswith(REVIEW)}
+    assert f"{REVIEW}/claude/rules/knowledge/delta.proposals.md" in review
+    assert not [path for path, data in review.items() if b"old check" in data]
+
+
+def test_verify_passes_with_entities_that_wait_for_review(tmp_path: Path) -> None:
+    committed_repository(tmp_path)
+    report = generate_runtime(tmp_path, verify=True)
+    assert report.problems == []
+    assert report.pending is not None
+    assert report.pending > 0
+
+
+def test_a_failed_compile_counts_nothing(tmp_path: Path) -> None:
+    write_tree(tmp_path, {**SAMPLE, "knowledge/nodes/delta/node.md": "---\nid: delta\n---\n"})
+    report = generate_runtime(tmp_path)
+    assert report.problems
+    assert report.pending is None
+
+
+def test_the_command_prints_the_pending_count(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    count = generate_runtime(tmp_path).pending
+    result = RUNNER.invoke(app, ["runtime", str(tmp_path)])
+    assert result.exit_code == 0
+    assert (
+        f"{count} entities wait for review. Run uv run ka governance --pending to list them.\n"
+        in result.output
+    )
+    launcher = tmp_path / "knowledge/.ka/ka"
+    launcher.parent.mkdir(parents=True)
+    launcher.write_text("#!/bin/sh\n", encoding="utf-8")
+    result = RUNNER.invoke(app, ["runtime", str(tmp_path)])
+    assert "Run knowledge/.ka/ka governance --pending" in result.output
+
+
+def test_the_command_prints_no_count_after_a_failed_compile(tmp_path: Path) -> None:
+    write_tree(tmp_path, {**SAMPLE, "knowledge/nodes/delta/node.md": "---\nid: delta\n---\n"})
+    result = RUNNER.invoke(app, ["runtime", str(tmp_path)])
+    assert result.exit_code == 1
+    assert "wait for review" not in result.output

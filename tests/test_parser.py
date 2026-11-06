@@ -1,6 +1,10 @@
 # pyright: reportUnknownMemberType=false
+import os
+import shutil
+import subprocess
+import threading
 import tomllib
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import mdformat
 import pytest
@@ -16,8 +20,10 @@ from engine.generated.metamodel import (
     Skill,
     TextPointer,
 )
+from engine.git import git_environment
 from engine.parser import ParsedNode, parse_file, parse_source, parse_tree
 from engine.parser.generated import MARKER
+from engine.parser.result import Script
 
 PATH = Path("knowledge/nodes/sample/node.md")
 GOVERNED = "status: accepted\norigin: template\n"
@@ -54,6 +60,7 @@ Then write the code that passes it.
 
 - Write a failing test before you change behavior. ^write-test-first
   - scope: subtree
+  - basis: practitioner
   - status: accepted
   - origin: template
   - sources: https://example.com/a
@@ -61,6 +68,7 @@ Then write the code that passes it.
   - also_attached_to: other-node
 - Keep each test on one `behavior_name`. ^one-behavior
   - scope: node
+  - basis: judgment
   - status: proposed
   - origin: project
 
@@ -74,7 +82,7 @@ See [the book](https://example.com/book).
 ```
 """
 
-META = "  - scope: node\n  - status: accepted\n  - origin: project"
+META = "  - scope: node\n  - basis: judgment\n  - status: accepted\n  - origin: project"
 
 
 def with_directives(section: str) -> str:
@@ -138,6 +146,7 @@ def test_parses_every_part_of_a_node() -> None:
                 "id": "write-test-first",
                 "text": "Write a failing test before you change behavior.",
                 "scope": "subtree",
+                "basis": "practitioner",
                 "status": "accepted",
                 "origin": "template",
                 "sources": ["https://example.com/a", "https://example.com/b"],
@@ -147,6 +156,7 @@ def test_parses_every_part_of_a_node() -> None:
                 "id": "one-behavior",
                 "text": "Keep each test on one `behavior_name`.",
                 "scope": "node",
+                "basis": "judgment",
                 "status": "proposed",
                 "origin": "project",
             },
@@ -192,7 +202,7 @@ def test_kind_selects_each_pointer_class() -> None:
         ),
         pytest.param(
             f"---\nid: a\nkind: ka:Skill\ntitle: A\n{KNOWLEDGE}description: Use it.\n"
-            "uses: [b]\n---\n\n## Directives\n\n- Do it. ^do-it\n"
+            "invocation: agent\nuses: [b]\n---\n\n## Directives\n\n- Do it. ^do-it\n"
             f"{META}\n\n## Procedure\n\nStep one.\n",
             Skill,
             id="skill",
@@ -537,19 +547,26 @@ def test_rejects_unreadable_front_matter(text: str, code: str, line: int) -> Non
         ),
         pytest.param(f"- Text ^a\n{META}\n  - `sources`: a", "directive", "sources", id="code-key"),
         pytest.param(
-            "- Text ^a\n  - status: accepted\n  - origin: project",
+            "- Text ^a\n  - basis: judgment\n  - status: accepted\n  - origin: project",
             "schema",
             "Text ^a",
             id="no-scope",
         ),
         pytest.param(
-            "- Text ^a\n  - scope: node\n  - origin: project", "schema", "Text ^a", id="no-status"
+            "- Text ^a\n  - scope: node\n  - basis: judgment\n  - origin: project",
+            "schema",
+            "Text ^a",
+            id="no-status",
         ),
         pytest.param(
-            "- Text ^a\n  - scope: node\n  - status: accepted", "schema", "Text ^a", id="no-origin"
+            "- Text ^a\n  - scope: node\n  - basis: judgment\n  - status: accepted",
+            "schema",
+            "Text ^a",
+            id="no-origin",
         ),
         pytest.param(
-            "- Text ^a\n  - scope: everywhere\n  - status: accepted\n  - origin: project",
+            "- Text ^a\n  - scope: everywhere\n"
+            "  - basis: judgment\n  - status: accepted\n  - origin: project",
             "schema",
             "scope: everywhere",
             id="bad-scope",
@@ -588,7 +605,7 @@ def test_rejects_unreadable_front_matter(text: str, code: str, line: int) -> Non
         ),
         pytest.param("- Text ^a\n\n  ```\n  code\n  ```", "directive", "```", id="code-block"),
         pytest.param(
-            "- Text ^a\n  - scope: node\n\n  * status: proposed",
+            "- Text ^a\n  - scope: node\n  - basis: judgment\n\n  * status: proposed",
             "directive",
             "status: proposed",
             id="second-sub-list",
@@ -613,7 +630,8 @@ def test_rejects_a_bad_directive(section: str, code: str, marker: str) -> None:
         pytest.param(f"* Text. ^a\n{META}", id="other-marker"),
         pytest.param(f"- Text. ^a\n\n{META}", id="blank-before-sub-list"),
         pytest.param(
-            "- Text. ^a\n    - scope: node\n    - status: accepted\n    - origin: project",
+            "- Text. ^a\n    - scope: node\n"
+            "    - basis: judgment\n    - status: accepted\n    - origin: project",
             id="four-space-indent",
         ),
     ],
@@ -651,7 +669,7 @@ def test_reports_each_problem_in_line_order() -> None:
 def test_a_directive_without_metadata_reports_each_field_at_the_bullet() -> None:
     text = with_directives("- Text ^a")
     line = line_with(text, "Text ^a")
-    assert problems_of(text) == [("schema", line), ("schema", line), ("schema", line)]
+    assert problems_of(text) == [("schema", line)] * 4
 
 
 def test_a_bad_pointer_does_not_add_an_error_for_the_required_list() -> None:
@@ -703,7 +721,11 @@ def test_a_problem_names_the_file_line_code_and_field() -> None:
             "pointers:\n  - kind: ka:TextPointer\n    target: a\n    trigger: B.\n",
             id="root",
         ),
-        pytest.param("ka:Skill", "knowledge_type: domain\ndescription: Use it.\n", id="skill"),
+        pytest.param(
+            "ka:Skill",
+            "knowledge_type: domain\ndescription: Use it.\ninvocation: agent\n",
+            id="skill",
+        ),
     ],
 )
 def test_a_node_without_a_definition_field_rejects_the_section(kind: str, extra: str) -> None:
@@ -825,7 +847,10 @@ def test_a_fence_that_hides_the_directives_section_is_reported() -> None:
 
 
 def test_a_fence_that_hides_the_definition_section_is_reported() -> None:
-    text = f"---\nid: a\nkind: ka:Skill\ntitle: A\n{KNOWLEDGE}description: B.\nuses: [c]\n---\n\n"
+    text = (
+        f"---\nid: a\nkind: ka:Skill\ntitle: A\n{KNOWLEDGE}description: B.\n"
+        "invocation: agent\nuses: [c]\n---\n\n"
+    )
     text += "```\n## Definition\n\nHidden.\n```\n"
     assert problems_of(text) == [("markdown", line_with(text, "## Definition"))]
 
@@ -835,7 +860,10 @@ def test_a_fence_in_a_quote_is_not_checked_for_section_names() -> None:
 
 
 def test_a_quoted_fence_can_show_a_section_the_file_does_not_have() -> None:
-    text = f"---\nid: a\nkind: ka:Skill\ntitle: A\n{KNOWLEDGE}description: B.\nuses: [c]\n---\n\n"
+    text = (
+        f"---\nid: a\nkind: ka:Skill\ntitle: A\n{KNOWLEDGE}description: B.\n"
+        "invocation: agent\nuses: [c]\n---\n\n"
+    )
     parsed(f"{text}> ```\n> ## Definition\n> ```\n")
 
 
@@ -1134,3 +1162,179 @@ def test_parse_tree_ignores_a_folder_with_the_node_file_name(tmp_path: Path) -> 
 def test_parse_tree_reports_a_missing_folder(tmp_path: Path) -> None:
     _, problems = parse_tree([tmp_path / "missing"])
     assert [problem.code for problem in problems] == ["folder"]
+
+
+SKILL = (
+    f"---\nid: review\nkind: ka:Skill\ntitle: Review\n{KNOWLEDGE}description: Use it.\n"
+    f"invocation: agent\nuses: [b]\n---\n\n## Directives\n\n- Do it. ^do-it\n{META}\n"
+)
+
+
+def write_scripts(folder: Path, scripts: dict[str, bytes]) -> list[Path]:
+    paths: list[Path] = []
+    for name, data in scripts.items():
+        path = folder / "scripts" / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(data)
+        paths.append(path)
+    return paths
+
+
+def scripts_of(item: ParsedNode) -> list[tuple[str, bytes, bool]]:
+    return [(str(script.path), script.data, script.executable) for script in item.scripts]
+
+
+def test_parse_tree_reads_the_scripts_of_a_skill(tmp_path: Path) -> None:
+    folder = tmp_path / "skills" / "review"
+    write_node(folder, SKILL)
+    check, *_ = write_scripts(
+        folder, {"check.py": b"print(1)\n", "README.md": b"# Read\n", "lib/notes.md": b"x"}
+    )
+    check.chmod(0o755)
+    nodes, problems = parse_tree([tmp_path])
+    assert problems == []
+    assert [scripts_of(item) for item in nodes] == [
+        [
+            ("README.md", b"# Read\n", False),
+            ("check.py", b"print(1)\n", True),
+            ("lib/notes.md", b"x", False),
+        ]
+    ]
+
+
+def test_a_skill_with_no_scripts_folder_has_no_scripts(tmp_path: Path) -> None:
+    write_node(tmp_path / "skills" / "review", SKILL)
+    nodes, problems = parse_tree([tmp_path])
+    assert problems == []
+    assert [item.scripts for item in nodes] == [()]
+
+
+def test_a_node_file_inside_scripts_is_a_script(tmp_path: Path) -> None:
+    folder = tmp_path / "skills" / "review"
+    skill = write_node(folder, SKILL)
+    write_scripts(
+        folder,
+        {
+            "node.md": CONCEPT.encode(),
+            "scripts/a.py": b"a",
+            "deep/node.md": b"not a node",
+            "deep/scripts/b.py": b"b",
+        },
+    )
+    nodes, problems = parse_tree([tmp_path])
+    assert problems == []
+    assert [item.path for item in nodes] == [skill]
+    assert sorted(str(script.path) for script in nodes[0].scripts) == [
+        "deep/node.md",
+        "deep/scripts/b.py",
+        "node.md",
+        "scripts/a.py",
+    ]
+
+
+@pytest.mark.parametrize(
+    "holder",
+    [Path("nodes/a"), Path("skills"), Path("skills/no-node")],
+)
+def test_a_scripts_folder_outside_a_skill_is_not_exempt(tmp_path: Path, holder: Path) -> None:
+    write_node(tmp_path / "nodes" / "a")
+    if holder == Path("skills"):
+        write_node(tmp_path / "skills", SKILL)
+    (path,) = write_scripts(tmp_path / holder, {"README.md": b"# Read\n"})
+    nodes, problems = parse_tree([tmp_path])
+    assert [item.scripts for item in nodes] == [()] * len(nodes)
+    assert [(problem.path, problem.code) for problem in problems] == [(path, "file-name")]
+
+
+def test_a_link_inside_scripts_fails(tmp_path: Path) -> None:
+    folder = tmp_path / "skills" / "review"
+    write_node(folder, SKILL)
+    (real,) = write_scripts(folder, {"real.py": b"x"})
+    link = real.parent / "link.py"
+    link.symlink_to(real)
+    nodes, problems = parse_tree([tmp_path])
+    assert [(problem.path, problem.code) for problem in problems] == [(link, "symlink")]
+    assert [str(script.path) for script in nodes[0].scripts] == ["real.py"]
+
+
+def test_a_nested_skill_holds_its_own_scripts(tmp_path: Path) -> None:
+    outer = tmp_path / "skills" / "review"
+    inner = outer / "deep"
+    write_node(outer, SKILL)
+    write_node(inner, SKILL.replace("id: review", "id: deep", 1))
+    write_scripts(outer, {"a.py": b"a"})
+    write_scripts(inner, {"b.py": b"b"})
+    nodes, problems = parse_tree([tmp_path])
+    assert problems == []
+    assert [(item.node.id, scripts_of(item)) for item in nodes] == [
+        ("deep", [("b.py", b"b", False)]),
+        ("review", [("a.py", b"a", False)]),
+    ]
+
+
+def test_a_git_ignored_script_is_left_out(tmp_path: Path) -> None:
+    subprocess.run(  # noqa: S603
+        [shutil.which("git") or "git", "init", "-q", "--template="],
+        cwd=tmp_path,
+        check=True,
+        env=git_environment(),
+    )
+    (tmp_path / ".gitignore").write_text("*.pyc\n__pycache__/\n", encoding="utf-8")
+    folder = tmp_path / "knowledge" / "skills" / "review"
+    write_node(folder, SKILL)
+    write_scripts(folder, {"check.py": b"x", "check.pyc": b"y", "__pycache__/a.pyc": b"z"})
+    nodes, problems = parse_tree([tmp_path / "knowledge"])
+    assert problems == []
+    assert nodes[0].scripts == (Script(PurePosixPath("check.py"), b"x", executable=False),)
+
+
+def test_a_git_ignored_script_is_left_out_from_a_relative_folder(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    repository = tmp_path / "repo"
+    repository.mkdir()
+    subprocess.run(  # noqa: S603
+        [shutil.which("git") or "git", "init", "-q", "--template="],
+        cwd=repository,
+        check=True,
+        env=git_environment(),
+    )
+    (repository / ".gitignore").write_text(
+        "/knowledge/skills/review/scripts/cache.bin\n", encoding="utf-8"
+    )
+    folder = repository / "knowledge" / "skills" / "review"
+    write_node(folder, SKILL)
+    write_scripts(folder, {"check.py": b"x", "cache.bin": b"y", "deep/run.sh": b"z"})
+    (folder / "scripts" / ".gitignore").write_text("run.sh\n", encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+    nodes, problems = parse_tree([Path("repo/knowledge")])
+    assert problems == []
+    assert sorted(str(script.path) for script in nodes[0].scripts) == [".gitignore", "check.py"]
+
+
+def test_a_script_that_is_not_a_regular_file_fails(tmp_path: Path) -> None:
+    folder = tmp_path / "skills" / "review"
+    write_node(folder, SKILL)
+    pipe = folder / "scripts" / "pipe"
+    pipe.parent.mkdir(parents=True)
+    os.mkfifo(pipe)
+    writer = threading.Thread(target=lambda: os.close(os.open(pipe, os.O_WRONLY)), daemon=True)
+    writer.start()
+    try:
+        nodes, problems = parse_tree([tmp_path])
+    finally:
+        reader = os.open(pipe, os.O_RDONLY | os.O_NONBLOCK)
+        writer.join(timeout=10)
+        os.close(reader)
+    assert [(problem.path, problem.code, problem.message) for problem in problems] == [
+        (pipe, "read", "A script must be a regular file.")
+    ]
+    assert nodes[0].scripts == ()
+
+
+def test_scripts_are_read_with_no_git_repository(tmp_path: Path) -> None:
+    folder = tmp_path / "skills" / "review"
+    write_node(folder, SKILL)
+    write_scripts(folder, {"check.pyc": b"y"})
+    nodes, _ = parse_tree([tmp_path])
+    assert [str(script.path) for script in nodes[0].scripts] == ["check.pyc"]

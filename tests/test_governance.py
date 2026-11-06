@@ -1,6 +1,7 @@
 import os
 import shutil
 import subprocess
+from dataclasses import replace as dataclass_replace
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -61,6 +62,13 @@ NODE_EDGES = (
 )
 
 
+NO_NEED = "The project does not need it."
+
+
+def root_spec(status: str = "proposed", **fields: object) -> Spec:
+    return {"id": "root", "status": status, "kind": "ka:Root", "pointers": ["root"], **fields}
+
+
 def rule(directive_id: str, status: str = "proposed", **fields: object) -> Spec:
     return {"id": directive_id, "status": status, "scope": "subtree", **fields}
 
@@ -86,7 +94,10 @@ def concept(node_id: str, *broader: str, status: str = "proposed", **fields: obj
 def directive_lines(entry: Spec) -> list[str]:
     text = entry.get("text", f"Do the {entry['id']} thing.")
     lines = [f"- {text} ^{entry['id']}", f"  - scope: {entry['scope']}"]
+    lines.append(f"  - basis: {entry.get('basis', 'judgment')}")
     lines += [f"  - status: {entry['status']}", f"  - origin: {entry.get('origin', 'template')}"]
+    if "rejection_reason" in entry:
+        lines.append(f"  - rejection_reason: {entry['rejection_reason']}")
     for key in ("also_attached_to", "refines", "conflicts_with", "sources"):
         lines += [f"  - {key}: {value}" for value in entry.get(key, [])]
     return lines
@@ -105,6 +116,8 @@ def exception_lines(spec: Spec) -> list[str]:
     for entry in spec.get("exceptions", []):
         lines += [f"  - directive: {entry['directive']}", f"    reason: {entry['reason']}"]
         lines.append(f"    status: {entry['status']}")
+        if "rejection_reason" in entry:
+            lines.append(f"    rejection_reason: {entry['rejection_reason']}")
     return ["exceptions:", *lines] if lines else []
 
 
@@ -112,10 +125,12 @@ def front_matter(spec: Spec) -> list[str]:
     lines = ["---", f"id: {spec['id']}", f"kind: {spec['kind']}"]
     lines += [f"title: {spec.get('title', spec['id'])}", f"status: {spec['status']}"]
     lines.append(f"origin: {spec.get('origin', 'template')}")
+    if "rejection_reason" in spec:
+        lines.append(f"rejection_reason: {spec['rejection_reason']}")
     if spec["kind"] != "ka:Root":
         lines.append(f"knowledge_type: {spec.get('knowledge_type', 'domain')}")
     if spec["kind"] == "ka:Skill":
-        lines.append("description: Review a change. Use when a change lands.")
+        lines += ["description: Review a change. Use when a change lands.", "invocation: agent"]
     for key in (*NODE_EDGES, "sources"):
         if spec.get(key) == []:
             lines.append(f"{key}: []")
@@ -471,10 +486,61 @@ def test_a_status_jump_with_a_change_gives_one_problem() -> None:
         ("accepted", "proposed"),
         ("proposed", "deprecated"),
         ("proposed", "proposed"),
+        ("proposed", "rejected"),
+        ("rejected", "proposed"),
+        ("rejected", "rejected"),
     ],
 )
 def test_each_other_transition_passes_with_a_change(before: str, after: str) -> None:
     assert compare([node("a", before)], [node("a", after, definition="New.")]) == []
+
+
+def test_a_rejected_entity_cannot_jump_to_accepted() -> None:
+    before = node("a", "rejected", rejection_reason=NO_NEED)
+    after = node("a", "accepted", rejection_reason=NO_NEED)
+    assert compare([before], [after]) == [
+        (
+            f"{line_of(after, 'status: accepted')}: status-jump: Set node a to proposed first. "
+            "HEAD has it as rejected."
+        )
+    ]
+
+
+@pytest.mark.parametrize("status", ["rejected", "deprecated"])
+def test_a_closed_directive_and_exception_cannot_jump_to_accepted(status: str) -> None:
+    before = node(
+        "a",
+        rules=[rule("b", status, rejection_reason=NO_NEED)],
+        exceptions=[stop("c", status, rejection_reason=NO_NEED)],
+    )
+    after = node(
+        "a",
+        rules=[rule("b", "accepted", rejection_reason=NO_NEED)],
+        exceptions=[stop("c", "accepted", rejection_reason=NO_NEED)],
+    )
+    assert codes([before], [after]) == ["status-jump", "status-jump"]
+
+
+def test_a_new_rejected_entity_fails() -> None:
+    assert codes([], [node("a", "rejected", rejection_reason=NO_NEED)]) == ["new-status"]
+
+
+def with_reason(holder: str, reason: str | None) -> Spec:
+    fields: Spec = {} if reason is None else {"rejection_reason": reason}
+    return node(
+        "a",
+        "accepted",
+        **(fields if holder == "node" else {}),
+        rules=[rule("b", "accepted", **(fields if holder == "directive" else {}))],
+        exceptions=[stop("c", "accepted", **(fields if holder == "exception" else {}))],
+    )
+
+
+@pytest.mark.parametrize("holder", ["node", "directive", "exception"])
+def test_a_rejection_reason_needs_no_review(holder: str) -> None:
+    after = with_reason(holder, "A new reason.")
+    assert compare([with_reason(holder, "An old reason.")], [after]) == []
+    assert compare([with_reason(holder, None)], [after]) == []
 
 
 def test_a_change_to_the_origin_of_a_node_fails() -> None:
@@ -531,7 +597,7 @@ def test_renaming_an_accepted_id_to_an_accepted_id_gives_both_problems() -> None
     assert sorted(found) == ["new-status", "removed-accepted"]
 
 
-@pytest.mark.parametrize("status", ["proposed", "deprecated"])
+@pytest.mark.parametrize("status", ["proposed", "deprecated", "rejected"])
 def test_removing_a_live_proposal_or_a_deprecated_entity_passes(status: str) -> None:
     assert compare([node("a", status, rules=[rule("b", status)])], []) == []
 
@@ -639,6 +705,11 @@ def test_a_second_live_directive_reports_its_own_line() -> None:
 
 def test_a_deprecated_node_can_hold_a_deprecated_directive() -> None:
     assert statics(node("a", "deprecated", rules=[rule("b", "deprecated")])) == []
+
+
+def test_a_deprecated_node_can_hold_a_rejected_directive() -> None:
+    spec = node("a", "deprecated", rules=[rule("b", "rejected", rejection_reason=NO_NEED)])
+    assert statics(spec) == []
 
 
 @pytest.mark.parametrize("status", ["proposed", "accepted"])
@@ -1166,6 +1237,20 @@ MUST_FAIL: dict[str, tuple[tuple[Spec, ...], tuple[Spec, ...]]] = {
         (node("a"), concept("b", "a")),
         (node("a", "deprecated"), concept("b", "a")),
     ),
+    "rejected-reason": ((node("a"),), (node("a", "rejected"),)),
+    "rejected-holder": (
+        (node("a", rules=[rule("b")]),),
+        (node("a", "rejected", rejection_reason=NO_NEED, rules=[rule("b")]),),
+    ),
+    "rejected-reference": (
+        (node("a"), concept("b", "a")),
+        (node("a", "rejected", rejection_reason=NO_NEED), concept("b", "a")),
+    ),
+    "rejected-root": (
+        (root_spec(),),
+        (root_spec("rejected", rejection_reason=NO_NEED),),
+    ),
+    "basis": ((), (node("a", rules=[rule("b", basis="standard")]),)),
     "policy-governs": (
         (),
         (
@@ -1520,8 +1605,8 @@ def test_the_directive_check_reads_a_broken_policy(tmp_path: Path) -> None:
     repository = repository_copy(tmp_path)
     path = break_a_policy(
         repository,
-        "  - scope: node\n",
-        "  - scope: node\n  - conflicts_with: run-checks-before-commit\n",
+        "  - scope: node\n  - basis: judgment\n",
+        "  - scope: node\n  - basis: judgment\n  - conflicts_with: run-checks-before-commit\n",
     )
     problems = check_directives(repository)[1]
     assert (path, "conflict") in {(problem.path, problem.code) for problem in problems}
@@ -1579,3 +1664,382 @@ def test_a_new_copy_without_policies_still_passes(tmp_path: Path) -> None:
     (tmp_path / "knowledge").mkdir()
     assert check_tree(tmp_path) == ([], [])
     assert check_governance(tmp_path).problems == []
+
+
+def test_a_rejected_node_needs_a_reason() -> None:
+    spec = node("a", "rejected")
+    assert statics(spec) == [
+        (
+            f"{line_of(spec, 'status: rejected')}: rejected-reason: This node is rejected. "
+            "Add rejection_reason with the reason of the person."
+        )
+    ]
+
+
+def test_a_rejected_directive_and_exception_need_a_reason() -> None:
+    spec = node("a", rules=[rule("b", "rejected")], exceptions=[stop("c", "rejected")])
+    assert statics(spec) == [
+        (
+            f"{line_of(spec, '  - status: rejected')}: rejected-reason: This directive is "
+            "rejected. Add rejection_reason with the reason of the person."
+        ),
+        (
+            f"{line_of(spec, '    status: rejected')}: rejected-reason: This exception is "
+            "rejected. Add rejection_reason with the reason of the person."
+        ),
+    ]
+
+
+def test_a_rejected_entity_with_a_reason_passes() -> None:
+    spec = node(
+        "a",
+        "rejected",
+        rejection_reason=NO_NEED,
+        rules=[rule("b", "rejected", rejection_reason=NO_NEED)],
+        exceptions=[stop("c", "rejected", rejection_reason=NO_NEED)],
+    )
+    assert statics(spec) == []
+
+
+@pytest.mark.parametrize("status", ["proposed", "accepted", "deprecated"])
+def test_a_reason_on_an_entity_that_is_not_rejected_passes(status: str) -> None:
+    assert statics(node("a", status, rejection_reason=NO_NEED)) == []
+
+
+@pytest.mark.parametrize("status", ["proposed", "accepted"])
+def test_a_rejected_node_cannot_hold_a_live_directive_or_exception(status: str) -> None:
+    spec = node(
+        "a",
+        "rejected",
+        rejection_reason=NO_NEED,
+        rules=[rule("b", status)],
+        exceptions=[stop("c", status)],
+    )
+    assert statics(spec) == [
+        (
+            f"{line_of(spec, f'  - status: {status}')}: rejected-holder: This node is rejected, "
+            f"but this directive is {status}. Reject the directive, or move it to a live node."
+        ),
+        (
+            f"{line_of(spec, f'    status: {status}')}: rejected-holder: This node is rejected, "
+            f"but this exception is {status}. Reject the exception, or move it to a live node."
+        ),
+    ]
+
+
+@pytest.mark.parametrize("status", ["deprecated", "rejected"])
+def test_a_rejected_node_can_hold_a_closed_directive(status: str) -> None:
+    spec = node(
+        "a",
+        "rejected",
+        rejection_reason=NO_NEED,
+        rules=[rule("b", status, rejection_reason=NO_NEED)],
+        exceptions=[stop("c", status, rejection_reason=NO_NEED)],
+    )
+    assert statics(spec) == []
+
+
+def test_a_rejected_root_fails() -> None:
+    spec = root_spec("rejected", rejection_reason=NO_NEED)
+    assert statics(spec) == [
+        (
+            f"{line_of(spec, 'status: rejected')}: rejected-root: The root holds the graph, "
+            "so it cannot be rejected. Set it to proposed."
+        )
+    ]
+
+
+REJECTED_NODE = node("old", "rejected", rejection_reason=NO_NEED)
+REJECTED_RULE = node("holder", rules=[rule("old-rule", "rejected", rejection_reason=NO_NEED)])
+
+
+@pytest.mark.parametrize(
+    ("spec", "field"),
+    [
+        (concept("a", "old"), "broader"),
+        (node("a", related=["old"]), "related"),
+        (node("a", informs=["old"]), "informs"),
+        (node("a", depends_on=["old"]), "depends_on"),
+        (node("a", governs=["old"]), "governs"),
+        (node("a", knowledge_type="workspace", origin="project", implements=["old"]), "implements"),
+        ({**node("a"), "kind": "ka:Skill", "uses": ["old"]}, "uses"),
+        (node("a", pointers=["old"]), "target"),
+    ],
+)
+def test_a_live_node_cannot_name_a_rejected_node(spec: Spec, field: str) -> None:
+    problems = statics(spec, REJECTED_NODE)
+    assert [problem.split(": ", 2)[1:] for problem in problems] == [
+        ["rejected-reference", f"{field} names old, which is rejected. Remove it."]
+    ]
+
+
+@pytest.mark.parametrize(
+    ("spec", "field"),
+    [
+        ({**node("a"), "kind": "ka:Skill", "uses": ["holder"], "applies": ["old-rule"]}, "applies"),
+        (node("a", rules=[rule("b", refines=["old-rule"])]), "refines"),
+        (node("a", rules=[rule("b", conflicts_with=["old-rule"])]), "conflicts_with"),
+        (node("a", exceptions=[stop("old-rule")]), "directive"),
+    ],
+)
+def test_a_live_entity_cannot_name_a_rejected_directive(spec: Spec, field: str) -> None:
+    problems = statics(spec, REJECTED_RULE)
+    assert [problem.split(": ", 2)[1:] for problem in problems] == [
+        ["rejected-reference", f"{field} names old-rule, which is rejected. Remove it."]
+    ]
+
+
+def test_a_live_directive_cannot_attach_to_a_rejected_node() -> None:
+    spec = node("a", rules=[rule("b", also_attached_to=["old"])])
+    assert static_codes(spec, REJECTED_NODE) == ["rejected-reference"]
+
+
+@pytest.mark.parametrize("status", ["proposed", "accepted", "deprecated"])
+def test_each_status_but_rejected_counts_as_a_live_source(status: str) -> None:
+    spec = concept("a", "old", status=status)
+    assert static_codes(spec, REJECTED_NODE) == ["rejected-reference"]
+
+
+def test_a_rejected_entity_can_name_a_rejected_entity() -> None:
+    rejected_child = concept("a", "old", status="rejected", rejection_reason=NO_NEED)
+    rejected_rule = rule("b", "rejected", rejection_reason=NO_NEED, refines=["old-rule"])
+    rejected_stop = stop("old-rule", "rejected", rejection_reason=NO_NEED)
+    holder = node("c", rules=[rejected_rule], exceptions=[rejected_stop])
+    assert statics(rejected_child, REJECTED_NODE, REJECTED_RULE, holder) == []
+
+
+@pytest.mark.parametrize("status", ["deprecated", "rejected"])
+def test_a_closed_entity_in_a_rejected_node_can_name_a_rejected_entity(status: str) -> None:
+    holder = node(
+        "a",
+        "rejected",
+        rejection_reason=NO_NEED,
+        rules=[rule("b", status, rejection_reason=NO_NEED, refines=["old-rule"])],
+        exceptions=[stop("old-rule", status, rejection_reason=NO_NEED)],
+    )
+    assert statics(holder, REJECTED_RULE) == []
+
+
+def test_a_rejected_entity_can_name_a_deprecated_entity() -> None:
+    target = node("old", "deprecated", rules=[rule("old-rule", "deprecated")])
+    rejected_rule = rule("b", "rejected", rejection_reason=NO_NEED, refines=["old-rule"])
+    rejected_child = concept("c", "old", status="rejected", rejection_reason=NO_NEED)
+    assert statics(target, node("new", rules=[rejected_rule]), rejected_child) == []
+
+
+def test_a_live_directive_in_a_rejected_node_reports_only_its_holder() -> None:
+    target = node("old", "deprecated", rules=[rule("old-rule", "deprecated")])
+    holder = node(
+        "new", "rejected", rejection_reason=NO_NEED, rules=[rule("b", refines=["old-rule"])]
+    )
+    assert static_codes(target, holder) == ["rejected-holder"]
+
+
+def test_a_rejected_entity_can_name_a_live_entity() -> None:
+    spec = concept("a", "live", status="rejected", rejection_reason=NO_NEED)
+    assert statics(spec, node("live")) == []
+
+
+def test_a_directive_with_no_source_needs_the_judgment_basis() -> None:
+    spec = node("a", rules=[rule("b", basis="standard")])
+    assert statics(spec) == [
+        (
+            f"{line_of(spec, '  - basis: standard')}: basis: This directive names no source. "
+            "Set basis to judgment, or add a source."
+        )
+    ]
+
+
+@pytest.mark.parametrize("basis", ["standard", "research", "practitioner"])
+def test_each_basis_but_judgment_fails_with_no_source(basis: str) -> None:
+    assert static_codes(node("a", rules=[rule("b", basis=basis)])) == ["basis"]
+
+
+@pytest.mark.parametrize("basis", ["standard", "research", "practitioner", "judgment"])
+def test_a_directive_with_a_source_passes_with_each_basis(basis: str) -> None:
+    spec = node("a", rules=[rule("b", basis=basis, sources=["https://example.com/a"])])
+    assert statics(spec) == []
+
+
+def test_a_node_source_does_not_count_for_a_directive() -> None:
+    spec = node("a", sources=["https://example.com/a"], rules=[rule("b", basis="research")])
+    assert static_codes(spec) == ["basis"]
+
+
+def test_the_second_directive_reports_its_own_basis_line() -> None:
+    spec = node("a", rules=[rule("b"), rule("c", basis="practitioner")])
+    assert [problem.split(": ")[0] for problem in statics(spec)] == [
+        line_of(spec, "  - basis: practitioner")
+    ]
+
+
+def test_a_basis_change_reopens_the_review() -> None:
+    before = node("a", rules=[rule("b", "accepted", sources=["x"])])
+    after = node("a", rules=[rule("b", "accepted", basis="standard", sources=["x"])])
+    assert codes([before], [after]) == ["accepted-change"]
+
+
+def test_an_invocation_change_reopens_the_review() -> None:
+    before = {**node("a", "accepted"), "kind": "ka:Skill", "uses": ["b"]}
+    after = {**before}
+    found = check_changes(
+        governed_entities(parsed(before)),
+        governed_entities([replace_node(item, invocation="person") for item in parsed(after)]),
+    )
+    assert [(problem.code, "invocation" in problem.message) for problem in found] == [
+        ("accepted-change", True)
+    ]
+
+
+def replace_node(item: ParsedNode, **fields: object) -> ParsedNode:
+    return dataclass_replace(item, node=item.node.model_copy(update=fields))
+
+
+def test_pending_leaves_out_each_rejected_entity(repository: Path) -> None:
+    spec = node(
+        "a",
+        rules=[rule("b", "rejected", rejection_reason=NO_NEED), rule("c")],
+        exceptions=[stop("d", "rejected", rejection_reason=NO_NEED)],
+    )
+    write(repository, spec, node("e", "rejected", rejection_reason=NO_NEED))
+    entities, problems = pending_entities(repository)
+    assert problems == []
+    assert [entity.label for entity in entities] == ["node a", "directive c"]
+    result = invoke("governance", str(repository), "--pending")
+    assert "rejected" not in result.output
+    assert "2 entities wait for review" in result.output
+
+
+def test_a_person_can_remove_a_rejected_entity(repository: Path) -> None:
+    write(
+        repository,
+        node("a", rules=[rule("b", "rejected", rejection_reason=NO_NEED)]),
+        node("c", "rejected", rejection_reason=NO_NEED),
+    )
+    commit_all(repository)
+    clear_tree(repository)
+    write(repository, node("a"))
+    assert run_check(repository) == []
+
+
+def test_a_rejection_passes_the_whole_check(repository: Path) -> None:
+    write(repository, node("a", rules=[rule("b")]))
+    commit_all(repository)
+    write(
+        repository,
+        node(
+            "a",
+            "rejected",
+            rejection_reason=NO_NEED,
+            rules=[rule("b", "rejected", rejection_reason=NO_NEED)],
+        ),
+    )
+    assert run_check(repository) == []
+    commit_all(repository)
+    write(repository, node("a", rules=[rule("b")]))
+    assert run_check(repository) == []
+
+
+def write_scripts(repository: Path, skill: str, scripts: dict[str, bytes]) -> None:
+    folder = repository / "knowledge/skills" / skill / "scripts"
+    for name, data in scripts.items():
+        path = folder / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(data)
+
+
+SCRIPT_SKILL = {**node("review", "accepted"), "kind": "ka:Skill", "uses": ["review"]}
+
+
+def test_a_script_change_on_an_accepted_skill_fails(repository: Path) -> None:
+    write(repository, SCRIPT_SKILL)
+    write_scripts(repository, "review", {"check.py": b"print(1)\n"})
+    commit_all(repository)
+    write_scripts(repository, "review", {"check.py": b"print(2)\n"})
+    problems = check_governance(repository).problems
+    assert [(problem.code, problem.message) for problem in problems] == [
+        (
+            "accepted-change",
+            "This commit changes scripts on node review. Set its status to proposed.",
+        )
+    ]
+
+
+@pytest.mark.parametrize(
+    "change",
+    ["add", "remove", "rename", "nested"],
+)
+def test_each_script_change_reopens_the_review(repository: Path, change: str) -> None:
+    write(repository, SCRIPT_SKILL)
+    write_scripts(repository, "review", {"check.py": b"print(1)\n"})
+    commit_all(repository)
+    folder = repository / "knowledge/skills/review/scripts"
+    if change == "add":
+        write_scripts(repository, "review", {"more.sh": b"echo\n"})
+    elif change == "remove":
+        (folder / "check.py").unlink()
+    elif change == "rename":
+        (folder / "check.py").rename(folder / "other.py")
+    else:
+        write_scripts(repository, "review", {"lib/util.py": b"x = 1\n"})
+    assert run_check(repository) == ["accepted-change"]
+
+
+def test_a_reopened_skill_takes_a_script_change(repository: Path) -> None:
+    write(repository, SCRIPT_SKILL)
+    write_scripts(repository, "review", {"check.py": b"print(1)\n"})
+    commit_all(repository)
+    write(repository, {**SCRIPT_SKILL, "status": "proposed"})
+    write_scripts(repository, "review", {"check.py": b"print(2)\n"})
+    assert run_check(repository) == []
+    commit_all(repository)
+    write(repository, SCRIPT_SKILL)
+    assert run_check(repository) == []
+
+
+def test_a_promotion_with_a_script_change_fails(repository: Path) -> None:
+    write(repository, {**SCRIPT_SKILL, "status": "proposed"})
+    write_scripts(repository, "review", {"check.py": b"print(1)\n"})
+    commit_all(repository)
+    write(repository, SCRIPT_SKILL)
+    write_scripts(repository, "review", {"check.py": b"print(2)\n"})
+    assert run_check(repository) == ["promotion-change"]
+
+
+def test_an_unchanged_script_passes_on_an_accepted_skill(repository: Path) -> None:
+    write(repository, SCRIPT_SKILL)
+    write_scripts(repository, "review", {"check.py": b"print(1)\n", "lib/a.md": b"# A\n"})
+    commit_all(repository)
+    write(repository, {**SCRIPT_SKILL, "title": "A new title"})
+    assert run_check(repository) == []
+
+
+def test_the_base_reads_the_scripts_at_head(repository: Path) -> None:
+    write(repository, SCRIPT_SKILL)
+    write_scripts(repository, "review", {"check.py": b"print(1)\n", "lib/a.md": b"# A\n"})
+    (repository / "knowledge/skills/review/scripts/check.py").chmod(0o755)
+    commit_all(repository)
+    write_scripts(repository, "review", {"check.py": b"print(2)\n"})
+    (items,) = read_base(repository).items
+    assert [(str(script.path), script.data, script.executable) for script in items.scripts] == [
+        ("check.py", b"print(1)\n", True),
+        ("lib/a.md", b"# A\n", False),
+    ]
+
+
+def test_the_base_skips_a_node_file_inside_scripts(repository: Path) -> None:
+    write(repository, SCRIPT_SKILL)
+    write_scripts(repository, "review", {"node.md": b"not a node\n"})
+    commit_all(repository)
+    base = read_base(repository)
+    assert base.notes == []
+    assert [item.node.id for item in base.items] == ["review"]
+    assert [str(script.path) for script in base.items[0].scripts] == ["node.md"]
+
+
+def test_a_script_mode_change_needs_no_review(repository: Path) -> None:
+    write(repository, SCRIPT_SKILL)
+    write_scripts(repository, "review", {"check.py": b"print(1)\n"})
+    commit_all(repository)
+    (repository / "knowledge/skills/review/scripts/check.py").chmod(0o755)
+    assert run_check(repository) == []

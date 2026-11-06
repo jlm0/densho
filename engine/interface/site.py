@@ -400,7 +400,9 @@ def _node_page(node_id: str, graph: _Graph) -> NodePage:
         ),
         directives=tuple(_directive_entry(directive, graph) for directive in node.directives or []),
         exceptions=tuple(
-            _exception_entry(exception, graph) for exception in exceptions_of(graph.items[node_id])
+            _exception_entry(exception, graph)
+            for exception in exceptions_of(graph.items[node_id])
+            if exception.status != Status.rejected
         ),
         deprecated=_deprecated_entries(node_id, graph),
         pointers=_pointers(node, graph),
@@ -510,7 +512,9 @@ def _graph(items: Sequence[ParsedNode], repository: Path) -> _Graph:
         proposals=proposals,
         items={item.node.id: item for item in items},
         entities=governed_entities(items),
-        children=children_by_broader(items),
+        children=children_by_broader(
+            [item for item in items if item.node.status != Status.rejected]
+        ),
         holders=holders,
         files_by_node=_files_by_node(in_force),
         repository=repository,

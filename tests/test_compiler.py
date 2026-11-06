@@ -68,7 +68,7 @@ for proposals in (False, True):
 
 def rule(directive_id: str, status: str = "accepted", scope: str = "subtree", **refs: str) -> str:
     lines = [f"- Run the {directive_id} check. ^{directive_id}", f"  - scope: {scope}"]
-    lines += [f"  - status: {status}", "  - origin: template"]
+    lines += ["  - basis: judgment", f"  - status: {status}", "  - origin: template"]
     lines += [f"  - {field}: {target}" for field, target in refs.items()]
     return "\n".join(lines) + "\n"
 
@@ -136,7 +136,7 @@ SAMPLE = {
         "ka:Skill",
         status="proposed",
         front=(
-            "description: Review a sample. Use when a sample needs a review.\n"
+            "description: Review a sample. Use when a sample needs a review.\ninvocation: agent\n"
             "uses: [gamma]\napplies: [solid, spare]\n"
         ),
     ),
@@ -695,6 +695,7 @@ EXACT_JSON = """\
         "definition": "A meaning.",
         "directives": [
           {
+            "basis": "judgment",
             "id": "keep",
             "origin": "template",
             "scope": "node",
@@ -750,6 +751,7 @@ EXACT_TURTLE = """\
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 node:keep a ka:Directive ;
+    ka:basis "judgment" ;
     ka:origin "template" ;
     ka:scope "node" ;
     ka:status "accepted" ;
@@ -1125,3 +1127,45 @@ def test_a_blocked_folder_also_reports_when_a_check_fails(tmp_path: Path) -> Non
     assert result.exit_code == 1
     assert ": reference: " in result.output
     assert f"{tmp_path / OUTPUT_FOLDER}:1: write: " in result.output
+
+
+REJECTED_SAMPLE = {
+    **SAMPLE,
+    "knowledge/nodes/thrown/node.md": node(
+        "thrown",
+        "ka:Concept",
+        status="rejected",
+        front="broader: [gamma]\nrejection_reason: No need.\n",
+        rules=[rule("unused", "rejected", "node", rejection_reason="No need.")],
+    ),
+    "knowledge/nodes/gamma/node.md": node(
+        "gamma",
+        rules=[
+            rule("solid", scope="node"),
+            rule("dropped", "rejected", "node", rejection_reason="No need."),
+        ],
+    ),
+    "knowledge/nodes/alpha/beta/node.md": SAMPLE["knowledge/nodes/alpha/beta/node.md"].replace(
+        exception("wait", "accepted"),
+        exception("wait", "accepted")
+        + exception("bound", "rejected")
+        + "    rejection_reason: No need.\n",
+    ),
+}
+
+
+@pytest.mark.parametrize("proposals", [False, True])
+def test_a_rejected_entity_stays_out_of_each_result(proposals: bool) -> None:  # noqa: FBT001
+    compiled = compile_items(parsed(REJECTED_SAMPLE), Path(), proposals=proposals)
+    sample = compiled_sample(proposals=proposals)
+    for data in render_output(compiled).files.values():
+        for word in (b"thrown", b"unused", b"dropped", b"rejected"):
+            assert word not in data
+    assert compiled.paths.keys() == sample.paths.keys()
+    assert compiled.applied.keys() == sample.applied.keys()
+    assert compiled.left_out == sample.left_out
+    beta = node_in(graph_document(compiled), "beta")
+    assert [entry["directive"] for entry in beta.get("exceptions", [])] == [
+        entry["directive"]
+        for entry in node_in(graph_document(sample), "beta").get("exceptions", [])
+    ]

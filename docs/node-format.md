@@ -16,6 +16,8 @@ The folder path is only for navigation. Identity and relationships come from `id
 
 Any other Markdown file, and any symbolic link, in these folders is an error, so a misnamed node cannot escape the checks.
 
+A skill folder can also hold a `scripts/` folder. The parser skips every file in it, whatever its name, so a script can be a Markdown file and still pass. The exemption covers only a skill's own `scripts/`. One beside any other node still fails `file-name`. A symbolic link in it still fails, and a file that git ignores, such as a cache, is left out. The [runtime files](runtime-files.md#skill-scripts) copy the folder next to the generated `SKILL.md`.
+
 ## Example
 
 ```markdown
@@ -42,6 +44,7 @@ Write a failing test first, then the code that passes it.
 
 - Write a failing test before you change behavior. ^write-test-first
   - scope: subtree
+  - basis: practitioner
   - status: accepted
   - origin: template
   - sources: https://example.com/testing

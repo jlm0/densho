@@ -41,15 +41,18 @@ The design of how people understand and operate a product. It covers how informa
 
 - Show only the content and the controls that the current task needs. ^show-what-the-task-needs
   - scope: subtree
+  - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/ten-usability-heuristics/
 - Do not add a sentence that repeats what a heading, a label, or a value states. ^no-repeated-text
   - scope: subtree
+  - basis: judgment
   - status: proposed
   - origin: template
 - Use one word for one meaning in each interface. ^one-word-one-meaning
   - scope: subtree
+  - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/ten-usability-heuristics/

@@ -28,5 +28,6 @@ The work that takes a digital product from an idea to software in use. It covers
 
 - Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
   - scope: subtree
+  - basis: judgment
   - status: proposed
   - origin: template

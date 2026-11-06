@@ -31,7 +31,7 @@ A node page keeps directives apart by state. `In force` holds what binds an agen
 
 The site draws no graph picture. The tree shows `broader`, and `related`, `informs`, and the other edges appear as links on each node page. To change a node, use an editor, and the git hook checks the result.
 
-A node with two parents appears twice in the tree. The second row links to the node and says that it is listed above. A rejected tree removes the old pages, so you can't read a site that no longer matches a valid tree by accident.
+The site leaves out each `rejected` entity, the same as the runtime files. A node with two parents appears twice in the tree. The second row links to the node and says that it is listed above. A tree that fails a check removes the old pages, so you can't read a site that no longer matches a valid tree by accident.
 
 ## Accept what you approve
 
@@ -66,7 +66,7 @@ This command wrote no commit. Read git diff, run uv run ka runtime, stage the fi
 
 `--dry-run` runs every check and lists what the command would accept, and it writes nothing.
 
-An entity that isn't `proposed` is left alone and counted in the summary. A subtree skips each one. A `deprecated` entity that you name fails with `not-proposed`, because the [workflow](governance-workflow.md) doesn't allow that jump.
+An entity that isn't `proposed` is left alone and counted in the summary. A subtree skips each one. A `deprecated` or `rejected` entity that you name fails with `not-proposed`, because the [workflow](governance-workflow.md) doesn't allow that jump.
 
 The command writes nothing unless the whole request can pass:
 
@@ -113,7 +113,7 @@ A node can arrive from a pull or from an agent, so the site treats each value as
 | Code            | What it reports                                                                                          |
 | --------------- | -------------------------------------------------------------------------------------------------------- |
 | `unknown-id`    | `ka accept`: no entity has this name, or no node has this ID in `--subtree`                              |
-| `not-proposed`  | `ka accept`: you named a `deprecated` entity, or the last commit holds it as `deprecated`                |
+| `not-proposed`  | `ka accept`: you named a `deprecated` or `rejected` entity, or the last commit holds it that way         |
 | `uncommitted`   | `ka accept`: the last commit doesn't hold the entity, or a field that needs review differs from it       |
 | `no-history`    | `ka accept`: there is no last commit to compare with, or a merge is in progress                          |
 | `status-line`   | `ka accept`: the command can't change this status alone, for example on a line that holds a similar word |

@@ -3,7 +3,9 @@ from typing import TYPE_CHECKING, cast
 
 from markdown_it import MarkdownIt
 
+from engine.generated.metamodel import Status
 from engine.graph.references import exceptions_of
+from engine.parser.scripts import scripts_digest
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -11,7 +13,7 @@ if TYPE_CHECKING:
 
     from pydantic import BaseModel
 
-    from engine.generated.metamodel import Origin, Status
+    from engine.generated.metamodel import Origin
     from engine.parser.result import ParsedNode
 
 type EntityKey = tuple[str, ...]
@@ -19,11 +21,25 @@ type EntityKey = tuple[str, ...]
 NODE = "node"
 DIRECTIVE = "directive"
 EXCEPTION = "exception"
+SCRIPTS_FIELD = "scripts"
 NODE_FIELDS_WITHOUT_REVIEW = frozenset(
-    {"id", "status", "origin", "title", "body", "pointers", "sources", "exceptions", "directives"}
+    {
+        "id",
+        "status",
+        "origin",
+        "title",
+        "body",
+        "pointers",
+        "sources",
+        "exceptions",
+        "directives",
+        "rejection_reason",
+    }
 )
-DIRECTIVE_FIELDS_WITHOUT_REVIEW = frozenset({"id", "status", "origin", "sources"})
-EXCEPTION_FIELDS_WITHOUT_REVIEW = frozenset({"directive", "status"})
+DIRECTIVE_FIELDS_WITHOUT_REVIEW = frozenset(
+    {"id", "status", "origin", "sources", "rejection_reason"}
+)
+EXCEPTION_FIELDS_WITHOUT_REVIEW = frozenset({"directive", "status", "rejection_reason"})
 _MARKDOWN = MarkdownIt("commonmark")
 
 
@@ -76,6 +92,8 @@ def governed_entities(items: Sequence[ParsedNode]) -> dict[EntityKey, Entity]:
         node = item.node
         key = (NODE, node.id)
         reviewed = _reviewed(node, NODE_FIELDS_WITHOUT_REVIEW)
+        if item.scripts:
+            reviewed[SCRIPTS_FIELD] = scripts_digest(item.scripts)
         line = item.line_of(("status",))
         entities[key] = Entity(key, node.status, node.origin, reviewed, item.path, line)
         for position, directive in enumerate(node.directives or []):
@@ -94,3 +112,11 @@ def governed_entities(items: Sequence[ParsedNode]) -> dict[EntityKey, Entity]:
             line = item.line_of(("exceptions", index, "status"))
             entities[key] = Entity(key, exception.status, None, reviewed, item.path, line)
     return entities
+
+
+def pending_count(items: Sequence[ParsedNode]) -> int:
+    return sum(
+        entity.status == Status.proposed
+        for item in items
+        for entity in (item.node, *(item.node.directives or []), *exceptions_of(item))
+    )

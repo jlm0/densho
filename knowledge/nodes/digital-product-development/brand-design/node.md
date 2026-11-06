@@ -19,10 +19,12 @@ The identity that a product presents: its name, voice, logo, color, typography, 
 
 - Take each color, typeface, and logo from the brand definition of the project. ^use-brand-definition
   - scope: subtree
+  - basis: judgment
   - status: proposed
   - origin: template
 - Write each message to a user in the voice of the brand definition. ^write-in-brand-voice
   - scope: subtree
+  - basis: judgment
   - status: proposed
   - origin: template
 

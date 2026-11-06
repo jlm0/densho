@@ -38,7 +38,8 @@ Treat a directive as a rule only when its `status` is `accepted`. A generated fi
 If compaction removes a skill, invoke the skill again.
 
 {% for skill in view.skills %}
-- `{{ skill.link.id }}`: {{ skill.description }}
+- `{{ skill.link.id }}`: {{ skill.description }}{% if skill.invocation == "person" %} Only a person can start this skill.{% endif %}
+
 {% endfor %}
 {% endif %}
 {% if view.references %}

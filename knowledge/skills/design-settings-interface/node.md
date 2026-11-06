@@ -6,6 +6,7 @@ status: proposed
 origin: template
 knowledge_type: domain
 description: Design a settings interface from its options and its users. Use when you design or change a settings screen.
+invocation: agent
 uses:
   - progressive-disclosure
   - information-hierarchy
@@ -42,6 +43,7 @@ pointers:
 
 - Show the current value of each setting next to its name. ^show-current-setting-value
   - scope: node
+  - basis: judgment
   - status: proposed
   - origin: template
 

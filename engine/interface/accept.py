@@ -6,6 +6,7 @@ from engine.compiler import checked_tree, compile_items
 from engine.directives import check_items as check_directive_items
 from engine.generated.metamodel import Status
 from engine.governance.base import read_base
+from engine.governance.changes import CLOSED_STATUSES
 from engine.governance.entities import (
     DIRECTIVE,
     EXCEPTION,
@@ -79,8 +80,11 @@ def _select(
         entity = _named(name, entities)
         if entity is None:
             problems.append(_unknown(repository, name))
-        elif entity.status == Status.deprecated:
-            message = f"{entity.label} is deprecated. Commit it as proposed before you accept it."
+        elif entity.status in CLOSED_STATUSES:
+            message = (
+                f"{entity.label} is {Status(entity.status).value}. "
+                "Commit it as proposed before you accept it."
+            )
             problems.append(Problem(entity.path, entity.line, "not-proposed", message))
         else:
             selected[entity.key] = entity
@@ -107,8 +111,11 @@ def _head_problems(
         if old is None:
             message = f"HEAD does not hold {entity.label}. Commit it, then run {command} accept."
             problems.append(Problem(entity.path, entity.line, "uncommitted", message))
-        elif old.status == Status.deprecated:
-            message = f"HEAD has {entity.label} as deprecated. Commit it as proposed first."
+        elif old.status in CLOSED_STATUSES:
+            message = (
+                f"HEAD has {entity.label} as {Status(old.status).value}. "
+                "Commit it as proposed first."
+            )
             problems.append(Problem(entity.path, entity.line, "not-proposed", message))
         elif old.reviewed != entity.reviewed:
             message = (
@@ -137,7 +144,10 @@ def _with_rewrites(items: Iterable[ParsedNode], rewrites: Mapping[Path, bytes]) 
             result.append(item)
             continue
         parsed = parse_source(universal_newlines(data.decode("utf-8")), item.path)
-        result.append(parsed if isinstance(parsed, ParsedNode) else item)
+        if isinstance(parsed, ParsedNode):
+            result.append(replace(parsed, scripts=item.scripts))
+        else:
+            result.append(item)
     return result
 
 

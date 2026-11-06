@@ -18,6 +18,7 @@ from engine.governance import GOVERNANCE_CODES
 from engine.governance.checks import RESTING_FIELDS
 from engine.governance.entities import (
     DIRECTIVE_FIELDS_WITHOUT_REVIEW,
+    EXCEPTION_FIELDS_WITHOUT_REVIEW,
     NODE_FIELDS_WITHOUT_REVIEW,
 )
 from engine.graph.structure import ACYCLIC_EDGES, MAX_POINTER_HOPS
@@ -259,7 +260,10 @@ LANGUAGE_TRIGGERS = {
 
 def language_example_source(example: str) -> str:
     if example.endswith("changes code."):
-        fields = f"knowledge_type: domain\nkind: ka:Skill\ndescription: {example}\nuses: [b]\n"
+        fields = (
+            f"knowledge_type: domain\nkind: ka:Skill\ndescription: {example}\n"
+            "invocation: agent\nuses: [b]\n"
+        )
         return f"{LANGUAGE_NODE}{fields}---\n"
     if example in LANGUAGE_TRIGGERS:
         pointer = f'  - kind: ka:TextPointer\n    target: b\n    trigger: "{example}"\n'
@@ -267,7 +271,8 @@ def language_example_source(example: str) -> str:
     return (
         f"{LANGUAGE_NODE}kind: ka:Domain\nknowledge_type: domain\n---\n\n"
         "## Definition\n\nA.\n\n## Directives\n\n"
-        f"- {example} ^b\n  - scope: node\n  - status: accepted\n  - origin: template\n"
+        f"- {example} ^b\n  - scope: node\n"
+        "  - basis: judgment\n  - status: accepted\n  - origin: template\n"
     )
 
 
@@ -342,14 +347,17 @@ def test_the_governance_page_names_each_code(code: str) -> None:
 
 def test_the_governance_page_names_each_field_without_review() -> None:
     page = governance_page()
-    node_row = table_row(page, "| Node ")
-    directive_row = table_row(page, "| Directive ")
-    identity = {"id", "status", "origin"}
-    assert NODE_FIELDS_WITHOUT_REVIEW - identity
-    for field in NODE_FIELDS_WITHOUT_REVIEW - identity:
-        assert f"`{field}`" in node_row.rsplit("|", 2)[1]
-    assert DIRECTIVE_FIELDS_WITHOUT_REVIEW - identity == {"sources"}
-    assert "`sources`" in directive_row.rsplit("|", 2)[1]
+    identity = {"id", "status", "origin", "directive"}
+    rows = {
+        "| Node ": NODE_FIELDS_WITHOUT_REVIEW,
+        "| Directive ": DIRECTIVE_FIELDS_WITHOUT_REVIEW,
+        "| Exception ": EXCEPTION_FIELDS_WITHOUT_REVIEW,
+    }
+    for start, fields in rows.items():
+        column = table_row(page, start).rsplit("|", 2)[1]
+        assert fields - identity
+        for field in fields - identity:
+            assert f"`{field}`" in column
 
 
 def test_the_governance_page_names_each_resting_field() -> None:

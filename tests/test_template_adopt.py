@@ -54,10 +54,12 @@ The meaning of the domain.
 
 - Run the check. ^run-it
   - scope: subtree
+  - basis: judgment
   - status: accepted
   - origin: template
 - Run the other check. ^run-other
   - scope: subtree
+  - basis: judgment
   - status: proposed
   - origin: template
 """
@@ -211,7 +213,7 @@ def test_a_changed_field_returns_to_proposed(tmp_path: Path) -> None:
     set_text(tmp_path, "Run the check. ^run-it", "Run the new check. ^run-it")
     assert labels(tmp_path) == {"directive run-it"}
     block = text_of(tmp_path).split("^run-it")[1]
-    assert block.startswith("\n  - scope: subtree\n  - status: proposed\n")
+    assert block.startswith("\n  - scope: subtree\n  - basis: judgment\n  - status: proposed\n")
 
 
 def test_a_change_with_no_review_keeps_the_status(tmp_path: Path) -> None:
@@ -603,3 +605,32 @@ def test_a_file_that_is_not_utf8_gets_the_import(tmp_path: Path) -> None:
     (tmp_path / "CLAUDE.md").write_bytes(b"\xff\xfe\n")
     assert add_root_import(tmp_path)[0] == ("CLAUDE.md",)
     assert (tmp_path / "CLAUDE.md").read_bytes() == b"\xff\xfe\n\n@AGENTS.md\n"
+
+
+REJECTED_RULE = "  - status: rejected\n  - rejection_reason: No need."
+
+
+def test_a_new_rejected_entity_arrives_with_a_note(tmp_path: Path) -> None:
+    with_history(tmp_path)
+    write_tree(tmp_path, DOMAIN_NODE.replace("  - status: accepted", REJECTED_RULE))
+    report = adopt_template(tmp_path)
+    assert "directive run-it" in {entity.label for entity in report.proposed}
+    assert (
+        "directive run-it was rejected in the template. It is now proposed. "
+        "Set it to rejected again if the project does not want it."
+    ) in report.notes
+    assert "  - status: proposed\n  - rejection_reason: No need." in text_of(tmp_path)
+
+
+def test_a_jump_from_rejected_returns_to_proposed(tmp_path: Path) -> None:
+    committed_tree(tmp_path, DOMAIN_NODE.replace("  - status: accepted", REJECTED_RULE))
+    set_text(tmp_path, "  - status: rejected", "  - status: accepted")
+    assert labels(tmp_path) == {"directive run-it"}
+    assert "  - status: proposed\n  - rejection_reason: No need." in text_of(tmp_path)
+
+
+def test_a_rejected_status_with_no_change_stays(tmp_path: Path) -> None:
+    committed_tree(tmp_path)
+    set_text(tmp_path, "  - status: accepted", REJECTED_RULE)
+    assert labels(tmp_path) == set()
+    assert REJECTED_RULE in text_of(tmp_path)

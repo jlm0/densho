@@ -41,7 +41,13 @@ SAMPLE_GRAPH = {
             "governs": ["root", "governance"],
             "sources": ["knowledge/governance/schema/metamodel.yaml"],
             "directives": [
-                {**GOVERNED, "id": "use-a-verb", "text": "Start with a verb.", "scope": "subtree"},
+                {
+                    **GOVERNED,
+                    "id": "use-a-verb",
+                    "text": "Start with a verb.",
+                    "scope": "subtree",
+                    "basis": "judgment",
+                },
             ],
         },
         {**TAXONOMY, "id": "design", "kind": "ka:Domain", "informs": ["governance"]},
@@ -80,6 +86,7 @@ SAMPLE_GRAPH = {
             "title": "Review",
             "knowledge_type": "domain",
             "description": "Use this skill for a review.",
+            "invocation": "agent",
             "uses": ["hierarchy", "settings"],
             "applies": ["use-a-verb"],
         },

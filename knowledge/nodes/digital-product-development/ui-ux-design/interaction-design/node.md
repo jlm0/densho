@@ -24,6 +24,7 @@ The design of how an interface responds when people act on it: which controls ap
 
 - Show the result of each user action on the screen. ^show-action-result
   - scope: subtree
+  - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/ten-usability-heuristics/

@@ -17,12 +17,15 @@ uv run ka runtime
 ```text
 wrote AGENTS.md
 wrote .claude/skills/design-settings-interface/SKILL.md
+114 entities wait for review. Run uv run ka governance --pending to list them.
 in_force: 25 files, 2 written, 0 removed, 0 problems
 ```
 
 The command compiles the graph with the same code as `ka build`, so it runs every check on one reading of the tree. It writes each file that differs and removes each file of its own that no node generates any more. A second run changes nothing.
 
-A rejected tree leaves the committed files alone, so an agent keeps its entry point while you repair a node. An empty tree removes every generated file and passes, so a project can still remove what it received.
+The count of entities that wait for review is a reminder. It never fails the run, and it doesn't print when the tree fails a check.
+
+A tree that fails a check leaves the committed files alone, so an agent keeps its entry point while you repair a node. An empty tree removes every generated file and passes, so a project can still remove what it received.
 
 ## What each node becomes
 
@@ -39,6 +42,8 @@ A `ka:TextPointer` adds no file. It becomes a line that holds the trigger and a 
 A node file names its pointer targets by ID. The generated files turn each ID into the path of its generated file, so each link in a generated file goes to another generated file, and no link goes to a node file. The root links each domain and the governance, and names each skill with no link. A skill also links the page of each node in `uses`.
 
 A skill behind a path or always pointer gets both a skill file and a rule, and a link to it goes to the rule. A path rule also matches its own node file.
+
+A skill with `invocation: person` gets `disable-model-invocation: true` in its front matter, so the agent doesn't start it by itself. A person starts it with `/<id>`. The root adds `Only a person can start this skill.` to its line.
 
 ## What a file holds
 
@@ -60,7 +65,7 @@ A directive list holds what applies at that node and nothing else: inherited dir
 The default result holds only what the [governance workflow](governance-workflow.md) puts in force. Every seed entity is still `proposed`, so today the committed files hold the nodes and the pointers but no directive. The root says so plainly, so an agent doesn't assume a rule:
 
 ```text
-No directive is in force. The graph holds 81 directives and 1 exception that are not in force.
+No directive is in force. The graph holds 88 directives and 1 exception that are not in force.
 
 Treat a directive as a rule only when its `status` is `accepted`. A generated file lists only the directives that apply at its own node.
 ```
@@ -90,7 +95,7 @@ Claude Code also loads `AGENTS.md`, `.claude/rules/`, and `.claude/skills/` from
 | `.claude/rules/knowledge/<id>.md` | `build/runtime-proposals/claude/rules/knowledge/<id>.proposals.md` |
 | `.claude/references/<id>.md`      | `build/runtime-proposals/claude/references/<id>.proposals.md`      |
 
-Each link in the copy goes to another file of the copy. A link in the body of a node keeps its text, so it fails with `link` in the copy even when it passes in the committed files. No node body holds a link today. A rejected tree removes the copy.
+Each link in the copy goes to another file of the copy. A link in the body of a node keeps its text, so it fails with `link` in the copy even when it passes in the committed files. No node body holds a link today. A tree that fails a check removes the copy.
 
 The [review queue](human-interface.md#read-the-knowledge) lists the same effect for each entity, and names the generated files it reaches.
 
@@ -100,9 +105,19 @@ A skill is an entry point in the middle of the tree, so it has to carry the dire
 
 Compaction decides this. After compaction, Claude Code re-attaches each invoked skill and keeps the first 5,000 tokens, while it restores only a few of the files an agent read. A required read also leaves the choice to the agent, and a node file holds proposals and rules that an exception stops. `design-settings-interface` draws 39 directives from 11 nodes, so a list of reads would be the weaker answer.
 
-The directives sit directly after the title, so they are the part that compaction keeps. The build fails with `size` if the title and the directives of a skill take more than 15,000 characters. That is 3 characters for each of the 5,000 tokens, a low estimate on purpose, because the repo has no tokenizer. The procedure comes after the directives, so a long one can still be cut. A skill says near its top that the agent can invoke it again, and the root says the same, because the oldest skill can drop out entirely.
+The directives sit directly after the title, so they are the part that compaction keeps. The build fails with `size` if the title and the directives of a skill take more than 15,000 characters. That is 3 characters for each of the 5,000 tokens, a low estimate on purpose, because the repo has no tokenizer. The procedure comes after the directives, so a long one can still be cut. A skill says near its top that the agent can invoke it again, and the root says the same, because the oldest skill can drop out entirely. A person skill tells the agent to ask the person instead.
+
+Two line budgets also fail with `size`: 200 lines for the root `AGENTS.md`, from the Claude Code memory docs, and 500 lines for a `SKILL.md`, from the Agent Skills specification. A reference page has no line budget, only its 40,000 characters. A file over a budget means the node holds too much, so the message asks you to move knowledge out of it or attach fewer directives. The review copy follows the same budgets.
 
 The copy can't go stale, because the hook compares it with a fresh generation on each commit.
+
+## Skill scripts
+
+A skill can ship scripts. Put them in `scripts/` in the skill's node folder, and the command copies the folder byte for byte to `.claude/skills/<id>/scripts/`, next to `SKILL.md`. Each copy keeps the executable bit of its source. A link in the skill body to `scripts/check.py` resolves, because the copy is a file the generator writes.
+
+The generator owns the copied folder while the `SKILL.md` beside it holds the marker. It removes each file there that the source doesn't have, including one you put there by hand, so keep your scripts in the source folder. It leaves alone a file that git ignores, such as `__pycache__/`, and the `scripts/` folder of a skill you wrote yourself. A hand-written file at a path that the copy needs fails with `not-generated`.
+
+A script change reopens the review of the skill. See [governance workflow](governance-workflow.md#change-something-accepted). The checks never read a script, so a reviewer reads each one. The review copy holds the scripts too, under `build/runtime-proposals/claude/skills/<id>/scripts/`.
 
 ## Hand-written files
 
@@ -176,7 +191,7 @@ These codes come from this command. Each other code comes from a check that the 
 | --------------- | ------------------------------------------------------------------------------------- |
 | `not-generated` | A generated path holds a file without the marker, a folder, or a symbolic link        |
 | `link`          | A generated file links to a path where the generator writes no file                   |
-| `size`          | The directives of a skill, or a whole rule or reference page, go over the limit       |
+| `size`          | A file goes over its character limit, or the root or a skill over its line budget     |
 | `changed`       | With `--verify`, a file differed from a fresh generation, or no node generates it now |
 | `not-staged`    | With `--verify`, the git index doesn't hold a generated file                          |
 | `write`         | The command can't change a path, because a file or a permission blocks it             |
@@ -187,7 +202,7 @@ A link in the body of a node resolves from the generated file, not from the node
 
 - Whether a pattern in `paths` matches any file, or matches what the author meant.
 - Whether a skill ID is one that Claude Code reserves. It skips a skill named `synced` or `anthropic-skills`.
-- The size of the root. The Claude Code docs suggest under 200 lines, and they name no limit that cuts this file.
+- What a script does, or whether a script that git ignores in the source should ship.
 - Whether a token estimate holds. The 15,000 characters are an estimate, and a text with many long links can use more tokens for each character.
 - Whether a stale file that you deleted but didn't stage is gone from the commit, in `pre-commit run --all-files`. A real commit restores the file first, so the hook then removes it and fails.
 

@@ -21,9 +21,11 @@ Deciding which problem a product solves, for which users, and what it leaves out
 
 - State the user problem of each feature in one sentence. ^state-user-problem
   - scope: subtree
+  - basis: judgment
   - status: proposed
   - origin: template
 - Write the success measure of each feature before you build the feature. ^write-success-measure
   - scope: subtree
+  - basis: judgment
   - status: proposed
   - origin: template

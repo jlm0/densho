@@ -1,5 +1,5 @@
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, cast
 
 from pydantic import BaseModel, ValidationError
@@ -21,6 +21,7 @@ from engine.layout import KNOWLEDGE_FOLDER, NODE_FILE_NAME
 from engine.parser.body import read_body
 from engine.parser.front_matter import read_front_matter
 from engine.parser.result import FieldPath, ParsedNode, Problem, line_of
+from engine.parser.scripts import SKILLS_IN_KNOWLEDGE, folder_of, read_scripts, script_folders
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping, Sequence
@@ -127,11 +128,24 @@ def _read_folder(root: Path, nodes: list[ParsedNode], problems: list[Problem]) -
     found = sorted(
         folder / name for folder, _, names in root.walk(on_error=report_error) for name in names
     )
+    node_files = (path for path in found if path.name == NODE_FILE_NAME)
+    folders = script_folders(node_files, root / SKILLS_IN_KNOWLEDGE)
+    in_scripts: dict[Path, list[Path]] = {folder: [] for folder in folders}
+    first = len(nodes)
     for path in found:
+        folder = folder_of(path, folders)
         if path.is_symlink():
             problems.append(Problem(path, 1, "symlink", "Replace the symbolic link with a file."))
+        elif folder is not None:
+            in_scripts[folder].append(path)
         elif path.suffix.casefold() in MARKDOWN_SUFFIXES:
             _read_node_file(path, nodes, problems)
+    scripts = read_scripts(root, in_scripts, problems)
+    by_node = {folders[folder]: found_scripts for folder, found_scripts in scripts.items()}
+    for index in range(first, len(nodes)):
+        item = nodes[index]
+        if by_node.get(item.path):
+            nodes[index] = replace(item, scripts=by_node[item.path])
 
 
 def _read_node_file(path: Path, nodes: list[ParsedNode], problems: list[Problem]) -> None:

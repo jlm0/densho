@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from engine.generated.metamodel import (
     AlwaysPointer,
     Domain,
+    Invocation,
     KnowledgeNode,
     PathPointer,
     Skill,
@@ -24,6 +25,7 @@ if TYPE_CHECKING:
         DirectiveException,
         Node,
     )
+    from engine.parser.result import Script
 
 
 class LoadMechanism(StrEnum):
@@ -77,6 +79,8 @@ class NodeView:
     pointers: tuple[PointerLine, ...]
     description: str | None = None
     paths: tuple[str, ...] = ()
+    invocation: str | None = None
+    scripts: tuple[Script, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -198,6 +202,8 @@ def build_view(compiled: CompiledGraph) -> RuntimeView:
             _skill_pointers(node, links),
             node.description if isinstance(node, Skill) else None,
             tuple(paths),
+            Invocation(node.invocation).value if isinstance(node, Skill) else None,
+            compiled.scripts.get(node.id, ()),
         )
 
     def rule_paths(node: Node) -> list[str]:

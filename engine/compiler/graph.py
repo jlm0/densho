@@ -6,7 +6,9 @@ from engine.directives import AppliedDirective, live_statuses, resolve_directive
 from engine.generated.metamodel import (
     CompiledResult,
     KnowledgeGraph,
+    Root,
     Skill,
+    Status,
 )
 from engine.graph.references import exceptions_of
 from engine.graph.rules import root_nodes
@@ -19,9 +21,8 @@ if TYPE_CHECKING:
         Directive,
         DirectiveException,
         Node,
-        Status,
     )
-    from engine.parser.result import ParsedNode
+    from engine.parser.result import ParsedNode, Script
 
 
 @dataclass(frozen=True, slots=True)
@@ -31,6 +32,7 @@ class CompiledGraph:
     paths: Mapping[str, str]
     applied: Mapping[str, tuple[AppliedDirective, ...]]
     left_out: Mapping[str, int]
+    scripts: Mapping[str, tuple[Script, ...]]
 
     @property
     def directives(self) -> dict[str, Directive]:
@@ -102,13 +104,22 @@ def _dumped(node: Node) -> object:
     return normal_form(node.model_dump(mode="json"))
 
 
+def _kept_node(item: ParsedNode) -> bool:
+    return item.node.status != Status.rejected or isinstance(item.node, Root)
+
+
 def compile_items(
     items: Sequence[ParsedNode], repository: Path, *, proposals: bool = False
 ) -> CompiledGraph:
     live = live_statuses(proposals=proposals)
     result = CompiledResult.proposals if proposals else CompiledResult.in_force
-    ordered = sorted(items, key=lambda item: item.node.id)
-    directives = [directive for item in ordered for directive in item.node.directives or []]
+    ordered = sorted((item for item in items if _kept_node(item)), key=lambda item: item.node.id)
+    directives = [
+        directive
+        for item in ordered
+        for directive in item.node.directives or []
+        if directive.status != Status.rejected
+    ]
     kept = frozenset(directive.id for directive in directives if directive.status in live)
     filtered = {item.node.id: _filtered_node(item, kept, live) for item in ordered}
     root_id = root_nodes(ordered)[0].node.id
@@ -119,7 +130,9 @@ def compile_items(
             "nodes": [_dumped(node) for node_id, node in filtered.items() if node_id != root_id],
         }
     )
-    exception_count = sum(len(exceptions_of(item)) for item in ordered)
+    exception_count = sum(
+        exception.status != Status.rejected for item in ordered for exception in exceptions_of(item)
+    )
     kept_exceptions = sum(len(_kept_exceptions(item, kept, live)) for item in ordered)
     resolution = resolve_directives(items, proposals=proposals)
     by_id = _directives_of(graph)
@@ -138,4 +151,5 @@ def compile_items(
             "directives": len(directives) - len(kept),
             "exceptions": exception_count - kept_exceptions,
         },
+        scripts={item.node.id: item.scripts for item in ordered if item.scripts},
     )

@@ -6,6 +6,7 @@ status: proposed
 origin: template
 knowledge_type: domain
 description: Review a screen for its hierarchy, its grouping, and its use of prose. Use when a screen design is ready for review.
+invocation: agent
 uses:
   - information-hierarchy
   - visual-grouping

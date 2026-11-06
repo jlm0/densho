@@ -75,6 +75,17 @@ Two branches add terms in `knowledge/governance/language/branches/`. `ui-ux-desi
 
 A `sources` value names a page that was read when the rule was written: the Web Content Accessibility Guidelines, Nielsen Norman Group articles, MDN, and the OWASP Secrets Management Cheat Sheet. A rule with no `sources` is a judgment call, so read it with more care.
 
+Each directive also states its `basis`, the kind of source behind it. In the domain and the skills:
+
+| `basis`        | Directives | Where they come from                                                  |
+| -------------- | ---------- | --------------------------------------------------------------------- |
+| `standard`     | 12         | WCAG 2.2                                                              |
+| `research`     | 4          | The Gestalt grouping research, through a Nielsen Norman Group article |
+| `practitioner` | 24         | Named methods and authors: Nielsen Norman Group, MDN, and OWASP       |
+| `judgment`     | 14         | No source                                                             |
+
+Every governance directive is `judgment`, because the policies come from this project's own design and cite nothing.
+
 ## How it fits
 
 This is the first real content for the [schema](schema.md), the [format](node-format.md), and the checks. The [compiled outputs](compiled-outputs.md), the [runtime files](runtime-files.md), and the [human interface](human-interface.md) read it. While a seed directive is `proposed`, only `uv run ka build --proposals`, `uv run ka runtime --proposals`, and the site hold it, and each marks it as not in force.

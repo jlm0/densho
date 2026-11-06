@@ -74,18 +74,21 @@ A project owns its copy of the template, and the project decides what it takes. 
 10. If a trigger holds a second condition, split it into `2` pointers.
 11. Put each rule in the `## Directives` section of the node for its source document.
 12. Set `sources` of each directive to the path and the line of its source.
-13. If a rule covers each task in the project, put it in `knowledge/node.md` with `scope: subtree`.
-14. If a rule also covers the child documents of its document, set `scope: subtree`.
-15. Set `scope: node` on each other rule.
-16. In a rule, replace each path of a converted document with the node ID.
-17. Add a pointer from the node of that rule to the named node.
-18. Copy each procedure under `## Procedures` in the node body, in the order of its steps.
-19. Copy each table, list, and example under `## References` in the node body.
-20. Copy each rationale document under `## Rationale` in the body of its node.
-21. List each heading of a rule group under `## Rule groups` in the node body, with the IDs of its rules.
-22. If a skill in the source has its own trigger, add a `ka:Skill` node under `knowledge/skills/<id>/node.md`.
-23. Leave a copy of a skill for another agent tool at its path.
-24. If an item stays out of the graph, add it to the `## Not converted` table of the ledger.
+13. Set `basis: judgment` on each directive whose source cites no standard, no study, and no named method.
+14. Set `basis` to `standard`, `research`, or `practitioner` on each other directive, from the kind of its cited source.
+15. If a rule covers each task in the project, put it in `knowledge/node.md` with `scope: subtree`.
+16. If a rule also covers the child documents of its document, set `scope: subtree`.
+17. Set `scope: node` on each other rule.
+18. In a rule, replace each path of a converted document with the node ID.
+19. Add a pointer from the node of that rule to the named node.
+20. Copy each procedure under `## Procedures` in the node body, in the order of its steps.
+21. Copy each table, list, and example under `## References` in the node body.
+22. Copy each rationale document under `## Rationale` in the body of its node.
+23. List each heading of a rule group under `## Rule groups` in the node body, with the IDs of its rules.
+24. If a skill in the source has its own trigger, add a `ka:Skill` node under `knowledge/skills/<id>/node.md`.
+25. Set `invocation: person` on a skill whose source sets `disable-model-invocation: true`, and `invocation: agent` on each other skill.
+26. Leave a copy of a skill for another agent tool at its path.
+27. If an item stays out of the graph, add it to the `## Not converted` table of the ledger.
 
 ### Check the result
 
@@ -237,6 +240,7 @@ How this project writes and changes code.
 
 - Use whole words in each name. ^use-whole-words
   - scope: node
+  - basis: judgment
   - status: proposed
   - origin: project
   - sources: `rules/coding.md:14`

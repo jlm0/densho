@@ -9,11 +9,12 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from engine.compiler.tree import path_problems
 from engine.generated.metamodel import Status
 from engine.governance.base import read_head_file, tracked_files
-from engine.governance.entities import DIRECTIVE, EXCEPTION, NODE, normal_text
+from engine.governance.entities import DIRECTIVE, EXCEPTION, NODE, SCRIPTS_FIELD, normal_text
 from engine.graph.references import exceptions_of
 from engine.layout import HISTORY_FILE, LANGUAGE_FOLDER
 from engine.parser.node import node_folders, parse_tree
 from engine.parser.result import Problem
+from engine.parser.scripts import scripts_digest
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
@@ -94,6 +95,9 @@ def _node_entries(item: ParsedNode, repository: Path) -> Iterator[tuple[EntryKey
     node = item.node
     path = item.path.relative_to(repository).as_posix()
     content = _content(node, NODE_FIELDS_WITHOUT_DIGEST)
+    if item.scripts:
+        digest = scripts_digest(item.scripts)[:DIGEST_LENGTH]
+        content = dict(sorted({**content, SCRIPTS_FIELD: digest}.items()))
     yield (NODE, node.id), _Recorded(path, Status(node.status).value, content)
     for directive in node.directives or []:
         content = _content(directive, DIRECTIVE_FIELDS_WITHOUT_DIGEST, holder=node.id)

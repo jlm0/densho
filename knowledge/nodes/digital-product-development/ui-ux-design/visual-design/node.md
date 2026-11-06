@@ -27,6 +27,7 @@ The visual form of an interface: its layout, type, color, imagery, and spacing. 
 
 - Limit each interface to `2` primary colors and `2` secondary colors. ^limit-color-palette
   - scope: subtree
+  - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/

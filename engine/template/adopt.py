@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from engine.generated.metamodel import Status
 from engine.governance.base import read_base
+from engine.governance.changes import CLOSED_STATUSES
 from engine.governance.entities import governed_entities
 from engine.governance.status_line import set_status_lines
 from engine.parser.node import node_folders, parse_tree
@@ -73,12 +74,12 @@ def _set_proposed(entities: Iterable[Entity]) -> list[Problem]:
     ]
 
 
-def _deprecated_notes(entities: Iterable[Entity]) -> list[str]:
+def _closed_notes(entities: Iterable[Entity]) -> list[str]:
     return [
-        f"{entity.label} was deprecated in the template. It is now proposed. "
-        "Set it to deprecated again if the project does not want it."
+        f"{entity.label} was {Status(entity.status).value} in the template. It is now proposed. "
+        f"Set it to {Status(entity.status).value} again if the project does not want it."
         for entity in entities
-        if entity.status == Status.deprecated
+        if entity.status in CLOSED_STATUSES
     ]
 
 
@@ -92,7 +93,7 @@ def adopt_template(repository: Path) -> AdoptReport:
         return AdoptReport((), imported, None, [], [*import_problems, *base.problems])
     arrivals = _arrivals(base, items) if base.readable else []
     problems = [*import_problems, *_set_proposed(arrivals)]
-    notes = _deprecated_notes(arrivals)
+    notes = _closed_notes(arrivals)
     if problems:
         return AdoptReport(tuple(arrivals), imported, None, notes, problems)
     runtime = generate_runtime(repository)

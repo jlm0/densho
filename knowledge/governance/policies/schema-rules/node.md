@@ -22,9 +22,11 @@ The rules for the metamodel, which defines what a node is. The metamodel file st
 
 - Change a node kind, a field, or an edge only in `knowledge/governance/schema/metamodel.yaml` of the template. ^change-the-schema-file
   - scope: node
+  - basis: judgment
   - status: proposed
   - origin: template
 - Do not edit a file in `engine/generated/` by hand. ^keep-the-generated-files
   - scope: node
+  - basis: judgment
   - status: proposed
   - origin: template

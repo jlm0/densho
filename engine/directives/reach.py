@@ -112,19 +112,21 @@ def live_statuses(*, proposals: bool) -> tuple[Status, ...]:
 
 def resolve_directives(items: Sequence[ParsedNode], *, proposals: bool = False) -> Resolution:
     live = live_statuses(proposals=proposals)
-    under, users = _links(items)
-    stops = _stops_by_directive(items, live)
-    applying = _skills_applying(items)
+    rejected = {item.node.id for item in items if item.node.status == Status.rejected}
+    linked = [item for item in items if item.node.id not in rejected]
+    under, users = _links(linked)
+    stops = _stops_by_directive(linked, live)
+    applying = _skills_applying(linked)
     reaches: list[Reach] = []
     for item in items:
         for position, directive in enumerate(item.node.directives or []):
             attached: set[str] = set()
-            if directive.status in live:
+            if directive.status in live and item.node.id not in rejected:
                 attached = {
                     item.node.id,
                     *(directive.also_attached_to or []),
                     *applying.get(directive.id, set()),
-                }
+                } - rejected
             children = under if directive.scope == DirectiveScope.subtree else users
             came_from, stopped = walk(attached, children, stops.get(directive.id, set()))
             reaches.append(

@@ -39,17 +39,26 @@ The rules that set how knowledge enters the graph and how it changes. They cover
 
 - Run `uv run pre-commit run --all-files` before each commit. ^run-checks-before-commit
   - scope: subtree
+  - basis: judgment
   - status: proposed
   - origin: template
 - Do not use `--no-verify` on a commit. ^keep-the-hook
   - scope: subtree
+  - basis: judgment
   - status: proposed
   - origin: template
 - Apply one workflow to domain knowledge and to workspace knowledge. ^one-workflow
   - scope: subtree
+  - basis: judgment
+  - status: proposed
+  - origin: template
+- Set `basis` to `judgment` on each directive that names no source. ^judgment-without-a-source
+  - scope: subtree
+  - basis: judgment
   - status: proposed
   - origin: template
 - Do not write the name or the email of a person in a node or a test. ^no-personal-data
   - scope: subtree
+  - basis: judgment
   - status: proposed
   - origin: template

@@ -95,6 +95,7 @@ def skill_source(text: str) -> tuple[str, dict[int, int]]:
         "origin: template",
         "knowledge_type: domain",
         f"description: {front['description']}",
+        "invocation: agent",
         "---",
         "",
         "## Directives",
@@ -106,6 +107,7 @@ def skill_source(text: str) -> tuple[str, dict[int, int]]:
         lines += [
             f"- {rule} ^rule-{index}",
             "  - scope: node",
+            "  - basis: judgment",
             "  - status: proposed",
             "  - origin: template",
         ]

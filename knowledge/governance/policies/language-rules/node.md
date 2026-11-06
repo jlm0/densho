@@ -23,9 +23,11 @@ The controlled language of each directive, trigger, and skill description. The r
 
 - Write each directive, trigger, and skill description in the grammar of `knowledge/governance/language/grammar.yaml`. ^follow-the-grammar
   - scope: node
+  - basis: judgment
   - status: proposed
   - origin: template
 - Add each new opening verb to `knowledge/governance/language/vocabulary.yaml` or to the branch file of the node. ^add-the-verb
   - scope: node
+  - basis: judgment
   - status: proposed
   - origin: template

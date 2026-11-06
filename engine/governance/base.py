@@ -1,14 +1,21 @@
 import os
 import shutil
 import subprocess
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path, PurePosixPath
+from typing import TYPE_CHECKING
 
-from engine.layout import KNOWLEDGE_FOLDER, NODE_FILE_NAME
+from engine.git import git_environment
+from engine.layout import KNOWLEDGE_FOLDER, NODE_FILE_NAME, SKILLS_FOLDER
 from engine.parser.node import parse_source, universal_newlines
-from engine.parser.result import ParsedNode, Problem
+from engine.parser.result import ParsedNode, Problem, Script
+from engine.parser.scripts import folder_of, script_folders
 
-FILE_MODES = frozenset({"100644", "100755"})
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+
+EXECUTABLE_MODE = "100755"
+FILE_MODES = frozenset({"100644", EXECUTABLE_MODE})
 OBJECT_HEADER_PARTS = 3
 NOT_A_REPOSITORY = "not a git repository"
 NO_REPOSITORY_NOTE = "This folder is not a git repository, so the change rules did not run."
@@ -26,11 +33,6 @@ class Base:
     problems: list[Problem] = field(default_factory=list[Problem])
 
 
-def _environment() -> dict[str, str]:
-    variables = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
-    return {**variables, "LC_ALL": "C"}
-
-
 def _git(
     program: str, repository: Path, *arguments: str, stdin: bytes | None = None
 ) -> subprocess.CompletedProcess[bytes]:
@@ -39,7 +41,7 @@ def _git(
         input=stdin,
         capture_output=True,
         check=False,
-        env=_environment(),
+        env=git_environment(),
     )
 
 
@@ -48,17 +50,40 @@ def _failure(repository: Path, detail: bytes) -> Base:
     return Base(problems=[Problem(repository, 1, "base", f"git cannot read HEAD: {message!a}")])
 
 
-def _node_blobs(listing: bytes) -> list[tuple[str, str]]:
-    blobs: list[tuple[str, str]] = []
-    for entry in listing.split(b"\0"):
+@dataclass(frozen=True, slots=True)
+class _Blob:
+    object_id: str
+    path: PurePosixPath
+    executable: bool
+
+
+@dataclass(frozen=True, slots=True)
+class _Listing:
+    nodes: list[_Blob]
+    scripts: dict[PurePosixPath, list[_Blob]]
+    folders: dict[PurePosixPath, PurePosixPath]
+
+
+def _listing(output: bytes) -> _Listing:
+    blobs: list[_Blob] = []
+    for entry in output.split(b"\0"):
         if not entry:
             continue
         details, _, name = entry.partition(b"\t")
         mode, _, object_id = details.decode("ascii").split(" ")
-        path = os.fsdecode(name)
-        if mode in FILE_MODES and Path(path).name == NODE_FILE_NAME:
-            blobs.append((object_id, path))
-    return blobs
+        if mode in FILE_MODES:
+            path = PurePosixPath(os.fsdecode(name))
+            blobs.append(_Blob(object_id, path, executable=mode == EXECUTABLE_MODE))
+    node_files = [blob.path for blob in blobs if blob.path.name == NODE_FILE_NAME]
+    folders = script_folders(node_files, SKILLS_FOLDER)
+    listing = _Listing([], {folder: [] for folder in folders}, folders)
+    for blob in blobs:
+        folder = folder_of(blob.path, folders)
+        if folder is not None:
+            listing.scripts[folder].append(blob)
+        elif blob.path.name == NODE_FILE_NAME:
+            listing.nodes.append(blob)
+    return listing
 
 
 def _contents(output: bytes, count: int) -> list[bytes] | None:
@@ -75,18 +100,38 @@ def _contents(output: bytes, count: int) -> list[bytes] | None:
     return contents
 
 
-def _parse_blobs(repository: Path, blobs: list[tuple[str, bytes]]) -> Base:
+def _scripts_by_node(
+    repository: Path, listing: _Listing, contents: Mapping[str, bytes]
+) -> dict[Path, tuple[Script, ...]]:
+    return {
+        repository / listing.folders[folder]: tuple(
+            sorted(
+                Script(
+                    PurePosixPath(blob.path.relative_to(folder).as_posix()),
+                    contents[blob.object_id],
+                    executable=blob.executable,
+                )
+                for blob in blobs
+            )
+        )
+        for folder, blobs in listing.scripts.items()
+    }
+
+
+def _parse_blobs(repository: Path, listing: _Listing, contents: Mapping[str, bytes]) -> Base:
     items: list[ParsedNode] = []
     unreadable: set[Path] = set()
-    for path, content in blobs:
-        location = repository / path
+    scripts = _scripts_by_node(repository, listing, contents)
+    for blob in listing.nodes:
+        location = repository / blob.path
         try:
-            parsed = parse_source(universal_newlines(content.decode("utf-8")), location)
+            text = contents[blob.object_id].decode("utf-8")
         except UnicodeDecodeError:
             unreadable.add(location)
             continue
+        parsed = parse_source(universal_newlines(text), location)
         if isinstance(parsed, ParsedNode):
-            items.append(parsed)
+            items.append(replace(parsed, scripts=scripts.get(location, ())))
         else:
             unreadable.add(location)
     notes = [
@@ -121,15 +166,19 @@ def read_base(repository: Path) -> Base:
     )
     if listing.returncode != 0:
         return _failure(repository, listing.stderr)
-    blobs = _node_blobs(listing.stdout)
-    request = "".join(f"{object_id}\n" for object_id, _ in blobs).encode("ascii")
+    found = _listing(listing.stdout)
+    wanted = sorted(
+        {blob.object_id for blob in found.nodes}
+        | {blob.object_id for blobs in found.scripts.values() for blob in blobs}
+    )
+    request = "".join(f"{object_id}\n" for object_id in wanted).encode("ascii")
     objects = _git(program, repository, "cat-file", "--batch", stdin=request)
     if objects.returncode != 0:
         return _failure(repository, objects.stderr)
-    contents = _contents(objects.stdout, len(blobs))
+    contents = _contents(objects.stdout, len(wanted))
     if contents is None:
         return _failure(repository, b"An object is missing.")
-    return _parse_blobs(repository, [(path, contents[i]) for i, (_, path) in enumerate(blobs)])
+    return _parse_blobs(repository, found, dict(zip(wanted, contents, strict=True)))
 
 
 def tracked_files(repository: Path) -> frozenset[str] | None:

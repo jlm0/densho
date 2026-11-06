@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 import networkx as nx
 
-from engine.generated.metamodel import Root, Skill
+from engine.generated.metamodel import Root, Skill, Status
 from engine.graph.references import edge_targets, problem_at
 
 if TYPE_CHECKING:
@@ -78,11 +78,12 @@ def _cycle_problem(
 
 
 def check_reachability(items: Sequence[ParsedNode]) -> list[Problem]:
-    entry_points = [item.node.id for item in items if isinstance(item.node, Root | Skill)]
-    graph = _graph_of(items, lambda item: (pointer.target for pointer in item.node.pointers or []))
+    live = [item for item in items if item.node.status != Status.rejected]
+    entry_points = [item.node.id for item in live if isinstance(item.node, Root | Skill)]
+    graph = _graph_of(live, lambda item: (pointer.target for pointer in item.node.pointers or []))
     routes = nx.multi_source_dijkstra_path(graph, entry_points)
     problems: list[Problem] = []
-    for item in items:
+    for item in live:
         route = routes.get(item.node.id)
         if route is None:
             message = "No chain of pointers from the root node or a skill reaches this node."

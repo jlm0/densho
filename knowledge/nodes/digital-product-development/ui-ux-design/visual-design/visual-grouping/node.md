@@ -21,25 +21,30 @@ Showing which elements belong together through the space between them. Items clo
 
 - Place related elements closer to each other than to other elements. ^place-related-elements-close
   - scope: subtree
+  - basis: research
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/gestalt-proximity/
 - Place each label closer to its field than to any other field. ^place-label-near-field
   - scope: subtree
+  - basis: research
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/gestalt-proximity/
 - Group the related fields of each form. ^group-related-fields
   - scope: subtree
+  - basis: research
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/gestalt-proximity/
 - Do not group unrelated controls. ^no-unrelated-group
   - scope: subtree
+  - basis: research
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/gestalt-proximity/
 - Prefer whitespace over a divider between two groups. ^prefer-space-over-divider
   - scope: subtree
+  - basis: judgment
   - status: proposed
   - origin: template

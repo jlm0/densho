@@ -51,6 +51,8 @@ There are two entry points: the root node and the skill listing. An agent tool l
 
 Only pointers count. An edge such as `uses` or `broader` states a relationship, but it gives an agent no route and no trigger for following it. A node that a skill needs and nothing else reaches therefore needs a pointer from that skill.
 
+A `rejected` node is out of the graph, so it needs no route, and a pointer from it reaches nothing. A rejected skill is no entry point.
+
 A hop is one pointer. An entry point is at depth 0, and a node passes at 6 hops or fewer. If several routes reach a node, the shortest one counts, whichever entry point it starts from.
 
 ## Cycles
@@ -82,5 +84,5 @@ This layer needs the [schema](schema.md) and the [parser](node-format.md). Every
 - Links in the body text of a node. Only edges and pointers count as references.
 - Whether the target of `implements` is domain knowledge. Only the source is checked.
 - A node that names itself in `related`
-- The `status` of a node. The [governance workflow](governance-workflow.md) reads it, and a pointer to a `deprecated` node passes.
+- Any other `status` of a node. The [governance workflow](governance-workflow.md) reads it, and a pointer to a `deprecated` node passes.
 - What a commit will hold. The command reads the working tree, so an untracked node counts.

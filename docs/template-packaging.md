@@ -70,7 +70,7 @@ The [governance workflow](governance-workflow.md#knowledge-from-the-template) se
 
 A pull follows the same rule. Anything new or changed in a reviewed field arrives as `proposed`. The template can't promote an entity in your project either: a status that becomes `accepted` in a pull goes back to `proposed`, even when nothing else changed.
 
-If an entity was `deprecated` in the template, it loses that mark when it arrives as `proposed`. The command prints a note, so you can set it back.
+If an entity was `deprecated` or `rejected` in the template, it loses that mark when it arrives as `proposed`. The command prints a note, so you can set it back. A rejected entity keeps its `rejection_reason`, so you can read why the template turned it down.
 
 ## Your own files
 

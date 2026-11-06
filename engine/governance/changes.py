@@ -18,6 +18,7 @@ CHANGE_CODES = (
     "origin-change",
     "removed-accepted",
 )
+CLOSED_STATUSES = frozenset({Status.deprecated, Status.rejected})
 
 
 def _report(entity: Entity, code: str, message: str) -> Problem:
@@ -41,8 +42,8 @@ def _transition_problems(old: Entity, new: Entity) -> list[Problem]:
     if new.status != Status.accepted:
         return problems
     changed = _changed_fields(old, new)
-    if old.status == Status.deprecated:
-        message = f"Set {new.label} to proposed first. HEAD has it as deprecated."
+    if old.status in CLOSED_STATUSES:
+        message = f"Set {new.label} to proposed first. HEAD has it as {Status(old.status).value}."
         problems.append(_report(new, "status-jump", message))
     elif changed and old.status == Status.proposed:
         message = (

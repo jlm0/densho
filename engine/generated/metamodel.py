@@ -126,6 +126,46 @@ class Status(str, Enum):
     """
     The entity stays for reference. Do not apply it to new work.
     """
+    rejected = "rejected"
+    """
+    A person rejected the proposal. A rejected entity is not in force, and no generated file holds it.
+    """
+
+
+class Invocation(str, Enum):
+    """
+    The actors that can start a skill.
+    """
+    agent = "agent"
+    """
+    The agent can start the skill by itself.
+    """
+    person = "person"
+    """
+    Only a person starts the skill. The agent does not start it by itself.
+    """
+
+
+class Basis(str, Enum):
+    """
+    The kinds of source that support a directive.
+    """
+    standard = "standard"
+    """
+    A published standard or a versioned specification.
+    """
+    research = "research"
+    """
+    An empirical study or a model from research.
+    """
+    practitioner = "practitioner"
+    """
+    A method of a named author or company.
+    """
+    judgment = "judgment"
+    """
+    No source supports the directive.
+    """
 
 
 class DirectiveScope(str, Enum):
@@ -160,6 +200,7 @@ class GovernedEntity(ConfiguredBaseModel):
     status: Status = Field(default=..., description="""The lifecycle state.""")
     origin: Origin = Field(default=..., description="""The source of the entity in this repository.""")
     sources: Optional[list[str]] = Field(default=None, description="""The URLs, repository paths, or citations that support the entity.""")
+    rejection_reason: Optional[str] = Field(default=None, description="""The reason that a person rejected the entity.""")
 
     @field_validator('id')
     def pattern_id(cls, v):
@@ -184,6 +225,19 @@ class GovernedEntity(ConfiguredBaseModel):
                     raise ValueError(err_msg)
         elif isinstance(v, str) and not pattern.search(v):
             err_msg = f"Invalid sources format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+    @field_validator('rejection_reason')
+    def pattern_rejection_reason(cls, v):
+        pattern=re.compile(r"^\S(?: *\S)*(?!\n)$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.search(element):
+                    err_msg = f"Invalid rejection_reason format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.search(v):
+            err_msg = f"Invalid rejection_reason format: {v}"
             raise ValueError(err_msg)
         return v
 
@@ -201,6 +255,7 @@ class Node(GovernedEntity):
     status: Status = Field(default=..., description="""The lifecycle state.""")
     origin: Origin = Field(default=..., description="""The source of the entity in this repository.""")
     sources: Optional[list[str]] = Field(default=None, description="""The URLs, repository paths, or citations that support the entity.""")
+    rejection_reason: Optional[str] = Field(default=None, description="""The reason that a person rejected the entity.""")
 
     @field_validator('title')
     def pattern_title(cls, v):
@@ -251,6 +306,19 @@ class Node(GovernedEntity):
                     raise ValueError(err_msg)
         elif isinstance(v, str) and not pattern.search(v):
             err_msg = f"Invalid sources format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+    @field_validator('rejection_reason')
+    def pattern_rejection_reason(cls, v):
+        pattern=re.compile(r"^\S(?: *\S)*(?!\n)$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.search(element):
+                    err_msg = f"Invalid rejection_reason format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.search(v):
+            err_msg = f"Invalid rejection_reason format: {v}"
             raise ValueError(err_msg)
         return v
 
@@ -268,6 +336,7 @@ class Root(Node):
     status: Status = Field(default=..., description="""The lifecycle state.""")
     origin: Origin = Field(default=..., description="""The source of the entity in this repository.""")
     sources: Optional[list[str]] = Field(default=None, description="""The URLs, repository paths, or citations that support the entity.""")
+    rejection_reason: Optional[str] = Field(default=None, description="""The reason that a person rejected the entity.""")
 
     @field_validator('title')
     def pattern_title(cls, v):
@@ -318,6 +387,19 @@ class Root(Node):
                     raise ValueError(err_msg)
         elif isinstance(v, str) and not pattern.search(v):
             err_msg = f"Invalid sources format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+    @field_validator('rejection_reason')
+    def pattern_rejection_reason(cls, v):
+        pattern=re.compile(r"^\S(?: *\S)*(?!\n)$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.search(element):
+                    err_msg = f"Invalid rejection_reason format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.search(v):
+            err_msg = f"Invalid rejection_reason format: {v}"
             raise ValueError(err_msg)
         return v
 
@@ -337,6 +419,7 @@ class KnowledgeNode(Node):
     status: Status = Field(default=..., description="""The lifecycle state.""")
     origin: Origin = Field(default=..., description="""The source of the entity in this repository.""")
     sources: Optional[list[str]] = Field(default=None, description="""The URLs, repository paths, or citations that support the entity.""")
+    rejection_reason: Optional[str] = Field(default=None, description="""The reason that a person rejected the entity.""")
 
     @field_validator('title')
     def pattern_title(cls, v):
@@ -387,6 +470,19 @@ class KnowledgeNode(Node):
                     raise ValueError(err_msg)
         elif isinstance(v, str) and not pattern.search(v):
             err_msg = f"Invalid sources format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+    @field_validator('rejection_reason')
+    def pattern_rejection_reason(cls, v):
+        pattern=re.compile(r"^\S(?: *\S)*(?!\n)$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.search(element):
+                    err_msg = f"Invalid rejection_reason format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.search(v):
+            err_msg = f"Invalid rejection_reason format: {v}"
             raise ValueError(err_msg)
         return v
 
@@ -412,6 +508,7 @@ class TaxonomyNode(KnowledgeNode):
     status: Status = Field(default=..., description="""The lifecycle state.""")
     origin: Origin = Field(default=..., description="""The source of the entity in this repository.""")
     sources: Optional[list[str]] = Field(default=None, description="""The URLs, repository paths, or citations that support the entity.""")
+    rejection_reason: Optional[str] = Field(default=None, description="""The reason that a person rejected the entity.""")
 
     @field_validator('definition')
     def pattern_definition(cls, v):
@@ -475,6 +572,19 @@ class TaxonomyNode(KnowledgeNode):
                     raise ValueError(err_msg)
         elif isinstance(v, str) and not pattern.search(v):
             err_msg = f"Invalid sources format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+    @field_validator('rejection_reason')
+    def pattern_rejection_reason(cls, v):
+        pattern=re.compile(r"^\S(?: *\S)*(?!\n)$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.search(element):
+                    err_msg = f"Invalid rejection_reason format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.search(v):
+            err_msg = f"Invalid rejection_reason format: {v}"
             raise ValueError(err_msg)
         return v
 
@@ -500,6 +610,7 @@ class Domain(TaxonomyNode):
     status: Status = Field(default=..., description="""The lifecycle state.""")
     origin: Origin = Field(default=..., description="""The source of the entity in this repository.""")
     sources: Optional[list[str]] = Field(default=None, description="""The URLs, repository paths, or citations that support the entity.""")
+    rejection_reason: Optional[str] = Field(default=None, description="""The reason that a person rejected the entity.""")
 
     @field_validator('definition')
     def pattern_definition(cls, v):
@@ -563,6 +674,19 @@ class Domain(TaxonomyNode):
                     raise ValueError(err_msg)
         elif isinstance(v, str) and not pattern.search(v):
             err_msg = f"Invalid sources format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+    @field_validator('rejection_reason')
+    def pattern_rejection_reason(cls, v):
+        pattern=re.compile(r"^\S(?: *\S)*(?!\n)$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.search(element):
+                    err_msg = f"Invalid rejection_reason format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.search(v):
+            err_msg = f"Invalid rejection_reason format: {v}"
             raise ValueError(err_msg)
         return v
 
@@ -589,6 +713,7 @@ class Discipline(TaxonomyNode):
     status: Status = Field(default=..., description="""The lifecycle state.""")
     origin: Origin = Field(default=..., description="""The source of the entity in this repository.""")
     sources: Optional[list[str]] = Field(default=None, description="""The URLs, repository paths, or citations that support the entity.""")
+    rejection_reason: Optional[str] = Field(default=None, description="""The reason that a person rejected the entity.""")
 
     @field_validator('definition')
     def pattern_definition(cls, v):
@@ -652,6 +777,19 @@ class Discipline(TaxonomyNode):
                     raise ValueError(err_msg)
         elif isinstance(v, str) and not pattern.search(v):
             err_msg = f"Invalid sources format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+    @field_validator('rejection_reason')
+    def pattern_rejection_reason(cls, v):
+        pattern=re.compile(r"^\S(?: *\S)*(?!\n)$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.search(element):
+                    err_msg = f"Invalid rejection_reason format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.search(v):
+            err_msg = f"Invalid rejection_reason format: {v}"
             raise ValueError(err_msg)
         return v
 
@@ -678,6 +816,7 @@ class PracticeArea(TaxonomyNode):
     status: Status = Field(default=..., description="""The lifecycle state.""")
     origin: Origin = Field(default=..., description="""The source of the entity in this repository.""")
     sources: Optional[list[str]] = Field(default=None, description="""The URLs, repository paths, or citations that support the entity.""")
+    rejection_reason: Optional[str] = Field(default=None, description="""The reason that a person rejected the entity.""")
 
     @field_validator('definition')
     def pattern_definition(cls, v):
@@ -741,6 +880,19 @@ class PracticeArea(TaxonomyNode):
                     raise ValueError(err_msg)
         elif isinstance(v, str) and not pattern.search(v):
             err_msg = f"Invalid sources format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+    @field_validator('rejection_reason')
+    def pattern_rejection_reason(cls, v):
+        pattern=re.compile(r"^\S(?: *\S)*(?!\n)$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.search(element):
+                    err_msg = f"Invalid rejection_reason format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.search(v):
+            err_msg = f"Invalid rejection_reason format: {v}"
             raise ValueError(err_msg)
         return v
 
@@ -767,6 +919,7 @@ class Concept(TaxonomyNode):
     status: Status = Field(default=..., description="""The lifecycle state.""")
     origin: Origin = Field(default=..., description="""The source of the entity in this repository.""")
     sources: Optional[list[str]] = Field(default=None, description="""The URLs, repository paths, or citations that support the entity.""")
+    rejection_reason: Optional[str] = Field(default=None, description="""The reason that a person rejected the entity.""")
 
     @field_validator('definition')
     def pattern_definition(cls, v):
@@ -833,12 +986,26 @@ class Concept(TaxonomyNode):
             raise ValueError(err_msg)
         return v
 
+    @field_validator('rejection_reason')
+    def pattern_rejection_reason(cls, v):
+        pattern=re.compile(r"^\S(?: *\S)*(?!\n)$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.search(element):
+                    err_msg = f"Invalid rejection_reason format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.search(v):
+            err_msg = f"Invalid rejection_reason format: {v}"
+            raise ValueError(err_msg)
+        return v
+
 
 class Skill(KnowledgeNode):
     """
     A reusable capability that composes knowledge from any branch of the taxonomy.
     """
     description: str = Field(default=..., description="""The text that an agent reads to select the skill.""")
+    invocation: Invocation = Field(default=..., description="""The actor that starts the skill.""")
     uses: Optional[list[str]] = Field(default=None, description="""The knowledge that the skill composes.""")
     applies: Optional[list[str]] = Field(default=None, description="""The directives that the skill applies.""")
     knowledge_type: KnowledgeType = Field(default=..., description="""The kind of knowledge in the node.""")
@@ -852,6 +1019,7 @@ class Skill(KnowledgeNode):
     status: Status = Field(default=..., description="""The lifecycle state.""")
     origin: Origin = Field(default=..., description="""The source of the entity in this repository.""")
     sources: Optional[list[str]] = Field(default=None, description="""The URLs, repository paths, or citations that support the entity.""")
+    rejection_reason: Optional[str] = Field(default=None, description="""The reason that a person rejected the entity.""")
 
     @field_validator('description')
     def pattern_description(cls, v):
@@ -918,6 +1086,19 @@ class Skill(KnowledgeNode):
             raise ValueError(err_msg)
         return v
 
+    @field_validator('rejection_reason')
+    def pattern_rejection_reason(cls, v):
+        pattern=re.compile(r"^\S(?: *\S)*(?!\n)$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.search(element):
+                    err_msg = f"Invalid rejection_reason format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.search(v):
+            err_msg = f"Invalid rejection_reason format: {v}"
+            raise ValueError(err_msg)
+        return v
+
 
 class Directive(GovernedEntity):
     """
@@ -925,6 +1106,7 @@ class Directive(GovernedEntity):
     """
     text: str = Field(default=..., description="""The instruction.""")
     scope: DirectiveScope = Field(default=..., description="""The nodes that the directive applies to. This field has no default, because inheritance is explicit.""")
+    basis: Basis = Field(default=..., description="""The kind of source that supports the directive.""")
     also_attached_to: Optional[list[str]] = Field(default=None, description="""The nodes that the directive attaches to, in addition to the node that holds it.""")
     refines: Optional[list[str]] = Field(default=None, description="""The broader directives that this directive makes more specific. Both directives apply.""")
     conflicts_with: Optional[list[str]] = Field(default=None, description="""The directives that must not apply at the same node as this directive. This relationship is symmetric.""")
@@ -932,6 +1114,7 @@ class Directive(GovernedEntity):
     status: Status = Field(default=..., description="""The lifecycle state.""")
     origin: Origin = Field(default=..., description="""The source of the entity in this repository.""")
     sources: Optional[list[str]] = Field(default=None, description="""The URLs, repository paths, or citations that support the entity.""")
+    rejection_reason: Optional[str] = Field(default=None, description="""The reason that a person rejected the entity.""")
 
     @field_validator('text')
     def pattern_text(cls, v):
@@ -972,6 +1155,19 @@ class Directive(GovernedEntity):
             raise ValueError(err_msg)
         return v
 
+    @field_validator('rejection_reason')
+    def pattern_rejection_reason(cls, v):
+        pattern=re.compile(r"^\S(?: *\S)*(?!\n)$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.search(element):
+                    err_msg = f"Invalid rejection_reason format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.search(v):
+            err_msg = f"Invalid rejection_reason format: {v}"
+            raise ValueError(err_msg)
+        return v
+
 
 class DirectiveException(ConfiguredBaseModel):
     """
@@ -980,6 +1176,7 @@ class DirectiveException(ConfiguredBaseModel):
     directive: str = Field(default=..., description="""The directive that the exception stops.""")
     reason: str = Field(default=..., description="""The reason that the directive does not apply at this node.""")
     status: Status = Field(default=..., description="""The lifecycle state.""")
+    rejection_reason: Optional[str] = Field(default=None, description="""The reason that a person rejected the entity.""")
 
     @field_validator('reason')
     def pattern_reason(cls, v):
@@ -991,6 +1188,19 @@ class DirectiveException(ConfiguredBaseModel):
                     raise ValueError(err_msg)
         elif isinstance(v, str) and not pattern.search(v):
             err_msg = f"Invalid reason format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+    @field_validator('rejection_reason')
+    def pattern_rejection_reason(cls, v):
+        pattern=re.compile(r"^\S(?: *\S)*(?!\n)$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.search(element):
+                    err_msg = f"Invalid rejection_reason format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.search(v):
+            err_msg = f"Invalid rejection_reason format: {v}"
             raise ValueError(err_msg)
         return v
 

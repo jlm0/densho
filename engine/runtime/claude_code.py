@@ -11,10 +11,12 @@ from engine.compiler.output import NOTICES
 from engine.generated.metamodel import CompiledResult
 from engine.parser.generated import MARKER
 from engine.parser.result import Problem
+from engine.parser.scripts import SCRIPTS_FOLDER_NAME
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
 
+    from engine.parser.result import Script
     from engine.runtime.view import DirectiveCounts, NodeLink, NodeView, RuntimeView
 
 REVIEW_FOLDER = PurePosixPath("build/runtime-proposals")
@@ -32,6 +34,8 @@ SKILL_KEPT_TOKENS = 5_000
 CHARACTERS_PER_TOKEN = 3
 SKILL_KEPT_CHARACTERS = SKILL_KEPT_TOKENS * CHARACTERS_PER_TOKEN
 ON_DEMAND_CHARACTERS = 40_000
+ROOT_LINES = 200
+SKILL_LINES = 500
 
 
 @dataclass(frozen=True, slots=True)
@@ -41,6 +45,7 @@ class RenderedFile:
     node_path: str
     whole_part: str
     limit: int | None
+    line_limit: int | None = None
 
 
 def _link_text(text: str) -> str:
@@ -88,10 +93,33 @@ _ENVIRONMENT.filters["yaml_string"] = _yaml_string
 _IMPORT_PARSER = MarkdownIt("commonmark")
 
 
-def review_path(path: PurePosixPath) -> PurePosixPath:
+def _review_folders(path: PurePosixPath) -> PurePosixPath:
     parts = [part.removeprefix(".") if part == TOOL_FOLDER else part for part in path.parts]
-    named = PurePosixPath(*parts)
+    return PurePosixPath(*parts)
+
+
+def review_path(path: PurePosixPath) -> PurePosixPath:
+    named = _review_folders(path)
     return named.with_name(f"{named.stem}{REVIEW_MARK}{named.suffix}")
+
+
+REVIEW_SKILLS_FOLDER = REVIEW_FOLDER / _review_folders(SKILLS_FOLDER)
+OWNERS = (
+    (SKILLS_FOLDER, SKILL_FILE_NAME),
+    (REVIEW_SKILLS_FOLDER, review_path(PurePosixPath(SKILL_FILE_NAME)).name),
+)
+
+
+def marker_owner(path: PurePosixPath) -> PurePosixPath:
+    for skills, name in OWNERS:
+        if not path.is_relative_to(skills):
+            continue
+        match path.relative_to(skills).parts:
+            case (skill, folder, _, *_) if folder == SCRIPTS_FOLDER_NAME:
+                return skills / skill / name
+            case _:
+                pass
+    return path
 
 
 def _skill_file(node: NodeView) -> PurePosixPath:
@@ -113,6 +141,17 @@ def generated_paths(view: RuntimeView) -> dict[str, PurePosixPath]:
         **{node.link.id: _skill_file(node) for node in view.skills},
         **{node.link.id: _rule_file(node) for node in view.rules},
     }
+
+
+def copied_files(view: RuntimeView) -> dict[PurePosixPath, Script]:
+    review = view.result == CompiledResult.proposals
+    copies: dict[PurePosixPath, Script] = {}
+    for node in view.skills:
+        folder = _skill_file(node).parent / SCRIPTS_FOLDER_NAME
+        if review:
+            folder = REVIEW_FOLDER / _review_folders(folder)
+        copies.update((folder / script.path, script) for script in node.scripts)
+    return copies
 
 
 def render_files(view: RuntimeView) -> list[RenderedFile]:
@@ -151,11 +190,13 @@ def render_files(view: RuntimeView) -> list[RenderedFile]:
             node.link.path,
             render(SKILL_TEMPLATE, path, head),
             SKILL_KEPT_CHARACTERS,
+            SKILL_LINES,
         )
 
     root_text = render("root.md.jinja", ROOT_FILE, view.root)
+    root_path = view.root.link.path
     return [
-        RenderedFile(location(ROOT_FILE), root_text, view.root.link.path, root_text, None),
+        RenderedFile(location(ROOT_FILE), root_text, root_path, root_text, None, ROOT_LINES),
         *(skill(node) for node in view.skills),
         *(on_demand("rule.md.jinja", _rule_file(node), node) for node in view.rules),
         *(on_demand("reference.md.jinja", _reference_file(node), node) for node in view.pages),
@@ -163,29 +204,36 @@ def render_files(view: RuntimeView) -> list[RenderedFile]:
 
 
 def size_problems(rendered: Iterable[RenderedFile], repository: Path) -> list[Problem]:
-    return [
-        Problem(
-            repository / entry.node_path,
-            1,
-            "size",
-            f"{entry.path} needs {len(entry.whole_part)} characters in the part that must stay "
-            f"whole, over the limit of {entry.limit}. "
-            "Move knowledge out of this node, or attach fewer directives.",
-        )
-        for entry in rendered
-        if entry.limit is not None and len(entry.whole_part) > entry.limit
-    ]
+    problems: list[Problem] = []
+    for entry in rendered:
+        if entry.limit is not None and len(entry.whole_part) > entry.limit:
+            message = (
+                f"{entry.path} needs {len(entry.whole_part)} characters in the part that must "
+                f"stay whole, over the limit of {entry.limit}. "
+                "Move knowledge out of this node, or attach fewer directives."
+            )
+            problems.append(Problem(repository / entry.node_path, 1, "size", message))
+        lines = len(entry.text.split("\n")) - entry.text.endswith("\n")
+        if entry.line_limit is not None and lines > entry.line_limit:
+            message = (
+                f"{entry.path} has {lines} lines, over the budget of {entry.line_limit}. "
+                "Move knowledge out of this node, or attach fewer directives."
+            )
+            problems.append(Problem(repository / entry.node_path, 1, "size", message))
+    return problems
 
 
 def candidate_files(repository: Path) -> Iterator[Path]:
     yield repository / ROOT_FILE
     yield from (repository / RULES_FOLDER).rglob("*.md")
     yield from (repository / SKILLS_FOLDER).glob(f"*/{SKILL_FILE_NAME}")
+    yield from (repository / SKILLS_FOLDER).glob(f"*/{SCRIPTS_FOLDER_NAME}/**/*")
     yield from (repository / REFERENCES_FOLDER).glob("*.md")
 
 
 def review_candidates(repository: Path) -> Iterator[Path]:
     yield from (repository / REVIEW_FOLDER).rglob("*.md")
+    yield from (repository / REVIEW_SKILLS_FOLDER).glob(f"*/{SCRIPTS_FOLDER_NAME}/**/*")
 
 
 def _import_line(name: str) -> str:

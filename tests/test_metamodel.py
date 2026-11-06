@@ -29,7 +29,7 @@ TEXT_POINTER: Sample = {"kind": "ka:TextPointer", "target": "other", "trigger": 
 PATH_POINTER: Sample = {**TEXT_POINTER, "kind": "ka:PathPointer", "paths": ["src/**"]}
 ALWAYS_POINTER: Sample = {**TEXT_POINTER, "kind": "ka:AlwaysPointer"}
 SKILL_POINTER: Sample = {**TEXT_POINTER, "kind": "ka:SkillPointer"}
-DIRECTIVE: Sample = {**GOVERNED, "text": "Use X.", "scope": "node"}
+DIRECTIVE: Sample = {**GOVERNED, "text": "Use X.", "scope": "node", "basis": "judgment"}
 
 ROOT: Sample = {**NODE, "kind": "ka:Root", "pointers": [TEXT_POINTER]}
 DOMAIN: Sample = {**TAXONOMY, "kind": "ka:Domain"}
@@ -41,6 +41,7 @@ SKILL: Sample = {
     "kind": "ka:Skill",
     "knowledge_type": "domain",
     "description": "Use this skill for X.",
+    "invocation": "agent",
     "uses": ["other"],
 }
 

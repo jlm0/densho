@@ -11,7 +11,7 @@ Each class inherits the fields of the class above it:
 ```text
 KnowledgeGraph            one root, the knowledge nodes, and the result of a build
 
-GovernedEntity            id, status, origin, sources
+GovernedEntity            id, status, origin, sources, rejection_reason
 ├─ Node                   kind, title, pointers, directives, body
 │  ├─ Root                the top node
 │  └─ KnowledgeNode       knowledge_type, exceptions
@@ -20,10 +20,10 @@ GovernedEntity            id, status, origin, sources
 │     │  ├─ Discipline
 │     │  ├─ PracticeArea
 │     │  └─ Concept
-│     └─ Skill            description, uses, applies
-└─ Directive              text, scope, also_attached_to, refines, conflicts_with
+│     └─ Skill            description, invocation, uses, applies
+└─ Directive              text, scope, basis, also_attached_to, refines, conflicts_with
 
-DirectiveException        directive, reason, status
+DirectiveException        directive, reason, status, rejection_reason
 
 Pointer                   kind, target, trigger
 ├─ AlwaysPointer
@@ -51,13 +51,17 @@ A node's `kind` selects its class. The value is the class name with the `ka:` pr
 
 ## Field values
 
-| Field            | Values                               | Meaning                                                                           |
-| ---------------- | ------------------------------------ | --------------------------------------------------------------------------------- |
-| `status`         | `proposed`, `accepted`, `deprecated` | Whether a reviewer approved the entity, or whether it stays only for reference    |
-| `origin`         | `template`, `project`                | Whether the template or the project added the entity                              |
-| `knowledge_type` | `domain`, `workspace`                | Universal knowledge, or knowledge specific to one project                         |
-| `scope`          | `node`, `subtree`                    | A directive applies to the nodes it attaches to, or also to every node under them |
-| `result`         | `in_force`, `proposals`              | What a [compiled graph](compiled-outputs.md) holds. A source graph has no value.  |
+| Field            | Values                                             | Meaning                                                                               |
+| ---------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `status`         | `proposed`, `accepted`, `deprecated`, `rejected`   | Whether a reviewer approved the entity, kept it only for reference, or turned it down |
+| `origin`         | `template`, `project`                              | Whether the template or the project added the entity                                  |
+| `knowledge_type` | `domain`, `workspace`                              | Universal knowledge, or knowledge specific to one project                             |
+| `scope`          | `node`, `subtree`                                  | A directive applies to the nodes it attaches to, or also to every node under them     |
+| `basis`          | `standard`, `research`, `practitioner`, `judgment` | The kind of source behind a directive. See [below](#directives).                      |
+| `invocation`     | `agent`, `person`                                  | Whether an agent can start the skill by itself, or only a person can                  |
+| `result`         | `in_force`, `proposals`                            | What a [compiled graph](compiled-outputs.md) holds. A source graph has no value.      |
+
+A `rejected` entity also needs `rejection_reason`, one line that records why a person turned it down. The [governance workflow](governance-workflow.md#the-lifecycle) has the rules.
 
 An `id` is a lowercase hyphenated slug. It stays the same when a file moves.
 
@@ -90,6 +94,17 @@ A pointer is a route to a node: it names a `target`, the `trigger` that tells an
 ## Directives
 
 A directive is one instruction with its own ID. It lives in the file of one node, and other nodes attach to it with `also_attached_to`. `scope` has no default, so every directive states how far it reaches. A directive on the root with `scope: subtree` applies to the whole graph.
+
+`basis` says what kind of source backs the directive, so a reader knows how much weight it carries:
+
+| Value          | The directive rests on                            |
+| -------------- | ------------------------------------------------- |
+| `standard`     | a published standard or a versioned specification |
+| `research`     | an empirical study or a model from research       |
+| `practitioner` | a method of a named author or company             |
+| `judgment`     | no source                                         |
+
+A directive with no `sources` must say `judgment`. The check doesn't go the other way: a judgment call can still cite a page that it read.
 
 `refines` names a broader directive that this one makes more specific. `conflicts_with` names a directive that must not apply at the same node. A knowledge node or a skill steps out of an inherited directive with an entry in `exceptions`, which holds a `directive`, a one-line `reason`, and its own `status`. The root cannot hold one. [Directive semantics](directive-semantics.md) explains each of these.
 

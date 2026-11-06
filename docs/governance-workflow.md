@@ -39,6 +39,7 @@ Each node, directive, and exception has its own `status`:
 | `proposed`   | An author recommends it, and no reviewer has approved it | Not in force, but checked      |
 | `accepted`   | A reviewer approved this content                         | In force                       |
 | `deprecated` | It stays only for reference                              | Not in force                   |
+| `rejected`   | A person turned it down                                  | Not in force, and left out     |
 
 `status` is the only thing that keeps experimental knowledge apart from authoritative knowledge. There is no separate folder for drafts, because a folder never carries meaning here.
 
@@ -50,7 +51,8 @@ An unreviewed sentence should not be able to bind an agent or switch off a rule,
 
 - Only an `accepted` directive applies.
 - Only an `accepted` exception stops a directive. While the exception is `proposed`, the directive stays in force at that node.
-- The `status` of a node does not change what applies. It covers the node's own definition and place in the tree. Otherwise a small edit to a definition would switch off every rule on that node.
+- A `rejected` entity applies nowhere. The compiled graph, the runtime files, and the site leave it out, and so do its directives and exceptions.
+- Apart from `rejected`, the `status` of a node does not change what applies. It covers the node's own definition and place in the tree. Otherwise a small edit to a definition would switch off every rule on that node.
 
 `uv run ka directives --at <node-id>` shows what is in force at a node, and it labels what a review would change:
 
@@ -69,7 +71,7 @@ There is one cost. When you reopen an accepted rule to change it, the rule is ou
 
 ## Who does what
 
-An agent can propose a concept, a directive, or an exception by adding it with `status: proposed`. A person approves it and runs [`ka accept`](human-interface.md#accept-what-you-approve).
+An agent can propose a concept, a directive, or an exception by adding it with `status: proposed`. A person approves it and runs [`ka accept`](human-interface.md#accept-what-you-approve), or [rejects it](#reject-something).
 
 The [`approval` policy](#the-policies) states this as directives. No check can enforce it, for the reasons [below](#what-a-check-can-and-cannot-prove). A project decides who its reviewers are, and a node never records a name or an email. Git history already holds the author of each commit.
 
@@ -90,23 +92,44 @@ Promotion takes two commits, so a reviewer approves exactly the text that the la
 
 One commit can promote any number of entities, so a person can accept a whole batch at once.
 
+### Reject something
+
+A person who turns a proposal down sets its `status` to `rejected` and adds `rejection_reason`, one line that says why:
+
+```yaml
+status: rejected
+rejection_reason: The project keeps one style guide, and this rule repeats it.
+```
+
+In a directive or an exception the field sits next to `status`, in the same form. There is no `ka reject`, so you edit the line by hand. The reason needs no review, so you can reword it later.
+
+The entity stays in the file as a record that someone weighed it, so the same idea doesn't come back unread. `--pending` stops listing it, and no generated file holds it. To look at it again, set it back to `proposed`. It can't go straight to `accepted`, which fails `status-jump`, so a reviewer reads it again first. When nobody needs the record any more, delete the entity. Git history keeps it.
+
+Before you reject a node, reject or move what rests on it:
+
+- A `rejected` node can't hold a `proposed` or `accepted` directive or exception. That fails `rejected-holder`.
+- Only a `rejected` entity, or an entity in a `rejected` node, can name a `rejected` one in an edge, pointer, exception, `applies`, or directive field. Anything else fails `rejected-reference`, so the nodes under a rejected node have to move too.
+- The root can't be rejected, because it holds the graph. That fails `rejected-root`.
+
 ### Change something accepted
 
 Set `status` back to `proposed` in the same commit as the change, then accept it again later. These fields reopen a review, and the rest do not:
 
-| Entity    | Reopens a review                                                                                  | Does not reopen a review                                           |
-| --------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| Node      | Every other field: `kind`, `definition`, `knowledge_type`, each edge, and a skill's `description` | `title`, `body`, `pointers`, `sources`, `exceptions`, `directives` |
-| Directive | `text`, `scope`, `also_attached_to`, `refines`, `conflicts_with`, and the node that holds it      | `sources`                                                          |
-| Exception | `reason`                                                                                          | Nothing else                                                       |
+| Entity    | Reopens a review                                                                                                             | Does not reopen a review                                                               |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Node      | Every other field: `kind`, `definition`, `knowledge_type`, each edge, and a skill's `description`, `invocation`, and scripts | `title`, `body`, `pointers`, `sources`, `rejection_reason`, `exceptions`, `directives` |
+| Directive | `text`, `scope`, `basis`, `also_attached_to`, `refines`, `conflicts_with`, and the node that holds it                        | `sources`, `rejection_reason`                                                          |
+| Exception | `reason`                                                                                                                     | `rejection_reason`                                                                     |
 
 A pointer does not reopen a review, because every new node needs a pointer and would otherwise reopen its parent. The [graph checks](graph-checks.md) still prove the route, and a reviewer reads the trigger. A node's `exceptions` and `directives` have their own `status`, so adding one leaves the node alone.
+
+The scripts of a skill count as one field. The check hashes the path and the bytes of each file under the skill's `scripts/` folder, so a script that changes, arrives, goes, or moves reopens the skill. A change to the file mode does not.
 
 The comparison uses rendered Markdown and ignores the order of a list, so a formatter can't reopen a review. A moved file is the same entity, because its ID identifies it.
 
 ### Remove something
 
-Set an `accepted` node or directive to `deprecated` in one commit, and delete it in a later commit. A `proposed` or `deprecated` entity can go at any time, and so can an exception.
+Set an `accepted` node or directive to `deprecated` in one commit, and delete it in a later commit. A `proposed`, `deprecated`, or `rejected` entity can go at any time, and so can an exception.
 
 This rule also keeps IDs stable. Renaming an accepted ID looks like a removal, so it fails. Deprecate the old ID and add a new one instead.
 
@@ -118,7 +141,7 @@ An exception follows the same path as everything else. [Directive semantics](dir
 
 ## Knowledge from the template
 
-A project owns its copy, so it can change or delete anything it received, and no rule reads `origin` to prevent that. It goes through the same steps as its own knowledge: reopen the entity, or deprecate it.
+A project owns its copy, so it can change or delete anything it received, and no rule reads `origin` to prevent that. It goes through the same steps as its own knowledge: reopen the entity, deprecate it, or reject it.
 
 `origin` records who added an entity, so it does not change, and the template ships no workspace knowledge. A project can add domain knowledge of its own.
 
@@ -131,12 +154,17 @@ A first commit has no history to compare with, so a template copied into a new r
 | `new-status`           | An entity that the last commit does not have, with a status other than `proposed`                                         |
 | `promotion-change`     | One commit accepts an entity and also changes a field that needs review                                                   |
 | `accepted-change`      | An entity stays `accepted`, and a field that needs review changes                                                         |
-| `status-jump`          | An entity goes from `deprecated` straight to `accepted`                                                                   |
+| `status-jump`          | An entity goes from `deprecated` or `rejected` straight to `accepted`                                                     |
 | `origin-change`        | The `origin` of a node or a directive changes                                                                             |
 | `removed-accepted`     | An `accepted` node or directive leaves the tree                                                                           |
 | `template-workspace`   | `origin: template` on a workspace node, or on a directive in one                                                          |
-| `deprecated-holder`    | A `deprecated` node holds a directive that is not `deprecated`                                                            |
+| `deprecated-holder`    | A `deprecated` node holds a directive that is `proposed` or `accepted`                                                    |
 | `deprecated-reference` | A live entity names a `deprecated` one in `broader`, `uses`, `depends_on`, `implements`, `also_attached_to`, or `refines` |
+| `rejected-reason`      | A `rejected` entity has no `rejection_reason`                                                                             |
+| `rejected-holder`      | A `rejected` node holds a directive or an exception that is `proposed` or `accepted`                                      |
+| `rejected-reference`   | An entity that isn't `rejected`, and isn't in a `rejected` node, names a `rejected` one in any reference                  |
+| `rejected-root`        | The root is `rejected`                                                                                                    |
+| `basis`                | A directive with no `sources` has a `basis` other than `judgment`                                                         |
 | `policy-governs`       | A policy has no `governs`, or no policy names it in `governs`                                                             |
 | `base`                 | Git can't read the last commit                                                                                            |
 
@@ -196,5 +224,8 @@ This layer sits on top of the [graph checks](graph-checks.md) and the [directive
 - Whether a change to `body`, `title`, or a pointer's trigger changes what an agent does. These count as routine, so a reviewer has to catch it.
 - A `broader` edge on a `proposed` node. It carries directives as soon as it exists, so moving a node can drop a rule before anyone reviews the move. The `status` change and the diff show it.
 - Whether a `deprecated` rule is reused under a new ID, or a deleted ID comes back with a new meaning
+- Whether a `basis` fits its source. The check reads only whether `sources` is empty, so `judgment` with a source passes, and so does `standard` on a blog post.
+- What a script does. The checks never read one, so a reviewer reads each script.
+- Who rejected an entity. The change rules let any entity move to `rejected`, so an `accepted` or `deprecated` one can get there in one step.
 - A name in a node. The `no-personal-data` directive states the rule, and a reviewer enforces it.
 - Changes to `knowledge/governance/language/` and `knowledge/governance/schema/`. They have no `status`, so they reach a reviewer only through the diff.

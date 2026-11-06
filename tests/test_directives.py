@@ -15,7 +15,6 @@ from engine.parser import ParsedNode, parse_source
 
 type Spec = dict[str, Any]
 
-GOVERNED = "status: accepted\norigin: template\n"
 LADDER_RUNGS = 40
 PAIRS = 20
 LIST_FIELDS = (
@@ -60,7 +59,7 @@ def root(**fields: object) -> Spec:
 
 def directive_lines(entry: Spec) -> list[str]:
     text = entry.get("text", f"Do the {entry['id']} thing.")
-    lines = [f"- {text} ^{entry['id']}", f"  - scope: {entry['scope']}"]
+    lines = [f"- {text} ^{entry['id']}", f"  - scope: {entry['scope']}", "  - basis: judgment"]
     lines += [f"  - status: {entry['status']}", "  - origin: template"]
     for key in ("also_attached_to", "refines", "conflicts_with"):
         lines += [f"  - {key}: {value}" for value in entry.get(key, [])]
@@ -69,7 +68,7 @@ def directive_lines(entry: Spec) -> list[str]:
 
 def front_matter(spec: Spec, others: list[str]) -> list[str]:
     lines = [f"id: {spec['id']}", f"kind: {spec['kind']}", f"title: {spec['id']}"]
-    lines += GOVERNED.splitlines()
+    lines += [f"status: {spec.get('status', 'accepted')}", "origin: template"]
     if spec["kind"] == "ka:Root":
         lines.append("pointers:")
         for other in others:
@@ -78,7 +77,7 @@ def front_matter(spec: Spec, others: list[str]) -> list[str]:
         return lines
     lines.append("knowledge_type: domain")
     if spec["kind"] == "ka:Skill":
-        lines.append("description: Use this skill for a review.")
+        lines += ["description: Use this skill for a review.", "invocation: agent"]
     for key in LIST_FIELDS:
         if key in spec:
             lines += [f"{key}:", *[f"  - {value}" for value in spec[key]]]
@@ -1393,3 +1392,82 @@ def test_a_directive_reads_repeated_values(key: str) -> None:
     item = parsed(domain("design", rules=[rule("a", **fields)]))[1]
     directive = (item.node.directives or [])[0]
     assert getattr(directive, key) == ["b", "c"]
+
+
+@pytest.mark.parametrize("proposals", [False, True])
+def test_a_directive_does_not_reach_a_rejected_node_or_its_children(proposals: bool) -> None:  # noqa: FBT001
+    specs = (
+        domain("design", rules=[rule("a", status="proposed" if proposals else "accepted")]),
+        concept("ui", "design"),
+        concept("old", "design", status="rejected"),
+        concept("deep", "old"),
+    )
+    resolution = resolve_directives(parsed(*specs), proposals=proposals)
+    assert [entry.route for entry in resolution.at("ui")] == [("design", "ui")]
+    assert resolution.at("old") == []
+    assert resolution.at("deep") == []
+
+
+def test_a_directive_of_a_rejected_node_applies_nowhere() -> None:
+    specs = (
+        domain("old", status="rejected", rules=[rule("a", also_attached_to=["other"])]),
+        domain("other"),
+        concept("ui", "old"),
+    )
+    for proposals in (False, True):
+        resolution = resolve_directives(parsed(*specs), proposals=proposals)
+        assert [resolution.at(node_id) for node_id in ("old", "other", "ui")] == [[], [], []]
+
+
+def test_a_rejected_skill_applies_nothing() -> None:
+    specs = (
+        domain("design", rules=[rule("a", "node")]),
+        skill("review", "design", applies=["a"], status="rejected"),
+    )
+    assert routes_at("review", *specs) == {}
+    assert routes_at("design", *specs) == {"a": ("design",)}
+
+
+def test_a_rejected_node_does_not_attach_a_directive() -> None:
+    specs = (
+        domain("design", rules=[rule("a", "node", also_attached_to=["old"])]),
+        domain("old", status="rejected"),
+    )
+    assert routes_at("old", *specs) == {}
+
+
+def test_a_rejected_exception_does_not_stop_the_directive() -> None:
+    specs = (
+        domain("design", rules=[rule("a")]),
+        concept("ui", "design", exceptions=[stop("a", "rejected")]),
+    )
+    assert routes_at("ui", *specs) == {"a": ("design", "ui")}
+    assert resolve_directives(parsed(*specs), proposals=True).at("ui") != []
+    assert problems_of(*specs) == []
+
+
+def test_a_rejected_exception_with_no_route_passes() -> None:
+    specs = (
+        domain("design"),
+        domain("other", rules=[rule("a")]),
+        concept("ui", "design", exceptions=[stop("a", "rejected")]),
+    )
+    assert problems_of(*specs) == []
+
+
+def test_an_exception_in_a_rejected_node_is_not_checked() -> None:
+    specs = (
+        domain("design"),
+        domain("other", rules=[rule("a")]),
+        concept("old", "design", status="rejected", exceptions=[stop("a", "proposed")]),
+    )
+    assert problems_of(*specs) == []
+
+
+def test_a_rejected_node_does_not_stop_a_directive_for_a_live_node() -> None:
+    specs = (
+        domain("design", rules=[rule("a")]),
+        concept("old", "design", status="rejected", exceptions=[stop("a")]),
+        concept("ui", "design"),
+    )
+    assert routes_at("ui", *specs) == {"a": ("design", "ui")}

@@ -67,7 +67,7 @@ def node_source(
     if broader:
         lines.append(f"broader: {json.dumps(list(broader))}")
     if description is not None:
-        lines += [f"description: {json.dumps(description)}", "uses: [other]"]
+        lines += [f"description: {json.dumps(description)}", "invocation: agent", "uses: [other]"]
     if triggers:
         lines.append("pointers:")
     for trigger in triggers:
@@ -79,7 +79,7 @@ def node_source(
     if directives:
         lines += ["", "## Directives", ""]
     for index, text in enumerate(directives):
-        lines += [f"- {text} ^{node_id}-rule-{index}", "  - scope: subtree"]
+        lines += [f"- {text} ^{node_id}-rule-{index}", "  - scope: subtree", "  - basis: judgment"]
         lines += ["  - status: accepted", "  - origin: template"]
     return "\n".join(lines) + "\n"
 

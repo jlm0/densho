@@ -210,6 +210,7 @@ def test_the_hooks_need_no_python_in_the_project(installed: Path) -> None:
     assert set(hooks) == {"conflict-markers", "rejected-hunks", "knowledge-checks"}
     assert hooks["knowledge-checks"]["entry"] == "knowledge/.ka/ka runtime --verify"
     assert hooks["knowledge-checks"]["always_run"] is True
+    assert hooks["knowledge-checks"]["verbose"] is True
     assert hooks["knowledge-checks"]["pass_filenames"] is False
     assert hooks["conflict-markers"]["language"] == "pygrep"
     assert hooks["rejected-hunks"]["language"] == "fail"

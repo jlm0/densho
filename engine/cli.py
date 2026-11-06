@@ -195,6 +195,9 @@ def runtime(
         typer.echo(f"wrote {path}")
     for path in report.removed:
         typer.echo(f"removed {path}")
+    if report.pending is not None:
+        listing = f"{command_prefix(repository)} governance --pending"
+        typer.echo(f"{report.pending} entities wait for review. Run {listing} to list them.")
     summary = f"{report.result.value}: {len(report.files)} files, {len(report.written)} written"
     _finish(f"{summary}, {len(report.removed)} removed", report.problems)
 

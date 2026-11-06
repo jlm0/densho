@@ -36,7 +36,7 @@ def skill_pointer(target: str) -> Fields:
 
 
 def directive(directive_id: str, **fields: object) -> Fields:
-    return {"id": directive_id, "scope": "subtree", **GOVERNED, **fields}
+    return {"id": directive_id, "scope": "subtree", "basis": "judgment", **GOVERNED, **fields}
 
 
 SAMPLE: dict[str, Fields] = {
@@ -107,6 +107,7 @@ SAMPLE: dict[str, Fields] = {
         "kind": "ka:Skill",
         **KNOWLEDGE,
         "description": "Use this skill for a review.",
+        "invocation": "agent",
         "uses": ["hierarchy"],
         "applies": ["use-a-verb"],
         "pointers": [text_pointer("settings")],
@@ -989,3 +990,27 @@ def test_shacl_does_not_change_the_cached_graphs(tree: Tree) -> None:
     assert tree.codes() == ["type"]
     tree.change("settings", implements=["hierarchy"])
     assert tree.problems() == []
+
+
+REJECTED = {"status": "rejected", "rejection_reason": "No need."}
+
+
+def test_a_rejected_node_needs_no_route(tree: Tree) -> None:
+    tree.nodes["old"] = {
+        "file": "knowledge/nodes/design/old/node.md",
+        "kind": "ka:Concept",
+        **KNOWLEDGE,
+        **REJECTED,
+        "broader": ["design"],
+    }
+    assert tree.problems() == []
+
+
+def test_a_rejected_skill_is_not_an_entry_point(tree: Tree) -> None:
+    tree.change("review", **REJECTED)
+    assert tree.problems() == [tree.expect("settings", "id: settings", "unreachable", NO_ROUTE)]
+
+
+def test_a_pointer_from_a_rejected_node_reaches_nothing(tree: Tree) -> None:
+    tree.change("visual", **REJECTED)
+    assert tree.problems() == [tree.expect("hierarchy", "id: hierarchy", "unreachable", NO_ROUTE)]

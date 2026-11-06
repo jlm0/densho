@@ -31,6 +31,7 @@ classes:
       - status
       - origin
       - sources
+      - rejection_reason
 
   Node:
     description: One file in the graph. A node holds its knowledge, its directives, and its pointers.
@@ -115,6 +116,7 @@ classes:
     is_a: KnowledgeNode
     slots:
       - description
+      - invocation
       - uses
       - applies
 
@@ -124,6 +126,7 @@ classes:
     slots:
       - text
       - scope
+      - basis
       - also_attached_to
       - refines
       - conflicts_with
@@ -134,6 +137,7 @@ classes:
       - directive
       - reason
       - status
+      - rejection_reason
 
   Pointer:
     description: A route that tells an agent when and how to load a node.
@@ -197,6 +201,9 @@ slots:
     slot_uri: dcterms:source
     multivalued: true
     pattern: &single-line '^\S(?: *\S)*(?!\n)$'
+  rejection_reason:
+    description: The reason that a person rejected the entity.
+    pattern: *single-line
   kind:
     description: The class of the entity. The value is the class CURIE, for example ka:Concept.
     slot_uri: rdf:type
@@ -247,6 +254,10 @@ slots:
     description: The text that an agent reads to select the skill.
     required: true
     pattern: *single-line
+  invocation:
+    description: The actor that starts the skill.
+    range: Invocation
+    required: true
   text:
     description: The instruction.
     required: true
@@ -254,6 +265,10 @@ slots:
   scope:
     description: The nodes that the directive applies to. This field has no default, because inheritance is explicit.
     range: DirectiveScope
+    required: true
+  basis:
+    description: The kind of source that supports the directive.
+    range: Basis
     required: true
   also_attached_to:
     description: The nodes that the directive attaches to, in addition to the node that holds it.
@@ -363,6 +378,26 @@ enums:
         description: A reviewer approved the entity. An accepted directive or exception is in force.
       deprecated:
         description: The entity stays for reference. Do not apply it to new work.
+      rejected:
+        description: A person rejected the proposal. A rejected entity is not in force, and no generated file holds it.
+  Invocation:
+    description: The actors that can start a skill.
+    permissible_values:
+      agent:
+        description: The agent can start the skill by itself.
+      person:
+        description: Only a person starts the skill. The agent does not start it by itself.
+  Basis:
+    description: The kinds of source that support a directive.
+    permissible_values:
+      standard:
+        description: A published standard or a versioned specification.
+      research:
+        description: An empirical study or a model from research.
+      practitioner:
+        description: A method of a named author or company.
+      judgment:
+        description: No source supports the directive.
   DirectiveScope:
     description: The nodes that a directive applies to.
     permissible_values:

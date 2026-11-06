@@ -1,5 +1,6 @@
 # pyright: reportUnknownArgumentType=false, reportUnknownLambdaType=false
 import json
+import re
 import shutil
 import subprocess
 from pathlib import Path, PurePosixPath
@@ -65,6 +66,7 @@ The meaning of the domain.
 
 - Run the check. ^run-it
   - scope: subtree
+  - basis: judgment
   - status: proposed
   - origin: template
 """
@@ -162,7 +164,7 @@ def test_content_leaves_out_status_id_and_origin(tmp_path: Path) -> None:
         "sources",
         "title",
     }
-    assert set(entries["run-it"].content) == {"holder", "scope", "text"}
+    assert set(entries["run-it"].content) == {"basis", "holder", "scope", "text"}
     assert set(entries["domain/run-it"].content) == {"reason"}
     assert set(entries["knowledge/governance/language/vocabulary.yaml"].content) == {"bytes"}
     assert all(len(digest) == 16 for digest in entries["domain"].content.values())  # noqa: PLR2004
@@ -230,7 +232,9 @@ def test_a_moved_file_changes_only_the_path(tmp_path: Path) -> None:
 def test_a_directive_on_another_node_changes_its_holder(tmp_path: Path) -> None:
     write_tree(tmp_path)
     record_history(tmp_path)
-    block = "- Run the check. ^run-it\n  - scope: subtree\n  - status: proposed\n"
+    block = (
+        "- Run the check. ^run-it\n  - scope: subtree\n  - basis: judgment\n  - status: proposed\n"
+    )
     block += "  - origin: template\n"
     replace(domain_file(tmp_path), block, "")
     replace(domain_file(tmp_path), "## Directives\n\n", "")
@@ -746,3 +750,55 @@ def test_the_repo_history_names_each_directive_by_id() -> None:
     directives = {entry.id for entry in entries if entry.kind == "directive"}
     assert "limit-color-palette" in directives
     assert all(entry.id for entry in entries)
+
+
+SKILL_NODE = """---
+id: review
+kind: ka:Skill
+title: Review
+status: proposed
+origin: template
+knowledge_type: domain
+description: Review a sample. Use when a sample needs a review.
+invocation: agent
+uses:
+  - domain
+---
+"""
+SCRIPTS_DIGEST_LENGTH = 16
+
+
+def write_skill(folder: Path, scripts: dict[str, bytes]) -> Path:
+    skill = folder / "knowledge/skills/review"
+    skill.mkdir(parents=True, exist_ok=True)
+    (skill / "node.md").write_text(SKILL_NODE, encoding="utf-8")
+    for name, data in scripts.items():
+        path = skill / "scripts" / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(data)
+    return skill / "scripts"
+
+
+def test_the_scripts_of_a_skill_are_one_field(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    scripts = write_skill(tmp_path, {"check.py": b"print(1)\n"})
+    first = by_id(record_history(tmp_path).entries)["review"]
+    assert "scripts" in first.content
+    assert list(first.content) == sorted(first.content)
+    assert re.fullmatch(f"[0-9a-f]{{{SCRIPTS_DIGEST_LENGTH}}}", str(first.content["scripts"]))
+    (scripts / "check.py").write_bytes(b"print(2)\n")
+    (changed,) = record_history(tmp_path).entries
+    assert (changed.id, changed.fields) == ("review", ["scripts"])
+    assert changed.content["scripts"] != first.content["scripts"]
+    (scripts / "check.py").chmod(0o755)
+    assert record_history(tmp_path).entries == ()
+    (scripts / "check.py").unlink()
+    (gone,) = record_history(tmp_path).entries
+    assert (gone.id, gone.fields) == ("review", ["scripts"])
+    assert "scripts" not in gone.content
+
+
+def test_a_skill_with_no_scripts_has_no_scripts_field(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    write_skill(tmp_path, {})
+    assert "scripts" not in by_id(record_history(tmp_path).entries)["review"].content

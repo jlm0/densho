@@ -22,7 +22,7 @@ digest sha256:f4d8a64c…
 
 The command reads `knowledge/` in the current folder, or in a folder you name after `build`. It reads the tree once, then runs the [graph](graph-checks.md), [directive](directive-semantics.md), [governance](governance-workflow.md), and [language](language-checks.md) checks on what it read and compiles that same reading. A file that changes during a build can't slip past the checks.
 
-Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. A rejected tree writes nothing and also removes any earlier output, so `build/compiled/` never holds a graph for a tree that no longer passes.
+Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. A tree that fails a check writes nothing and also removes any earlier output, so `build/compiled/` never holds a graph for a tree that no longer passes.
 
 The git hook runs the same command when a commit touches `knowledge/`, `engine/`, or `uv.lock`. A commit that only deletes files skips the hook.
 
@@ -41,17 +41,18 @@ Each result writes three files to `build/compiled/`:
 
 The default result is what binds an agent today. It follows the [governance workflow](governance-workflow.md): it holds only `accepted` directives and `accepted` exceptions.
 
-| Entity                 | Default result | With `--proposals` |
-| ---------------------- | -------------- | ------------------ |
-| Node, with any status  | Kept           | Kept               |
-| `accepted` directive   | Kept           | Kept               |
-| `proposed` directive   | Left out       | Kept               |
-| `deprecated` directive | Left out       | Left out           |
-| `accepted` exception   | Kept           | Kept               |
-| `proposed` exception   | Left out       | Kept               |
-| `deprecated` exception | Left out       | Left out           |
+| Entity                  | Default result | With `--proposals` |
+| ----------------------- | -------------- | ------------------ |
+| Node, unless `rejected` | Kept           | Kept               |
+| `accepted` directive    | Kept           | Kept               |
+| `proposed` directive    | Left out       | Kept               |
+| `deprecated` directive  | Left out       | Left out           |
+| `accepted` exception    | Kept           | Kept               |
+| `proposed` exception    | Left out       | Kept               |
+| `deprecated` exception  | Left out       | Left out           |
+| Any `rejected` entity   | Gone           | Gone               |
 
-Every entity keeps its `status` in the output. A node stays whatever its status, because the status of a node doesn't change what applies.
+Every entity keeps its `status` in the output. A node stays whatever its status, because the status of a node doesn't change what applies. `rejected` is the one exception: a rejected node goes from both results with everything in it, and so does a rejected directive or exception. The left-out count doesn't count them either, because a person already decided against them.
 
 An exception also goes when its directive goes, and so does a reference to a left-out directive in `applies`, `refines`, or `conflicts_with`. Every reference in the output therefore resolves.
 

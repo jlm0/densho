@@ -162,6 +162,7 @@ class GovernedEntity(YAMLRoot):
     status: Union[str, "Status"] = None
     origin: Union[str, "Origin"] = None
     sources: Optional[Union[str, list[str]]] = empty_list()
+    rejection_reason: Optional[str] = None
 
     def __post_init__(self, *_: str, **kwargs: Any):
         if self._is_empty(self.id):
@@ -182,6 +183,9 @@ class GovernedEntity(YAMLRoot):
         if not isinstance(self.sources, list):
             self.sources = [self.sources] if self.sources is not None else []
         self.sources = [v if isinstance(v, str) else str(v) for v in self.sources]
+
+        if self.rejection_reason is not None and not isinstance(self.rejection_reason, str):
+            self.rejection_reason = str(self.rejection_reason)
 
         super().__post_init__(**kwargs)
 
@@ -546,6 +550,7 @@ class Skill(KnowledgeNode):
     title: str = None
     knowledge_type: Union[str, "KnowledgeType"] = None
     description: str = None
+    invocation: Union[str, "Invocation"] = None
     uses: Optional[Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]]] = empty_list()
     applies: Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]] = empty_list()
 
@@ -559,6 +564,11 @@ class Skill(KnowledgeNode):
             self.MissingRequiredField("description")
         if not isinstance(self.description, str):
             self.description = str(self.description)
+
+        if self._is_empty(self.invocation):
+            self.MissingRequiredField("invocation")
+        if not isinstance(self.invocation, Invocation):
+            self.invocation = Invocation(self.invocation)
 
         if not isinstance(self.uses, list):
             self.uses = [self.uses] if self.uses is not None else []
@@ -591,6 +601,7 @@ class Directive(GovernedEntity):
     origin: Union[str, "Origin"] = None
     text: str = None
     scope: Union[str, "DirectiveScope"] = None
+    basis: Union[str, "Basis"] = None
     also_attached_to: Optional[Union[Union[str, NodeId], list[Union[str, NodeId]]]] = empty_list()
     refines: Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]] = empty_list()
     conflicts_with: Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]] = empty_list()
@@ -610,6 +621,11 @@ class Directive(GovernedEntity):
             self.MissingRequiredField("scope")
         if not isinstance(self.scope, DirectiveScope):
             self.scope = DirectiveScope(self.scope)
+
+        if self._is_empty(self.basis):
+            self.MissingRequiredField("basis")
+        if not isinstance(self.basis, Basis):
+            self.basis = Basis(self.basis)
 
         if not isinstance(self.also_attached_to, list):
             self.also_attached_to = [self.also_attached_to] if self.also_attached_to is not None else []
@@ -642,6 +658,7 @@ class DirectiveException(YAMLRoot):
     directive: Union[str, DirectiveId] = None
     reason: str = None
     status: Union[str, "Status"] = None
+    rejection_reason: Optional[str] = None
 
     def __post_init__(self, *_: str, **kwargs: Any):
         if self._is_empty(self.directive):
@@ -658,6 +675,9 @@ class DirectiveException(YAMLRoot):
             self.MissingRequiredField("status")
         if not isinstance(self.status, Status):
             self.status = Status(self.status)
+
+        if self.rejection_reason is not None and not isinstance(self.rejection_reason, str):
+            self.rejection_reason = str(self.rejection_reason)
 
         super().__post_init__(**kwargs)
 
@@ -889,10 +909,51 @@ class Status(EnumDefinitionImpl):
     deprecated = PermissibleValue(
         text="deprecated",
         description="The entity stays for reference. Do not apply it to new work.")
+    rejected = PermissibleValue(
+        text="rejected",
+        description="""A person rejected the proposal. A rejected entity is not in force, and no generated file holds it.""")
 
     _defn = EnumDefinition(
         name="Status",
         description="The lifecycle states.",
+    )
+
+class Invocation(EnumDefinitionImpl):
+    """
+    The actors that can start a skill.
+    """
+    agent = PermissibleValue(
+        text="agent",
+        description="The agent can start the skill by itself.")
+    person = PermissibleValue(
+        text="person",
+        description="Only a person starts the skill. The agent does not start it by itself.")
+
+    _defn = EnumDefinition(
+        name="Invocation",
+        description="The actors that can start a skill.",
+    )
+
+class Basis(EnumDefinitionImpl):
+    """
+    The kinds of source that support a directive.
+    """
+    standard = PermissibleValue(
+        text="standard",
+        description="A published standard or a versioned specification.")
+    research = PermissibleValue(
+        text="research",
+        description="An empirical study or a model from research.")
+    practitioner = PermissibleValue(
+        text="practitioner",
+        description="A method of a named author or company.")
+    judgment = PermissibleValue(
+        text="judgment",
+        description="No source supports the directive.")
+
+    _defn = EnumDefinition(
+        name="Basis",
+        description="The kinds of source that support a directive.",
     )
 
 class DirectiveScope(EnumDefinitionImpl):
@@ -938,6 +999,10 @@ slots.sources = Slot(uri=DCTERMS.source, name="sources", curie=DCTERMS.curie('so
                    model_uri=KA.sources, domain=None, range=Optional[Union[str, list[str]]],
                    pattern=re.compile(r'^\S(?: *\S)*(?!\n)$'))
 
+slots.rejection_reason = Slot(uri=KA.rejection_reason, name="rejection_reason", curie=KA.curie('rejection_reason'),
+                   model_uri=KA.rejection_reason, domain=None, range=Optional[str],
+                   pattern=re.compile(r'^\S(?: *\S)*(?!\n)$'))
+
 slots.kind = Slot(uri=RDF.type, name="kind", curie=RDF.curie('type'),
                    model_uri=KA.kind, domain=None, range=Union[str, URIorCURIE])
 
@@ -976,12 +1041,18 @@ slots.description = Slot(uri=KA.description, name="description", curie=KA.curie(
                    model_uri=KA.description, domain=None, range=str,
                    pattern=re.compile(r'^\S(?: *\S)*(?!\n)$'))
 
+slots.invocation = Slot(uri=KA.invocation, name="invocation", curie=KA.curie('invocation'),
+                   model_uri=KA.invocation, domain=None, range=Union[str, "Invocation"])
+
 slots.text = Slot(uri=KA.text, name="text", curie=KA.curie('text'),
                    model_uri=KA.text, domain=None, range=str,
                    pattern=re.compile(r'^\S(?: *\S)*(?!\n)$'))
 
 slots.scope = Slot(uri=KA.scope, name="scope", curie=KA.curie('scope'),
                    model_uri=KA.scope, domain=None, range=Union[str, "DirectiveScope"])
+
+slots.basis = Slot(uri=KA.basis, name="basis", curie=KA.curie('basis'),
+                   model_uri=KA.basis, domain=None, range=Union[str, "Basis"])
 
 slots.also_attached_to = Slot(uri=KA.also_attached_to, name="also_attached_to", curie=KA.curie('also_attached_to'),
                    model_uri=KA.also_attached_to, domain=None, range=Optional[Union[Union[str, NodeId], list[Union[str, NodeId]]]])

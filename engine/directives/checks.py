@@ -28,6 +28,7 @@ DIRECTIVE_CODES = (
     "refines-cycle",
     "applies-deprecated",
 )
+CLOSED_STATUSES = frozenset({Status.deprecated, Status.rejected})
 NEGATION = re.compile(r"(?:^|(?<=, ))do not ")
 
 
@@ -51,7 +52,7 @@ def _exception_problems(items: Sequence[ParsedNode], by_id: dict[str, Reach]) ->
             if directive_id in seen:
                 code = "exception-repeated"
                 message = f"This node already has an exception for {directive_id}."
-            elif exception.status == Status.deprecated:
+            elif exception.status in CLOSED_STATUSES or item.node.status == Status.rejected:
                 pass
             elif item.node.id in reach.attached:
                 code = "exception-attached"

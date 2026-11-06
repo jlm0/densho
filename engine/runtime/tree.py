@@ -4,10 +4,13 @@ from typing import TYPE_CHECKING
 from engine.compiler import compile_tree
 from engine.generated.metamodel import CompiledResult
 from engine.governance.base import tracked_files
+from engine.governance.entities import pending_count
 from engine.parser.result import Problem
 from engine.runtime.claude_code import (
     candidate_files,
+    copied_files,
     instruction_notes,
+    marker_owner,
     render_files,
     review_candidates,
     size_problems,
@@ -17,7 +20,7 @@ from engine.runtime.links import link_target, local_links
 from engine.runtime.view import build_view
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Iterable, Sequence
     from pathlib import Path, PurePosixPath
 
     from engine.runtime.claude_code import RenderedFile
@@ -34,6 +37,7 @@ class RuntimeReport:
     removed: tuple[PurePosixPath, ...]
     notes: list[str]
     problems: list[Problem]
+    pending: int | None = None
 
 
 def _link_problems(
@@ -52,8 +56,13 @@ def _link_problems(
     ]
 
 
-def rendered_problems(rendered: Sequence[RenderedFile], repository: Path) -> list[Problem]:
-    targets = frozenset((repository / entry.path).resolve() for entry in rendered)
+def rendered_problems(
+    rendered: Sequence[RenderedFile],
+    repository: Path,
+    copies: Iterable[PurePosixPath] = (),
+) -> list[Problem]:
+    paths = [*(entry.path for entry in rendered), *copies]
+    targets = frozenset((repository / path).resolve() for path in paths)
     return [
         *size_problems(rendered, repository),
         *(problem for entry in rendered for problem in _link_problems(entry, targets, repository)),
@@ -93,7 +102,7 @@ def _without_a_graph(
     if not review and not empty:
         return RuntimeReport(result, (), (), (), notes, problems)
     candidates = review_candidates(repository) if review else candidate_files(repository)
-    applied = apply_files(repository, {}, candidates)
+    applied = apply_files(repository, {}, candidates, owner=marker_owner)
     remaining = applied.problems if empty else [*problems, *applied.problems]
     return RuntimeReport(result, (), applied.written, applied.removed, notes, remaining)
 
@@ -103,16 +112,30 @@ def _generated(repository: Path, *, proposals: bool) -> RuntimeReport:
     report = compile_tree(repository, proposals=proposals)
     if report.compiled is None:
         return _without_a_graph(repository, result, report.notes, report.problems)
-    rendered = render_files(build_view(report.compiled))
+    view = build_view(report.compiled)
+    rendered = render_files(view)
+    copies = copied_files(view)
     notes = [*report.notes, *instruction_notes(repository)]
-    problems = rendered_problems(rendered, repository)
-    files = tuple(entry.path for entry in rendered)
+    pending = pending_count(report.items)
+    problems = rendered_problems(rendered, repository, copies)
+    files = (*(entry.path for entry in rendered), *copies)
     if problems:
-        return RuntimeReport(result, files, (), (), notes, sorted(problems))
-    contents = {entry.path: entry.text.encode("utf-8") for entry in rendered}
+        return RuntimeReport(result, files, (), (), notes, sorted(problems), pending)
+    contents = {
+        **{entry.path: entry.text.encode("utf-8") for entry in rendered},
+        **{path: script.data for path, script in copies.items()},
+    }
     candidates = review_candidates(repository) if proposals else candidate_files(repository)
-    applied = apply_files(repository, contents, candidates)
-    return RuntimeReport(result, files, applied.written, applied.removed, notes, applied.problems)
+    applied = apply_files(
+        repository,
+        contents,
+        candidates,
+        owner=marker_owner,
+        executable={path: script.executable for path, script in copies.items()},
+    )
+    return RuntimeReport(
+        result, files, applied.written, applied.removed, notes, applied.problems, pending
+    )
 
 
 def generate_runtime(

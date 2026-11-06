@@ -38,6 +38,7 @@ class CompileReport:
     compiled: CompiledGraph | None
     notes: list[str]
     problems: list[Problem]
+    items: Sequence[ParsedNode] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -85,7 +86,7 @@ def compile_tree(repository: Path, *, proposals: bool = False) -> CompileReport:
     if checked.problems:
         return CompileReport(None, checked.notes, checked.problems)
     compiled = compile_items(checked.items, repository, proposals=proposals)
-    return CompileReport(compiled, checked.notes, [])
+    return CompileReport(compiled, checked.notes, [], checked.items)
 
 
 def build_tree(repository: Path, *, proposals: bool = False) -> BuildReport:

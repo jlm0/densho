@@ -21,15 +21,18 @@ Using glyphs, images, and spatial composition to say what prose would otherwise 
 
 - Prefer a glyph, an image, or a grouping over prose when it states the same information. ^prefer-visual-form
   - scope: subtree
+  - basis: judgment
   - status: proposed
   - origin: template
 - Add a visible text label to each glyph, unless the glyph means home, print, or search. ^label-glyphs
   - scope: subtree
+  - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/icon-usability/
 - Do not hide a glyph label behind a hover. ^no-hover-labels
   - scope: subtree
+  - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/icon-usability/

@@ -46,7 +46,7 @@ One node is under another through `broader` edges, followed down from parent to 
 
 No other edge carries a directive. `related`, `informs`, `depends_on`, `governs`, `implements`, and pointers state a relationship or a route, and nothing more. To reach a node across one of them, use `also_attached_to`.
 
-Only an `accepted` directive is in force. A `proposed` directive binds nobody until a reviewer accepts it, and a `deprecated` directive applies nowhere. The `status` of a node does not change what it carries. See [governance workflow](governance-workflow.md).
+Only an `accepted` directive is in force. A `proposed` directive binds nobody until a reviewer accepts it, and a `deprecated` or `rejected` directive applies nowhere. The `status` of a node does not change what it carries, unless the node is `rejected`. A rejected node carries nothing, passes nothing to the nodes under it, and stops nothing. See [governance workflow](governance-workflow.md).
 
 The checks read two states: what is in force, and what would apply if a reviewer accepted every proposal. So a proposal that conflicts with an accepted rule fails before the review.
 
@@ -87,7 +87,7 @@ exceptions:
 Code written to try out an idea.
 ```
 
-The directive stops at this node and at each node it could only reach through this node, once the exception is `accepted`. A `proposed` exception stops nothing, so a rule can't be switched off without a review, and a `deprecated` one stays only for reference. The [governance workflow](governance-workflow.md) has the steps. Exceptions name one directive at a time. There is no switch that stops all inheritance, because that would also hide every rule added above the node later.
+The directive stops at this node and at each node it could only reach through this node, once the exception is `accepted`. A `proposed` exception stops nothing, so a rule can't be switched off without a review, and a `deprecated` or `rejected` one stays only for reference. The [governance workflow](governance-workflow.md) has the steps. Exceptions name one directive at a time. There is no switch that stops all inheritance, because that would also hide every rule added above the node later.
 
 The narrower node holds the exception, so a project can step out of a template rule without editing the template's file. The root cannot hold one, because nothing is above it.
 
@@ -115,6 +115,7 @@ Use `refines` when both rules apply and the narrower one adds detail:
 
 - Write a test for each public function. ^test-public-functions
   - scope: subtree
+  - basis: judgment
   - status: accepted
   - origin: project
   - refines: write-test-first
@@ -131,6 +132,7 @@ Use `conflicts_with` to record a pair that must never apply at one node:
 
 - Use a fixture for each database. ^use-a-fixture
   - scope: subtree
+  - basis: judgment
   - status: accepted
   - origin: project
   - conflicts_with: use-a-live-database
@@ -154,7 +156,7 @@ The check also compares text in one narrow way. It reports two directives that a
 | `refines-cycle`      | A chain of `refines` leads back to its start                                  |
 | `applies-deprecated` | A skill names a `deprecated` directive in `applies`                           |
 
-An exception under another exception fails as `exception-unused`, because the one above already stopped the route. So does an exception for a `deprecated` directive. These checks read a `proposed` exception as if it were accepted, and they skip a `deprecated` one.
+An exception under another exception fails as `exception-unused`, because the one above already stopped the route. So does an exception for a `deprecated` directive. These checks read a `proposed` exception as if it were accepted, and they skip a `deprecated` or `rejected` one, and each exception in a `rejected` node.
 
 An `accepted` directive that refines a `proposed` one fails `refines-outside`, because only the narrower rule is in force.
 

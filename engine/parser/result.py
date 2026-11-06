@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
-    from pathlib import Path
+    from pathlib import Path, PurePosixPath
 
     from engine.generated.metamodel import Node
 
@@ -21,11 +21,19 @@ class Problem:
         return f"{self.path}:{self.line}: {self.code}: {self.message}"
 
 
+@dataclass(frozen=True, slots=True, order=True)
+class Script:
+    path: PurePosixPath
+    data: bytes
+    executable: bool
+
+
 @dataclass(frozen=True, slots=True)
 class ParsedNode:
     path: Path
     node: Node
     locations: Mapping[FieldPath, int]
+    scripts: tuple[Script, ...] = ()
 
     def line_of(self, field_path: FieldPath) -> int:
         return line_of(self.locations, field_path)

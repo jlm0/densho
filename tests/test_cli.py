@@ -172,6 +172,7 @@ DIRECTIVE_NODE = (
 
 - Run `pytest` before you commit. ^run-tests
   - scope: subtree
+  - basis: judgment
   - status: accepted
   - origin: template
 """

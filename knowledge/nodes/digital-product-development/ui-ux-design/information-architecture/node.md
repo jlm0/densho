@@ -25,6 +25,7 @@ The organization, structure, and naming of the content and functions of a produc
 
 - Define a controlled vocabulary for the content of each product. ^define-controlled-vocabulary
   - scope: subtree
+  - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/ia-vs-navigation/

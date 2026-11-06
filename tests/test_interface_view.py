@@ -117,7 +117,7 @@ def rule(
     extra: str = "",
 ) -> str:
     return (
-        f"- {text} ^{directive_id}\n  - scope: {scope}\n  - status: {status}\n"
+        f"- {text} ^{directive_id}\n  - scope: {scope}\n  - basis: judgment\n  - status: {status}\n"
         f"  - origin: template\n{extra}"
     )
 
@@ -157,8 +157,8 @@ SAMPLE = {
         "review",
         "ka:Skill",
         front=(
-            "description: Review a sample. Use when a sample needs a review.\nuses: [beta]\n"
-            + pointers("beta")
+            "description: Review a sample. Use when a sample needs a review.\n"
+            "invocation: agent\nuses: [beta]\n" + pointers("beta")
         ),
         body="## Procedure\n\n1. Read each directive.\n",
     ),
@@ -335,7 +335,7 @@ def hostile_tree(payload: str) -> dict[str, str]:
             "review",
             "ka:Skill",
             title=quoted,
-            front=f"description: {quoted}\nuses: [beta]\n",
+            front=f"description: {quoted}\ninvocation: agent\nuses: [beta]\n",
             body=f"Intro {payload} outro.\n",
         ),
     }
@@ -632,7 +632,7 @@ def test_a_node_with_two_parents_says_that_it_is_listed_above() -> None:
     sources["knowledge/skills/review/node.md"] = node(
         "review",
         "ka:Skill",
-        front=f"description: {SKILL_DESCRIPTION}\nuses: [beta]\n",
+        front=f"description: {SKILL_DESCRIPTION}\ninvocation: agent\nuses: [beta]\n",
     )
     page = site_of(sources)["index.html"]
     assert page.count('href="nodes/beta.html"') == len(("first", "second"))
@@ -805,6 +805,7 @@ def test_each_edge_of_a_directive_and_a_node_links_to_its_target() -> None:
             "ka:Skill",
             front=(
                 "description: Review a sample. Use when a sample needs a review.\n"
+                "invocation: agent\n"
                 "uses: [gamma]\napplies: [base-rule]\n"
             ),
         ),
@@ -852,7 +853,7 @@ def test_the_generated_file_of_a_rule_and_a_skill_are_named() -> None:
         "knowledge/skills/review/node.md": node(
             "review",
             "ka:Skill",
-            front=f"description: {SKILL_DESCRIPTION}\nuses: [alpha]\n",
+            front=f"description: {SKILL_DESCRIPTION}\ninvocation: agent\nuses: [alpha]\n",
         ),
     }
     site = site_of(sources)
@@ -940,7 +941,9 @@ def test_the_queue_shows_a_node_with_two_parents_once() -> None:
         ),
     }
     sources["knowledge/skills/review/node.md"] = node(
-        "review", "ka:Skill", front=f"description: {SKILL_DESCRIPTION}\nuses: [beta]\n"
+        "review",
+        "ka:Skill",
+        front=f"description: {SKILL_DESCRIPTION}\ninvocation: agent\nuses: [beta]\n",
     )
     page = site_of(sources)["review.html"]
     assert page.count('id="node-beta"') == 1
@@ -1299,3 +1302,37 @@ def test_a_deep_chain_renders() -> None:
         )
     files = render_site(parsed(sources), Path())
     assert len(files) == depth + 3
+
+
+def test_a_rejected_entity_stays_out_of_the_site() -> None:
+    beta = "knowledge/nodes/alpha/beta/node.md"
+    rejected_exception = (
+        "  - directive: wait\n    reason: A thrown out reason.\n    status: rejected\n"
+        "    rejection_reason: No need.\n"
+    )
+    sources = {
+        **SAMPLE,
+        "knowledge/nodes/alpha/old/node.md": node(
+            "old",
+            "ka:Concept",
+            title="Thrown out",
+            status="rejected",
+            front="broader: [alpha]\nrejection_reason: No need.\n",
+        ),
+        "knowledge/nodes/gamma/node.md": node(
+            "gamma",
+            rules=rule(
+                "gone",
+                "Run the thrown out check.",
+                status="rejected",
+                extra="  - rejection_reason: No need.\n",
+            ),
+        ),
+        beta: SAMPLE[beta].replace(
+            "    status: proposed\n", f"    status: proposed\n{rejected_exception}", 1
+        ),
+    }
+    pages = site_of(sources)
+    assert pages.keys() == site_of(SAMPLE).keys()
+    assert [path for path, text in pages.items() if "hrown out" in text] == []
+    assert "A reason for beta." in pages["nodes/beta.html"]

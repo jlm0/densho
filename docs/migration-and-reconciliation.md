@@ -46,7 +46,7 @@ Not everything is a rule, and the skill doesn't force prose into one.
 | A rule about the old rule system, such as its grammar          | Stays at its path, with the replacement noted      |
 | A rule that fails the checks after two edits, or anything else | Stays at its path, and `## Not converted` shows it |
 
-Project knowledge becomes workspace knowledge, with `knowledge_type: workspace` and `origin: project`. Each directive names its source file and line in `sources`, and `## Rule groups` in the body keeps the headings the rules sat under.
+Project knowledge becomes workspace knowledge, with `knowledge_type: workspace` and `origin: project`. Each directive names its source file and line in `sources`, and `## Rule groups` in the body keeps the headings the rules sat under. Its `basis` is `judgment` unless the old rule cites a standard, a study, or a named method, because a project file is a record of a decision and not evidence for it. A skill whose source sets `disable-model-invocation: true` gets `invocation: person`, and every other skill gets `invocation: agent`.
 
 ### What you get
 

@@ -4,11 +4,11 @@
 
 **Status:** Built.
 
-A project that [installs the template](template-packaging.md) receives this knowledge. It is ordinary content: one domain, two skills, and a few language terms, and it goes through the same checks and the same workflow as anything a project adds. Nothing in it binds an agent until a person accepts it.
+A project that [installs the template](template-packaging.md) receives this knowledge. It is ordinary content: one domain, four skills, and a few language terms, and it goes through the same checks and the same workflow as anything a project adds. Nothing in it binds an agent until a person accepts it.
 
 ## What ships
 
-The domain is Digital Product Development, under `knowledge/nodes/digital-product-development/`. All four disciplines are there, but only UI/UX Design goes deep, because branch depth follows real classification and does not have to match:
+The domain is Digital Product Development, under `knowledge/nodes/digital-product-development/`. All four disciplines are there, but only UI/UX Design and Software engineering go deep, because branch depth follows real classification and does not have to match:
 
 ```text
 Digital product development
@@ -27,6 +27,27 @@ Digital product development
 │   ├── Accessibility
 │   └── Responsive design
 └── Software engineering
+    ├── Security
+    │   ├── Access control
+    │   ├── Injection
+    │   ├── Secrets management
+    │   └── Software supply chain
+    ├── Testing
+    │   └── Test pyramid
+    ├── Delivery
+    │   ├── Trunk-based development
+    │   ├── Conventional Commits
+    │   ├── Semantic versioning
+    │   └── Software delivery metrics
+    ├── Architecture
+    │   ├── C4 model
+    │   ├── Architecture decision record
+    │   └── Twelve-factor app
+    ├── Reliability
+    │   ├── Service level objective
+    │   ├── Error budget
+    │   └── Postmortem
+    └── Code review
 ```
 
 Directives sit at every level of the taxonomy. A pointer on the root reaches the domain, and pointers lead from there down the tree, so every node is four hops or fewer from the root.
@@ -35,10 +56,12 @@ The hierarchy is not the only structure. `informs`, `depends_on`, and `related` 
 
 ## The skills
 
-| Skill                       | Use it when                            | What it draws on                                                                                           |
-| --------------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `design-settings-interface` | You design or change a settings screen | Progressive disclosure, Information hierarchy, Visual grouping, Accessibility, Brand and Responsive design |
-| `review-screen-hierarchy`   | A screen design is ready for review    | Information hierarchy, Visual grouping, Visual communication, and two contrast rules through `applies`     |
+| Skill                       | Use it when                                                   | What it draws on                                                                                           |
+| --------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `design-settings-interface` | You design or change a settings screen                        | Progressive disclosure, Information hierarchy, Visual grouping, Accessibility, Brand and Responsive design |
+| `review-screen-hierarchy`   | A screen design is ready for review                           | Information hierarchy, Visual grouping, Visual communication, and two contrast rules through `applies`     |
+| `review-code-change`        | A change is ready for review                                  | Code review, Testing, Security, Access control, and Injection                                              |
+| `write-decision-record`     | You make or change a decision about the structure of a system | Architecture decision record                                                                               |
 
 A skill source names knowledge and does not copy it. Its body holds only the inputs, the procedure, the output, and how to validate the result. The [generated skill file](runtime-files.md#why-a-skill-holds-a-copy) holds the directives in force. To see every rule a skill carries, with each proposal labeled:
 
@@ -69,20 +92,30 @@ The knowledge is yours to change:
 
 ## Language terms
 
-Two branches add terms in `knowledge/governance/language/branches/`. `ui-ux-design.yaml` approves `design` as an opening verb and prohibits vague words such as `intuitive` and `clean`, which say how a screen should feel without saying what to do. `software-engineering.yaml` approves `revoke`.
+Two branches add terms in `knowledge/governance/language/branches/`. `ui-ux-design.yaml` approves `design` as an opening verb and prohibits vague words such as `intuitive` and `clean`, which say how a screen should feel without saying what to do. `software-engineering.yaml` approves `revoke` and `increment`, the verb that Semantic Versioning uses for a version number.
 
 ## Sources
 
-A `sources` value names a page that was read when the rule was written: the Web Content Accessibility Guidelines, Nielsen Norman Group articles, MDN, and the OWASP Secrets Management Cheat Sheet. A rule with no `sources` is a judgment call, so read it with more care.
+A `sources` value names a page that was read when the rule was written. Where a framework has versions, the rule cites the version that was current then:
+
+- UI/UX design: the Web Content Accessibility Guidelines 2.2, Nielsen Norman Group articles, and MDN
+- Security: the OWASP Top 10:2025, the OWASP Application Security Verification Standard 5.0.0, and the OWASP Secrets Management Cheat Sheet
+- Testing: the test pyramid pages on martinfowler.com, and the testing chapter of *Software Engineering at Google*
+- Delivery: trunkbaseddevelopment.com, the DORA guides, Conventional Commits 1.0.0, and Semantic Versioning 2.0.0
+- Architecture: the C4 model site, Michael Nygard's post on architecture decision records, and The Twelve-Factor App
+- Reliability: the Google SRE book and workbook
+- Code review: Google's engineering practices guide
+
+A rule with no `sources` is a judgment call, so read it with more care.
 
 Each directive also states its `basis`, the kind of source behind it. In the domain and the skills:
 
-| `basis`        | Directives | Where they come from                                                  |
-| -------------- | ---------- | --------------------------------------------------------------------- |
-| `standard`     | 12         | WCAG 2.2                                                              |
-| `research`     | 4          | The Gestalt grouping research, through a Nielsen Norman Group article |
-| `practitioner` | 24         | Named methods and authors: Nielsen Norman Group, MDN, and OWASP       |
-| `judgment`     | 14         | No source                                                             |
+| `basis`        | Directives | Where they come from                                                                                                                                              |
+| -------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `standard`     | 48         | WCAG 2.2, the OWASP Top 10 and ASVS, Conventional Commits, and Semantic Versioning                                                                                |
+| `research`     | 10         | The Gestalt grouping research, through a Nielsen Norman Group article, and the DORA research                                                                      |
+| `practitioner` | 91         | Named methods and authors: Nielsen Norman Group, MDN, an OWASP cheat sheet, martinfowler.com, Google, Paul Hammant, Simon Brown, Michael Nygard, and Adam Wiggins |
+| `judgment`     | 12         | No source                                                                                                                                                         |
 
 Every governance directive is `judgment`, because the policies come from this project's own design and cite nothing.
 

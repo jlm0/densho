@@ -4,18 +4,18 @@
 
 **Status:** Built.
 
-This layer is one company skill with two jobs. Migration converts the knowledge of an existing project into nodes that pass the checks. Reconciliation pulls template changes into a project that has drifted. An agent does the work and proposes the result, and you decide what stands.
+This layer is one global skill with two jobs. Migration converts the knowledge of an existing project into nodes that pass the checks. Reconciliation pulls template changes into a project that has drifted. An agent does the work and proposes the result, and you decide what stands.
 
-The source is `company-skills/migrate-and-reconcile-knowledge/SKILL.md`. It adds no check and no command. It uses the ones a project already has: the [hooks](template-packaging.md), `.ka/ka adopt`, `.ka/ka history --drift`, and the change history in `.ka/history.jsonl`.
+The source is `global-skills/migrate-and-reconcile-knowledge/SKILL.md`. It adds no check and no command. It uses the ones a project already has: the [hooks](template-packaging.md), `knowledge/.ka/ka adopt`, `knowledge/.ka/ka history --drift`, and the change history in `knowledge/.ka/history.jsonl`.
 
 ## Install the skill
 
-The skill lives outside each project, so it works before a project has the template, and one copy serves every project. An install of the template doesn't carry it. `copier.yml` copies only the paths it names, and a test checks that `company-skills/` stays out.
+The skill lives outside each project, so it works before a project has the template, and one copy serves every project. An install of the template doesn't carry it. `copier.yml` copies only the paths it names, and a test checks that `global-skills/` stays out.
 
 Installing it is your choice. From a clone of this repo:
 
 ```sh
-cp -R company-skills/migrate-and-reconcile-knowledge ~/.claude/skills/
+cp -R global-skills/migrate-and-reconcile-knowledge ~/.claude/skills/
 ```
 
 Run the same command to take a newer copy. Then ask an agent to migrate the knowledge of a project, or to pull template changes.
@@ -50,7 +50,7 @@ Project knowledge becomes workspace knowledge, with `knowledge_type: workspace` 
 
 ### What you get
 
-Everything arrives as `proposed`, so no migrated rule binds an agent until you accept it. The skill never changes a `status` to `accepted`. To read what waits, run `.ka/ka view`, or `.ka/ka governance --pending` in a terminal. The [human interface](human-interface.md#in-a-project) has the steps from there.
+Everything arrives as `proposed`, so no migrated rule binds an agent until you accept it. The skill never changes a `status` to `accepted`. To read what waits, run `knowledge/.ka/ka view`, or `knowledge/.ka/ka governance --pending` in a terminal. The [human interface](human-interface.md#in-a-project) has the steps from there.
 
 Your old rules can stay in force in the meantime. A hand-written root `AGENTS.md` has to leave its path, because the generator owns it, so the agent moves it to `knowledge-migration/source/root-agents.md` and asks whether to keep it loading with this line in `CLAUDE.md`:
 
@@ -73,19 +73,19 @@ After your review, remove the line from `CLAUDE.md`, the `knowledge-migration/` 
 
 ### Words the vocabulary lacks
 
-A real rule set opens with verbs the vocabulary doesn't approve. The agent adds them to `governance/language/branches/<node-id>.yaml`. It doesn't remove a term from `prohibited`. No `status` covers a vocabulary file, so the agent reports each change for you to read.
+A real rule set opens with verbs the vocabulary doesn't approve. The agent adds them to `knowledge/governance/language/branches/<node-id>.yaml`. It doesn't remove a term from `prohibited`. No `status` covers a vocabulary file, so the agent reports each change for you to read.
 
 ## Pull template changes
 
 Nothing forces a pull. A project can stay where it is, and the agent pulls only when you ask. Commit your work first, then ask. The agent:
 
 1. Clones the template into a folder outside the project, from `_src_path` in `.copier-answers.yml`.
-2. Reads each new line of the template's `.ka/history.jsonl`, and matches it by `kind` and `id` to the output of `.ka/ka history --drift`.
+2. Reads each new line of the template's `knowledge/.ka/history.jsonl`, and matches it by `kind` and `id` to the output of `knowledge/.ka/ka history --drift`.
 3. Reports what each change will do, and asks whether to pull.
-4. Runs `copier update`, resolves each entity with you, and runs `.ka/ka adopt`.
+4. Runs `copier update`, resolves each entity with you, and runs `knowledge/.ka/ka adopt`.
 5. Reports what left force and what still differs, then commits through the hooks.
 
-A pull doesn't promote anything. `.ka/ka adopt` sets a changed entity to `proposed`, even if the template accepted it. If you accepted an entity and the pull changes a reviewed field, it leaves force until you accept it again, and the agent tells you so before it pulls.
+A pull doesn't promote anything. `knowledge/.ka/ka adopt` sets a changed entity to `proposed`, even if the template accepted it. If you accepted an entity and the pull changes a reviewed field, it leaves force until you accept it again, and the agent tells you so before it pulls.
 
 ### How each change sorts
 
@@ -136,7 +136,7 @@ The project hooks read the result on each commit. These broken outputs each fail
 | A node has no route to it                   | `unreachable`               |
 | A pointer names no node                     | `reference`                 |
 | A workspace node claims the template origin | `template-workspace`        |
-| The ledger sits in a node folder            | `file-name`                 |
+| The ledger sits in `knowledge/`             | `file-name`                 |
 | A body hides text in an HTML block          | `markdown`                  |
 | A hand-written root stays at `AGENTS.md`    | `not-generated`             |
 | A conflict marker stays                     | the `conflict-markers` hook |

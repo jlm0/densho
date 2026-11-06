@@ -49,8 +49,8 @@ uv run ka accept --subtree visual-design --dry-run
 ```
 
 ```text
-knowledge/.../visual-grouping/node.md:5: node visual-grouping is now accepted
-knowledge/.../visual-grouping/node.md:32: directive group-related-fields is now accepted
+knowledge/nodes/.../visual-grouping/node.md:5: node visual-grouping is now accepted
+knowledge/nodes/.../visual-grouping/node.md:32: directive group-related-fields is now accepted
 This command wrote no commit. Read git diff, run uv run ka runtime, stage the files, and commit them.
 2 entities accepted, 0 not proposed, 0 problems
 ```
@@ -86,15 +86,15 @@ There is no button in the site, on purpose. A page that writes would need a serv
 
 ## In a project
 
-A project runs the same commands through `.ka/ka`, and needs no Python:
+A project runs the same commands through `knowledge/.ka/ka`, and needs no Python:
 
 ```sh
-.ka/ka view
-.ka/ka accept --subtree visual-design
-.ka/ka runtime
+knowledge/.ka/ka view
+knowledge/.ka/ka accept --subtree visual-design
+knowledge/.ka/ka runtime
 ```
 
-The review queue and the next-step line name the command that fits the folder. They use `.ka/ka` if the file exists, and `uv run ka` if it doesn't.
+The review queue and the next-step line name the command that fits the folder. They use `knowledge/.ka/ka` if the file exists, and `uv run ka` if it doesn't.
 
 A project gets these commands at install, or at its next [template pull](template-packaging.md#pull-a-template-change) if it installed earlier. A `.gitignore` of your own needs `build/`, or the site shows up as untracked files.
 

@@ -4,15 +4,10 @@ import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
 
-from engine.parser.node import (
-    GOVERNANCE_FOLDER,
-    NODE_FILE_NAME,
-    parse_source,
-    universal_newlines,
-)
+from engine.layout import KNOWLEDGE_FOLDER, NODE_FILE_NAME
+from engine.parser.node import parse_source, universal_newlines
 from engine.parser.result import ParsedNode, Problem
 
-TREE_FOLDERS = ("knowledge", "skills", GOVERNANCE_FOLDER)
 FILE_MODES = frozenset({"100644", "100755"})
 OBJECT_HEADER_PARTS = 3
 NOT_A_REPOSITORY = "not a git repository"
@@ -121,7 +116,9 @@ def read_base(repository: Path) -> Base:
     stopped = _stopped_state(program, repository)
     if stopped is not None:
         return stopped
-    listing = _git(program, repository, "ls-tree", "-r", "-z", "HEAD", "--", *TREE_FOLDERS)
+    listing = _git(
+        program, repository, "ls-tree", "-r", "-z", "HEAD", "--", KNOWLEDGE_FOLDER.as_posix()
+    )
     if listing.returncode != 0:
         return _failure(repository, listing.stderr)
     blobs = _node_blobs(listing.stdout)

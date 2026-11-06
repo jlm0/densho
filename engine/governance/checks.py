@@ -6,7 +6,8 @@ from engine.governance.base import read_base
 from engine.governance.changes import CHANGE_CODES, check_changes
 from engine.governance.entities import governed_entities
 from engine.graph.references import edge_targets, problem_at, references_of
-from engine.parser.node import POLICY_FOLDER, node_folders, parse_tree
+from engine.layout import POLICY_FOLDER
+from engine.parser.node import node_folders, parse_tree
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

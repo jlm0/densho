@@ -28,6 +28,7 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 module-name = "engine"
 module-root = ""
+wheel-exclude = ["engine/schema"]
 
 [tool.ruff]
 target-version = "py314"

@@ -22,21 +22,24 @@ uv run pre-commit run --all-files
 
 ## Structure
 
-| Path                                                       | Contents                                                           |
-| ---------------------------------------------------------- | ------------------------------------------------------------------ |
-| `governance/schema/`                                       | The metamodel: node kinds, relationship kinds, and required fields |
-| `governance/language/`                                     | The directive grammar and the vocabularies                         |
-| `governance/policies/`                                     | Lifecycle, approval, and change rules, written as nodes            |
-| `knowledge/`                                               | The knowledge nodes: concepts and directives                       |
-| `skills/`                                                  | Skill sources built from the knowledge tree                        |
-| `engine/`                                                  | The [Python engine](docs/README.md#where-the-code-lives)           |
-| `tests/`                                                   | Tests for the engine                                               |
-| `docs/`                                                    | The overview and a page for each layer                             |
-| `build/`                                                   | Generated output. Git ignores it.                                  |
-| `AGENTS.md`, `.claude/rules/knowledge/`, `.claude/skills/` | Generated from the nodes. Do not edit them.                        |
-| `copier.yml`, `*.jinja`                                    | What a project receives, and the files only a project holds        |
-| `.ka/`                                                     | The way to the engine in a project, and the change history         |
-| `company-skills/`                                          | A skill you install yourself. A project doesn't receive it.        |
+| Path                                                                              | Contents                                                           |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `knowledge/node.md`                                                               | The root node                                                      |
+| `knowledge/nodes/`                                                                | The knowledge nodes: concepts and directives                       |
+| `knowledge/skills/`                                                               | Skill sources built from the knowledge tree                        |
+| `knowledge/governance/policies/`                                                  | Lifecycle, approval, and change rules, written as nodes            |
+| `knowledge/governance/language/`                                                  | The directive grammar and the vocabularies                         |
+| `knowledge/governance/schema/`                                                    | The metamodel: node kinds, relationship kinds, and required fields |
+| `knowledge/.ka/`                                                                  | The way to the engine in a project, and the change history         |
+| `AGENTS.md`, `.claude/references/`, `.claude/rules/knowledge/`, `.claude/skills/` | Generated from the nodes. Do not edit them.                        |
+| `engine/`                                                                         | The [Python engine](docs/README.md#where-the-code-lives)           |
+| `tests/`                                                                          | Tests for the engine                                               |
+| `docs/`                                                                           | The overview and a page for each layer                             |
+| `build/`                                                                          | Generated output. Git ignores it.                                  |
+| `copier.yml`, `*.jinja`                                                           | What a project receives, and the files only a project holds        |
+| `global-skills/`                                                                  | A skill you install yourself. A project doesn't receive it.        |
+
+You edit `knowledge/`. Agents read `AGENTS.md` and `.claude/`.
 
 ## Use the template
 
@@ -48,7 +51,7 @@ uv tool install pre-commit
 pre-commit install
 ```
 
-Run `git init` before `pre-commit install` if the folder has no repo. In a project, `.ka/ka` takes the place of `uv run ka`. To pull a later template change, run `uvx --python 3.14 copier update --trust --defaults --vcs-ref=HEAD`, then `.ka/ka adopt`.
+Run `git init` before `pre-commit install` if the folder has no repo. In a project, `knowledge/.ka/ka` takes the place of `uv run ka`. To pull a later template change, run `uvx --python 3.14 copier update --trust --defaults --vcs-ref=HEAD`, then `knowledge/.ka/ka adopt`.
 
 The template ships domain knowledge, which is universal. A project writes workspace knowledge about its own code, under the same governance. [Template packaging](docs/template-packaging.md) explains each step, and the [migration and reconciliation skill](docs/migration-and-reconciliation.md) converts the rules a project already has.
 

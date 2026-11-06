@@ -14,11 +14,11 @@ The checks read structure and declarations. They cannot tell whether two sentenc
 uv run ka directives
 ```
 
-The command reads `knowledge/`, `skills/`, and `governance/` in the current folder, or in a folder you name after `directives`. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. An empty tree passes.
+The command reads `knowledge/` in the current folder, or in a folder you name after `directives`. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. An empty tree passes.
 
 These checks need a sound hierarchy, so the command runs the [graph checks](graph-checks.md) first. A parse or graph problem prints and stops the directive checks.
 
-The git hook runs the same command when a commit touches `knowledge/`, `skills/`, `governance/`, `engine/`, or `uv.lock`. A commit that only deletes files skips it. A deletion can change what applies elsewhere only through a reference to the deleted node, and the graph checks run on every commit and report that reference.
+The git hook runs the same command when a commit touches `knowledge/`, `engine/`, or `uv.lock`. A commit that only deletes files skips it. A deletion can change what applies elsewhere only through a reference to the deleted node, and the graph checks run on every commit and report that reference.
 
 To see what applies at one node, and how each directive gets there:
 

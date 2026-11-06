@@ -1,5 +1,5 @@
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
-# [Knowledge architecture](knowledge/node.md)
+# Knowledge architecture
 
 A build generates this file from the node files. Change a node file, not this file.
 
@@ -19,16 +19,16 @@ Treat a directive as a rule only when its `status` is `accepted`. A generated fi
 
 ## Domains
 
-- You plan, design, or build a digital product. Read [Digital product development](knowledge/digital-product-development/node.md).
+- You plan, design, or build a digital product. Read [Digital product development](.claude/references/digital-product-development.md).
 
 ## Governance
 
-- You change a node file. [Governance](governance/policies/node.md) loads by itself.
-- You accept a change. Read [Approval](governance/policies/approval/node.md).
-- You change an accepted entity. Read [Change rules](governance/policies/change-rules/node.md).
-- You write a directive, a trigger, or a skill description. Read [Language rules](governance/policies/language-rules/node.md).
-- You set the `status` of an entity. Read [Lifecycle](governance/policies/lifecycle/node.md).
-- You change a node kind, a field, or an edge. Read [Schema rules](governance/policies/schema-rules/node.md).
+- You change a node file. [Governance](.claude/rules/knowledge/governance.md) loads by itself.
+- You accept a change. Read [Approval](.claude/references/approval.md).
+- You change an accepted entity. Read [Change rules](.claude/references/change-rules.md).
+- You write a directive, a trigger, or a skill description. Read [Language rules](.claude/references/language-rules.md).
+- You set the `status` of an entity. Read [Lifecycle](.claude/references/lifecycle.md).
+- You change a node kind, a field, or an edge. Read [Schema rules](.claude/references/schema-rules.md).
 
 ## Skills
 

@@ -105,7 +105,7 @@ def render(spec: Spec, others: list[str]) -> str:
 def file_of(spec: Spec) -> Path:
     if spec["kind"] == "ka:Root":
         return Path("knowledge/node.md")
-    folder = "skills" if spec["kind"] == "ka:Skill" else "knowledge"
+    folder = "knowledge/skills" if spec["kind"] == "ka:Skill" else "knowledge/nodes"
     return Path(folder) / spec["id"] / "node.md"
 
 
@@ -1171,8 +1171,7 @@ def test_each_code_comes_through_the_graph_checks(tmp_path: Path, code: str) -> 
 
 
 def write_repository(repository: Path, *specs: Spec) -> None:
-    for folder in ("knowledge", "skills"):
-        (repository / folder).mkdir(exist_ok=True)
+    (repository / "knowledge").mkdir(exist_ok=True)
     for path, text in sources(specs).values():
         target = repository / path
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -1210,7 +1209,7 @@ def test_a_directive_problem_prints_with_its_location(tmp_path: Path) -> None:
     count, problems = check_directives(tmp_path)
     assert count == 1
     assert [problem.code for problem in problems] == ["route-conflict"]
-    assert problems[0].path == tmp_path / "knowledge/join/node.md"
+    assert problems[0].path == tmp_path / "knowledge/nodes/join/node.md"
 
 
 def test_a_parse_problem_stops_the_directive_checks(tmp_path: Path) -> None:
@@ -1218,7 +1217,7 @@ def test_a_parse_problem_stops_the_directive_checks(tmp_path: Path) -> None:
         tmp_path,
         domain("design", rules=[rule("a", refines=["a"])]),
     )
-    path = tmp_path / "knowledge/design/node.md"
+    path = tmp_path / "knowledge/nodes/design/node.md"
     path.write_text(path.read_text(encoding="utf-8").replace("status: accepted", "status: ok"))
     count, problems = check_directives(tmp_path)
     assert count == 0
@@ -1379,7 +1378,7 @@ def test_a_root_cannot_hold_an_exception() -> None:
 def test_an_exception_needs_each_field(entry: str, missing: str) -> None:
     source = sources((domain("design"),))["design"][1]
     text = source.replace("---\n\n", f"exceptions:\n  - {entry}\n---\n\n", 1)
-    result = parse_source(text, Path("knowledge/design/node.md"))
+    result = parse_source(text, Path("knowledge/nodes/design/node.md"))
     assert isinstance(result, list)
     assert [problem.code for problem in result] == ["schema"]
     assert f"exceptions[0].{missing}" in result[0].message

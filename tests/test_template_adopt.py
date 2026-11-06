@@ -80,8 +80,8 @@ exceptions:
 
 The meaning of the child.
 """
-DOMAIN_PATH = "knowledge/domain/node.md"
-CHILD_PATH = "knowledge/domain/child/node.md"
+DOMAIN_PATH = "knowledge/nodes/domain/node.md"
+CHILD_PATH = "knowledge/nodes/domain/child/node.md"
 
 
 def write_tree(folder: Path, domain: str = DOMAIN_NODE, child: str = CHILD_NODE) -> Path:
@@ -89,10 +89,11 @@ def write_tree(folder: Path, domain: str = DOMAIN_NODE, child: str = CHILD_NODE)
         return [name for name in names if Path(parent).name == "branches" and name != ".gitkeep"]
 
     shutil.copytree(
-        REPO / "governance/language", folder / "governance/language", ignore=no_branch_files
+        REPO / "knowledge/governance/language",
+        folder / "knowledge/governance/language",
+        ignore=no_branch_files,
     )
-    (folder / "knowledge/domain/child").mkdir(parents=True)
-    (folder / "skills").mkdir()
+    (folder / "knowledge/nodes/domain/child").mkdir(parents=True)
     (folder / "knowledge/node.md").write_text(ROOT_NODE, encoding="utf-8")
     (folder / DOMAIN_PATH).write_text(domain, encoding="utf-8")
     (folder / CHILD_PATH).write_text(child, encoding="utf-8")
@@ -345,8 +346,8 @@ def test_a_longer_word_in_another_key_does_not_change(tmp_path: Path) -> None:
 def test_a_failed_import_stays_in_the_report_when_a_node_does_not_parse(tmp_path: Path) -> None:
     with_history(tmp_path)
     write_tree(tmp_path)
-    (tmp_path / "knowledge/bad").mkdir()
-    (tmp_path / "knowledge/bad/node.md").write_text("<<<<<<< before\n", encoding="utf-8")
+    (tmp_path / "knowledge/nodes/bad").mkdir(parents=True)
+    (tmp_path / "knowledge/nodes/bad/node.md").write_text("<<<<<<< before\n", encoding="utf-8")
     (tmp_path / "shared.md").write_text("Shared.\n", encoding="utf-8")
     (tmp_path / "CLAUDE.md").symlink_to("shared.md")
     found = {problem.code for problem in adopt_template(tmp_path).problems}
@@ -357,8 +358,8 @@ def test_a_failed_import_stays_in_the_report_when_a_node_does_not_parse(tmp_path
 def test_a_node_that_does_not_parse_stops_each_later_step(tmp_path: Path) -> None:
     with_history(tmp_path)
     write_tree(tmp_path)
-    (tmp_path / "knowledge/bad").mkdir()
-    (tmp_path / "knowledge/bad/node.md").write_text("<<<<<<< before\n", encoding="utf-8")
+    (tmp_path / "knowledge/nodes/bad").mkdir(parents=True)
+    (tmp_path / "knowledge/nodes/bad/node.md").write_text("<<<<<<< before\n", encoding="utf-8")
     (tmp_path / "CLAUDE.md").write_text("Own text.\n", encoding="utf-8")
     before = text_of(tmp_path)
     report = adopt_template(tmp_path)
@@ -420,8 +421,8 @@ def test_a_hand_written_agents_file_stays(tmp_path: Path) -> None:
 def test_each_entity_in_one_file_changes(tmp_path: Path) -> None:
     with_history(tmp_path)
     write_tree(tmp_path)
-    second = "knowledge/second/node.md"
-    (tmp_path / "knowledge/second").mkdir()
+    second = "knowledge/nodes/second/node.md"
+    (tmp_path / "knowledge/nodes/second").mkdir(parents=True)
     text = DOMAIN_NODE.replace("id: domain", "id: second").replace("run-it", "run-two")
     text = text.replace("run-other", "run-three").replace("Run the", "Start the")
     text = text.replace("pointers:\n  - kind: ka:TextPointer\n    target: child\n", "")

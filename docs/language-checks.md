@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-This layer checks the text that agents act on: directives, pointer triggers, and skill descriptions. The grammar and the vocabularies are data in `governance/language/`, and the code is in `engine/language/`.
+This layer checks the text that agents act on: directives, pointer triggers, and skill descriptions. The grammar and the vocabularies are data in `knowledge/governance/language/`, and the code is in `engine/language/`.
 
 The checks judge form only. A rule can pass every check and still be a bad rule, so meaning stays a matter for review. See [what a pass does not mean](#what-a-pass-does-not-mean).
 
@@ -14,9 +14,9 @@ The checks judge form only. A rule can pass every check and still be a bad rule,
 uv run ka language
 ```
 
-The command reads `knowledge/`, `skills/`, and `governance/` in the current folder, or in a folder you name after `language`. It also lints each rule in `governance/language/grammar.yaml` as a directive. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. A node that fails to parse stops the checks, as it does for the [graph checks](graph-checks.md).
+The command reads `knowledge/` in the current folder, or in a folder you name after `language`. It also lints each rule in `knowledge/governance/language/grammar.yaml` as a directive. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. A node that fails to parse stops the checks, as it does for the [graph checks](graph-checks.md).
 
-The git hook runs the same command when a commit touches `knowledge/`, `skills/`, `governance/`, `engine/`, or `uv.lock`. A commit that changes only docs or tests skips it. So does a commit that only deletes files, so a branch vocabulary left behind by a deleted node fails on the next run, not on that commit.
+The git hook runs the same command when a commit touches `knowledge/`, `engine/`, or `uv.lock`. A commit that changes only docs or tests skips it. So does a commit that only deletes files, so a branch vocabulary left behind by a deleted node fails on the next run, not on that commit.
 
 ## Directives
 
@@ -97,7 +97,7 @@ The 8,000 is an estimate at four characters per token. Claude Code drops the des
 
 ## Vocabularies
 
-`governance/language/vocabulary.yaml` is the base vocabulary for every node:
+`knowledge/governance/language/vocabulary.yaml` is the base vocabulary for every node:
 
 ```yaml
 approved_verbs: [add, apply, approve]
@@ -110,7 +110,7 @@ prohibited:
 
 `prohibited` groups terms by a label that you choose, and the label appears in the message. A term can be a phrase. A single word also matches its inflected forms when it is used as a verb, so `utilize` catches `utilized`.
 
-A branch of the tree can extend this. Add `governance/language/branches/<node-id>.yaml`, in the same format, and it applies to that node and to every node under it through `broader`:
+A branch of the tree can extend this. Add `knowledge/governance/language/branches/<node-id>.yaml`, in the same format, and it applies to that node and to every node under it through `broader`:
 
 - A branch only adds. It can approve a verb or prohibit a term, but it cannot lift a prohibition from above.
 - A prohibition wins over an approval, so a branch can forbid a verb that the base approves.
@@ -120,7 +120,7 @@ A branch of the tree can extend this. Add `governance/language/branches/<node-id
 
 ## What a pass does not mean
 
-A check can decide form. It cannot decide meaning. Each rule in `governance/language/grammar.yaml` lists the checks that enforce it, and `review: true` marks a rule that needs a human review as well:
+A check can decide form. It cannot decide meaning. Each rule in `knowledge/governance/language/grammar.yaml` lists the checks that enforce it, and `review: true` marks a rule that needs a human review as well:
 
 | Rule                                         | A check catches                   | Review still decides                                  |
 | -------------------------------------------- | --------------------------------- | ----------------------------------------------------- |
@@ -152,7 +152,7 @@ If a good sentence still fails a structure check, reword it.
 
 ## How it fits
 
-Governance rules are directives too, so a node under `governance/` goes through these checks like any other, and so does each rule in `grammar.yaml`. That makes the system recursive: the rules for writing rules follow their own rules. The `language-rules` [policy](governance-workflow.md#the-policies) names these files as its sources.
+Governance rules are directives too, so a node under `knowledge/governance/` goes through these checks like any other, and so does each rule in `grammar.yaml`. That makes the system recursive: the rules for writing rules follow their own rules. The `language-rules` [policy](governance-workflow.md#the-policies) names these files as its sources.
 
 ## What it does not check yet
 

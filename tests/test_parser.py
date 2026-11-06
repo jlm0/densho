@@ -17,9 +17,9 @@ from engine.generated.metamodel import (
     TextPointer,
 )
 from engine.parser import ParsedNode, parse_file, parse_source, parse_tree
-from engine.parser.generated import MARKER, is_generated_file
+from engine.parser.generated import MARKER
 
-PATH = Path("knowledge/sample/node.md")
+PATH = Path("knowledge/nodes/sample/node.md")
 GOVERNED = "status: accepted\norigin: template\n"
 KNOWLEDGE = f"{GOVERNED}knowledge_type: domain\n"
 
@@ -1063,24 +1063,21 @@ def test_parse_tree_rejects_other_markdown_files(tmp_path: Path, name: str) -> N
     assert [(problem.path, problem.code) for problem in problems] == [(path, "file-name")]
 
 
-def test_parse_tree_skips_a_generated_markdown_file(tmp_path: Path) -> None:
+@pytest.mark.parametrize(
+    ("name", "text"),
+    [
+        ("AGENTS.md", f"{MARKER}\n# Generated\n"),
+        ("SKILL.md", f"---\nb: c\n---\n{MARKER}\n"),
+        ("AGENTS.md", f"# Hand-written\n{MARKER}\n"),
+    ],
+)
+def test_parse_tree_rejects_a_generated_markdown_file(tmp_path: Path, name: str, text: str) -> None:
     (tmp_path / "a").mkdir()
-    (tmp_path / "a" / "AGENTS.md").write_text(f"{MARKER}\n# Generated\n", encoding="utf-8")
-    (tmp_path / "a" / "SKILL.md").write_text(f"---\nb: c\n---\n{MARKER}\n", encoding="utf-8")
-    assert parse_tree([tmp_path]) == ([], [])
-
-
-def test_parse_tree_rejects_a_marker_that_is_not_in_place(tmp_path: Path) -> None:
-    (tmp_path / "a").mkdir()
-    path = tmp_path / "a" / "AGENTS.md"
-    path.write_text(f"# Hand-written\n{MARKER}\n", encoding="utf-8")
-    _, problems = parse_tree([tmp_path])
+    path = tmp_path / "a" / name
+    path.write_text(text, encoding="utf-8")
+    nodes, problems = parse_tree([tmp_path])
+    assert nodes == []
     assert [(problem.path, problem.code) for problem in problems] == [(path, "file-name")]
-
-
-def test_a_generated_file_check_treats_an_unreadable_path_as_not_generated(tmp_path: Path) -> None:
-    assert not is_generated_file(tmp_path / "missing.md")
-    assert not is_generated_file(tmp_path)
 
 
 def test_parse_tree_ignores_other_files(tmp_path: Path) -> None:

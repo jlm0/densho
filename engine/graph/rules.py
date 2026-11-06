@@ -7,7 +7,13 @@ from engine.graph.references import (
     problem_at,
     references_of,
 )
-from engine.parser.node import GOVERNANCE_FOLDER, NODE_FILE_NAME, POLICY_FOLDER
+from engine.layout import (
+    GOVERNANCE_FOLDER,
+    NODES_FOLDER,
+    POLICY_FOLDER,
+    ROOT_NODE_FILE,
+    SKILLS_FOLDER,
+)
 from engine.parser.result import FieldPath, ParsedNode, Problem
 
 if TYPE_CHECKING:
@@ -35,7 +41,7 @@ def root_nodes(items: Sequence[ParsedNode]) -> list[ParsedNode]:
 
 
 def check_placement(items: Sequence[ParsedNode], repository: Path) -> list[Problem]:
-    root_file = repository / "knowledge" / NODE_FILE_NAME
+    root_file = repository / ROOT_NODE_FILE
     problems = [_placement_problem(item, root_file, repository) for item in items]
     if not root_nodes(items):
         problems.append(Problem(root_file, 1, "root", "Add the root node to this file."))
@@ -43,8 +49,9 @@ def check_placement(items: Sequence[ParsedNode], repository: Path) -> list[Probl
 
 
 def _placement_problem(item: ParsedNode, root_file: Path, repository: Path) -> Problem | None:
-    skills = repository / "skills"
+    skills = repository / SKILLS_FOLDER
     policies = repository / POLICY_FOLDER
+    nodes = repository / NODES_FOLDER
     if isinstance(item.node, Root):
         message = None if item.path == root_file else f"Move the root node to {root_file}."
     elif item.path == root_file:
@@ -56,7 +63,7 @@ def _placement_problem(item: ParsedNode, root_file: Path, repository: Path) -> P
     elif item.path.is_relative_to(repository / GOVERNANCE_FOLDER):
         message = None if item.path.is_relative_to(policies) else f"Move this node to {policies}."
     else:
-        message = None
+        message = None if item.path.is_relative_to(nodes) else f"Move this node to {nodes}."
     return None if message is None else problem_at(item, ("kind",), "placement", message)
 
 

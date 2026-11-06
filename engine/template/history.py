@@ -2,7 +2,6 @@ import hashlib
 import json
 from dataclasses import dataclass
 from itertools import zip_longest
-from pathlib import PurePosixPath
 from typing import TYPE_CHECKING, Literal, cast
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
@@ -12,6 +11,7 @@ from engine.generated.metamodel import Status
 from engine.governance.base import read_head_file, tracked_files
 from engine.governance.entities import DIRECTIVE, EXCEPTION, NODE, normal_text
 from engine.graph.references import exceptions_of
+from engine.layout import HISTORY_FILE, LANGUAGE_FOLDER
 from engine.parser.node import node_folders, parse_tree
 from engine.parser.result import Problem
 
@@ -24,9 +24,7 @@ if TYPE_CHECKING:
 type EntryKind = Literal["node", "directive", "exception", "file"]
 type EntryKey = tuple[EntryKind, str]
 
-HISTORY_FILE = PurePosixPath(".ka/history.jsonl")
 TEMPLATE_FILE = "copier.yml"
-LANGUAGE_FOLDER = PurePosixPath("governance/language")
 FILE = "file"
 FILE_FIELD = "bytes"
 DIGEST_LENGTH = 16

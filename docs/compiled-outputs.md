@@ -20,11 +20,11 @@ digest sha256:f4d8a64c…
 3 nodes and 1 directives compiled, 1 directives left out, 0 problems
 ```
 
-The command reads `knowledge/`, `skills/`, and `governance/` in the current folder, or in a folder you name after `build`. It reads the tree once, then runs the [graph](graph-checks.md), [directive](directive-semantics.md), [governance](governance-workflow.md), and [language](language-checks.md) checks on what it read and compiles that same reading. A file that changes during a build can't slip past the checks.
+The command reads `knowledge/` in the current folder, or in a folder you name after `build`. It reads the tree once, then runs the [graph](graph-checks.md), [directive](directive-semantics.md), [governance](governance-workflow.md), and [language](language-checks.md) checks on what it read and compiles that same reading. A file that changes during a build can't slip past the checks.
 
 Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. A rejected tree writes nothing and also removes any earlier output, so `build/compiled/` never holds a graph for a tree that no longer passes.
 
-The git hook runs the same command when a commit touches `knowledge/`, `skills/`, `governance/`, `engine/`, or `uv.lock`. A commit that only deletes files skips the hook.
+The git hook runs the same command when a commit touches `knowledge/`, `engine/`, or `uv.lock`. A commit that only deletes files skips the hook.
 
 Git ignores `build/`, and the repo doesn't commit this output. You can make it again from the source, and the digest proves the match.
 

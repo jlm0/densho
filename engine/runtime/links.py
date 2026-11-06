@@ -20,9 +20,8 @@ def local_links(text: str) -> list[str]:
     return [target for target in targets if target.partition("#")[0]]
 
 
-def resolves(link: str, folder: Path, repository: Path) -> bool:
+def link_target(link: str, folder: Path) -> Path | None:
     try:
-        resolved = (folder / unquote(link.partition("#")[0])).resolve()
-        return resolved.is_relative_to(repository.resolve()) and resolved.exists()
+        return (folder / unquote(link.partition("#")[0])).resolve()
     except OSError, ValueError:
-        return False
+        return None

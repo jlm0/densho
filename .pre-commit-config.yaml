@@ -1,4 +1,4 @@
-exclude: ^engine/(generated/metamodel|vendor/ste_lint)|(^|/)AGENTS\.md$|^\.claude/(rules/knowledge|skills)/
+exclude: ^engine/(generated/metamodel|vendor/ste_lint)|^AGENTS\.md$|^\.claude/(references|rules/knowledge|skills)/
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -20,31 +20,31 @@ repos:
         pass_filenames: false
       - id: engine-constraints
         name: write the locked engine versions for a project
-        entry: uv export --frozen --no-dev --no-emit-project --no-hashes --no-annotate --no-header --quiet --output-file .ka/engine-constraints.txt
+        entry: uv export --frozen --no-dev --no-emit-project --no-hashes --no-annotate --no-header --quiet --output-file knowledge/.ka/engine-constraints.txt
         language: system
         pass_filenames: false
         always_run: true
       - id: schema-lint
         name: linkml lint
-        entry: uv run --frozen linkml-lint --config governance/schema/linkml-lint.yaml governance/schema/metamodel.yaml
+        entry: uv run --frozen linkml-lint --config engine/schema/linkml-lint.yaml knowledge/governance/schema/metamodel.yaml
         language: system
-        files: ^governance/schema/
+        files: ^(knowledge/governance|engine)/schema/
         pass_filenames: false
       - id: schema-models
         name: generate models from the schema
         entry: >-
           sh -c 'mkdir -p build &&
-          uv run --frozen gen-pydantic --meta None --template-dir governance/schema/templates governance/schema/metamodel.yaml > build/metamodel.py &&
-          uv run --frozen gen-python --no-metadata governance/schema/metamodel.yaml > build/metamodel_rdf.py &&
-          uv run --frozen gen-shacl --no-metadata governance/schema/metamodel.yaml > build/metamodel.shacl.ttl &&
-          uv run --frozen gen-owl --no-metadata --no-use-native-uris --consolidate-cardinality-axioms --skip-vacuous-local-range-axioms --skip-vacuous-min-zero-cardinality-axioms governance/schema/metamodel.yaml > build/metamodel.owl.ttl &&
-          cp build/metamodel.py build/metamodel_rdf.py build/metamodel.shacl.ttl build/metamodel.owl.ttl governance/schema/metamodel.yaml engine/generated/'
+          uv run --frozen gen-pydantic --meta None --template-dir engine/schema/templates knowledge/governance/schema/metamodel.yaml > build/metamodel.py &&
+          uv run --frozen gen-python --no-metadata knowledge/governance/schema/metamodel.yaml > build/metamodel_rdf.py &&
+          uv run --frozen gen-shacl --no-metadata knowledge/governance/schema/metamodel.yaml > build/metamodel.shacl.ttl &&
+          uv run --frozen gen-owl --no-metadata --no-use-native-uris --consolidate-cardinality-axioms --skip-vacuous-local-range-axioms --skip-vacuous-min-zero-cardinality-axioms knowledge/governance/schema/metamodel.yaml > build/metamodel.owl.ttl &&
+          cp build/metamodel.py build/metamodel_rdf.py build/metamodel.shacl.ttl build/metamodel.owl.ttl knowledge/governance/schema/metamodel.yaml engine/generated/'
         language: system
         pass_filenames: false
         always_run: true
       - id: node-format
         name: parse the knowledge nodes
-        entry: uv run --frozen ka parse knowledge skills governance
+        entry: uv run --frozen ka parse knowledge
         language: system
         pass_filenames: false
         always_run: true
@@ -59,7 +59,7 @@ repos:
         entry: uv run --frozen ka directives
         language: system
         pass_filenames: false
-        files: ^(knowledge|skills|governance|engine)/|^uv\.lock$
+        files: ^(knowledge|engine)/|^uv\.lock$
       - id: governance-checks
         name: check the lifecycle and the change rules
         entry: uv run --frozen ka governance
@@ -71,13 +71,13 @@ repos:
         entry: uv run --frozen ka language
         language: system
         pass_filenames: false
-        files: ^(knowledge|skills|governance|engine)/|^uv\.lock$
+        files: ^(knowledge|engine)/|^uv\.lock$
       - id: compiled-outputs
         name: compile the checked graph
         entry: uv run --frozen ka build
         language: system
         pass_filenames: false
-        files: ^(knowledge|skills|governance|engine)/|^uv\.lock$
+        files: ^(knowledge|engine)/|^uv\.lock$
       - id: runtime-files
         name: generate the runtime files
         entry: uv run --frozen ka runtime --verify

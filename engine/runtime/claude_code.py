@@ -3,26 +3,24 @@ import posixpath
 from dataclasses import dataclass, replace
 from pathlib import Path, PurePosixPath
 from typing import TYPE_CHECKING
-from urllib.parse import quote
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, select_autoescape
 from markdown_it import MarkdownIt
 
 from engine.compiler.output import NOTICES
 from engine.generated.metamodel import CompiledResult
-from engine.governance.base import TREE_FOLDERS
 from engine.parser.generated import MARKER
 from engine.parser.result import Problem
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
 
-    from engine.runtime.view import DirectiveCounts, NodeView, RuntimeView
+    from engine.runtime.view import DirectiveCounts, NodeLink, NodeView, RuntimeView
 
 REVIEW_FOLDER = PurePosixPath("build/runtime-proposals")
 ROOT_FILE = PurePosixPath("AGENTS.md")
-FOLDER_FILE_NAME = "AGENTS.md"
 RULES_FOLDER = PurePosixPath(".claude/rules/knowledge")
+REFERENCES_FOLDER = PurePosixPath(".claude/references")
 TOOL_FOLDER = ".claude"
 SKILLS_FOLDER = PurePosixPath(".claude/skills")
 SKILL_FILE_NAME = "SKILL.md"
@@ -104,12 +102,22 @@ def _rule_file(node: NodeView) -> PurePosixPath:
     return RULES_FOLDER / f"{node.link.id}.md"
 
 
-def _folder_file(node: NodeView) -> PurePosixPath:
-    return PurePosixPath(node.link.path).with_name(FOLDER_FILE_NAME)
+def _reference_file(node: NodeView) -> PurePosixPath:
+    return REFERENCES_FOLDER / f"{node.link.id}.md"
+
+
+def generated_paths(view: RuntimeView) -> dict[str, PurePosixPath]:
+    return {
+        view.root.link.id: ROOT_FILE,
+        **{node.link.id: _reference_file(node) for node in view.pages},
+        **{node.link.id: _skill_file(node) for node in view.skills},
+        **{node.link.id: _rule_file(node) for node in view.rules},
+    }
 
 
 def render_files(view: RuntimeView) -> list[RenderedFile]:
     review = view.result == CompiledResult.proposals
+    generated = generated_paths(view)
 
     def location(path: PurePosixPath) -> PurePosixPath:
         return REVIEW_FOLDER / review_path(path) if review else path
@@ -117,14 +125,15 @@ def render_files(view: RuntimeView) -> list[RenderedFile]:
     def render(template: str, path: PurePosixPath, node: NodeView) -> str:
         folder = location(path).parent.as_posix()
 
-        def link(target: str) -> str:
-            return quote(posixpath.relpath(target, start=folder), safe="/")
+        def href(target: NodeLink) -> str:
+            destination = location(generated[target.id]).as_posix()
+            return posixpath.relpath(destination, start=folder)
 
         return _ENVIRONMENT.get_template(template).render(
             view=view,
             node=node,
             state=state_sentence(view.counts),
-            link=link,
+            href=href,
             marker=MARKER,
             notice=NOTICES[view.result] if review else None,
         )
@@ -149,7 +158,7 @@ def render_files(view: RuntimeView) -> list[RenderedFile]:
         RenderedFile(location(ROOT_FILE), root_text, view.root.link.path, root_text, None),
         *(skill(node) for node in view.skills),
         *(on_demand("rule.md.jinja", _rule_file(node), node) for node in view.rules),
-        *(on_demand("folder.md.jinja", _folder_file(node), node) for node in view.folders),
+        *(on_demand("reference.md.jinja", _reference_file(node), node) for node in view.pages),
     ]
 
 
@@ -170,10 +179,9 @@ def size_problems(rendered: Iterable[RenderedFile], repository: Path) -> list[Pr
 
 def candidate_files(repository: Path) -> Iterator[Path]:
     yield repository / ROOT_FILE
-    for folder in TREE_FOLDERS:
-        yield from (repository / folder).rglob(FOLDER_FILE_NAME)
     yield from (repository / RULES_FOLDER).rglob("*.md")
     yield from (repository / SKILLS_FOLDER).glob(f"*/{SKILL_FILE_NAME}")
+    yield from (repository / REFERENCES_FOLDER).glob("*.md")
 
 
 def review_candidates(repository: Path) -> Iterator[Path]:

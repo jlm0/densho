@@ -46,7 +46,7 @@ GIT = shutil.which("git") or "git"
 KA = Namespace("https://github.com/jlm0/knowledge-architecture/schema/")
 IN_FORCE = CompiledResult.in_force
 PROPOSALS = CompiledResult.proposals
-TREE_FOLDERS = ("knowledge", "skills", "governance")
+TREE_FOLDERS = ("knowledge",)
 EVERY_OUTPUT_FILE = {
     "graph.json",
     "graph.ttl",
@@ -108,7 +108,7 @@ SAMPLE = {
         "ka:Root",
         front=pointers("alpha", "beta", "delta", "gamma", "retired", "review"),
     ),
-    "knowledge/alpha/node.md": node(
+    "knowledge/nodes/alpha/node.md": node(
         "alpha",
         rules=[
             rule("keep"),
@@ -116,7 +116,7 @@ SAMPLE = {
             rule("faded", "deprecated", "node"),
         ],
     ),
-    "knowledge/alpha/beta/node.md": node(
+    "knowledge/nodes/alpha/beta/node.md": node(
         "beta",
         "ka:Concept",
         status="proposed",
@@ -126,12 +126,12 @@ SAMPLE = {
         ),
         rules=[rule("bound", scope="node", conflicts_with="spare")],
     ),
-    "knowledge/delta/node.md": node("delta", rules=[rule("spare", "proposed", "node")]),
-    "knowledge/gamma/node.md": node("gamma", rules=[rule("solid", scope="node")]),
-    "knowledge/retired/node.md": node(
+    "knowledge/nodes/delta/node.md": node("delta", rules=[rule("spare", "proposed", "node")]),
+    "knowledge/nodes/gamma/node.md": node("gamma", rules=[rule("solid", scope="node")]),
+    "knowledge/nodes/retired/node.md": node(
         "retired", "ka:Concept", status="deprecated", front="broader: [gamma]\n"
     ),
-    "skills/review/node.md": node(
+    "knowledge/skills/review/node.md": node(
         "review",
         "ka:Skill",
         status="proposed",
@@ -161,10 +161,11 @@ def write_tree(repository: Path, sources: dict[str, str] | None = None) -> None:
         return [name for name in names if Path(folder).name == "branches" and name != ".gitkeep"]
 
     shutil.copytree(
-        REPO / "governance/language", repository / "governance/language", ignore=no_branch_files
+        REPO / "knowledge/governance/language",
+        repository / "knowledge/governance/language",
+        ignore=no_branch_files,
     )
-    for folder in ("knowledge", "skills"):
-        (repository / folder).mkdir(parents=True, exist_ok=True)
+    (repository / "knowledge").mkdir(parents=True, exist_ok=True)
     for relative, text in (SAMPLE if sources is None else sources).items():
         path = repository / relative
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -260,7 +261,7 @@ def test_each_result_filters_exceptions_by_status_and_by_directive() -> None:
 def test_an_accepted_exception_for_an_accepted_directive_stays_in_force() -> None:
     sources = {
         **SAMPLE,
-        "knowledge/alpha/beta/node.md": node(
+        "knowledge/nodes/alpha/beta/node.md": node(
             "beta",
             "ka:Concept",
             front=f"broader: [alpha]\nexceptions:\n{exception('keep', 'accepted')}",
@@ -275,7 +276,7 @@ def test_an_accepted_exception_for_an_accepted_directive_stays_in_force() -> Non
 def test_a_deprecated_exception_stays_out_of_both_results() -> None:
     sources = {
         **SAMPLE,
-        "knowledge/alpha/beta/node.md": node(
+        "knowledge/nodes/alpha/beta/node.md": node(
             "beta",
             "ka:Concept",
             front=f"broader: [alpha]\nexceptions:\n{exception('keep', 'deprecated')}",
@@ -309,7 +310,7 @@ def test_a_reference_to_a_left_out_directive_goes_with_it() -> None:
 def test_a_refines_edge_to_a_left_out_directive_goes_with_it() -> None:
     sources = {
         **SAMPLE,
-        "knowledge/delta/node.md": node(
+        "knowledge/nodes/delta/node.md": node(
             "delta",
             rules=[
                 rule("spare", "proposed", "node"),
@@ -356,8 +357,10 @@ def test_the_json_applied_list_names_each_directive_status_holder_and_route() ->
     }
     sources = {
         **SAMPLE,
-        "knowledge/alpha/beta/node.md": node("beta", "ka:Concept", front="broader: [alpha]\n"),
-        "knowledge/alpha/beta/child/node.md": node(
+        "knowledge/nodes/alpha/beta/node.md": node(
+            "beta", "ka:Concept", front="broader: [alpha]\n"
+        ),
+        "knowledge/nodes/alpha/beta/child/node.md": node(
             "child", "ka:Concept", front="broader: [beta]\n"
         ),
     }
@@ -375,7 +378,7 @@ def test_the_paths_are_relative_to_the_repository(tmp_path: Path) -> None:
     write_tree(tmp_path)
     report = compile_tree(tmp_path)
     assert report.compiled is not None
-    assert report.compiled.paths["beta"] == "knowledge/alpha/beta/node.md"
+    assert report.compiled.paths["beta"] == "knowledge/nodes/alpha/beta/node.md"
     assert report.compiled.paths["root"] == "knowledge/node.md"
 
 
@@ -471,7 +474,7 @@ def test_the_marks_of_the_default_result() -> None:
 def test_a_tree_with_no_proposal_still_gives_two_digests() -> None:
     sources = {
         "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha")),
-        "knowledge/alpha/node.md": node("alpha", rules=[rule("keep")]),
+        "knowledge/nodes/alpha/node.md": node("alpha", rules=[rule("keep")]),
     }
     default = render_output(compile_items(parsed(sources), Path()))
     marked = render_output(compile_items(parsed(sources), Path(), proposals=True))
@@ -495,7 +498,7 @@ def test_a_changed_text_changes_each_digest() -> None:
     first = render_output(compiled_sample())
     sources = {
         **SAMPLE,
-        "knowledge/gamma/node.md": node(
+        "knowledge/nodes/gamma/node.md": node(
             "gamma", rules=[rule("solid", scope="node").replace("Run the", "Check the")]
         ),
     }
@@ -533,11 +536,11 @@ def listed_tree(*order: int) -> dict[str, str]:
         "knowledge/node.md": node(
             "root", "ka:Root", front=f"pointers:\n{''.join(links)}{path_pointer}"
         ),
-        "knowledge/alpha/node.md": node(
+        "knowledge/nodes/alpha/node.md": node(
             "alpha", rules=[rules[index] for index in dict.fromkeys(order)]
         ),
-        "knowledge/gamma/node.md": node("gamma"),
-        "knowledge/beta/node.md": node(
+        "knowledge/nodes/gamma/node.md": node("gamma"),
+        "knowledge/nodes/beta/node.md": node(
             "beta",
             "ka:Concept",
             front=f"broader: [{', '.join(edges)}]\nsources: [{', '.join(sources_list)}]\n",
@@ -556,7 +559,7 @@ def test_the_order_of_a_list_and_a_repeated_value_do_not_change_the_bytes() -> N
 def test_the_directives_of_a_node_sort_by_id() -> None:
     sources = {
         **SAMPLE,
-        "knowledge/delta/node.md": node(
+        "knowledge/nodes/delta/node.md": node(
             "delta",
             rules=[
                 rule("zeta", scope="node", also_attached_to="gamma"),
@@ -572,7 +575,9 @@ def test_the_directives_of_a_node_sort_by_id() -> None:
 def test_each_prefix_in_the_turtle_file_has_its_name() -> None:
     sources = {
         **SAMPLE,
-        "knowledge/gamma/node.md": node("gamma", front="sources:\n  - https://example.com/a\n"),
+        "knowledge/nodes/gamma/node.md": node(
+            "gamma", front="sources:\n  - https://example.com/a\n"
+        ),
     }
     turtle = turtle_of(compile_items(parsed(sources), Path())).decode()
     for line in (
@@ -592,8 +597,8 @@ def test_a_route_keeps_its_order() -> None:
     assert routes["keep"] == ["alpha", "beta"]
     sources = {
         **SAMPLE,
-        "knowledge/zed/node.md": node("zed", rules=[rule("zed-rule")]),
-        "knowledge/zed/ann/node.md": node("ann", "ka:Concept", front="broader: [zed]\n"),
+        "knowledge/nodes/zed/node.md": node("zed", rules=[rule("zed-rule")]),
+        "knowledge/nodes/zed/ann/node.md": node("ann", "ka:Concept", front="broader: [zed]\n"),
     }
     document = graph_document(compile_items(parsed(sources), Path()))
     routes = {entry["directive"]: entry["route"] for entry in document["applied"]["ann"]}
@@ -623,7 +628,7 @@ def test_identical_pointers_collapse_and_stay_cheap() -> None:
     )
     sources = {
         "knowledge/node.md": node("root", "ka:Root", front=f"pointers:\n{copies}"),
-        "knowledge/alpha/node.md": node("alpha"),
+        "knowledge/nodes/alpha/node.md": node("alpha"),
     }
     compiled = compile_items(parsed(sources), Path())
     output = render_output(compiled)
@@ -634,7 +639,7 @@ def test_identical_pointers_collapse_and_stay_cheap() -> None:
 NASTY_TEXT = 'A "quoted" word, a \\ backslash, a """ run, and the end \\'
 NASTY_SOURCES = {
     "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha")),
-    "knowledge/alpha/node.md": (
+    "knowledge/nodes/alpha/node.md": (
         "---\nid: alpha\nkind: ka:Domain\ntitle: 'Alpha — ✓ 🙂 ''quoted'''\nstatus: accepted\n"
         "origin: template\nknowledge_type: domain\n"
         "sources:\n  - 'https://example.com/a?b=\"c\"'\n---\n\n"
@@ -666,8 +671,8 @@ EXACT_JSON = """\
     "exceptions": 0
   },
   "paths": {
-    "alpha": "knowledge/alpha/node.md",
-    "beta": "knowledge/beta/node.md",
+    "alpha": "knowledge/nodes/alpha/node.md",
+    "beta": "knowledge/nodes/beta/node.md",
     "root": "knowledge/node.md"
   },
   "applied": {
@@ -791,7 +796,7 @@ node:beta a ka:Domain ;
 def test_an_escaped_value_survives_both_formats(value: str) -> None:
     sources = {
         "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha")),
-        "knowledge/alpha/node.md": node("alpha").replace("title: alpha", f"title: {value}"),
+        "knowledge/nodes/alpha/node.md": node("alpha").replace("title: alpha", f"title: {value}"),
     }
     compiled = compile_items(parsed(sources), Path(), proposals=True)
     document = graph_document(compiled)
@@ -804,11 +809,11 @@ def test_an_escaped_value_survives_both_formats(value: str) -> None:
 def test_the_exact_bytes_of_a_small_tree() -> None:
     sources = {
         "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha", "beta")),
-        "knowledge/alpha/node.md": node(
+        "knowledge/nodes/alpha/node.md": node(
             "alpha",
             rules=[rule("keep", scope="node"), rule("wait", "proposed", "node")],
         ),
-        "knowledge/beta/node.md": node("beta"),
+        "knowledge/nodes/beta/node.md": node("beta"),
     }
     output = render_output(compile_items(parsed(sources), Path()))
     assert output.files["graph.json"].decode() == EXACT_JSON
@@ -941,7 +946,7 @@ def test_build_prints_a_note_from_the_governance_checks(tmp_path: Path) -> None:
 
 def test_build_prints_a_note_also_when_a_check_fails(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    (tmp_path / "knowledge/gamma/node.md").write_text(
+    (tmp_path / "knowledge/nodes/gamma/node.md").write_text(
         node("gamma", rules=[rule("solid", scope="node").replace("Run the", "Try to run the")]),
         encoding="utf-8",
     )
@@ -955,16 +960,19 @@ def broken(path: str, old: str, new: str) -> dict[str, str]:
 
 
 FAILING_TREES = {
-    "parse": ("knowledge/alpha/node.md", broken("knowledge/alpha/node.md", "id: alpha\n", "")),
+    "parse": (
+        "knowledge/nodes/alpha/node.md",
+        broken("knowledge/nodes/alpha/node.md", "id: alpha\n", ""),
+    ),
     "graph": (
         "knowledge/node.md",
         broken("knowledge/node.md", "target: alpha", "target: missing"),
     ),
     "directives": (
-        "knowledge/gamma/node.md",
+        "knowledge/nodes/gamma/node.md",
         {
             **SAMPLE,
-            "knowledge/delta/node.md": node(
+            "knowledge/nodes/delta/node.md": node(
                 "delta",
                 front="exceptions:\n" + exception("solid", "accepted"),
                 rules=[rule("spare", "proposed", "node")],
@@ -972,12 +980,16 @@ FAILING_TREES = {
         },
     ),
     "governance": (
-        "knowledge/alpha/node.md",
-        broken("knowledge/alpha/node.md", "knowledge_type: domain", "knowledge_type: workspace"),
+        "knowledge/nodes/alpha/node.md",
+        broken(
+            "knowledge/nodes/alpha/node.md", "knowledge_type: domain", "knowledge_type: workspace"
+        ),
     ),
     "language": (
-        "knowledge/gamma/node.md",
-        broken("knowledge/gamma/node.md", "Run the solid check.", "Try to run the solid check."),
+        "knowledge/nodes/gamma/node.md",
+        broken(
+            "knowledge/nodes/gamma/node.md", "Run the solid check.", "Try to run the solid check."
+        ),
     ),
 }
 FAILING_CODES = {
@@ -999,8 +1011,6 @@ def test_each_check_stops_the_build_and_removes_the_earlier_output(
     assert len(output_bytes(tmp_path)) == len(EVERY_OUTPUT_FILE)
     _, sources = FAILING_TREES[name]
     shutil.rmtree(tmp_path / "knowledge")
-    shutil.rmtree(tmp_path / "skills")
-    shutil.rmtree(tmp_path / "governance")
     write_tree(tmp_path, sources)
     for arguments in (["build", str(tmp_path)], ["build", str(tmp_path), "--proposals"]):
         result = RUNNER.invoke(app, arguments)
@@ -1022,7 +1032,7 @@ def run_git(repository: Path, *arguments: str) -> None:
 def test_a_change_rule_stops_the_build_in_a_repository(tmp_path: Path) -> None:
     write_tree(tmp_path)
     run_git(tmp_path, "init", "--quiet")
-    run_git(tmp_path, "add", "knowledge/node.md", "governance")
+    run_git(tmp_path, "add", "knowledge/node.md", "knowledge/governance")
     run_git(tmp_path, "commit", "--quiet", "-m", "start")
     result = RUNNER.invoke(app, ["build", str(tmp_path)])
     assert result.exit_code == 1
@@ -1042,7 +1052,7 @@ def test_the_build_reads_the_tree_once(tmp_path: Path, monkeypatch: pytest.Monke
 
 def test_a_missing_language_folder_stops_the_build(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    shutil.rmtree(tmp_path / "governance")
+    shutil.rmtree(tmp_path / "knowledge/governance")
     result = RUNNER.invoke(app, ["build", str(tmp_path)])
     assert result.exit_code == 1
     assert not (tmp_path / OUTPUT_FOLDER).exists()
@@ -1059,7 +1069,7 @@ def test_an_empty_tree_reports_that_it_has_nothing_to_compile(tmp_path: Path) ->
 
 
 def test_a_lone_surrogate_in_a_node_stops_the_build_with_a_problem(tmp_path: Path) -> None:
-    sources = broken("knowledge/alpha/node.md", "title: alpha", 'title: "\\ud800"')
+    sources = broken("knowledge/nodes/alpha/node.md", "title: alpha", 'title: "\\ud800"')
     write_tree(tmp_path, sources)
     result = RUNNER.invoke(app, ["build", str(tmp_path)])
     assert result.exit_code == 1
@@ -1074,7 +1084,7 @@ def test_a_file_name_that_is_not_utf_8_stops_the_build_with_a_problem(
     write_tree(tmp_path)
     good = [ParsedNode(tmp_path / item.path, item.node, item.locations) for item in parsed()]
     bad = next(item for item in good if item.node.id == "delta")
-    renamed = ParsedNode(tmp_path / "knowledge/\udcff/node.md", bad.node, bad.locations)
+    renamed = ParsedNode(tmp_path / "knowledge/nodes/\udcff/node.md", bad.node, bad.locations)
     items = [renamed if item is bad else item for item in good]
 
     def checked(_repository: Path) -> tuple[list[ParsedNode], list[Problem]]:
@@ -1083,7 +1093,10 @@ def test_a_file_name_that_is_not_utf_8_stops_the_build_with_a_problem(
     monkeypatch.setattr("engine.compiler.tree.check_tree", checked)
     result = RUNNER.invoke(app, ["build", str(tmp_path)])
     assert result.exit_code == 1, result.output
-    assert f"{tmp_path}:1: path: The file name 'knowledge/\\udcff/node.md' is not " in result.output
+    assert (
+        f"{tmp_path}:1: path: The file name 'knowledge/nodes/\\udcff/node.md' is not "
+        in result.output
+    )
     assert not (tmp_path / OUTPUT_FOLDER).exists()
 
 

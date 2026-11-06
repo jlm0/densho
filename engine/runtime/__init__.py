@@ -1,6 +1,6 @@
 from engine.parser.generated import MARKER, is_generated
 from engine.runtime.claude_code import REVIEW_FOLDER, render_files, review_path
-from engine.runtime.links import local_links, resolves
+from engine.runtime.links import link_target, local_links
 from engine.runtime.tree import (
     RUNTIME_CODES,
     RuntimeReport,
@@ -24,10 +24,10 @@ __all__ = [
     "build_view",
     "generate_runtime",
     "is_generated",
+    "link_target",
     "local_links",
     "pointer_mechanism",
     "render_files",
     "rendered_problems",
-    "resolves",
     "review_path",
 ]

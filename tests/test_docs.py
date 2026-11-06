@@ -44,7 +44,7 @@ STATUS_LINE = re.compile(r"^\*\*Status:\*\* (Built|Planned)\.", re.MULTILINE)
 OVERVIEW_ROW = re.compile(
     r"^\| \[[^\]]+\]\((?P<page>[^)]+)\) *\|[^|]+\| (?P<status>\w+) *\|$", re.MULTILINE
 )
-VIEW = SchemaView(str(REPO / "governance/schema/metamodel.yaml"))
+VIEW = SchemaView(str(REPO / "knowledge/governance/schema/metamodel.yaml"))
 
 
 def local_links(path: Path) -> list[str]:
@@ -219,7 +219,7 @@ def language_page() -> str:
 
 
 def language_profile() -> LanguageProfile:
-    profile = read_profile(REPO / "governance/language")
+    profile = read_profile(REPO / "knowledge/governance/language")
     assert isinstance(profile, LanguageProfile), profile
     return replace(profile, branches={}, branch_paths={})
 
@@ -359,7 +359,7 @@ def test_the_governance_page_names_each_resting_field() -> None:
 
 
 def policy_ids() -> list[str]:
-    items, problems = parse_tree([REPO / "governance/policies"])
+    items, problems = parse_tree([REPO / "knowledge/governance/policies"])
     assert problems == []
     return [item.node.id for item in items]
 
@@ -371,7 +371,7 @@ def test_the_governance_page_names_each_policy() -> None:
 
 
 def test_the_governance_page_names_a_real_directive() -> None:
-    items, _ = parse_tree([REPO / "governance/policies"])
+    items, _ = parse_tree([REPO / "knowledge/governance/policies"])
     directives = {directive.id for item in items for directive in item.node.directives or []}
     assert "no-personal-data" in directives
     assert "`no-personal-data`" in governance_page()
@@ -379,7 +379,7 @@ def test_the_governance_page_names_a_real_directive() -> None:
 
 def documented_commands() -> set[str]:
     texts = [path.read_text(encoding="utf-8") for path in [README, *FILES]]
-    pattern = r"(?:uv run ka|\.ka/ka) (\w+)"
+    pattern = r"(?:uv run ka|knowledge/\.ka/ka) (\w+)"
     return {command for text in texts for command in re.findall(pattern, text)}
 
 
@@ -414,7 +414,13 @@ def test_the_runtime_page_names_each_code(code: str) -> None:
 def test_the_runtime_page_names_the_review_folder_and_each_review_name() -> None:
     text = RUNTIME_PAGE.read_text(encoding="utf-8")
     assert f"`{REVIEW_FOLDER.as_posix()}/`" in text
-    for name in ("AGENTS.md", ".claude/skills/<id>/SKILL.md", ".claude/rules/knowledge/<id>.md"):
+    names = (
+        "AGENTS.md",
+        ".claude/skills/<id>/SKILL.md",
+        ".claude/rules/knowledge/<id>.md",
+        ".claude/references/<id>.md",
+    )
+    for name in names:
         assert f"`{name}`" in text
         assert f"`{REVIEW_FOLDER.as_posix()}/{review_path(PurePosixPath(name))}`" in text
 
@@ -443,7 +449,9 @@ def test_the_interface_page_states_who_runs_the_command(sentence: str) -> None:
     assert sentence in text
 
 
-@pytest.mark.parametrize("command", [".ka/ka view", ".ka/ka accept", "uv run ka view"])
+@pytest.mark.parametrize(
+    "command", ["knowledge/.ka/ka view", "knowledge/.ka/ka accept", "uv run ka view"]
+)
 def test_the_interface_page_names_each_form_of_the_command(command: str) -> None:
     assert command in INTERFACE_PAGE.read_text(encoding="utf-8")
 

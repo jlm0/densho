@@ -29,8 +29,9 @@ PLANTED = (
     ".planted-docs/plan.md",
     ".claude/rules/planted-local-rule.md",
     ".claude/settings.json",
-    "governance/schema/planted.yaml",
     "engine/planted.py",
+    "engine/schema/planted.yaml",
+    "global-skills/planted/SKILL.md",
     "tests/planted.py",
     "docs/planted.md",
 )
@@ -39,18 +40,20 @@ ALLOWED = (
     ".copier-answers.yml",
     ".gitignore",
     ".pre-commit-config.yaml",
-    ".ka/ka",
-    ".ka/engine-constraints.txt",
+    "knowledge/node.md",
+    "knowledge/.ka/ka",
+    "knowledge/.ka/engine-constraints.txt",
     HISTORY_FILE.as_posix(),
-    "governance/schema/metamodel.yaml",
+    "knowledge/governance/schema/metamodel.yaml",
 )
 ALLOWED_FOLDERS = (
+    ".claude/references/",
     ".claude/rules/knowledge/",
     ".claude/skills/",
-    "knowledge/",
-    "skills/",
-    "governance/language/",
-    "governance/policies/",
+    "knowledge/nodes/",
+    "knowledge/skills/",
+    "knowledge/governance/language/",
+    "knowledge/governance/policies/",
 )
 
 
@@ -129,7 +132,7 @@ def test_a_planted_path_does_not_reach_a_project(installed: Path, name: str) -> 
         "tests",
         "docs",
         "build",
-        "company-skills",
+        "global-skills",
         "README.md",
         "pyproject.toml",
         "uv.lock",
@@ -152,6 +155,17 @@ def test_an_install_holds_each_tracked_knowledge_file(source: Path, installed: P
         assert (installed / name).read_bytes() == (source / name).read_bytes(), name
 
 
+def test_no_generated_file_sits_in_the_source_folder(installed: Path) -> None:
+    source = [name for name in files_of(installed) if name.startswith("knowledge/")]
+    assert source
+    assert [name for name in source if is_generated((installed / name).read_bytes())] == []
+
+
+def test_the_schema_folder_ships_only_the_metamodel(installed: Path) -> None:
+    schema = installed / "knowledge/governance/schema"
+    assert files_of(schema) == ["metamodel.yaml"]
+
+
 def test_no_template_suffix_stays(installed: Path) -> None:
     assert [name for name in files_of(installed) if name.endswith(".jinja")] == []
 
@@ -160,7 +174,8 @@ def test_each_generated_file_keeps_the_marker(installed: Path) -> None:
     generated = [
         name
         for name in files_of(installed)
-        if name.endswith(("AGENTS.md", "SKILL.md")) or name.startswith(".claude/rules/")
+        if name.endswith(("AGENTS.md", "SKILL.md"))
+        or name.startswith((".claude/rules/", ".claude/references/"))
     ]
     assert generated
     for name in generated:
@@ -177,7 +192,7 @@ def test_the_answers_record_the_template_base(source: Path, installed: Path) -> 
 
 def test_the_wrapper_pins_the_engine_to_the_commit(source: Path, installed: Path) -> None:
     head = git(source, "rev-parse", "HEAD").strip()
-    wrapper = installed / ".ka/ka"
+    wrapper = installed / "knowledge/.ka/ka"
     assert os.access(wrapper, os.X_OK)
     text = wrapper.read_text(encoding="utf-8")
     assert f'--from "git+file://{source.as_posix()}@{head}" ka "$@"' in text
@@ -193,7 +208,7 @@ def test_the_hooks_need_no_python_in_the_project(installed: Path) -> None:
     assert [repo["repo"] for repo in config["repos"]] == ["local"]
     hooks = {hook["id"]: hook for hook in config["repos"][0]["hooks"]}
     assert set(hooks) == {"conflict-markers", "rejected-hunks", "knowledge-checks"}
-    assert hooks["knowledge-checks"]["entry"] == ".ka/ka runtime --verify"
+    assert hooks["knowledge-checks"]["entry"] == "knowledge/.ka/ka runtime --verify"
     assert hooks["knowledge-checks"]["always_run"] is True
     assert hooks["knowledge-checks"]["pass_filenames"] is False
     assert hooks["conflict-markers"]["language"] == "pygrep"
@@ -239,7 +254,7 @@ def test_the_ignore_file_covers_the_build_output(installed: Path) -> None:
         ".gitignore",
         ".claude/skills/review-screen-hierarchy/SKILL.md",
         ".claude/rules/knowledge/governance.md",
-        "governance/policies/approval/AGENTS.md",
+        ".claude/references/approval.md",
     ],
 )
 def test_an_install_keeps_an_own_file(source: Path, tmp_path: Path, name: str) -> None:
@@ -282,10 +297,10 @@ def test_a_project_gets_a_view_that_git_ignores(project: Path) -> None:
 
 
 def test_a_project_page_names_the_command_of_the_project(project: Path) -> None:
-    assert command_prefix(project) == ".ka/ka"
+    assert command_prefix(project) == "knowledge/.ka/ka"
     assert write_view(project).problems == []
     page = (project / VIEW_FOLDER / "review.html").read_text(encoding="utf-8")
-    assert ".ka/ka accept --subtree digital-product-development</code>" in page
+    assert "knowledge/.ka/ka accept --subtree digital-product-development</code>" in page
     assert "uv run ka accept" not in page
     assert "uv run ka runtime" not in page
 
@@ -309,15 +324,15 @@ def test_a_project_accepts_a_proposal_and_writes_no_commit(project: Path) -> Non
 def test_a_project_is_told_of_the_commands() -> None:
     settings = YAML(typ="safe").load((REPO / "copier.yml").read_text(encoding="utf-8"))
     message = settings["_message_after_copy"]
-    assert ".ka/ka view" in message
-    assert ".ka/ka accept" in message
+    assert "knowledge/.ka/ka view" in message
+    assert "knowledge/.ka/ka accept" in message
     assert "A person" in message
 
 
 def test_the_task_runs_only_on_a_copy() -> None:
     config = YAML(typ="safe").load((REPO / "copier.yml").read_text(encoding="utf-8"))
     assert config["_tasks"] == [
-        {"command": [".ka/ka", "adopt"], "when": "{{ _copier_operation == 'copy' }}"}
+        {"command": ["knowledge/.ka/ka", "adopt"], "when": "{{ _copier_operation == 'copy' }}"}
     ]
 
 
@@ -329,7 +344,7 @@ def test_the_template_ships_no_instruction_file(source: Path, installed: Path) -
 
 @pytest.fixture
 def wrapper_template() -> str:
-    return (REPO / ".ka/ka.jinja").read_text(encoding="utf-8")
+    return (REPO / "knowledge/.ka/ka.jinja").read_text(encoding="utf-8")
 
 
 @pytest.mark.parametrize(
@@ -372,11 +387,11 @@ def test_the_constraints_match_the_lock() -> None:
         check=True,
         text=True,
     ).stdout
-    assert (REPO / ".ka/engine-constraints.txt").read_text(encoding="utf-8") == exported
+    assert (REPO / "knowledge/.ka/engine-constraints.txt").read_text(encoding="utf-8") == exported
 
 
 def test_the_constraints_hold_the_language_model_and_no_dev_tool() -> None:
-    text = (REPO / ".ka/engine-constraints.txt").read_text(encoding="utf-8")
+    text = (REPO / "knowledge/.ka/engine-constraints.txt").read_text(encoding="utf-8")
     assert "en-core-web-sm @ https://" in text
     assert "spacy==" in text
     assert not re.search(r"^(copier|pyright|ruff|linkml)==", text, re.MULTILINE)

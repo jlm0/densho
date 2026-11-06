@@ -3,7 +3,7 @@ name: design-settings-interface
 description: "Design a settings interface from its options and its users. Use when you design or change a settings screen."
 ---
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
-# [Design a settings interface](../../../skills/design-settings-interface/node.md)
+# Design a settings interface
 
 If compaction cuts this skill, invoke the skill again.
 
@@ -36,9 +36,9 @@ Check the design against each directive from the first step of the procedure, an
 
 ## References
 
-- You choose a control for a setting. Read [Accessibility](../../../knowledge/digital-product-development/ui-ux-design/accessibility/node.md).
-- You choose a color, a typeface, or the voice of a message. Read [Brand design](../../../knowledge/digital-product-development/brand-design/node.md).
-- You rank the settings on a screen. Read [Information hierarchy](../../../knowledge/digital-product-development/ui-ux-design/visual-design/information-hierarchy/node.md).
-- You choose which settings appear first. Read [Progressive disclosure](../../../knowledge/digital-product-development/ui-ux-design/interaction-design/progressive-disclosure/node.md).
-- You fit the settings to a narrow screen. Read [Responsive design](../../../knowledge/digital-product-development/ui-ux-design/responsive-design/node.md).
-- You group the settings on a screen. Read [Visual grouping](../../../knowledge/digital-product-development/ui-ux-design/visual-design/visual-grouping/node.md).
+- You choose a control for a setting. Read [Accessibility](../../references/accessibility.md).
+- You choose a color, a typeface, or the voice of a message. Read [Brand design](../../references/brand-design.md).
+- You rank the settings on a screen. Read [Information hierarchy](../../references/information-hierarchy.md).
+- You choose which settings appear first. Read [Progressive disclosure](../../references/progressive-disclosure.md).
+- You fit the settings to a narrow screen. Read [Responsive design](../../references/responsive-design.md).
+- You group the settings on a screen. Read [Visual grouping](../../references/visual-grouping.md).

@@ -5,24 +5,21 @@ _exclude:
   - "!/.copier-answers.yml"
   - "!/.gitignore"
   - "!/.pre-commit-config.yaml"
-  - "!/.ka/"
+  - "!/.claude/references/"
   - "!/.claude/rules/knowledge/"
   - "!/.claude/skills/"
   - "!/knowledge/"
-  - "!/skills/"
-  - "!/governance/language/"
-  - "!/governance/policies/"
-  - "!/governance/schema/metamodel.yaml"
   - ".DS_Store"
   - "__pycache__"
 _skip_if_exists:
-  - "AGENTS.md"
+  - "/AGENTS.md"
+  - "/.claude/references/"
   - "/.claude/rules/knowledge/"
   - "/.claude/skills/"
   - "/.gitignore"
   - "/.pre-commit-config.yaml"
 _tasks:
-  - command: [".ka/ka", "adopt"]
+  - command: ["knowledge/.ka/ka", "adopt"]
     when: "{{ _copier_operation == 'copy' }}"
 _message_after_copy: |
   The project now owns this copy. To run the checks on each commit:
@@ -34,15 +31,15 @@ _message_after_copy: |
 
   Each directive starts as a proposal, so nothing is in force yet. To read and accept them:
 
-    .ka/ka view
-    .ka/ka accept --subtree <node-id>
+    knowledge/.ka/ka view
+    knowledge/.ka/ka accept --subtree <node-id>
 
   The first command writes a site to build/view/. A person runs the second one, reads git diff,
-  runs .ka/ka runtime, and commits the result.
+  runs knowledge/.ka/ka runtime, and commits the result.
 _message_after_update: |
   Resolve each conflict, and remove each conflict marker. Then run:
 
-    .ka/ka adopt
+    knowledge/.ka/ka adopt
 
   Then read the result, stage the files, and commit them.
 

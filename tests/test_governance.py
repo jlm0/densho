@@ -144,7 +144,7 @@ def relative_file(spec: Spec) -> str:
         return spec["file"]
     if spec["kind"] == "ka:Root":
         return "knowledge/node.md"
-    folder = "skills" if spec["kind"] == "ka:Skill" else "knowledge"
+    folder = "knowledge/skills" if spec["kind"] == "ka:Skill" else "knowledge/nodes"
     return f"{folder}/{spec['id']}/node.md"
 
 
@@ -441,7 +441,7 @@ def test_a_change_inside_a_code_span_reopens_the_review() -> None:
 
 def test_a_moved_file_is_not_a_new_entity() -> None:
     before = node("a", "accepted", rules=[rule("b", "accepted")])
-    after = {**before, "file": "knowledge/moved/deep/node.md"}
+    after = {**before, "file": "knowledge/nodes/moved/deep/node.md"}
     assert compare([before], [after]) == []
 
 
@@ -738,7 +738,7 @@ def test_an_unknown_reference_is_not_a_governance_problem() -> None:
     assert statics(concept("a", "missing")) == []
 
 
-POLICY = "governance/policies"
+POLICY = "knowledge/governance/policies"
 
 
 def test_a_policy_must_name_what_it_governs() -> None:
@@ -802,8 +802,7 @@ def git(repository: Path, *arguments: str) -> None:
 
 
 def write(repository: Path, *specs: Spec) -> None:
-    for folder in ("knowledge", "skills"):
-        (repository / folder).mkdir(exist_ok=True)
+    (repository / "knowledge").mkdir(exist_ok=True)
     for spec in specs:
         path = repository / relative_file(spec)
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -819,7 +818,6 @@ def commit_all(repository: Path, message: str = "x") -> None:
 def repository(tmp_path: Path) -> Path:
     git(tmp_path, "init", "-q", "--template=", "--initial-branch=main")
     (tmp_path / "knowledge").mkdir()
-    (tmp_path / "skills").mkdir()
     return tmp_path
 
 
@@ -862,7 +860,7 @@ def test_the_base_reads_head_and_not_the_working_tree(repository: Path) -> None:
 def test_the_base_reads_a_staged_deletion_as_still_at_head(repository: Path) -> None:
     write(repository, node("a"))
     commit_all(repository)
-    git(repository, "rm", "-q", "knowledge/a/node.md")
+    git(repository, "rm", "-q", "knowledge/nodes/a/node.md")
     assert base_ids(repository) == {"a"}
 
 
@@ -871,7 +869,7 @@ def test_the_base_reads_each_tree_folder(repository: Path) -> None:
         repository,
         node("a"),
         {"id": "b", "status": "proposed", "kind": "ka:Skill", "uses": ["a"]},
-        node("c", file="governance/policies/c/node.md"),
+        node("c", file="knowledge/governance/policies/c/node.md"),
         node("d", file="elsewhere/d/node.md"),
     )
     commit_all(repository)
@@ -880,8 +878,8 @@ def test_the_base_reads_each_tree_folder(repository: Path) -> None:
 
 def test_the_base_skips_other_files(repository: Path) -> None:
     write(repository, node("a"))
-    (repository / "knowledge/a/other.yaml").write_text("a: 1\n", encoding="utf-8")
-    (repository / "knowledge/a/nodes.md").write_text("# Not a node\n", encoding="utf-8")
+    (repository / "knowledge/nodes/a/other.yaml").write_text("a: 1\n", encoding="utf-8")
+    (repository / "knowledge/nodes/a/nodes.md").write_text("# Not a node\n", encoding="utf-8")
     commit_all(repository)
     base = read_base(repository)
     assert [item.node.id for item in base.items] == ["a"]
@@ -890,7 +888,7 @@ def test_the_base_skips_other_files(repository: Path) -> None:
 
 def test_the_base_skips_a_symbolic_link(repository: Path) -> None:
     write(repository, node("a"))
-    link = repository / "knowledge/link/node.md"
+    link = repository / "knowledge/nodes/link/node.md"
     link.parent.mkdir()
     link.symlink_to("../a/node.md")
     commit_all(repository)
@@ -901,7 +899,7 @@ def test_the_base_skips_a_symbolic_link(repository: Path) -> None:
 
 def test_the_base_reads_an_executable_file(repository: Path) -> None:
     write(repository, node("a"))
-    (repository / "knowledge/a/node.md").chmod(0o755)
+    (repository / "knowledge/nodes/a/node.md").chmod(0o755)
     commit_all(repository)
     assert base_ids(repository) == {"a"}
 
@@ -915,7 +913,7 @@ def test_the_base_skips_a_submodule_entry(repository: Path) -> None:
         capture_output=True,
         text=True,
     ).stdout.strip()
-    entry = f"160000,{object_id},knowledge/sub/node.md"
+    entry = f"160000,{object_id},knowledge/nodes/sub/node.md"
     git(repository, "update-index", "--add", "--cacheinfo", entry)
     git(repository, "commit", "-q", "-m", "x")
     base = read_base(repository)
@@ -924,10 +922,10 @@ def test_the_base_skips_a_submodule_entry(repository: Path) -> None:
 
 
 def test_the_base_reads_a_hostile_folder_name(repository: Path) -> None:
-    write(repository, node("a", file="knowledge/a b\tc\ndé/node.md"))
+    write(repository, node("a", file="knowledge/nodes/a b\tc\ndé/node.md"))
     commit_all(repository)
     base = read_base(repository)
-    assert [item.path for item in base.items] == [repository / "knowledge/a b\tc\ndé/node.md"]
+    assert [item.path for item in base.items] == [repository / "knowledge/nodes/a b\tc\ndé/node.md"]
 
 
 def test_the_base_reads_a_subfolder_of_a_repository(repository: Path) -> None:
@@ -938,7 +936,7 @@ def test_the_base_reads_a_subfolder_of_a_repository(repository: Path) -> None:
     commit_all(repository)
     base = read_base(project)
     assert {item.node.id for item in base.items} == {"inside"}
-    assert base.items[0].path == project / "knowledge/inside/node.md"
+    assert base.items[0].path == project / "knowledge/nodes/inside/node.md"
 
 
 def test_the_base_ignores_the_git_environment(
@@ -983,8 +981,8 @@ def test_the_change_rules_read_a_crlf_file(repository: Path) -> None:
 
 def test_a_head_file_that_does_not_parse_gives_a_note(repository: Path) -> None:
     write(repository, node("a"))
-    path = repository / "knowledge/bad/node.md"
-    path.parent.mkdir()
+    path = repository / "knowledge/nodes/bad/node.md"
+    path.parent.mkdir(parents=True)
     path.write_text("no front matter\n", encoding="utf-8")
     commit_all(repository)
     base = read_base(repository)
@@ -996,8 +994,8 @@ def test_a_head_file_that_does_not_parse_gives_a_note(repository: Path) -> None:
 
 
 def test_a_head_file_that_is_not_utf8_gives_a_note(repository: Path) -> None:
-    path = repository / "knowledge/bad/node.md"
-    path.parent.mkdir()
+    path = repository / "knowledge/nodes/bad/node.md"
+    path.parent.mkdir(parents=True)
     path.write_bytes(b"\xff\xfe\x00binary")
     commit_all(repository)
     assert read_base(repository).unreadable == {path}
@@ -1005,17 +1003,17 @@ def test_a_head_file_that_is_not_utf8_gives_a_note(repository: Path) -> None:
 
 def test_each_unreadable_file_gets_a_note_in_order(repository: Path) -> None:
     for name in ("b", "a"):
-        path = repository / f"knowledge/{name}/node.md"
-        path.parent.mkdir()
+        path = repository / f"knowledge/nodes/{name}/node.md"
+        path.parent.mkdir(parents=True)
         path.write_text("no front matter\n", encoding="utf-8")
     commit_all(repository)
     notes = read_base(repository).notes
-    assert [note.split("/knowledge/")[1].split("/")[0] for note in notes] == ["a", "b"]
+    assert [note.split("/knowledge/nodes/")[1].split("/")[0] for note in notes] == ["a", "b"]
 
 
 def test_an_empty_blob_is_a_note_and_not_a_crash(repository: Path) -> None:
-    path = repository / "knowledge/empty/node.md"
-    path.parent.mkdir()
+    path = repository / "knowledge/nodes/empty/node.md"
+    path.parent.mkdir(parents=True)
     path.write_bytes(b"")
     write(repository, node("a"))
     commit_all(repository)
@@ -1025,7 +1023,7 @@ def test_an_empty_blob_is_a_note_and_not_a_crash(repository: Path) -> None:
 
 def test_a_file_with_no_newline_at_the_end_keeps_its_last_character(repository: Path) -> None:
     write(repository, node("a"))
-    path = repository / "knowledge/a/node.md"
+    path = repository / "knowledge/nodes/a/node.md"
     path.write_text(path.read_text(encoding="utf-8").rstrip("\n"), encoding="utf-8")
     commit_all(repository)
     assert read_base(repository).items[0].node.model_dump()["definition"] == "A meaning."
@@ -1101,7 +1099,7 @@ def test_a_missing_object_is_a_base_problem(repository: Path) -> None:
     write(repository, node("a"))
     commit_all(repository)
     object_id = subprocess.run(  # noqa: S603
-        [GIT, "-C", str(repository), "rev-parse", "HEAD:knowledge/a/node.md"],
+        [GIT, "-C", str(repository), "rev-parse", "HEAD:knowledge/nodes/a/node.md"],
         check=True,
         capture_output=True,
         text=True,
@@ -1179,8 +1177,7 @@ MUST_FAIL: dict[str, tuple[tuple[Spec, ...], tuple[Spec, ...]]] = {
 
 
 def clear_tree(repository: Path) -> None:
-    for folder in ("knowledge", "skills", "governance"):
-        shutil.rmtree(repository / folder, ignore_errors=True)
+    shutil.rmtree(repository / "knowledge", ignore_errors=True)
 
 
 @pytest.mark.parametrize("code", MUST_FAIL)
@@ -1241,21 +1238,21 @@ def test_a_template_entity_can_leave_in_two_commits(repository: Path) -> None:
     write(repository, node("a", "deprecated", rules=[rule("b", "deprecated")]))
     assert run_check(repository) == []
     commit_all(repository)
-    shutil.rmtree(repository / "knowledge/a")
+    shutil.rmtree(repository / "knowledge/nodes/a")
     assert run_check(repository) == []
 
 
 def test_a_move_of_a_file_passes_the_whole_check(repository: Path) -> None:
     write(repository, node("a", "accepted"))
     commit_all(repository)
-    shutil.rmtree(repository / "knowledge/a")
-    write(repository, node("a", "accepted", file="knowledge/deep/er/node.md"))
+    shutil.rmtree(repository / "knowledge/nodes/a")
+    write(repository, node("a", "accepted", file="knowledge/nodes/deep/er/node.md"))
     assert run_check(repository) == []
 
 
 def test_a_head_file_that_no_longer_parses_does_not_block_a_change(repository: Path) -> None:
-    path = repository / "knowledge/a/node.md"
-    path.parent.mkdir()
+    path = repository / "knowledge/nodes/a/node.md"
+    path.parent.mkdir(parents=True)
     path.write_text("no front matter\n", encoding="utf-8")
     commit_all(repository)
     write(repository, node("a", "accepted"))
@@ -1267,8 +1264,8 @@ def test_a_head_file_that_no_longer_parses_does_not_block_a_change(repository: P
 
 
 def test_a_parse_problem_stops_the_whole_check(repository: Path) -> None:
-    path = repository / "knowledge/a/node.md"
-    path.parent.mkdir()
+    path = repository / "knowledge/nodes/a/node.md"
+    path.parent.mkdir(parents=True)
     path.write_text("no front matter\n", encoding="utf-8")
     report = check_governance(repository)
     assert report.count == 0
@@ -1292,7 +1289,7 @@ def test_the_report_is_sorted(repository: Path) -> None:
 
 
 def test_a_base_with_a_duplicate_id_does_not_crash(repository: Path) -> None:
-    write(repository, node("a"), node("a", file="knowledge/copy/node.md"))
+    write(repository, node("a"), node("a", file="knowledge/nodes/copy/node.md"))
     commit_all(repository)
     assert run_check(repository) == []
 
@@ -1319,8 +1316,8 @@ def test_pending_reads_the_path_before_the_line(repository: Path) -> None:
 
 
 def test_pending_stops_on_a_parse_problem(repository: Path) -> None:
-    path = repository / "knowledge/a/node.md"
-    path.parent.mkdir()
+    path = repository / "knowledge/nodes/a/node.md"
+    path.parent.mkdir(parents=True)
     path.write_text("no front matter\n", encoding="utf-8")
     entities, problems = pending_entities(repository)
     assert entities == []
@@ -1352,7 +1349,7 @@ def test_the_command_fails_and_prints_each_location(repository: Path) -> None:
     write(repository, node("a", "accepted", definition="New."))
     result = invoke("governance", str(repository))
     assert result.exit_code == 1
-    assert f"{repository}/knowledge/a/node.md:5: accepted-change: " in result.output
+    assert f"{repository}/knowledge/nodes/a/node.md:5: accepted-change: " in result.output
     assert result.output.endswith("1 entities checked, 1 problems\n")
 
 
@@ -1363,7 +1360,7 @@ def test_the_command_reads_the_current_folder_by_default(
     monkeypatch.chdir(repository)
     result = invoke("governance")
     assert result.exit_code == 1
-    assert result.output.split("\n")[1].startswith("knowledge/a/node.md:")
+    assert result.output.split("\n")[1].startswith("knowledge/nodes/a/node.md:")
 
 
 def test_the_command_passes_on_an_empty_tree(repository: Path) -> None:
@@ -1392,8 +1389,8 @@ def test_the_pending_list_does_not_run_the_checks(repository: Path) -> None:
 
 
 def test_the_pending_list_fails_on_a_parse_problem(repository: Path) -> None:
-    path = repository / "knowledge/a/node.md"
-    path.parent.mkdir()
+    path = repository / "knowledge/nodes/a/node.md"
+    path.parent.mkdir(parents=True)
     path.write_text("no front matter\n", encoding="utf-8")
     result = invoke("governance", str(repository), "--pending")
     assert result.exit_code == 1
@@ -1437,9 +1434,16 @@ def test_the_directive_list_shows_a_proposed_exception(tmp_path: Path) -> None:
 
 
 def repository_copy(tmp_path: Path) -> Path:
-    for folder in ("knowledge", "skills", "governance"):
-        shutil.copytree(REPO / folder, tmp_path / folder)
+    shutil.copytree(REPO / "knowledge", tmp_path / "knowledge")
     return tmp_path
+
+
+def remove_the_seed(repository: Path) -> None:
+    for folder in ("governance/policies", "nodes", "skills"):
+        shutil.rmtree(repository / "knowledge" / folder)
+    (repository / "knowledge/node.md").unlink()
+    for branch in (repository / "knowledge/governance/language/branches").glob("*.yaml"):
+        branch.unlink()
 
 
 def test_the_repository_policies_pass_each_check() -> None:
@@ -1451,7 +1455,7 @@ def test_the_repository_policies_pass_each_check() -> None:
 
 
 def policy_items() -> list[ParsedNode]:
-    items, problems = parse_tree([REPO / "governance/policies"])
+    items, problems = parse_tree([REPO / "knowledge/governance/policies"])
     assert problems == []
     return items
 
@@ -1475,12 +1479,12 @@ def test_the_governance_domain_governs_itself_and_the_root() -> None:
 
 
 def test_the_policies_hold_no_email_address() -> None:
-    for path in (REPO / "governance/policies").rglob("node.md"):
+    for path in (REPO / "knowledge/governance/policies").rglob("node.md"):
         assert "@" not in path.read_text(encoding="utf-8")
 
 
 def break_a_policy(repository: Path, old: str, new: str) -> Path:
-    path = repository / "governance/policies/lifecycle/node.md"
+    path = repository / "knowledge/governance/policies/lifecycle/node.md"
     text = path.read_text(encoding="utf-8")
     assert old in text
     path.write_text(text.replace(old, new), encoding="utf-8")
@@ -1504,9 +1508,11 @@ def test_the_graph_check_reads_a_broken_policy(tmp_path: Path) -> None:
 
 def test_the_graph_check_reads_a_misplaced_policy(tmp_path: Path) -> None:
     repository = repository_copy(tmp_path)
-    (repository / "governance/policies/lifecycle").rename(repository / "governance/lifecycle")
+    (repository / "knowledge/governance/policies/lifecycle").rename(
+        repository / "knowledge/governance/lifecycle"
+    )
     problems = check_tree(repository)[1]
-    path = repository / "governance/lifecycle/node.md"
+    path = repository / "knowledge/governance/lifecycle/node.md"
     assert (path, "placement") in {(problem.path, problem.code) for problem in problems}
 
 
@@ -1541,15 +1547,8 @@ def test_the_governance_check_reads_a_broken_policy(tmp_path: Path) -> None:
 
 def test_a_project_can_delete_the_policies(tmp_path: Path) -> None:
     repository = repository_copy(tmp_path)
-    shutil.rmtree(repository / "governance/policies")
-    shutil.rmtree(repository / "knowledge")
-    shutil.rmtree(repository / "skills")
-    (repository / "knowledge").mkdir()
-    (repository / "skills").mkdir()
-    for branch in (repository / "governance/language/branches").glob("*.yaml"):
-        branch.unlink()
-    folders = [str(repository / name) for name in ("knowledge", "skills", "governance")]
-    assert invoke("parse", *folders).exit_code == 0
+    remove_the_seed(repository)
+    assert invoke("parse", str(repository / "knowledge")).exit_code == 0
     assert check_tree(repository)[1] == []
     assert check_directives(repository)[1] == []
     assert check_language(repository)[1] == []
@@ -1558,19 +1557,14 @@ def test_a_project_can_delete_the_policies(tmp_path: Path) -> None:
 
 def test_a_project_can_point_the_root_at_its_own_domain(tmp_path: Path) -> None:
     repository = repository_copy(tmp_path)
-    shutil.rmtree(repository / "governance/policies")
-    shutil.rmtree(repository / "knowledge")
-    shutil.rmtree(repository / "skills")
-    (repository / "skills").mkdir()
-    for branch in (repository / "governance/language/branches").glob("*.yaml"):
-        branch.unlink()
-    (repository / "knowledge/own").mkdir(parents=True)
+    remove_the_seed(repository)
+    (repository / "knowledge/nodes/own").mkdir(parents=True)
     (repository / "knowledge/node.md").write_text(
         "---\nid: root\nkind: ka:Root\ntitle: Root\nstatus: proposed\norigin: project\n"
         "pointers:\n  - kind: ka:TextPointer\n    target: own\n    trigger: You need it.\n---\n",
         encoding="utf-8",
     )
-    (repository / "knowledge/own/node.md").write_text(
+    (repository / "knowledge/nodes/own/node.md").write_text(
         "---\nid: own\nkind: ka:Domain\ntitle: Own\nstatus: proposed\norigin: project\n"
         "knowledge_type: domain\n---\n\n## Definition\n\nA domain.\n",
         encoding="utf-8",
@@ -1583,6 +1577,5 @@ def test_a_project_can_point_the_root_at_its_own_domain(tmp_path: Path) -> None:
 
 def test_a_new_copy_without_policies_still_passes(tmp_path: Path) -> None:
     (tmp_path / "knowledge").mkdir()
-    (tmp_path / "skills").mkdir()
     assert check_tree(tmp_path) == ([], [])
     assert check_governance(tmp_path).problems == []

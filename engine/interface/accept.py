@@ -14,6 +14,7 @@ from engine.governance.entities import (
 )
 from engine.governance.status_line import set_status_lines
 from engine.interface.tree import children_by_broader, subtree_ids
+from engine.layout import LAUNCHER
 from engine.parser import ParsedNode, parse_source, universal_newlines
 from engine.parser.result import Problem
 from engine.runtime import build_view, render_files, rendered_problems
@@ -26,7 +27,7 @@ if TYPE_CHECKING:
 
 ACCEPT_CODES = ("unknown-id", "not-proposed", "uncommitted", "no-history", "status-line", "write")
 EXCEPTION_SEPARATOR = ":"
-PROJECT_COMMAND = ".ka/ka"
+PROJECT_COMMAND = LAUNCHER.as_posix()
 TEMPLATE_COMMAND = "uv run ka"
 
 

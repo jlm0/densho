@@ -8,7 +8,7 @@ A project that [installs the template](template-packaging.md) receives this know
 
 ## What ships
 
-The domain is Digital Product Development, under `knowledge/digital-product-development/`. All four disciplines are there, but only UI/UX Design goes deep, because branch depth follows real classification and does not have to match:
+The domain is Digital Product Development, under `knowledge/nodes/digital-product-development/`. All four disciplines are there, but only UI/UX Design goes deep, because branch depth follows real classification and does not have to match:
 
 ```text
 Digital product development
@@ -62,14 +62,14 @@ Or run `uv run ka view` and read `build/view/review.html`, which groups the list
 
 The knowledge is yours to change:
 
-- To add a concept, add a `node.md` under `knowledge/` with `status: proposed` and `origin: project`, name its parent in `broader`, and give some node a pointer to it.
+- To add a concept, add a `node.md` under `knowledge/nodes/` with `status: proposed` and `origin: project`, name its parent in `broader`, and give some node a pointer to it.
 - To give a domain node project values, such as your brand colors, add a workspace node that names it in `implements`.
-- To add a rule, follow the grammar in [language checks](language-checks.md). If it opens with a verb the vocabulary doesn't approve, add the verb to `governance/language/vocabulary.yaml`, or to `governance/language/branches/<node-id>.yaml` if only one branch needs it.
+- To add a rule, follow the grammar in [language checks](language-checks.md). If it opens with a verb the vocabulary doesn't approve, add the verb to `knowledge/governance/language/vocabulary.yaml`, or to `knowledge/governance/language/branches/<node-id>.yaml` if only one branch needs it.
 - To remove a branch, delete its nodes, each reference to them, and any branch vocabulary named after them. The [graph checks](graph-checks.md) list what still points at a deleted node. An accepted entity goes through [deprecation first](governance-workflow.md#remove-something).
 
 ## Language terms
 
-Two branches add terms in `governance/language/branches/`. `ui-ux-design.yaml` approves `design` as an opening verb and prohibits vague words such as `intuitive` and `clean`, which say how a screen should feel without saying what to do. `software-engineering.yaml` approves `revoke`.
+Two branches add terms in `knowledge/governance/language/branches/`. `ui-ux-design.yaml` approves `design` as an opening verb and prohibits vague words such as `intuitive` and `clean`, which say how a screen should feel without saying what to do. `software-engineering.yaml` approves `revoke`.
 
 ## Sources
 

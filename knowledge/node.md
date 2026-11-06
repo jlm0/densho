@@ -13,8 +13,6 @@ pointers:
     trigger: You change a node file.
     paths:
       - knowledge/**/*
-      - skills/**/*
-      - governance/**/*
 ---
 
 ## Architecture

@@ -71,13 +71,14 @@ The meaning of the domain.
 
 
 def write_tree(folder: Path) -> Path:
-    (folder / "knowledge/domain").mkdir(parents=True)
-    (folder / "skills").mkdir()
-    (folder / "governance/language/branches").mkdir(parents=True)
-    (folder / "governance/language/branches/.gitkeep").write_text("", encoding="utf-8")
-    (folder / "governance/language/vocabulary.yaml").write_text("verbs: []\n", encoding="utf-8")
+    (folder / "knowledge/nodes/domain").mkdir(parents=True)
+    (folder / "knowledge/governance/language/branches").mkdir(parents=True)
+    (folder / "knowledge/governance/language/branches/.gitkeep").write_text("", encoding="utf-8")
+    (folder / "knowledge/governance/language/vocabulary.yaml").write_text(
+        "verbs: []\n", encoding="utf-8"
+    )
     (folder / "knowledge/node.md").write_text(ROOT_NODE, encoding="utf-8")
-    (folder / "knowledge/domain/node.md").write_text(DOMAIN_NODE, encoding="utf-8")
+    (folder / "knowledge/nodes/domain/node.md").write_text(DOMAIN_NODE, encoding="utf-8")
     (folder / "copier.yml").write_text("_min_copier_version: '9'\n", encoding="utf-8")
     return folder
 
@@ -119,7 +120,7 @@ def replace(path: Path, old: str, new: str) -> None:
 
 
 def domain_file(folder: Path) -> Path:
-    return folder / "knowledge/domain/node.md"
+    return folder / "knowledge/nodes/domain/node.md"
 
 
 def test_the_first_change_adds_each_entity(tmp_path: Path) -> None:
@@ -134,7 +135,7 @@ def test_the_first_change_adds_each_entity(tmp_path: Path) -> None:
     assert keys == [
         ("directive", "run-it"),
         ("exception", "domain/run-it"),
-        ("file", "governance/language/vocabulary.yaml"),
+        ("file", "knowledge/governance/language/vocabulary.yaml"),
         ("node", "domain"),
         ("node", "root"),
     ]
@@ -142,13 +143,13 @@ def test_the_first_change_adds_each_entity(tmp_path: Path) -> None:
 
 def test_an_entry_holds_the_path_and_the_status(tmp_path: Path) -> None:
     entries = by_id(record_history(write_tree(tmp_path)).entries)
-    assert entries["run-it"].path == "knowledge/domain/node.md"
+    assert entries["run-it"].path == "knowledge/nodes/domain/node.md"
     assert entries["run-it"].status == "proposed"
-    assert entries["domain/run-it"].path == "knowledge/domain/node.md"
+    assert entries["domain/run-it"].path == "knowledge/nodes/domain/node.md"
     assert entries["domain/run-it"].status == "proposed"
     assert entries["root"].path == "knowledge/node.md"
-    file_entry = entries["governance/language/vocabulary.yaml"]
-    assert file_entry.path == "governance/language/vocabulary.yaml"
+    file_entry = entries["knowledge/governance/language/vocabulary.yaml"]
+    assert file_entry.path == "knowledge/governance/language/vocabulary.yaml"
     assert file_entry.status is None
 
 
@@ -163,7 +164,7 @@ def test_content_leaves_out_status_id_and_origin(tmp_path: Path) -> None:
     }
     assert set(entries["run-it"].content) == {"holder", "scope", "text"}
     assert set(entries["domain/run-it"].content) == {"reason"}
-    assert set(entries["governance/language/vocabulary.yaml"].content) == {"bytes"}
+    assert set(entries["knowledge/governance/language/vocabulary.yaml"].content) == {"bytes"}
     assert all(len(digest) == 16 for digest in entries["domain"].content.values())  # noqa: PLR2004
 
 
@@ -216,13 +217,13 @@ def test_a_status_change_keeps_the_content(tmp_path: Path) -> None:
 def test_a_moved_file_changes_only_the_path(tmp_path: Path) -> None:
     write_tree(tmp_path)
     first = by_id(record_history(tmp_path).entries)
-    (tmp_path / "knowledge/moved").mkdir()
-    domain_file(tmp_path).rename(tmp_path / "knowledge/moved/node.md")
+    (tmp_path / "knowledge/nodes/moved").mkdir(parents=True)
+    domain_file(tmp_path).rename(tmp_path / "knowledge/nodes/moved/node.md")
     entries = by_id(record_history(tmp_path).entries)
     assert set(entries) == {"domain", "run-it", "domain/run-it"}
     for name, entry in entries.items():
         assert entry.fields == ["path"]
-        assert entry.path == "knowledge/moved/node.md"
+        assert entry.path == "knowledge/nodes/moved/node.md"
         assert entry.content == first[name].content
 
 
@@ -294,14 +295,14 @@ def test_a_removed_entity_then_added_again(tmp_path: Path) -> None:
     write_tree(tmp_path)
     record_history(tmp_path)
     saved = domain_file(tmp_path).read_text(encoding="utf-8")
-    shutil.rmtree(tmp_path / "knowledge/domain")
+    shutil.rmtree(tmp_path / "knowledge/nodes/domain")
     entries = by_id(record_history(tmp_path).entries)
     assert set(entries) == {"domain", "run-it", "domain/run-it"}
     gone = entries["domain"]
     assert (gone.action, gone.fields, gone.content) == ("removed", [], {})
-    assert gone.path == "knowledge/domain/node.md"
+    assert gone.path == "knowledge/nodes/domain/node.md"
     assert gone.status == "proposed"
-    (tmp_path / "knowledge/domain").mkdir()
+    (tmp_path / "knowledge/nodes/domain").mkdir(parents=True)
     domain_file(tmp_path).write_text(saved, encoding="utf-8")
     entries = by_id(record_history(tmp_path).entries)
     assert entries["domain"].action == "added"
@@ -311,11 +312,11 @@ def test_a_removed_entity_then_added_again(tmp_path: Path) -> None:
 def test_a_language_file_is_a_file_entry(tmp_path: Path) -> None:
     write_tree(tmp_path)
     record_history(tmp_path)
-    branch = tmp_path / "governance/language/branches/domain.yaml"
+    branch = tmp_path / "knowledge/governance/language/branches/domain.yaml"
     branch.write_text("verbs: [sort]\n", encoding="utf-8")
     entries = by_id(record_history(tmp_path).entries)
-    assert set(entries) == {"governance/language/branches/domain.yaml"}
-    vocabulary = tmp_path / "governance/language/vocabulary.yaml"
+    assert set(entries) == {"knowledge/governance/language/branches/domain.yaml"}
+    vocabulary = tmp_path / "knowledge/governance/language/vocabulary.yaml"
     vocabulary.write_text("verbs: [run]\n", encoding="utf-8")
     entry = record_history(tmp_path).entries[0]
     assert (entry.kind, entry.action, entry.fields) == ("file", "changed", ["bytes"])
@@ -325,7 +326,7 @@ def test_a_language_file_is_a_file_entry(tmp_path: Path) -> None:
 
 def test_an_unreadable_language_file_is_a_problem(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    locked = tmp_path / "governance/language/vocabulary.yaml"
+    locked = tmp_path / "knowledge/governance/language/vocabulary.yaml"
     locked.chmod(0o000)
     try:
         report = record_history(tmp_path)
@@ -360,7 +361,7 @@ def test_a_path_that_is_not_utf8_is_a_problem(
     write_tree(tmp_path)
     parsed = parse_source(ROOT_NODE, tmp_path / "knowledge/node.md")
     assert isinstance(parsed, ParsedNode)
-    renamed = ParsedNode(tmp_path / "knowledge/\udcff/node.md", parsed.node, parsed.locations)
+    renamed = ParsedNode(tmp_path / "knowledge/nodes/\udcff/node.md", parsed.node, parsed.locations)
     monkeypatch.setattr(history_module, "parse_tree", lambda _: ([renamed], []))
     report = record_history(tmp_path)
     assert codes(report.problems) == ["path"]
@@ -381,14 +382,14 @@ def test_drift_runs_in_a_project_and_writes_nothing(tmp_path: Path) -> None:
     record_history(tmp_path)
     (tmp_path / "copier.yml").unlink()
     before = (tmp_path / HISTORY_FILE).read_bytes()
-    (tmp_path / "knowledge/moved").mkdir()
-    domain_file(tmp_path).rename(tmp_path / "knowledge/moved/node.md")
-    replace(tmp_path / "knowledge/moved/node.md", "title: Domain", "title: Area")
+    (tmp_path / "knowledge/nodes/moved").mkdir(parents=True)
+    domain_file(tmp_path).rename(tmp_path / "knowledge/nodes/moved/node.md")
+    replace(tmp_path / "knowledge/nodes/moved/node.md", "title: Domain", "title: Area")
     report = history_drift(tmp_path)
     assert report.change == 2  # noqa: PLR2004
     entries = by_id(report.entries)
     assert entries["domain"].fields == ["path", "title"]
-    assert entries["domain"].path == "knowledge/moved/node.md"
+    assert entries["domain"].path == "knowledge/nodes/moved/node.md"
     assert (tmp_path / HISTORY_FILE).read_bytes() == before
 
 
@@ -441,7 +442,6 @@ def test_plain_run_does_not_check_the_index(tmp_path: Path) -> None:
 
 def test_verify_passes_an_empty_tree_with_no_file(tmp_path: Path) -> None:
     (tmp_path / "knowledge").mkdir()
-    (tmp_path / "skills").mkdir()
     (tmp_path / "copier.yml").write_text("{}\n", encoding="utf-8")
     report = record_history(tmp_path, verify=True)
     assert not report.problems
@@ -459,7 +459,6 @@ def test_a_file_cut_inside_a_line_fails_at_the_next_line(tmp_path: Path) -> None
 
 def test_verify_in_a_repository_passes_with_no_nodes_and_no_file(tmp_path: Path) -> None:
     (tmp_path / "knowledge").mkdir()
-    (tmp_path / "skills").mkdir()
     (tmp_path / "copier.yml").write_text("{}\n", encoding="utf-8")
     git(tmp_path, "init", "-q")
     report = record_history(tmp_path, verify=True)
@@ -546,7 +545,7 @@ def test_read_head_file_reads_from_a_subfolder(tmp_path: Path) -> None:
 )
 def test_a_bad_line_is_a_problem(tmp_path: Path, text: str, line: int) -> None:
     write_tree(tmp_path)
-    (tmp_path / ".ka").mkdir()
+    (tmp_path / "knowledge/.ka").mkdir()
     (tmp_path / HISTORY_FILE).write_text(text, encoding="utf-8")
     for report in (record_history(tmp_path), history_drift(tmp_path)):
         assert [(problem.code, problem.line) for problem in report.problems] == [("history", line)]
@@ -581,14 +580,14 @@ def entry_line(**fields: object) -> str:
 )
 def test_the_entry_shape_is_strict(tmp_path: Path, line: str) -> None:
     write_tree(tmp_path)
-    (tmp_path / ".ka").mkdir()
+    (tmp_path / "knowledge/.ka").mkdir()
     (tmp_path / HISTORY_FILE).write_text(line, encoding="utf-8")
     assert codes(history_drift(tmp_path).problems) == ["history"]
 
 
 def test_the_problem_names_the_field(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    (tmp_path / ".ka").mkdir()
+    (tmp_path / "knowledge/.ka").mkdir()
     (tmp_path / HISTORY_FILE).write_text(entry_line(kind="other"), encoding="utf-8")
     assert history_drift(tmp_path).problems[0].message.startswith("kind: ")
 
@@ -608,7 +607,7 @@ def test_a_replay_that_does_not_fit_is_a_problem(
     tmp_path: Path, lines: list[str], line: int
 ) -> None:
     write_tree(tmp_path)
-    (tmp_path / ".ka").mkdir()
+    (tmp_path / "knowledge/.ka").mkdir()
     (tmp_path / HISTORY_FILE).write_text("".join(lines), encoding="utf-8")
     report = history_drift(tmp_path)
     assert (report.problems[0].code, report.problems[0].line) == ("history", line)
@@ -617,7 +616,7 @@ def test_a_replay_that_does_not_fit_is_a_problem(
 
 def test_a_lower_number_does_not_follow(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    (tmp_path / ".ka").mkdir()
+    (tmp_path / "knowledge/.ka").mkdir()
     lines = [entry_line(), entry_line(id="b", change=2), entry_line(id="c", change=1)]
     (tmp_path / HISTORY_FILE).write_text("".join(lines), encoding="utf-8")
     report = history_drift(tmp_path)
@@ -627,14 +626,14 @@ def test_a_lower_number_does_not_follow(tmp_path: Path) -> None:
 
 def test_a_line_that_is_not_json_has_a_clean_message(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    (tmp_path / ".ka").mkdir()
+    (tmp_path / "knowledge/.ka").mkdir()
     (tmp_path / HISTORY_FILE).write_text("not json\n", encoding="utf-8")
     assert history_drift(tmp_path).problems[0].message.startswith("Invalid JSON")
 
 
 def test_a_last_line_with_no_end_is_a_problem(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    (tmp_path / ".ka").mkdir()
+    (tmp_path / "knowledge/.ka").mkdir()
     text = entry_line() + entry_line(id="b").strip()
     (tmp_path / HISTORY_FILE).write_text(text, encoding="utf-8")
     report = record_history(tmp_path)
@@ -643,20 +642,20 @@ def test_a_last_line_with_no_end_is_a_problem(tmp_path: Path) -> None:
 
 def test_a_file_at_the_folder_path_is_a_problem(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    (tmp_path / ".ka").write_text("a file", encoding="utf-8")
+    (tmp_path / "knowledge/.ka").write_text("a file", encoding="utf-8")
     report = record_history(tmp_path)
     assert codes(report.problems) == ["history"]
-    assert (tmp_path / ".ka").read_text(encoding="utf-8") == "a file"
+    assert (tmp_path / "knowledge/.ka").read_text(encoding="utf-8") == "a file"
 
 
 def test_a_read_only_folder_is_a_write_problem(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    (tmp_path / ".ka").mkdir()
-    (tmp_path / ".ka").chmod(0o555)
+    (tmp_path / "knowledge/.ka").mkdir()
+    (tmp_path / "knowledge/.ka").chmod(0o555)
     try:
         report = record_history(tmp_path)
     finally:
-        (tmp_path / ".ka").chmod(0o755)
+        (tmp_path / "knowledge/.ka").chmod(0o755)
     assert codes(report.problems) == ["write"]
 
 

@@ -12,6 +12,7 @@ from engine.directives import check_items as check_directive_items
 from engine.governance import check_governance
 from engine.graph import check_tree
 from engine.language import check_language
+from engine.layout import KNOWLEDGE_FOLDER
 from engine.parser.result import Problem
 
 if TYPE_CHECKING:
@@ -65,7 +66,9 @@ def checked_tree(repository: Path) -> CheckedTree:
         return CheckedTree(items, [], problems)
     if not items:
         message = "The tree holds no node, so the build has nothing to compile."
-        return CheckedTree(items, [], [Problem(repository / "knowledge", 1, "empty-tree", message)])
+        return CheckedTree(
+            items, [], [Problem(repository / KNOWLEDGE_FOLDER, 1, "empty-tree", message)]
+        )
     governance = check_governance(repository, items)
     _, language = check_language(repository, items)
     found = {

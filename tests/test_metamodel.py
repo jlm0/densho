@@ -68,7 +68,7 @@ BAD_SLUGS = [
     "snake_case",
     "a.b",
     "a/b",
-    "knowledge/a/node.md",
+    "knowledge/nodes/a/node.md",
     "-a",
     "a-",
     "a--b",

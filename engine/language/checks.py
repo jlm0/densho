@@ -16,6 +16,7 @@ from engine.language.form import (
 from engine.language.profile import GRAMMAR_FILE, read_profile, rule_locations
 from engine.language.prose import read_prose
 from engine.language.tagging import Tagger
+from engine.layout import LANGUAGE_FOLDER
 from engine.parser.node import node_folders, parse_tree
 from engine.parser.result import Problem
 
@@ -177,7 +178,7 @@ def _sort_key(problem: Problem) -> tuple[str, int, str, str]:
 def check_language(
     repository: Path, items: Sequence[ParsedNode] | None = None
 ) -> tuple[int, list[Problem]]:
-    folder = repository / "governance/language"
+    folder = repository / LANGUAGE_FOLDER
     profile = read_profile(folder)
     if isinstance(profile, list):
         return 0, sorted(profile, key=_sort_key)

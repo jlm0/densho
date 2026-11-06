@@ -3,7 +3,7 @@ name: review-screen-hierarchy
 description: "Review a screen for its hierarchy, its grouping, and its use of prose. Use when a screen design is ready for review."
 ---
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
-# [Review the hierarchy of a screen](../../../skills/review-screen-hierarchy/node.md)
+# Review the hierarchy of a screen
 
 If compaction cuts this skill, invoke the skill again.
 
@@ -34,6 +34,6 @@ Each finding names a directive from the first step of the procedure. A finding w
 
 ## References
 
-- You judge which element a viewer sees first. Read [Information hierarchy](../../../knowledge/digital-product-development/ui-ux-design/visual-design/information-hierarchy/node.md).
-- You find prose that a visual form replaces. Read [Visual communication](../../../knowledge/digital-product-development/ui-ux-design/visual-design/visual-communication/node.md).
-- You judge which elements read as one group. Read [Visual grouping](../../../knowledge/digital-product-development/ui-ux-design/visual-design/visual-grouping/node.md).
+- You judge which element a viewer sees first. Read [Information hierarchy](../../references/information-hierarchy.md).
+- You find prose that a visual form replaces. Read [Visual communication](../../references/visual-communication.md).
+- You judge which elements read as one group. Read [Visual grouping](../../references/visual-grouping.md).

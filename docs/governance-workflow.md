@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-The other checks prove that knowledge is well formed. This layer decides whether it is in force: what a proposal can do before anyone reviews it, which changes reopen a review, and how a change gets promoted. The policies are nodes in `governance/policies/`, and the code is in `engine/governance/`.
+The other checks prove that knowledge is well formed. This layer decides whether it is in force: what a proposal can do before anyone reviews it, which changes reopen a review, and how a change gets promoted. The policies are nodes in `knowledge/governance/policies/`, and the code is in `engine/governance/`.
 
 A local check has limits here. It can compare a change with the last commit, but it can't tell who made the change or whether anyone read it. See [what a check can and cannot prove](#what-a-check-can-and-cannot-prove).
 
@@ -14,7 +14,7 @@ A local check has limits here. It can compare a change with the last commit, but
 uv run ka governance
 ```
 
-The command reads `knowledge/`, `skills/`, and `governance/` in the current folder, or in a folder you name after `governance`. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. An empty tree passes.
+The command reads `knowledge/` in the current folder, or in a folder you name after `governance`. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. An empty tree passes.
 
 The git hook runs the same command on each commit, including a commit that only deletes files.
 
@@ -25,8 +25,8 @@ uv run ka governance --pending
 ```
 
 ```text
-knowledge/retries/node.md:5: node retries
-knowledge/retries/node.md:17: directive retry-with-backoff
+knowledge/nodes/retries/node.md:5: node retries
+knowledge/nodes/retries/node.md:17: directive retry-with-backoff
 2 entities wait for review, 0 problems
 ```
 
@@ -168,7 +168,7 @@ So `accepted` is a claim that the project's history supports, not a proof. A rev
 
 ## The policies
 
-The rules above are written down as ordinary nodes under `governance/policies/`, so an agent can load them like any other knowledge:
+The rules above are written down as ordinary nodes under `knowledge/governance/policies/`, so an agent can load them like any other knowledge:
 
 | Node             | What it holds                                                |
 | ---------------- | ------------------------------------------------------------ |
@@ -179,11 +179,11 @@ The rules above are written down as ordinary nodes under `governance/policies/`,
 | `language-rules` | The grammar and the vocabulary, named as sources             |
 | `schema-rules`   | The metamodel, named as a source                             |
 
-The folder is part of the graph. Every command reads it, a policy needs a pointer like any node, and a node elsewhere under `governance/` fails `placement`. The root node reaches the `governance` domain through a path pointer on the node folders, so an agent tool loads these rules when an agent opens a node file. They do not attach to the root, because that would copy them into every skill, where they don't help.
+The folder is part of the graph. Every command reads it, a policy needs a pointer like any node, and a node elsewhere under `knowledge/governance/` fails `placement`. The root node reaches the `governance` domain through a path pointer on `knowledge/`, so an agent tool loads these rules when an agent opens a node file. They do not attach to the root, because that would copy them into every skill, where they don't help.
 
 `governs` names what a policy sets rules for. Each policy must name something, and a policy must name each policy. The `governance` domain names itself, which closes the loop: the rules for rules follow their own rules, and they start as `proposed` like everything else.
 
-You can change or delete these policies in your own copy. The checks read them as data and do not depend on them. If you delete them, point the root at your own domain in the same commit, or delete the root too. The language checks still need `governance/language/`. [Template packaging](template-packaging.md#what-you-can-delete-from-governance) lists what a project can delete.
+You can change or delete these policies in your own copy. The checks read them as data and do not depend on them. If you delete them, point the root at your own domain in the same commit, or delete the root too. The language checks still need `knowledge/governance/language/`. [Template packaging](template-packaging.md#what-you-can-delete-from-governance) lists what a project can delete.
 
 ## How it fits
 
@@ -197,4 +197,4 @@ This layer sits on top of the [graph checks](graph-checks.md) and the [directive
 - A `broader` edge on a `proposed` node. It carries directives as soon as it exists, so moving a node can drop a rule before anyone reviews the move. The `status` change and the diff show it.
 - Whether a `deprecated` rule is reused under a new ID, or a deleted ID comes back with a new meaning
 - A name in a node. The `no-personal-data` directive states the rule, and a reviewer enforces it.
-- Changes to `governance/language/` and `governance/schema/`. They have no `status`, so they reach a reviewer only through the diff.
+- Changes to `knowledge/governance/language/` and `knowledge/governance/schema/`. They have no `status`, so they reach a reviewer only through the diff.

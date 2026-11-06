@@ -13,7 +13,7 @@ from engine.runtime.claude_code import (
     size_problems,
 )
 from engine.runtime.files import apply_files
-from engine.runtime.links import local_links, resolves
+from engine.runtime.links import link_target, local_links
 from engine.runtime.view import build_view
 
 if TYPE_CHECKING:
@@ -36,24 +36,27 @@ class RuntimeReport:
     problems: list[Problem]
 
 
-def _link_problems(rendered: RenderedFile, repository: Path) -> list[Problem]:
+def _link_problems(
+    rendered: RenderedFile, targets: frozenset[Path], repository: Path
+) -> list[Problem]:
     folder = repository / rendered.path.parent
     return [
         Problem(
             repository / rendered.node_path,
             1,
             "link",
-            f"{rendered.path} links to {link!a}, and this path does not exist in the repository.",
+            f"{rendered.path} links to {link!a}, and the generator writes no file at this path.",
         )
         for link in local_links(rendered.text)
-        if not resolves(link, folder, repository)
+        if link_target(link, folder) not in targets
     ]
 
 
 def rendered_problems(rendered: Sequence[RenderedFile], repository: Path) -> list[Problem]:
+    targets = frozenset((repository / entry.path).resolve() for entry in rendered)
     return [
         *size_problems(rendered, repository),
-        *(problem for entry in rendered for problem in _link_problems(entry, repository)),
+        *(problem for entry in rendered for problem in _link_problems(entry, targets, repository)),
     ]
 
 

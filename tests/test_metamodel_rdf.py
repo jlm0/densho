@@ -11,7 +11,7 @@ from rdflib import RDF, SKOS, Graph, Namespace, URIRef
 
 from engine.generated.metamodel import KnowledgeGraph
 
-SCHEMA = Path(__file__).resolve().parents[1] / "governance/schema/metamodel.yaml"
+SCHEMA = Path(__file__).resolve().parents[1] / "knowledge/governance/schema/metamodel.yaml"
 KA = Namespace("https://github.com/jlm0/knowledge-architecture/schema/")
 BASE = Namespace("https://example.org/node/")
 DCTERMS = Namespace("http://purl.org/dc/terms/")
@@ -39,7 +39,7 @@ SAMPLE_GRAPH = {
             "id": "governance",
             "kind": "ka:Domain",
             "governs": ["root", "governance"],
-            "sources": ["governance/schema/metamodel.yaml"],
+            "sources": ["knowledge/governance/schema/metamodel.yaml"],
             "directives": [
                 {**GOVERNED, "id": "use-a-verb", "text": "Start with a verb.", "scope": "subtree"},
             ],

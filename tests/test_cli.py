@@ -10,7 +10,7 @@ from engine.language.profile import LanguageProfile, read_profile
 if TYPE_CHECKING:
     import pytest
 
-LANGUAGE = Path(__file__).resolve().parents[1] / "governance/language"
+LANGUAGE = Path(__file__).resolve().parents[1] / "knowledge/governance/language"
 PROFILE = read_profile(LANGUAGE)
 assert isinstance(PROFILE, LanguageProfile)
 GRAMMAR = PROFILE.grammar
@@ -76,7 +76,6 @@ def test_parse_fails_on_a_missing_folder(tmp_path: Path) -> None:
 
 def test_graph_passes_on_an_empty_tree(tmp_path: Path) -> None:
     (tmp_path / "knowledge").mkdir()
-    (tmp_path / "skills").mkdir()
     result = RUNNER.invoke(app, ["graph", str(tmp_path)])
     assert result.exit_code == 0
     assert result.output == "0 nodes checked, 0 problems\n"
@@ -84,8 +83,7 @@ def test_graph_passes_on_an_empty_tree(tmp_path: Path) -> None:
 
 def test_graph_passes_on_a_valid_tree(tmp_path: Path) -> None:
     write_node(tmp_path / "knowledge", ROOT)
-    write_node(tmp_path / "knowledge/sample")
-    (tmp_path / "skills").mkdir()
+    write_node(tmp_path / "knowledge/nodes/sample")
     result = RUNNER.invoke(app, ["graph", str(tmp_path)])
     assert result.exit_code == 0, result.output
     assert result.output == "2 nodes checked, 0 problems\n"
@@ -93,8 +91,7 @@ def test_graph_passes_on_a_valid_tree(tmp_path: Path) -> None:
 
 def test_graph_fails_and_prints_each_location(tmp_path: Path) -> None:
     write_node(tmp_path / "knowledge", ROOT.replace("target: sample", "target: missing"))
-    write_node(tmp_path / "knowledge/sample")
-    (tmp_path / "skills").mkdir()
+    write_node(tmp_path / "knowledge/nodes/sample")
     result = RUNNER.invoke(app, ["graph", str(tmp_path)])
     assert result.exit_code == 1
     path = tmp_path / "knowledge/node.md"
@@ -109,8 +106,7 @@ def test_graph_reads_the_current_folder_by_default(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.chdir(tmp_path)
-    write_node(tmp_path / "knowledge/sample")
-    (tmp_path / "skills").mkdir()
+    write_node(tmp_path / "knowledge/nodes/sample")
     result = RUNNER.invoke(app, ["graph"])
     assert result.exit_code == 1
     assert result.output.startswith("knowledge/node.md:1: root: ")
@@ -128,10 +124,10 @@ RULES = sum(
 
 def language_tree(repository: Path) -> None:
     shutil.copytree(
-        LANGUAGE, repository / "governance/language", ignore=shutil.ignore_patterns("branches")
+        LANGUAGE,
+        repository / "knowledge/governance/language",
+        ignore=shutil.ignore_patterns("branches"),
     )
-    (repository / "knowledge").mkdir()
-    (repository / "skills").mkdir()
 
 
 def test_language_reads_the_grammar_rules_on_an_empty_tree(tmp_path: Path) -> None:
@@ -143,7 +139,7 @@ def test_language_reads_the_grammar_rules_on_an_empty_tree(tmp_path: Path) -> No
 
 def test_language_passes_on_good_text(tmp_path: Path) -> None:
     language_tree(tmp_path)
-    write_node(tmp_path / "knowledge/a", ROOT)
+    write_node(tmp_path / "knowledge/nodes/a", ROOT)
     result = RUNNER.invoke(app, ["language", str(tmp_path)])
     assert result.exit_code == 0, result.output
     assert result.output == f"{RULES + 1} texts checked, 0 problems\n"
@@ -151,7 +147,7 @@ def test_language_passes_on_good_text(tmp_path: Path) -> None:
 
 def test_language_fails_and_prints_each_location(tmp_path: Path) -> None:
     language_tree(tmp_path)
-    path = write_node(tmp_path / "knowledge/a", ROOT.replace("You need", "Find"))
+    path = write_node(tmp_path / "knowledge/nodes/a", ROOT.replace("You need", "Find"))
     result = RUNNER.invoke(app, ["language", str(tmp_path)])
     assert result.exit_code == 1
     assert f"{path}:10: trigger-form: " in result.output
@@ -163,10 +159,10 @@ def test_language_reads_the_current_folder_by_default(
 ) -> None:
     monkeypatch.chdir(tmp_path)
     language_tree(tmp_path)
-    write_node(tmp_path / "knowledge/a", ROOT.replace("You need", "Find"))
+    write_node(tmp_path / "knowledge/nodes/a", ROOT.replace("You need", "Find"))
     result = RUNNER.invoke(app, ["language"])
     assert result.exit_code == 1
-    assert result.output.startswith("knowledge/a/node.md:10: trigger-form: ")
+    assert result.output.startswith("knowledge/nodes/a/node.md:10: trigger-form: ")
 
 
 DIRECTIVE_NODE = (
@@ -207,14 +203,12 @@ ROOT_WITH_CHILD = ROOT.replace(
 
 def directive_tree(repository: Path, child: str = CHILD) -> None:
     write_node(repository / "knowledge", ROOT_WITH_CHILD)
-    write_node(repository / "knowledge/sample", DIRECTIVE_NODE)
-    write_node(repository / "knowledge/sample/child", child)
-    (repository / "skills").mkdir()
+    write_node(repository / "knowledge/nodes/sample", DIRECTIVE_NODE)
+    write_node(repository / "knowledge/nodes/sample/child", child)
 
 
 def test_directives_passes_on_an_empty_tree(tmp_path: Path) -> None:
     (tmp_path / "knowledge").mkdir()
-    (tmp_path / "skills").mkdir()
     result = RUNNER.invoke(app, ["directives", str(tmp_path)])
     assert result.exit_code == 0
     assert result.output == "0 directives checked, 0 problems\n"
@@ -230,7 +224,7 @@ def test_directives_passes_on_a_valid_tree(tmp_path: Path) -> None:
 def test_directives_fails_and_prints_each_location(tmp_path: Path) -> None:
     directive_tree(tmp_path, CHILD.replace("broader: [sample]", "broader: [other]"))
     other = NODE.replace("id: sample", "id: other")
-    write_node(tmp_path / "knowledge/other", other)
+    write_node(tmp_path / "knowledge/nodes/other", other)
     root = (tmp_path / "knowledge/node.md").read_text(encoding="utf-8")
     pointer = "  - kind: ka:TextPointer\n    target: other\n    trigger: You need the other.\n"
     (tmp_path / "knowledge/node.md").write_text(
@@ -238,7 +232,7 @@ def test_directives_fails_and_prints_each_location(tmp_path: Path) -> None:
     )
     result = RUNNER.invoke(app, ["directives", str(tmp_path)])
     assert result.exit_code == 1
-    path = tmp_path / "knowledge/sample/child/node.md"
+    path = tmp_path / "knowledge/nodes/sample/child/node.md"
     assert f"{path}:10: exception-unused: This exception stops nothing" in result.output
     assert result.output.endswith("1 directives checked, 1 problems\n")
 

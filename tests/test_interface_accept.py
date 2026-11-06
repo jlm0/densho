@@ -129,10 +129,10 @@ uses:
 """
 TREE = {
     "knowledge/node.md": ROOT,
-    "knowledge/alpha/node.md": ALPHA,
-    "knowledge/alpha/beta/node.md": BETA,
-    "knowledge/gamma/node.md": GAMMA,
-    "skills/review/node.md": SKILL,
+    "knowledge/nodes/alpha/node.md": ALPHA,
+    "knowledge/nodes/alpha/beta/node.md": BETA,
+    "knowledge/nodes/gamma/node.md": GAMMA,
+    "knowledge/skills/review/node.md": SKILL,
 }
 
 
@@ -159,9 +159,10 @@ def write_tree(folder: Path, tree: dict[str, str] | None = None) -> None:
         return [name for name in names if Path(path).name == "branches" and name != ".gitkeep"]
 
     shutil.copytree(
-        REPO / "governance/language", folder / "governance/language", ignore=no_branch_files
+        REPO / "knowledge/governance/language",
+        folder / "knowledge/governance/language",
+        ignore=no_branch_files,
     )
-    (folder / "skills").mkdir(exist_ok=True)
     for relative, text in (TREE if tree is None else tree).items():
         path = folder / relative
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -218,11 +219,11 @@ def codes(report_problems: list[object]) -> list[str]:
 
 
 def test_a_named_directive_changes_one_word_on_one_line(repository: Path) -> None:
-    before = (repository / "knowledge/alpha/node.md").read_bytes()
+    before = (repository / "knowledge/nodes/alpha/node.md").read_bytes()
     report = accept_entities(repository, ["keep"])
     assert report.problems == []
     assert [entity.label for entity in report.accepted] == ["directive keep"]
-    after = (repository / "knowledge/alpha/node.md").read_bytes()
+    after = (repository / "knowledge/nodes/alpha/node.md").read_bytes()
     assert changed_lines(before, after) == [(b"  - status: proposed", b"  - status: accepted")]
     assert status_after_line(after.decode(), "^wait") == "proposed"
 
@@ -231,22 +232,24 @@ def test_only_the_named_file_changes(repository: Path) -> None:
     before = source_bytes(repository)
     assert accept_entities(repository, ["keep"]).problems == []
     after = source_bytes(repository)
-    assert {name for name in before if before[name] != after[name]} == {"knowledge/alpha/node.md"}
+    assert {name for name in before if before[name] != after[name]} == {
+        "knowledge/nodes/alpha/node.md"
+    }
 
 
 def test_a_named_node_does_not_cover_its_directives(repository: Path) -> None:
-    before = (repository / "knowledge/alpha/node.md").read_bytes()
+    before = (repository / "knowledge/nodes/alpha/node.md").read_bytes()
     report = accept_entities(repository, ["alpha"])
     assert [entity.label for entity in report.accepted] == ["node alpha"]
-    after = (repository / "knowledge/alpha/node.md").read_bytes()
+    after = (repository / "knowledge/nodes/alpha/node.md").read_bytes()
     assert changed_lines(before, after) == [(b"status: proposed", b"status: accepted")]
 
 
 def test_an_exception_has_a_name_with_a_colon(repository: Path) -> None:
-    before = (repository / "knowledge/alpha/beta/node.md").read_bytes()
+    before = (repository / "knowledge/nodes/alpha/beta/node.md").read_bytes()
     report = accept_entities(repository, ["beta:wait"])
     assert [entity.label for entity in report.accepted] == ["exception beta wait"]
-    after = (repository / "knowledge/alpha/beta/node.md").read_bytes()
+    after = (repository / "knowledge/nodes/alpha/beta/node.md").read_bytes()
     assert changed_lines(before, after) == [(b"    status: proposed", b"    status: accepted")]
 
 
@@ -261,8 +264,8 @@ def test_a_subtree_covers_the_branch_and_nothing_else(repository: Path) -> None:
         "node alpha",
         "node beta",
     ]
-    assert "status: proposed" in read(repository, "knowledge/gamma/node.md")
-    assert "status: proposed" in read(repository, "skills/review/node.md")
+    assert "status: proposed" in read(repository, "knowledge/nodes/gamma/node.md")
+    assert "status: proposed" in read(repository, "knowledge/skills/review/node.md")
     assert "status: proposed" in read(repository, "knowledge/node.md")
 
 
@@ -307,14 +310,14 @@ def test_the_next_steps_reach_a_commit(repository: Path) -> None:
     assert accept_entities(repository, ["keep", "wait", "alpha"]).problems == []
     report = generate_runtime(repository)
     assert report.problems == []
-    assert "AGENTS.md" in {path.name for path in report.written}
-    assert "Run the check." in read(repository, "knowledge/alpha/AGENTS.md")
+    assert ".claude/references/alpha.md" in {path.as_posix() for path in report.written}
+    assert "Run the check." in read(repository, ".claude/references/alpha.md")
     git(repository, "add", "-A")
     verified = generate_runtime(repository, verify=True)
     assert verified.problems == []
     commit(repository, "accept")
     assert check_governance(repository).problems == []
-    assert "accepted" in git(repository, "show", "HEAD:knowledge/alpha/node.md")
+    assert "accepted" in git(repository, "show", "HEAD:knowledge/nodes/alpha/node.md")
 
 
 def test_an_accepted_node_changes_no_generated_file(repository: Path) -> None:
@@ -333,7 +336,7 @@ def test_the_command_writes_no_commit_and_no_runtime_file(repository: Path) -> N
     assert git(repository, "rev-parse", "HEAD") == head
     assert git(repository, "diff", "--cached", "--name-only") == ""
     status = git(repository, "status", "--porcelain", "--untracked-files=all")
-    assert status.splitlines() == [" M knowledge/alpha/node.md"]
+    assert status.splitlines() == [" M knowledge/nodes/alpha/node.md"]
 
 
 def test_a_dry_run_lists_and_writes_nothing(repository: Path) -> None:
@@ -385,29 +388,31 @@ def set_status(folder: Path, relative: str, marker: str, status: str) -> None:
 
 
 def test_a_deprecated_name_fails(repository: Path) -> None:
-    set_status(repository, "knowledge/alpha/node.md", "^keep", "deprecated")
+    set_status(repository, "knowledge/nodes/alpha/node.md", "^keep", "deprecated")
     commit(repository)
     before = source_bytes(repository)
     report = accept_entities(repository, ["keep"])
     assert codes(list(report.problems)) == ["not-proposed"]
     assert "deprecated" in report.problems[0].message
-    assert report.problems[0].path == repository / "knowledge/alpha/node.md"
+    assert report.problems[0].path == repository / "knowledge/nodes/alpha/node.md"
     assert source_bytes(repository) == before
 
 
 def test_a_status_deprecated_at_head_fails(repository: Path) -> None:
-    set_status(repository, "knowledge/alpha/node.md", "^keep", "deprecated")
+    set_status(repository, "knowledge/nodes/alpha/node.md", "^keep", "deprecated")
     commit(repository)
-    set_status(repository, "knowledge/alpha/node.md", "^keep", "proposed")
+    set_status(repository, "knowledge/nodes/alpha/node.md", "^keep", "proposed")
     report = accept_entities(repository, ["keep"])
     assert codes(list(report.problems)) == ["not-proposed"]
     assert "HEAD" in report.problems[0].message
-    assert status_after_line(read(repository, "knowledge/alpha/node.md"), "^keep") == "proposed"
+    assert (
+        status_after_line(read(repository, "knowledge/nodes/alpha/node.md"), "^keep") == "proposed"
+    )
 
 
 def test_a_subtree_skips_what_is_not_proposed(repository: Path) -> None:
-    set_status(repository, "knowledge/alpha/node.md", "^keep", "deprecated")
-    set_status(repository, "knowledge/alpha/beta/node.md", "^bound", "deprecated")
+    set_status(repository, "knowledge/nodes/alpha/node.md", "^keep", "deprecated")
+    set_status(repository, "knowledge/nodes/alpha/beta/node.md", "^bound", "deprecated")
     commit(repository)
     assert accept_entities(repository, ["wait"]).problems == []
     commit(repository)
@@ -419,7 +424,10 @@ def test_a_subtree_skips_what_is_not_proposed(repository: Path) -> None:
         "node alpha",
         "node beta",
     ]
-    assert status_after_line(read(repository, "knowledge/alpha/node.md"), "^keep") == "deprecated"
+    assert (
+        status_after_line(read(repository, "knowledge/nodes/alpha/node.md"), "^keep")
+        == "deprecated"
+    )
 
 
 def test_an_accepted_name_counts_and_writes_nothing(repository: Path) -> None:
@@ -434,7 +442,7 @@ def test_an_accepted_name_counts_and_writes_nothing(repository: Path) -> None:
 
 
 def test_an_entity_that_head_does_not_hold_fails(repository: Path) -> None:
-    path = repository / "knowledge/alpha/node.md"
+    path = repository / "knowledge/nodes/alpha/node.md"
     path.write_text(
         path.read_text(encoding="utf-8")
         + "- Run the new check. ^brand-new\n  - scope: node\n  - status: proposed\n"
@@ -450,7 +458,7 @@ def test_an_entity_that_head_does_not_hold_fails(repository: Path) -> None:
 
 
 def test_a_new_entity_in_a_subtree_stops_the_whole_run(repository: Path) -> None:
-    path = repository / "knowledge/alpha/node.md"
+    path = repository / "knowledge/nodes/alpha/node.md"
     path.write_text(
         path.read_text(encoding="utf-8")
         + "- Run the new check. ^brand-new\n  - scope: node\n  - status: proposed\n"
@@ -475,7 +483,7 @@ def test_a_new_entity_in_a_subtree_stops_the_whole_run(repository: Path) -> None
 def test_a_change_to_a_reviewed_field_stays_apart(
     repository: Path, name: str, old: str, new: str
 ) -> None:
-    for relative in ("knowledge/alpha/node.md", "knowledge/alpha/beta/node.md"):
+    for relative in ("knowledge/nodes/alpha/node.md", "knowledge/nodes/alpha/beta/node.md"):
         path = repository / relative
         path.write_text(path.read_text(encoding="utf-8").replace(old, new), encoding="utf-8")
     before = source_bytes(repository)
@@ -486,7 +494,7 @@ def test_a_change_to_a_reviewed_field_stays_apart(
 
 
 def test_a_change_to_a_field_with_no_review_passes(repository: Path) -> None:
-    path = repository / "knowledge/alpha/node.md"
+    path = repository / "knowledge/nodes/alpha/node.md"
     path.write_text(
         path.read_text(encoding="utf-8").replace("title: Alpha", "title: New alpha"),
         encoding="utf-8",
@@ -524,14 +532,16 @@ def test_a_merge_in_progress_fails(repository: Path) -> None:
 
 
 def test_nothing_to_do_needs_no_history(tmp_path: Path) -> None:
-    write_tree(tmp_path, {**TREE, "knowledge/gamma/node.md": GAMMA.replace("proposed", "accepted")})
+    write_tree(
+        tmp_path, {**TREE, "knowledge/nodes/gamma/node.md": GAMMA.replace("proposed", "accepted")}
+    )
     report = accept_entities(tmp_path, ["gamma"])
     assert report.problems == []
     assert report.not_proposed == 1
 
 
 def test_a_tree_with_a_problem_stops_the_command(repository: Path) -> None:
-    (repository / "knowledge/gamma/node.md").write_text("not a node\n", encoding="utf-8")
+    (repository / "knowledge/nodes/gamma/node.md").write_text("not a node\n", encoding="utf-8")
     before = source_bytes(repository)
     report = accept_entities(repository, ["keep"])
     assert "front-matter" in codes(list(report.problems))
@@ -539,7 +549,7 @@ def test_a_tree_with_a_problem_stops_the_command(repository: Path) -> None:
 
 
 def test_a_language_problem_stops_the_command(repository: Path) -> None:
-    path = repository / "knowledge/gamma/node.md"
+    path = repository / "knowledge/nodes/gamma/node.md"
     path.write_text(
         GAMMA + "\n## Directives\n\n- This sentence has no verb first. ^bad-rule\n"
         "  - scope: node\n  - status: proposed\n  - origin: template\n",
@@ -557,35 +567,37 @@ def tree_with(path: str, old: str, new: str) -> dict[str, str]:
 
 
 def test_quoted_status_keeps_its_quotes(tmp_path: Path) -> None:
-    tree = tree_with("knowledge/gamma/node.md", "status: proposed", 'status: "proposed"')
+    tree = tree_with("knowledge/nodes/gamma/node.md", "status: proposed", 'status: "proposed"')
     make_repository(tmp_path, tree)
     assert accept_entities(tmp_path, ["gamma"]).problems == []
-    assert 'status: "accepted"' in read(tmp_path, "knowledge/gamma/node.md")
+    assert 'status: "accepted"' in read(tmp_path, "knowledge/nodes/gamma/node.md")
 
 
 def test_a_status_in_backticks_keeps_its_backticks(tmp_path: Path) -> None:
     tree = tree_with(
-        "knowledge/alpha/node.md",
+        "knowledge/nodes/alpha/node.md",
         "^keep\n  - scope: subtree\n  - status: proposed",
         "^keep\n  - scope: subtree\n  - status: `proposed`",
     )
     make_repository(tmp_path, tree)
     report = accept_entities(tmp_path, ["keep"])
     assert report.problems == []
-    assert "- status: `accepted`" in read(tmp_path, "knowledge/alpha/node.md")
+    assert "- status: `accepted`" in read(tmp_path, "knowledge/nodes/alpha/node.md")
 
 
 def test_a_comment_on_the_status_line_stays(tmp_path: Path) -> None:
-    tree = tree_with("knowledge/gamma/node.md", "status: proposed", "status: proposed  # a note")
+    tree = tree_with(
+        "knowledge/nodes/gamma/node.md", "status: proposed", "status: proposed  # a note"
+    )
     make_repository(tmp_path, tree)
     assert accept_entities(tmp_path, ["gamma"]).problems == []
-    assert "status: accepted  # a note" in read(tmp_path, "knowledge/gamma/node.md")
+    assert "status: accepted  # a note" in read(tmp_path, "knowledge/nodes/gamma/node.md")
 
 
 @pytest.mark.parametrize(("name", "ending"), [("crlf", b"\r\n"), ("cr", b"\r"), ("lf", b"\n")])
 def test_each_line_ending_stays(tmp_path: Path, name: str, ending: bytes) -> None:
     make_repository(tmp_path)
-    path = tmp_path / "knowledge/gamma/node.md"
+    path = tmp_path / "knowledge/nodes/gamma/node.md"
     path.write_bytes(GAMMA.encode().replace(b"\n", ending))
     commit(tmp_path, name)
     before = path.read_bytes()
@@ -595,7 +607,7 @@ def test_each_line_ending_stays(tmp_path: Path, name: str, ending: bytes) -> Non
 
 def test_a_file_with_no_final_line_ending_stays_that_way(tmp_path: Path) -> None:
     make_repository(tmp_path)
-    path = tmp_path / "knowledge/gamma/node.md"
+    path = tmp_path / "knowledge/nodes/gamma/node.md"
     path.write_bytes(GAMMA.encode().rstrip(b"\n"))
     commit(tmp_path)
     before = path.read_bytes()
@@ -604,16 +616,18 @@ def test_a_file_with_no_final_line_ending_stays_that_way(tmp_path: Path) -> None
 
 
 def test_trailing_space_and_unicode_stay(tmp_path: Path) -> None:
-    tree = tree_with("knowledge/gamma/node.md", "The meaning of gamma.", "The méaning of gamma.  ")
+    tree = tree_with(
+        "knowledge/nodes/gamma/node.md", "The meaning of gamma.", "The méaning of gamma.  "
+    )
     make_repository(tmp_path, tree)
-    path = tmp_path / "knowledge/gamma/node.md"
+    path = tmp_path / "knowledge/nodes/gamma/node.md"
     before = path.read_bytes()
     assert accept_entities(tmp_path, ["gamma"]).problems == []
     assert path.read_bytes() == before.replace(b"status: proposed", b"status: accepted")
 
 
 def test_the_file_mode_stays(repository: Path) -> None:
-    path = repository / "knowledge/gamma/node.md"
+    path = repository / "knowledge/nodes/gamma/node.md"
     path.chmod(GROUP_READABLE)
     assert accept_entities(repository, ["gamma"]).problems == []
     assert path.stat().st_mode & 0o777 == GROUP_READABLE
@@ -630,7 +644,8 @@ ONE_LINE_EXCEPTIONS = (
 
 def test_a_status_on_a_shared_line_that_the_edit_misses_writes_nothing(tmp_path: Path) -> None:
     make_repository(
-        tmp_path, tree_with("knowledge/alpha/beta/node.md", BLOCK_EXCEPTIONS, ONE_LINE_EXCEPTIONS)
+        tmp_path,
+        tree_with("knowledge/nodes/alpha/beta/node.md", BLOCK_EXCEPTIONS, ONE_LINE_EXCEPTIONS),
     )
     before = source_bytes(tmp_path)
     report = accept_entities(tmp_path, ["beta:keep"])
@@ -640,27 +655,35 @@ def test_a_status_on_a_shared_line_that_the_edit_misses_writes_nothing(tmp_path:
 
 def test_two_exceptions_on_one_line_accept_together(tmp_path: Path) -> None:
     make_repository(
-        tmp_path, tree_with("knowledge/alpha/beta/node.md", BLOCK_EXCEPTIONS, ONE_LINE_EXCEPTIONS)
+        tmp_path,
+        tree_with("knowledge/nodes/alpha/beta/node.md", BLOCK_EXCEPTIONS, ONE_LINE_EXCEPTIONS),
     )
     report = accept_entities(tmp_path, ["beta:wait", "beta:keep"])
     assert report.problems == []
-    text = read(tmp_path, "knowledge/alpha/beta/node.md")
+    text = read(tmp_path, "knowledge/nodes/alpha/beta/node.md")
     assert text.count("status: accepted") == len(("wait", "keep"))
 
 
 def test_the_first_of_two_exceptions_on_one_line_passes(tmp_path: Path) -> None:
     make_repository(
-        tmp_path, tree_with("knowledge/alpha/beta/node.md", BLOCK_EXCEPTIONS, ONE_LINE_EXCEPTIONS)
+        tmp_path,
+        tree_with("knowledge/nodes/alpha/beta/node.md", BLOCK_EXCEPTIONS, ONE_LINE_EXCEPTIONS),
     )
     report = accept_entities(tmp_path, ["beta:wait"])
     assert report.problems == []
-    assert "First reason., status: accepted}" in read(tmp_path, "knowledge/alpha/beta/node.md")
-    assert "Second reason., status: proposed}" in read(tmp_path, "knowledge/alpha/beta/node.md")
+    assert "First reason., status: accepted}" in read(
+        tmp_path, "knowledge/nodes/alpha/beta/node.md"
+    )
+    assert "Second reason., status: proposed}" in read(
+        tmp_path, "knowledge/nodes/alpha/beta/node.md"
+    )
 
 
 def test_a_decoy_in_a_reason_writes_nothing(tmp_path: Path) -> None:
     decoy = 'exceptions: [{directive: wait, reason: "status: proposed", status: proposed}]\n'
-    make_repository(tmp_path, tree_with("knowledge/alpha/beta/node.md", BLOCK_EXCEPTIONS, decoy))
+    make_repository(
+        tmp_path, tree_with("knowledge/nodes/alpha/beta/node.md", BLOCK_EXCEPTIONS, decoy)
+    )
     before = source_bytes(tmp_path)
     report = accept_entities(tmp_path, ["beta:wait"])
     assert codes(list(report.problems)) == ["status-line"]
@@ -672,7 +695,7 @@ def test_a_decoy_in_a_flow_title_writes_nothing(tmp_path: Path) -> None:
         '---\n{id: gamma, kind: "ka:Domain", title: "status: proposed", status: proposed, '
         "origin: template, knowledge_type: domain}\n---\n\n## Definition\n\nThe meaning.\n"
     )
-    make_repository(tmp_path, {**TREE, "knowledge/gamma/node.md": source})
+    make_repository(tmp_path, {**TREE, "knowledge/nodes/gamma/node.md": source})
     before = source_bytes(tmp_path)
     report = accept_entities(tmp_path, ["gamma"])
     assert codes(list(report.problems)) == ["status-line"]
@@ -680,7 +703,7 @@ def test_a_decoy_in_a_flow_title_writes_nothing(tmp_path: Path) -> None:
 
 
 def test_a_status_on_the_next_line_writes_nothing(tmp_path: Path) -> None:
-    tree = tree_with("knowledge/gamma/node.md", "status: proposed", "status:\n  proposed")
+    tree = tree_with("knowledge/nodes/gamma/node.md", "status: proposed", "status:\n  proposed")
     make_repository(tmp_path, tree)
     before = source_bytes(tmp_path)
     report = accept_entities(tmp_path, ["gamma"])
@@ -692,13 +715,13 @@ def test_a_status_on_the_next_line_writes_nothing(tmp_path: Path) -> None:
 def test_a_partial_acceptance_that_makes_a_conflict_writes_nothing(tmp_path: Path) -> None:
     tree = {
         **TREE,
-        "knowledge/alpha/node.md": ALPHA.replace(
+        "knowledge/nodes/alpha/node.md": ALPHA.replace(
             "- Run the check. ^keep\n  - scope: subtree\n  - status: proposed\n"
             "  - origin: template\n",
             "- Use tabs in each file. ^use-tabs\n  - scope: subtree\n  - status: proposed\n"
             "  - origin: template\n  - conflicts_with: use-spaces\n",
         ),
-        "knowledge/alpha/beta/node.md": BETA.replace(
+        "knowledge/nodes/alpha/beta/node.md": BETA.replace(
             "exceptions:\n  - directive: wait\n    reason: A reason for beta.\n"
             "    status: proposed\n",
             "exceptions:\n  - directive: use-tabs\n    reason: A reason for beta.\n"
@@ -722,8 +745,8 @@ def test_an_acceptance_that_breaks_the_size_limit_writes_nothing(
 ) -> None:
     assert generate_runtime(repository).problems == []
     commit(repository)
-    folder_files = (repository / "knowledge").rglob("AGENTS.md")
-    limit = max(len(path.read_text(encoding="utf-8")) for path in folder_files) + 1
+    pages = (repository / ".claude/references").glob("*.md")
+    limit = max(len(path.read_text(encoding="utf-8")) for path in pages) + 1
     monkeypatch.setattr(claude_code, "ON_DEMAND_CHARACTERS", limit)
     assert generate_runtime(repository).problems == []
     before = source_bytes(repository)
@@ -735,7 +758,7 @@ def test_an_acceptance_that_breaks_the_size_limit_writes_nothing(
 
 def test_a_write_failure_reports_only_what_changed(tmp_path: Path) -> None:
     make_repository(tmp_path)
-    blocked = tmp_path / "knowledge/gamma/node.md"
+    blocked = tmp_path / "knowledge/nodes/gamma/node.md"
     blocked.chmod(0o444)
     try:
         report = accept_entities(tmp_path, ["keep", "gamma"])
@@ -749,7 +772,7 @@ def test_a_write_failure_reports_only_what_changed(tmp_path: Path) -> None:
 
 def test_a_write_failure_stops_at_the_first_file(tmp_path: Path) -> None:
     make_repository(tmp_path)
-    blocked = tmp_path / "knowledge/alpha/node.md"
+    blocked = tmp_path / "knowledge/nodes/alpha/node.md"
     blocked.chmod(0o444)
     try:
         report = accept_entities(tmp_path, ["keep", "gamma"])
@@ -757,14 +780,14 @@ def test_a_write_failure_stops_at_the_first_file(tmp_path: Path) -> None:
         blocked.chmod(0o644)
     assert codes(list(report.problems)) == ["write"]
     assert report.accepted == ()
-    assert "status: proposed" in read(tmp_path, "knowledge/gamma/node.md")
+    assert "status: proposed" in read(tmp_path, "knowledge/nodes/gamma/node.md")
 
 
 def test_an_unreadable_file_reports_a_problem(
     repository: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     real = Path.read_bytes
-    target = repository / "knowledge/gamma/node.md"
+    target = repository / "knowledge/nodes/gamma/node.md"
     seen = {"calls": 0}
 
     def fail_late(path: Path) -> bytes:
@@ -785,16 +808,16 @@ def test_an_unreadable_file_reports_a_problem(
 
 def test_the_command_prefix_follows_the_wrapper(tmp_path: Path) -> None:
     assert command_prefix(tmp_path) == "uv run ka"
-    (tmp_path / ".ka").mkdir()
+    (tmp_path / "knowledge/.ka").mkdir(parents=True, exist_ok=True)
     assert command_prefix(tmp_path) == "uv run ka"
-    (tmp_path / ".ka/ka").write_text("#!/bin/sh\n", encoding="utf-8")
-    assert command_prefix(tmp_path) == ".ka/ka"
+    (tmp_path / "knowledge/.ka/ka").write_text("#!/bin/sh\n", encoding="utf-8")
+    assert command_prefix(tmp_path) == "knowledge/.ka/ka"
 
 
 def test_a_project_message_names_the_project_command(repository: Path) -> None:
-    (repository / ".ka").mkdir()
-    (repository / ".ka/ka").write_text("#!/bin/sh\n", encoding="utf-8")
-    path = repository / "knowledge/alpha/node.md"
+    (repository / "knowledge/.ka").mkdir(parents=True, exist_ok=True)
+    (repository / "knowledge/.ka/ka").write_text("#!/bin/sh\n", encoding="utf-8")
+    path = repository / "knowledge/nodes/alpha/node.md"
     path.write_text(
         path.read_text(encoding="utf-8")
         + "- Run the new check. ^brand-new\n  - scope: node\n  - status: proposed\n"
@@ -802,14 +825,14 @@ def test_a_project_message_names_the_project_command(repository: Path) -> None:
         encoding="utf-8",
     )
     report = accept_entities(repository, ["brand-new"])
-    assert ".ka/ka accept" in report.problems[0].message
+    assert "knowledge/.ka/ka accept" in report.problems[0].message
 
 
 def test_the_cli_names_each_step_after_a_write(repository: Path) -> None:
     result = RUNNER.invoke(app, ["accept", "keep", "--repository", str(repository)])
     assert result.exit_code == 0, result.output
     assert "directive keep is now accepted" in result.output
-    assert "knowledge/alpha/node.md:" in result.output
+    assert "knowledge/nodes/alpha/node.md:" in result.output
     assert "This command wrote no commit." in result.output
     assert "uv run ka runtime" in result.output
     assert "1 entities accepted, 0 not proposed, 0 problems" in result.output
@@ -865,7 +888,7 @@ def test_the_cli_runs_in_the_current_folder(
     monkeypatch.chdir(repository)
     result = RUNNER.invoke(app, ["accept", "keep"])
     assert result.exit_code == 0, result.output
-    assert "status: accepted" in read(repository, "knowledge/alpha/node.md")
+    assert "status: accepted" in read(repository, "knowledge/nodes/alpha/node.md")
 
 
 def test_the_cli_help_states_who_runs_it() -> None:

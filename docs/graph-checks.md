@@ -12,7 +12,7 @@ The parser checks each file on its own, so `broader: [does-not-exist]` passes it
 uv run ka graph
 ```
 
-The command reads `knowledge/`, `skills/`, and `governance/` in the current folder, or in a folder you name after `graph`. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. The git hook runs the same command on each commit.
+The command reads `knowledge/` in the current folder, or in a folder you name after `graph`. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. The git hook runs the same command on each commit.
 
 An empty tree passes, so a project can remove what it received and still start clean.
 
@@ -39,11 +39,11 @@ Two more codes report a graph that the checks cannot read. `schema` means the gr
 The kind of a node sets where its file goes:
 
 - The root is `knowledge/node.md`, and no other node can use that file.
-- A skill goes under `skills/`.
-- A policy goes under `governance/policies/`, and no node can go anywhere else under `governance/`.
-- Every other node goes under `knowledge/`.
+- A skill goes under `knowledge/skills/`, and no other node can go there.
+- A policy goes under `knowledge/governance/policies/`, and no node can go anywhere else under `knowledge/governance/`.
+- Every other node goes under `knowledge/nodes/`.
 
-These checks do not need a `governance/` folder, and a project can delete the policies it received. Inside those folders the path is free. It stays a navigation aid, so a file can move without changing what it means.
+These checks do not need a `knowledge/governance/` folder, and a project can delete the policies it received. Inside those folders the path is free. It stays a navigation aid, so a file can move without changing what it means.
 
 ## Reachability and depth
 

@@ -2,7 +2,7 @@
 {% if not loop.first %}
 
 {% endif %}
-From [{{ group.holder.title | link_text }}]({{ link(group.holder.path) }}):
+From [{{ group.holder.title | link_text }}]({{ href(group.holder) }}):
 
 {% for directive in group.directives %}
 - {{ directive.text }} ^{{ directive.id }}{% if directive.status != "accepted" %} ({{ directive.status }}){% endif +%}

@@ -2,9 +2,9 @@
 {% if pointer.mechanism == "skill" -%}
 Use the skill `{{ pointer.target.id }}`.
 {%- elif pointer.mechanism == "path" -%}
-[{{ pointer.target.title | link_text }}]({{ link(pointer.target.path) }}) loads by itself.
+[{{ pointer.target.title | link_text }}]({{ href(pointer.target) }}) loads by itself.
 {%- elif pointer.mechanism == "always" -%}
-[{{ pointer.target.title | link_text }}]({{ link(pointer.target.path) }}) is always loaded.
+[{{ pointer.target.title | link_text }}]({{ href(pointer.target) }}) is always loaded.
 {%- else -%}
-Read [{{ pointer.target.title | link_text }}]({{ link(pointer.target.path) }}).
+Read [{{ pointer.target.title | link_text }}]({{ href(pointer.target) }}).
 {%- endif +%}

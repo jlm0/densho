@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-`governance/schema/metamodel.yaml` defines what can exist in the knowledge graph: the node kinds, the fields they hold, and how they connect. It holds no knowledge itself. The files in `engine/generated/` are generated from it. The parser validates each node against the Python models, and the [graph checks](graph-checks.md) validate the whole graph against the SHACL shapes.
+`knowledge/governance/schema/metamodel.yaml` defines what can exist in the knowledge graph: the node kinds, the fields they hold, and how they connect. It holds no knowledge itself. The files in `engine/generated/` are generated from it. The parser validates each node against the Python models, and the [graph checks](graph-checks.md) validate the whole graph against the SHACL shapes.
 
 Each class inherits the fields of the class above it:
 
@@ -95,7 +95,7 @@ A directive is one instruction with its own ID. It lives in the file of one node
 
 ## Rules for rules
 
-Governance is written in the same classes as everything else: a governance node is an ordinary node under `governance/policies/`, and `governs` names what it sets rules for, which can include itself. `metamodel.yaml` and the files in `governance/language/` stay outside the graph. The first defines what a node is, and the second is data that the language checks read. The `schema-rules` and `language-rules` [policies](governance-workflow.md#the-policies) name them as sources.
+Governance is written in the same classes as everything else: a governance node is an ordinary node under `knowledge/governance/policies/`, and `governs` names what it sets rules for, which can include itself. `metamodel.yaml` and the files in `knowledge/governance/language/` stay outside the graph. The first defines what a node is, and the second is data that the language checks read. The `schema-rules` and `language-rules` [policies](governance-workflow.md#the-policies) name them as sources.
 
 ## What the models do not check
 
@@ -114,7 +114,7 @@ The models read one node at a time and hold each reference as a plain string, so
 
 ## Change the schema
 
-The engine reads its own copy of the schema, so you change the schema in the template. A project's `governance/schema/metamodel.yaml` is a reference, and editing it changes no check.
+The engine reads its own copy of the schema, so you change the schema in the template. A project's `knowledge/governance/schema/metamodel.yaml` is a reference, and editing it changes no check.
 
 After you edit `metamodel.yaml`, regenerate the files in `engine/generated/`:
 
@@ -122,4 +122,4 @@ After you edit `metamodel.yaml`, regenerate the files in `engine/generated/`:
 uv run pre-commit run schema-models --all-files
 ```
 
-The command rewrites the Python models, the RDF classes, the SHACL shapes, the ontology, and the engine's copy of the schema, and it reports a failure when any of them changed. Stage the new files and run it again. The git hook runs the same step on each commit, so a schema change cannot land without its generated files, and a hand edit to one of them does not survive.
+The command rewrites the Python models, the RDF classes, the SHACL shapes, the ontology, and the engine's copy of the schema, and it reports a failure when any of them changed. Stage the new files and run it again. The lint settings and the template for the Python models sit in `engine/schema/`, so a project doesn't receive them. The git hook runs the same step on each commit, so a schema change cannot land without its generated files, and a hand edit to one of them does not survive.

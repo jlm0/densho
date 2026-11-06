@@ -10,7 +10,7 @@ from engine.parser.node import MARKDOWN_FIELDS, NODE_CLASSES, POINTER_CLASSES
 if TYPE_CHECKING:
     from pydantic import BaseModel
 
-SCHEMA = Path(__file__).resolve().parents[1] / "governance/schema/metamodel.yaml"
+SCHEMA = Path(__file__).resolve().parents[1] / "knowledge/governance/schema/metamodel.yaml"
 VIEW = SchemaView(str(SCHEMA))
 
 

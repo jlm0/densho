@@ -37,45 +37,47 @@ Each page explains how to use what exists today, and ends with what it does not 
 
 ## Commands
 
-| Command                                       | What it does                              | Page                                          |
-| --------------------------------------------- | ----------------------------------------- | --------------------------------------------- |
-| `uv run pre-commit run --all-files`           | Runs every check on every file            |                                               |
-| `uv run ka parse knowledge skills governance` | Parses each node                          | [Node format](node-format.md)                 |
-| `uv run ka graph`                             | Checks the whole graph                    | [Graph checks](graph-checks.md)               |
-| `uv run ka language`                          | Checks the language of the text           | [Language checks](language-checks.md)         |
-| `uv run ka directives`                        | Checks which directives apply where       | [Directive semantics](directive-semantics.md) |
-| `uv run ka governance`                        | Checks the lifecycle and each change      | [Governance workflow](governance-workflow.md) |
-| `uv run ka governance --pending`              | Lists what waits for review               | [Governance workflow](governance-workflow.md) |
-| `uv run ka build`                             | Runs the checks, then compiles            | [Compiled outputs](compiled-outputs.md)       |
-| `uv run ka build --proposals`                 | Compiles what acceptance would add        | [Compiled outputs](compiled-outputs.md)       |
-| `uv run ka runtime`                           | Writes the files an agent tool loads      | [Runtime files](runtime-files.md)             |
-| `uv run ka runtime --proposals`               | Writes a review copy of those files       | [Runtime files](runtime-files.md)             |
-| `uv run ka view`                              | Writes a site for people to read          | [Human interface](human-interface.md)         |
-| `uv run ka accept`                            | Sets what a person approves to `accepted` | [Human interface](human-interface.md)         |
-| `uv run ka adopt`                             | Takes in template knowledge               | [Template packaging](template-packaging.md)   |
-| `uv run ka history`                           | Records template changes for agents       | [Template packaging](template-packaging.md)   |
-| `uv run ka history --drift`                   | Lists differences from the history        | [Template packaging](template-packaging.md)   |
-| `uv run pytest`                               | Runs the tests                            |                                               |
-| `uv run pyright`                              | Checks types in strict mode               |                                               |
-| `uv run ruff check`                           | Lints the Python code                     |                                               |
-| `uv run ruff format`                          | Formats the Python code                   |                                               |
+| Command                             | What it does                              | Page                                          |
+| ----------------------------------- | ----------------------------------------- | --------------------------------------------- |
+| `uv run pre-commit run --all-files` | Runs every check on every file            |                                               |
+| `uv run ka parse knowledge`         | Parses each node                          | [Node format](node-format.md)                 |
+| `uv run ka graph`                   | Checks the whole graph                    | [Graph checks](graph-checks.md)               |
+| `uv run ka language`                | Checks the language of the text           | [Language checks](language-checks.md)         |
+| `uv run ka directives`              | Checks which directives apply where       | [Directive semantics](directive-semantics.md) |
+| `uv run ka governance`              | Checks the lifecycle and each change      | [Governance workflow](governance-workflow.md) |
+| `uv run ka governance --pending`    | Lists what waits for review               | [Governance workflow](governance-workflow.md) |
+| `uv run ka build`                   | Runs the checks, then compiles            | [Compiled outputs](compiled-outputs.md)       |
+| `uv run ka build --proposals`       | Compiles what acceptance would add        | [Compiled outputs](compiled-outputs.md)       |
+| `uv run ka runtime`                 | Writes the files an agent tool loads      | [Runtime files](runtime-files.md)             |
+| `uv run ka runtime --proposals`     | Writes a review copy of those files       | [Runtime files](runtime-files.md)             |
+| `uv run ka view`                    | Writes a site for people to read          | [Human interface](human-interface.md)         |
+| `uv run ka accept`                  | Sets what a person approves to `accepted` | [Human interface](human-interface.md)         |
+| `uv run ka adopt`                   | Takes in template knowledge               | [Template packaging](template-packaging.md)   |
+| `uv run ka history`                 | Records template changes for agents       | [Template packaging](template-packaging.md)   |
+| `uv run ka history --drift`         | Lists differences from the history        | [Template packaging](template-packaging.md)   |
+| `uv run pytest`                     | Runs the tests                            |                                               |
+| `uv run pyright`                    | Checks types in strict mode               |                                               |
+| `uv run ruff check`                 | Lints the Python code                     |                                               |
+| `uv run ruff format`                | Formats the Python code                   |                                               |
 
-In a project, `.ka/ka` takes the place of `uv run ka`.
+In a project, `knowledge/.ka/ka` takes the place of `uv run ka`.
 
 In this repo, the git hook runs these checks on each commit: file hygiene, the lock file, the engine constraints, the schema lint, the generated models, the knowledge nodes, the graph checks, the directive checks, the governance checks, the language checks, the compiled outputs, the runtime files, the template history, Ruff lint and format, Markdown format, Pyright, and the tests. [A project runs fewer](template-packaging.md#the-git-hook).
 
 ## Where the code lives
 
-| Path under `engine/` | What it does                                                         |
-| -------------------- | -------------------------------------------------------------------- |
-| `generated/`         | Models and shapes generated from the schema. Do not edit them.       |
-| `parser/`            | Reads `node.md` files into the models, with line numbers             |
-| `graph/`             | Checks the structure of the whole graph                              |
-| `language/`          | Checks directives, triggers, and skill descriptions                  |
-| `directives/`        | Works out which directives apply at each node, and checks the result |
-| `governance/`        | Checks the lifecycle, and compares each change with the last commit  |
-| `compiler/`          | Compiles the checked graph to JSON and RDF, with digests             |
-| `runtime/`           | Generates the files that an agent tool loads                         |
-| `template/`          | Takes in template knowledge, and records the history                 |
-| `interface/`         | Writes the site for people, and accepts what a person approves       |
-| `vendor/`            | A third-party linter, kept unchanged with its license                |
+| Path under `engine/` | What it does                                                                     |
+| -------------------- | -------------------------------------------------------------------------------- |
+| `layout.py`          | Names the path of each source folder under `knowledge/`                          |
+| `schema/`            | The schema lint settings and the model template. A project doesn't receive them. |
+| `generated/`         | Models and shapes generated from the schema. Do not edit them.                   |
+| `parser/`            | Reads `node.md` files into the models, with line numbers                         |
+| `graph/`             | Checks the structure of the whole graph                                          |
+| `language/`          | Checks directives, triggers, and skill descriptions                              |
+| `directives/`        | Works out which directives apply at each node, and checks the result             |
+| `governance/`        | Checks the lifecycle, and compares each change with the last commit              |
+| `compiler/`          | Compiles the checked graph to JSON and RDF, with digests                         |
+| `runtime/`           | Generates the files that an agent tool loads                                     |
+| `template/`          | Takes in template knowledge, and records the history                             |
+| `interface/`         | Writes the site for people, and accepts what a person approves                   |
+| `vendor/`            | A third-party linter, kept unchanged with its license                            |

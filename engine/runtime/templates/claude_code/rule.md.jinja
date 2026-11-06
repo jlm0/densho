@@ -6,17 +6,4 @@ paths:
 {% endfor %}
 ---
 {% endif %}
-{% include "_title.md.jinja" %}
-
-{% include "_directives.md.jinja" %}
-{% if node.definition %}
-
-## Definition
-
-{{ node.definition }}
-{% endif %}
-{% if node.body %}
-
-{{ node.body }}
-{% endif %}
-{% include "_references.md.jinja" %}
+{% include "reference.md.jinja" %}

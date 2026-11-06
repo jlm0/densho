@@ -1,4 +1,5 @@
 # pyright: reportUnknownMemberType=false, reportUnknownVariableType=false, reportUnknownArgumentType=false, reportMissingTypeStubs=false
+import posixpath
 import re
 import shutil
 import subprocess
@@ -22,9 +23,9 @@ from engine.runtime import (
     claude_code,
     generate_runtime,
     is_generated,
+    link_target,
     local_links,
     render_files,
-    resolves,
     review_path,
 )
 from engine.runtime.claude_code import (
@@ -46,7 +47,6 @@ ENGINE = REPO / "engine/runtime"
 RUNNER = CliRunner()
 GIT = shutil.which("git") or "git"
 REVIEW = REVIEW_FOLDER.as_posix()
-TREE_FOLDERS = ("knowledge", "skills", "governance")
 SKILL_BODY = "## Procedure\n\n1. Read each directive that this skill lists.\n"
 TOOL_KEPT_TOKENS = 5_000
 LOW_CHARACTERS_PER_TOKEN = 3
@@ -102,12 +102,12 @@ SAMPLE = {
         ),
         body="## Architecture\n\nA fact that no file shows.\n",
     ),
-    "knowledge/alpha/node.md": node(
+    "knowledge/nodes/alpha/node.md": node(
         "alpha",
         front=pointers(pointer("TextPointer", "beta"), pointer("SkillPointer", "review")),
         rules=[rule("keep"), rule("wait", "proposed"), rule("faded", "deprecated", "node")],
     ),
-    "knowledge/alpha/beta/node.md": node(
+    "knowledge/nodes/alpha/beta/node.md": node(
         "beta",
         "ka:Concept",
         front=(
@@ -117,20 +117,20 @@ SAMPLE = {
         ),
         rules=[rule("bound", scope="node")],
     ),
-    "knowledge/gamma/node.md": node(
+    "knowledge/nodes/gamma/node.md": node(
         "gamma",
         front=pointers(pointer("PathPointer", "delta", "lib/**/*")),
         rules=[rule("solid", scope="node")],
     ),
-    "knowledge/delta/node.md": node("delta", body="## Notes\n\nThe body of delta.\n"),
-    "governance/policies/node.md": node(
+    "knowledge/nodes/delta/node.md": node("delta", body="## Notes\n\nThe body of delta.\n"),
+    "knowledge/governance/policies/node.md": node(
         "policies",
         front="governs: [policies, lifecycle]\n" + pointers(pointer("TextPointer", "lifecycle")),
     ),
-    "governance/policies/lifecycle/node.md": node(
+    "knowledge/governance/policies/lifecycle/node.md": node(
         "lifecycle", "ka:Concept", front="broader: [policies]\ngoverns: [lifecycle]\n"
     ),
-    "skills/review/node.md": node(
+    "knowledge/skills/review/node.md": node(
         "review",
         "ka:Skill",
         front=SKILL_FRONT + pointers(pointer("TextPointer", "gamma")),
@@ -170,9 +170,10 @@ def write_tree(repository: Path, sources: dict[str, str] | None = None) -> None:
         return [name for name in names if Path(folder).name == "branches" and name != ".gitkeep"]
 
     shutil.copytree(
-        REPO / "governance/language", repository / "governance/language", ignore=no_branch_files
+        REPO / "knowledge/governance/language",
+        repository / "knowledge/governance/language",
+        ignore=no_branch_files,
     )
-    (repository / "skills").mkdir(exist_ok=True)
     for relative, text in (SAMPLE if sources is None else sources).items():
         path = repository / relative
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -225,7 +226,7 @@ def test_each_pointer_kind_maps_to_one_load_mechanism() -> None:
         "delta": LoadMechanism.ALWAYS,
         "policies": LoadMechanism.TEXT,
     }
-    alpha = next(entry for entry in view.folders if entry.link.id == "alpha")
+    alpha = next(entry for entry in view.pages if entry.link.id == "alpha")
     assert {line.target.id: line.mechanism for line in alpha.pointers} == {
         "beta": LoadMechanism.TEXT,
         "review": LoadMechanism.SKILL,
@@ -234,27 +235,33 @@ def test_each_pointer_kind_maps_to_one_load_mechanism() -> None:
 
 def test_each_node_has_one_generated_file() -> None:
     assert sorted(rendered()) == [
+        ".claude/references/alpha.md",
+        ".claude/references/beta.md",
+        ".claude/references/lifecycle.md",
+        ".claude/references/policies.md",
         ".claude/rules/knowledge/delta.md",
         ".claude/rules/knowledge/gamma.md",
         ".claude/skills/review/SKILL.md",
         "AGENTS.md",
-        "governance/policies/AGENTS.md",
-        "governance/policies/lifecycle/AGENTS.md",
-        "knowledge/alpha/AGENTS.md",
-        "knowledge/alpha/beta/AGENTS.md",
     ]
+
+
+def test_no_generated_file_sits_in_the_source_folder() -> None:
+    for proposals in (False, True):
+        for path in rendered(proposals=proposals):
+            assert "knowledge" not in PurePosixPath(path).parts[:1], path
 
 
 def test_a_path_rule_holds_each_pattern_and_the_file_of_its_node() -> None:
     assert front_matter(text_of(".claude/rules/knowledge/gamma.md")) == {
-        "paths": ["knowledge/gamma/node.md", "src/**/*"],
+        "paths": ["knowledge/nodes/gamma/node.md", "src/**/*"],
     }
 
 
 def test_a_path_rule_merges_the_patterns_of_two_pointers() -> None:
     sources = {
         **SAMPLE,
-        "knowledge/alpha/node.md": node(
+        "knowledge/nodes/alpha/node.md": node(
             "alpha",
             front=pointers(
                 pointer("PathPointer", "gamma", "lib/**/*"),
@@ -265,7 +272,7 @@ def test_a_path_rule_merges_the_patterns_of_two_pointers() -> None:
         ),
     }
     text = rendered(sources)[".claude/rules/knowledge/gamma.md"].text
-    assert front_matter(text)["paths"] == ["knowledge/gamma/node.md", "lib/**/*", "src/**/*"]
+    assert front_matter(text)["paths"] == ["knowledge/nodes/gamma/node.md", "lib/**/*", "src/**/*"]
 
 
 def test_an_always_pointer_gives_a_rule_with_no_paths_and_wins_over_a_path_pointer() -> None:
@@ -280,14 +287,24 @@ def test_a_rule_holds_the_definition_and_the_body() -> None:
     assert "## Notes\n\nThe body of delta.\n" in text
 
 
-def test_a_folder_file_leaves_the_definition_to_the_node_file() -> None:
-    assert "The meaning of alpha" not in text_of("knowledge/alpha/AGENTS.md")
+def test_a_reference_page_holds_the_definition_and_the_body() -> None:
+    sources = {
+        **SAMPLE,
+        "knowledge/nodes/alpha/beta/node.md": node(
+            "beta", "ka:Concept", front="broader: [alpha]\n", body="## Notes\n\nThe body of beta.\n"
+        ),
+    }
+    text = rendered(sources)[".claude/references/beta.md"].text
+    assert "## Definition\n\nThe meaning of beta.\n" in text
+    assert "## Notes\n\nThe body of beta.\n" in text
+    assert "status:" not in text
+    assert "origin:" not in text
 
 
 def test_a_pointer_to_the_root_gives_no_rule() -> None:
     sources = {
         **SAMPLE,
-        "knowledge/delta/node.md": node(
+        "knowledge/nodes/delta/node.md": node(
             "delta", front=pointers(pointer("PathPointer", "root", "docs/**/*"))
         ),
     }
@@ -297,7 +314,7 @@ def test_a_pointer_to_the_root_gives_no_rule() -> None:
 def test_a_skill_behind_a_path_pointer_receives_a_rule_and_a_skill_file() -> None:
     sources = {
         **SAMPLE,
-        "knowledge/delta/node.md": node(
+        "knowledge/nodes/delta/node.md": node(
             "delta", front=pointers(pointer("PathPointer", "review", "docs/**/*"))
         ),
     }
@@ -312,8 +329,8 @@ def test_a_policy_is_not_a_domain_in_the_root() -> None:
     governance = text[text.index("## Governance") : text.index("## Skills")]
     assert "alpha" in domains
     assert "policies" not in domains
-    assert "Read [policies](governance/policies/node.md)." in governance
-    assert "Read [lifecycle](governance/policies/lifecycle/node.md)." in governance
+    assert "Read [policies](.claude/references/policies.md)." in governance
+    assert "Read [lifecycle](.claude/references/lifecycle.md)." in governance
 
 
 def test_the_root_lists_a_domain_that_it_has_no_pointer_to() -> None:
@@ -324,7 +341,7 @@ def test_the_root_lists_a_domain_that_it_has_no_pointer_to() -> None:
         ),
     }
     text = rendered(sources)["AGENTS.md"].text
-    assert "- Read [alpha](knowledge/alpha/node.md).\n" in text
+    assert "- Read [alpha](.claude/references/alpha.md).\n" in text
 
 
 def test_the_root_names_each_skill_with_its_description() -> None:
@@ -338,7 +355,7 @@ def test_the_root_leaves_out_an_empty_section() -> None:
         "knowledge/node.md": node(
             "root", "ka:Root", front=pointers(pointer("TextPointer", "lone"))
         ),
-        "knowledge/lone/node.md": node("lone"),
+        "knowledge/nodes/lone/node.md": node("lone"),
     }
     text = rendered(sources)["AGENTS.md"].text
     assert "## Domains" in text
@@ -358,7 +375,7 @@ def test_the_root_holds_a_pointer_to_a_node_that_is_not_a_domain() -> None:
         ),
     }
     text = rendered(sources)["AGENTS.md"].text
-    assert "## References\n\n- You need beta. Read [beta](knowledge/alpha/beta/node.md).\n" in text
+    assert "## References\n\n- You need beta. Read [beta](.claude/references/beta.md).\n" in text
 
 
 @pytest.mark.parametrize(
@@ -418,7 +435,7 @@ def test_the_default_result_holds_only_what_is_in_force() -> None:
 def test_the_review_result_marks_each_proposal() -> None:
     text = text_of(f"{REVIEW}/claude/skills/review/SKILL.proposals.md", proposals=True)
     assert "NOT IN FORCE" in text
-    alpha = text_of(f"{REVIEW}/knowledge/alpha/AGENTS.proposals.md", proposals=True)
+    alpha = text_of(f"{REVIEW}/claude/references/alpha.proposals.md", proposals=True)
     assert "- Run the wait check. ^wait (proposed)\n" in alpha
     assert "- Run the keep check. ^keep\n" in alpha
     assert "^faded" not in alpha
@@ -432,21 +449,17 @@ def test_each_review_file_opens_with_the_notice() -> None:
 
 
 def test_an_exception_stops_a_directive_and_states_the_reason() -> None:
-    text = text_of("knowledge/alpha/beta/AGENTS.md")
+    text = text_of(".claude/references/beta.md")
     assert "^keep" not in text.split("## Exceptions")[0]
     assert "- `keep` does not apply at this node. A reason for keep.\n" in text
     assert "A reason for wait" not in text
-    review = text_of(f"{REVIEW}/knowledge/alpha/beta/AGENTS.proposals.md", proposals=True)
+    review = text_of(f"{REVIEW}/claude/references/beta.proposals.md", proposals=True)
     assert "- `wait` does not apply at this node. A reason for wait. (proposed)\n" in review
     assert "^wait" not in review.split("## Exceptions")[0]
 
 
 def test_a_node_with_no_directive_states_that_fact() -> None:
-    assert "No directive is in force at this node.\n" in text_of(
-        "knowledge/gamma/node.md".replace(
-            "knowledge/gamma/node.md", ".claude/rules/knowledge/delta.md"
-        )
-    )
+    assert "No directive is in force at this node.\n" in text_of(".claude/rules/knowledge/delta.md")
     review = text_of(f"{REVIEW}/claude/rules/knowledge/delta.proposals.md", proposals=True)
     assert "No directive applies at this node.\n" in review
 
@@ -454,9 +467,12 @@ def test_a_node_with_no_directive_states_that_fact() -> None:
 def test_a_group_links_to_the_node_that_holds_the_directive() -> None:
     text = text_of(".claude/skills/review/SKILL.md")
     assert (
-        "From [gamma](../../../knowledge/gamma/node.md):\n\n- Run the solid check. ^solid\n" in text
+        "From [gamma](../../rules/knowledge/gamma.md):\n\n- Run the solid check. ^solid\n" in text
     )
-    assert "From [review](../../../skills/review/node.md):\n\n- Run the own-rule check." in text
+    assert "From [review](SKILL.md):\n\n- Run the own-rule check." in text
+    beta = text_of(".claude/references/beta.md")
+    assert "From [alpha](alpha.md):\n\n- Run the bound check." not in beta
+    assert "From [beta](beta.md):\n\n- Run the bound check. ^bound\n" in beta
 
 
 @pytest.mark.parametrize(
@@ -470,7 +486,10 @@ def test_a_group_links_to_the_node_that_holds_the_directive() -> None:
             ".claude/rules/knowledge/gamma.md",
             ["## Directives", "^solid", "## Definition", "## References"],
         ),
-        ("knowledge/alpha/AGENTS.md", ["## Directives", "^keep", "## References", "Read [beta]"]),
+        (
+            ".claude/references/alpha.md",
+            ["## Directives", "^keep", "## Definition", "## References", "Read [beta]"],
+        ),
         ("AGENTS.md", ["## Directives", "## Architecture", "## Domains", "## Governance"]),
     ],
 )
@@ -504,24 +523,59 @@ def test_a_pointer_line_follows_its_mechanism() -> None:
             ),
         }
     )["AGENTS.md"].text
-    assert "- You need beta. [beta](knowledge/alpha/beta/node.md) loads by itself.\n" in references
     assert (
-        "- You need lifecycle. [lifecycle](governance/policies/lifecycle/node.md) "
-        "is always loaded.\n"
-    ) in references
+        "- You need beta. [beta](.claude/rules/knowledge/beta.md) loads by itself.\n" in references
+    )
+    lifecycle = "[lifecycle](.claude/rules/knowledge/lifecycle.md) is always loaded.\n"
+    assert f"- You need lifecycle. {lifecycle}" in references
     assert "- You need review. Use the skill `review`.\n" in references
-    assert "- You need gamma. Read [gamma](knowledge/gamma/node.md).\n" in references
+    assert "- You need gamma. Read [gamma](.claude/references/gamma.md).\n" in references
 
 
-def test_a_folder_file_lists_pointers_with_real_paths() -> None:
-    text = text_of("knowledge/alpha/AGENTS.md")
-    assert "- You need beta. Read [beta](beta/node.md).\n" in text
+def test_a_reference_page_links_the_generated_file_of_each_pointer() -> None:
+    text = text_of(".claude/references/alpha.md")
+    assert "- You need beta. Read [beta](beta.md).\n" in text
     assert "- You need review. Use the skill `review`.\n" in text
+    rule = text_of(".claude/rules/knowledge/gamma.md")
+    assert "[delta](delta.md) loads by itself.\n" in rule
+
+
+def test_each_link_goes_to_a_generated_file_and_no_link_goes_to_a_node_file() -> None:
+    for proposals in (False, True):
+        files = rendered(proposals=proposals)
+        for path, entry in files.items():
+            folder = PurePosixPath(path).parent
+            for link in local_links(entry.text):
+                target = posixpath.normpath((folder / link).as_posix())
+                assert target in files, (path, link)
+                assert not target.endswith("node.md"), (path, link)
 
 
 def test_a_review_link_resolves_from_the_review_folder() -> None:
-    text = text_of(f"{REVIEW}/knowledge/alpha/AGENTS.proposals.md", proposals=True)
-    assert "# [alpha](../../../../knowledge/alpha/node.md)\n" in text
+    root = text_of(f"{REVIEW}/AGENTS.proposals.md", proposals=True)
+    assert "Read [alpha](claude/references/alpha.proposals.md).\n" in root
+    alpha = text_of(f"{REVIEW}/claude/references/alpha.proposals.md", proposals=True)
+    assert "# alpha\n" in alpha
+    assert "Read [beta](beta.proposals.md).\n" in alpha
+
+
+def test_a_skill_links_each_node_that_it_uses() -> None:
+    front = "description: Review a sample. Use when a sample needs a review.\nuses: [gamma, beta]\n"
+    sources = {
+        **SAMPLE,
+        "knowledge/skills/review/node.md": node(
+            "review",
+            "ka:Skill",
+            front=front + pointers(pointer("TextPointer", "gamma")),
+            body=SKILL_BODY,
+        ),
+    }
+    text = rendered(sources)[".claude/skills/review/SKILL.md"].text
+    references = text[text.index("## References") :]
+    assert references.splitlines()[2:] == [
+        "- You need gamma. Read [gamma](../../rules/knowledge/gamma.md).",
+        "- Read [beta](../../references/beta.md).",
+    ]
 
 
 def test_a_review_path_holds_no_name_that_the_tool_loads() -> None:
@@ -560,23 +614,25 @@ def test_the_skill_states_that_an_agent_can_invoke_it_again() -> None:
 
 def test_a_title_makes_no_link() -> None:
     hostile = node("delta").replace("title: delta", 'title: "Fake](../../x) [a"')
-    sources = {**SAMPLE, "knowledge/delta/node.md": hostile}
+    sources = {**SAMPLE, "knowledge/nodes/delta/node.md": hostile}
     text = rendered(sources)[".claude/rules/knowledge/delta.md"].text
-    assert "# [Fake\\](../../x) \\[a](../../../knowledge/delta/node.md)\n" in text
-    assert local_links(text) == ["../../../knowledge/delta/node.md"]
+    assert "# Fake\\](../../x) \\[a\n" in text
+    assert local_links(text) == []
 
 
 def test_a_backslash_in_a_title_stays_literal() -> None:
     hostile = node("delta").replace("title: delta", 'title: "a\\\\](b)"')
-    sources = {**SAMPLE, "knowledge/delta/node.md": hostile}
+    sources = {**SAMPLE, "knowledge/nodes/delta/node.md": hostile}
     text = rendered(sources)[".claude/rules/knowledge/delta.md"].text
-    assert local_links(text) == ["../../../knowledge/delta/node.md"]
+    assert local_links(text) == []
 
 
 def test_a_template_expression_in_a_node_stays_literal() -> None:
     sources = {
         **SAMPLE,
-        "knowledge/delta/node.md": node("delta", body="## Notes\n\nKeep {{ 7 * 7 }} as text.\n"),
+        "knowledge/nodes/delta/node.md": node(
+            "delta", body="## Notes\n\nKeep {{ 7 * 7 }} as text.\n"
+        ),
     }
     assert "Keep {{ 7 * 7 }} as text." in rendered(sources)[".claude/rules/knowledge/delta.md"].text
 
@@ -584,7 +640,7 @@ def test_a_template_expression_in_a_node_stays_literal() -> None:
 def test_a_description_that_breaks_plain_yaml_stays_one_string() -> None:
     description = "'Review: \"a\" sample, #1. Use when\n  a sample: needs a review.'"
     front = f"description: {description}\nuses: [gamma]\n"
-    sources = {**SAMPLE, "skills/review/node.md": node("review", "ka:Skill", front=front)}
+    sources = {**SAMPLE, "knowledge/skills/review/node.md": node("review", "ka:Skill", front=front)}
     text = rendered(sources)[".claude/skills/review/SKILL.md"].text
     assert (
         front_matter(text)["description"]
@@ -594,7 +650,7 @@ def test_a_description_that_breaks_plain_yaml_stays_one_string() -> None:
 
 def test_a_description_keeps_each_character_that_is_not_ascii() -> None:
     front = "description: Review a café sample. Use when a sample needs a review.\nuses: [gamma]\n"
-    sources = {**SAMPLE, "skills/review/node.md": node("review", "ka:Skill", front=front)}
+    sources = {**SAMPLE, "knowledge/skills/review/node.md": node("review", "ka:Skill", front=front)}
     assert (
         "café" in rendered(sources)[".claude/skills/review/SKILL.md"].text.partition("\n---\n")[0]
     )
@@ -603,7 +659,7 @@ def test_a_description_keeps_each_character_that_is_not_ascii() -> None:
 def test_a_glob_that_breaks_plain_yaml_stays_one_string() -> None:
     sources = {
         **SAMPLE,
-        "knowledge/delta/node.md": node(
+        "knowledge/nodes/delta/node.md": node(
             "delta", front=pointers(pointer("PathPointer", "gamma", "*.md", "a: {b}/**/*"))
         ),
     }
@@ -613,12 +669,16 @@ def test_a_glob_that_breaks_plain_yaml_stays_one_string() -> None:
 
 def test_a_path_with_a_space_gives_a_link_that_resolves(tmp_path: Path) -> None:
     sources = dict(SAMPLE)
-    sources["knowledge/my folder/gamma/node.md"] = sources.pop("knowledge/gamma/node.md")
+    sources["knowledge/nodes/my folder/gamma/node.md"] = sources.pop(
+        "knowledge/nodes/gamma/node.md"
+    )
     write_tree(tmp_path, sources)
     report = generate_runtime(tmp_path)
     assert not report.problems
     root = (tmp_path / "AGENTS.md").read_text(encoding="utf-8")
-    assert "(knowledge/my%20folder/gamma/node.md)" in root
+    assert "[gamma](.claude/rules/knowledge/gamma.md) loads by itself." in root
+    rule = (tmp_path / ".claude/rules/knowledge/gamma.md").read_text(encoding="utf-8")
+    assert '  - "knowledge/nodes/my folder/gamma/node.md"\n' in rule
 
 
 def test_the_same_tree_gives_the_same_files_in_any_order() -> None:
@@ -665,43 +725,66 @@ def test_the_link_reader_finds_links_and_images_and_skips_others() -> None:
     assert local_links(text) == ["one.md", "two.png", "three.md#part"]
 
 
-def test_a_link_must_resolve_inside_the_repository(tmp_path: Path) -> None:
-    repository = tmp_path / "repo"
-    (repository / "a b").mkdir(parents=True)
-    (repository / "a b/node.md").write_text("x", encoding="utf-8")
-    (tmp_path / "secret.md").write_text("x", encoding="utf-8")
-    assert resolves("a%20b/node.md", repository, repository)
-    assert resolves("a%20b/node.md#part", repository, repository)
-    assert resolves("../a%20b/node.md", repository / "a b", repository)
-    assert not resolves("missing.md", repository, repository)
-    assert not resolves("../secret.md", repository, repository)
-    assert not resolves(str(tmp_path / "secret.md"), repository, repository)
-    assert not resolves("a%00b.md", repository, repository)
+def test_a_link_target_resolves_from_its_folder(tmp_path: Path) -> None:
+    resolved = tmp_path.resolve()
+    assert link_target("a%20b/c.md", tmp_path) == resolved / "a b/c.md"
+    assert link_target("a%20b/c.md#part", tmp_path) == resolved / "a b/c.md"
+    assert link_target("../c.md", tmp_path / "a") == resolved / "c.md"
+    assert link_target(str(tmp_path / "c.md"), tmp_path / "a") == resolved / "c.md"
+    assert link_target("a%00b.md", tmp_path) is None
+
+
+@pytest.mark.parametrize(
+    ("link", "expected"),
+    [
+        ("gamma.md", []),
+        ("../../references/alpha.md#definition", []),
+        ("../../../AGENTS.md", []),
+        ("../../../knowledge/nodes/gamma/node.md", ["link"]),
+        ("../../../README.md", ["link"]),
+        ("missing.md", ["link"]),
+        ("../../../../outside.md", ["link"]),
+    ],
+)
+def test_a_body_link_must_go_to_a_generated_file(
+    tmp_path: Path, link: str, expected: list[str]
+) -> None:
+    sources = {
+        **SAMPLE,
+        "knowledge/nodes/delta/node.md": node("delta", body=f"## Notes\n\nSee [it]({link}).\n"),
+    }
+    write_tree(tmp_path, sources)
+    (tmp_path / "README.md").write_text("# Read me\n", encoding="utf-8")
+    (tmp_path.parent / "outside.md").write_text("x", encoding="utf-8")
+    report = generate_runtime(tmp_path)
+    assert codes(report.problems) == expected
+    for problem in report.problems:
+        assert "the generator writes no file at this path" in str(problem)
 
 
 def test_a_broken_link_in_a_body_stops_the_run(tmp_path: Path) -> None:
     sources = {
         **SAMPLE,
-        "knowledge/delta/node.md": node(
+        "knowledge/nodes/delta/node.md": node(
             "delta", body="## Notes\n\nSee [the other node](../gamma/node.md).\n"
         ),
     }
     write_tree(tmp_path, sources)
     report = generate_runtime(tmp_path)
     assert codes(report.problems) == ["link"]
-    assert str(tmp_path / "knowledge/delta/node.md") in str(report.problems[0])
+    assert str(tmp_path / "knowledge/nodes/delta/node.md") in str(report.problems[0])
     assert ".claude/rules/knowledge/delta.md" in str(report.problems[0])
     assert not (tmp_path / "AGENTS.md").exists()
 
 
 def file_of(whole: str, limit: int | None) -> RenderedFile:
-    return RenderedFile(PurePosixPath("a.md"), "text", "knowledge/a/node.md", whole, limit)
+    return RenderedFile(PurePosixPath("a.md"), "text", "knowledge/nodes/a/node.md", whole, limit)
 
 
 def test_the_size_check_reads_the_limit_of_each_file(tmp_path: Path) -> None:
     over = file_of("x" * 11, 10)
     assert codes(size_problems([over], tmp_path)) == ["size"]
-    assert str(tmp_path / "knowledge/a/node.md") in str(size_problems([over], tmp_path)[0])
+    assert str(tmp_path / "knowledge/nodes/a/node.md") in str(size_problems([over], tmp_path)[0])
     assert not size_problems([file_of("x" * 10, 10)], tmp_path)
     assert not size_problems([file_of("x" * 100_000, None)], tmp_path)
 
@@ -714,7 +797,7 @@ def test_the_limits_follow_the_tool() -> None:
     assert files["AGENTS.md"].limit is None
     assert files[".claude/skills/review/SKILL.md"].limit == SKILL_KEPT_CHARACTERS
     assert files[".claude/rules/knowledge/gamma.md"].limit == ON_DEMAND_CHARACTERS
-    assert files["knowledge/alpha/AGENTS.md"].limit == ON_DEMAND_CHARACTERS
+    assert files[".claude/references/alpha.md"].limit == ON_DEMAND_CHARACTERS
 
 
 def test_the_kept_part_of_a_skill_holds_the_directives_and_not_the_rest() -> None:
@@ -729,7 +812,7 @@ def test_too_many_directives_at_a_skill_give_a_size_problem(tmp_path: Path) -> N
     long_rules = [rule(f"rule-{number:03}", scope="node") for number in range(600)]
     sources = {
         **SAMPLE,
-        "skills/review/node.md": node(
+        "knowledge/skills/review/node.md": node(
             "review", "ka:Skill", front=SKILL_FRONT, rules=long_rules, body=SKILL_BODY
         ),
     }
@@ -741,7 +824,7 @@ def test_a_long_procedure_gives_no_size_problem(tmp_path: Path) -> None:
     body = SKILL_BODY + "\n## Notes\n\n" + "A long note. " * 2_000 + "\n"
     sources = {
         **SAMPLE,
-        "skills/review/node.md": node("review", "ka:Skill", front=SKILL_FRONT, body=body),
+        "knowledge/skills/review/node.md": node("review", "ka:Skill", front=SKILL_FRONT, body=body),
     }
     entry = rendered(sources)[".claude/skills/review/SKILL.md"]
     assert len(entry.text) > SKILL_KEPT_CHARACTERS
@@ -790,23 +873,26 @@ def test_a_run_removes_its_own_stale_files_and_only_its_own(tmp_path: Path) -> N
         ".claude/rules/hand-written.md": b"# Mine\n",
         ".claude/rules/knowledge/hand-written.md": b"# Mine\n",
         ".claude/skills/mine/SKILL.md": b"---\nname: mine\n---\n# Mine\n",
-        "knowledge/alpha/beta/notes.txt": b"# Mine\n",
+        "knowledge/nodes/alpha/beta/notes.txt": b"# Mine\n",
         "src/AGENTS.md": f"{MARKER}\n# Outside each scanned folder\n".encode(),
+        ".claude/references/deep/mine.md": f"{MARKER}\n# Below the scanned folder\n".encode(),
     }
     for relative, data in hand_written.items():
         tmp_path.joinpath(relative).parent.mkdir(parents=True, exist_ok=True)
         tmp_path.joinpath(relative).write_bytes(data)
     (tmp_path / ".claude/skills/review/extra.md").write_bytes(b"# Mine\n")
     without_review = {
-        relative: text for relative, text in SAMPLE.items() if not relative.startswith("skills/")
+        relative: text
+        for relative, text in SAMPLE.items()
+        if not relative.startswith("knowledge/skills/")
     }
-    without_review["knowledge/alpha/node.md"] = node(
+    without_review["knowledge/nodes/alpha/node.md"] = node(
         "alpha", front=pointers(pointer("TextPointer", "beta")), rules=[rule("keep")]
     )
-    without_review["knowledge/alpha/beta/node.md"] = node(
+    without_review["knowledge/nodes/alpha/beta/node.md"] = node(
         "beta", "ka:Concept", front="broader: [alpha]\n"
     )
-    del without_review["knowledge/delta/node.md"]
+    del without_review["knowledge/nodes/delta/node.md"]
     without_review["knowledge/node.md"] = node(
         "root",
         "ka:Root",
@@ -816,10 +902,9 @@ def test_a_run_removes_its_own_stale_files_and_only_its_own(tmp_path: Path) -> N
             pointer("TextPointer", "policies"),
         ),
     )
-    without_review["knowledge/gamma/node.md"] = node("gamma")
-    shutil.rmtree(tmp_path / "skills/review")
-    (tmp_path / "skills").mkdir(exist_ok=True)
-    (tmp_path / "knowledge/delta/node.md").unlink()
+    without_review["knowledge/nodes/gamma/node.md"] = node("gamma")
+    shutil.rmtree(tmp_path / "knowledge/skills/review")
+    (tmp_path / "knowledge/nodes/delta/node.md").unlink()
     for relative, text in without_review.items():
         tmp_path.joinpath(relative).write_text(text, encoding="utf-8")
     report = generate_runtime(tmp_path)
@@ -832,37 +917,37 @@ def test_a_run_removes_its_own_stale_files_and_only_its_own(tmp_path: Path) -> N
     for relative, data in hand_written.items():
         assert tmp_path.joinpath(relative).read_bytes() == data
     assert (tmp_path / ".claude/skills/review/extra.md").exists()
-    assert (tmp_path / "knowledge/gamma/AGENTS.md").exists()
+    assert (tmp_path / ".claude/references/gamma.md").exists()
 
 
 def test_a_removal_prunes_empty_folders_and_keeps_a_top_folder(tmp_path: Path) -> None:
-    for relative in ("knowledge/a/b/AGENTS.md", ".claude/skills/x/SKILL.md"):
+    for relative in ("build/a/b/AGENTS.md", ".claude/skills/x/SKILL.md"):
         path = tmp_path / relative
         path.parent.mkdir(parents=True)
         path.write_text(f"{MARKER}\n", encoding="utf-8")
-    keep = tmp_path / "knowledge/keep/AGENTS.md"
+    keep = tmp_path / "build/keep/AGENTS.md"
     keep.parent.mkdir()
     keep.write_text(f"{MARKER}\n", encoding="utf-8")
     result = apply_files(
         tmp_path,
-        {PurePosixPath("knowledge/keep/AGENTS.md"): keep.read_bytes()},
-        [tmp_path / "knowledge/a/b/AGENTS.md", tmp_path / ".claude/skills/x/SKILL.md", keep],
+        {PurePosixPath("build/keep/AGENTS.md"): keep.read_bytes()},
+        [tmp_path / "build/a/b/AGENTS.md", tmp_path / ".claude/skills/x/SKILL.md", keep],
     )
     assert not result.problems
-    assert not (tmp_path / "knowledge/a").exists()
+    assert not (tmp_path / "build/a").exists()
     assert keep.exists()
     assert not (tmp_path / ".claude/skills").exists()
     assert (tmp_path / ".claude").is_dir()
 
 
 def test_a_removal_keeps_a_folder_that_still_holds_a_file(tmp_path: Path) -> None:
-    stale = tmp_path / "knowledge/a/b/AGENTS.md"
+    stale = tmp_path / "build/a/b/AGENTS.md"
     stale.parent.mkdir(parents=True)
     stale.write_text(f"{MARKER}\n", encoding="utf-8")
-    (tmp_path / "knowledge/a/note.md").write_text("x", encoding="utf-8")
+    (tmp_path / "build/a/note.md").write_text("x", encoding="utf-8")
     assert not apply_files(tmp_path, {}, [stale]).problems
-    assert not (tmp_path / "knowledge/a/b").exists()
-    assert (tmp_path / "knowledge/a/note.md").exists()
+    assert not (tmp_path / "build/a/b").exists()
+    assert (tmp_path / "build/a/note.md").exists()
 
 
 def test_a_stale_scan_skips_a_link_and_a_folder(tmp_path: Path) -> None:
@@ -896,15 +981,17 @@ def test_a_stale_scan_does_not_follow_a_linked_folder(tmp_path: Path) -> None:
 def test_the_scan_finds_a_generated_file_in_each_place(tmp_path: Path) -> None:
     places = [
         "AGENTS.md",
-        "knowledge/a/AGENTS.md",
-        "skills/b/AGENTS.md",
-        "governance/policies/c/AGENTS.md",
+        ".claude/references/a.md",
         ".claude/rules/knowledge/d.md",
         ".claude/rules/knowledge/deep/e.md",
         ".claude/skills/f/SKILL.md",
     ]
     outside = [
         "src/AGENTS.md",
+        "knowledge/nodes/a/AGENTS.md",
+        "knowledge/skills/b/AGENTS.md",
+        "knowledge/governance/policies/c/AGENTS.md",
+        ".claude/references/deep/b.md",
         ".claude/rules/g.md",
         ".claude/skills/h/deep/SKILL.md",
         ".claude/skills/SKILL.md",
@@ -930,13 +1017,14 @@ def test_the_review_scan_reads_only_the_review_folder(tmp_path: Path) -> None:
     assert outside.exists()
 
 
-def test_a_hand_written_file_in_a_node_folder_fails_the_parser(tmp_path: Path) -> None:
+@pytest.mark.parametrize("data", [b"# Mine\n", f"{MARKER}\n# Old folder file\n".encode()])
+def test_any_other_file_in_a_node_folder_fails_the_parser(tmp_path: Path, data: bytes) -> None:
     write_tree(tmp_path)
-    path = tmp_path / "knowledge/alpha/AGENTS.md"
-    path.write_bytes(b"# Mine\n")
+    path = tmp_path / "knowledge/nodes/alpha/AGENTS.md"
+    path.write_bytes(data)
     report = generate_runtime(tmp_path)
     assert codes(report.problems) == ["file-name"]
-    assert path.read_bytes() == b"# Mine\n"
+    assert path.read_bytes() == data
     assert not (tmp_path / "AGENTS.md").exists()
 
 
@@ -1007,13 +1095,13 @@ def test_a_rejected_tree_leaves_the_committed_files(tmp_path: Path) -> None:
     write_tree(tmp_path)
     generate_runtime(tmp_path)
     before = (tmp_path / "AGENTS.md").read_bytes()
-    (tmp_path / "knowledge/gamma/node.md").write_text("no front matter\n", encoding="utf-8")
+    (tmp_path / "knowledge/nodes/gamma/node.md").write_text("no front matter\n", encoding="utf-8")
     report = generate_runtime(tmp_path)
     assert report.problems
     assert report.written == ()
     assert report.removed == ()
     assert (tmp_path / "AGENTS.md").read_bytes() == before
-    assert (tmp_path / "knowledge/alpha/AGENTS.md").exists()
+    assert (tmp_path / ".claude/references/alpha.md").exists()
 
 
 def test_a_rejected_tree_removes_the_review_result(tmp_path: Path) -> None:
@@ -1021,7 +1109,7 @@ def test_a_rejected_tree_removes_the_review_result(tmp_path: Path) -> None:
     assert not generate_runtime(tmp_path, proposals=True).problems
     review = tmp_path / REVIEW_FOLDER
     assert review.is_dir()
-    (tmp_path / "knowledge/gamma/node.md").write_text("no front matter\n", encoding="utf-8")
+    (tmp_path / "knowledge/nodes/gamma/node.md").write_text("no front matter\n", encoding="utf-8")
     report = generate_runtime(tmp_path, proposals=True)
     assert report.problems
     assert PurePosixPath(f"{REVIEW}/AGENTS.proposals.md") in report.removed
@@ -1033,16 +1121,13 @@ def test_an_empty_tree_removes_each_generated_file_and_passes(tmp_path: Path) ->
     assert not generate_runtime(tmp_path).problems
     (tmp_path / ".claude/rules").mkdir(parents=True, exist_ok=True)
     (tmp_path / ".claude/rules/hand-written.md").write_bytes(b"# Mine\n")
-    for folder in ("knowledge", "skills"):
-        for path in (tmp_path / folder).rglob("node.md"):
-            path.unlink()
-    for path in (tmp_path / "governance/policies").rglob("node.md"):
+    for path in (tmp_path / "knowledge").rglob("node.md"):
         path.unlink()
     report = generate_runtime(tmp_path)
     assert not report.problems
     assert report.files == ()
     assert not (tmp_path / "AGENTS.md").exists()
-    assert not list((tmp_path / "knowledge").rglob("AGENTS.md"))
+    assert not (tmp_path / ".claude/references").exists()
     assert (tmp_path / ".claude/rules/hand-written.md").read_bytes() == b"# Mine\n"
     assert not generate_runtime(tmp_path, verify=True).problems
 
@@ -1070,11 +1155,10 @@ def test_a_default_run_leaves_the_review_result(tmp_path: Path) -> None:
 def test_a_review_run_removes_its_stale_files(tmp_path: Path) -> None:
     write_tree(tmp_path)
     generate_runtime(tmp_path, proposals=True)
-    stale = tmp_path / REVIEW_FOLDER / "knowledge/old/AGENTS.proposals.md"
-    stale.parent.mkdir(parents=True)
+    stale = tmp_path / REVIEW_FOLDER / "claude/references/old.proposals.md"
     stale.write_text(f"{MARKER}\n", encoding="utf-8")
     report = generate_runtime(tmp_path, proposals=True)
-    assert report.removed == (PurePosixPath(f"{REVIEW}/knowledge/old/AGENTS.proposals.md"),)
+    assert report.removed == (PurePosixPath(f"{REVIEW}/claude/references/old.proposals.md"),)
     assert not stale.exists()
 
 
@@ -1098,7 +1182,7 @@ def test_verify_fails_on_a_hand_edit_and_rewrites_the_file(tmp_path: Path) -> No
 
 def test_verify_fails_on_a_deleted_file_and_writes_it_again(tmp_path: Path) -> None:
     committed_repository(tmp_path)
-    path = tmp_path / "knowledge/alpha/AGENTS.md"
+    path = tmp_path / ".claude/references/alpha.md"
     path.unlink()
     assert codes(generate_runtime(tmp_path, verify=True).problems) == ["changed"]
     assert path.exists()
@@ -1106,8 +1190,7 @@ def test_verify_fails_on_a_deleted_file_and_writes_it_again(tmp_path: Path) -> N
 
 def test_verify_fails_on_a_stale_file_and_removes_it(tmp_path: Path) -> None:
     committed_repository(tmp_path)
-    stale = tmp_path / "knowledge/old/AGENTS.md"
-    stale.parent.mkdir()
+    stale = tmp_path / ".claude/references/old.md"
     stale.write_text(f"{MARKER}\n", encoding="utf-8")
     report = generate_runtime(tmp_path, verify=True)
     assert codes(report.problems) == ["changed"]
@@ -1127,8 +1210,8 @@ def test_verify_fails_on_a_generated_file_outside_the_index(tmp_path: Path) -> N
 
 def test_verify_reports_a_new_file_once(tmp_path: Path) -> None:
     committed_repository(tmp_path)
-    (tmp_path / "knowledge/alpha/AGENTS.md").unlink()
-    git(tmp_path, "rm", "-q", "--cached", "knowledge/alpha/AGENTS.md")
+    (tmp_path / ".claude/references/alpha.md").unlink()
+    git(tmp_path, "rm", "-q", "--cached", ".claude/references/alpha.md")
     assert codes(generate_runtime(tmp_path, verify=True).problems) == ["changed"]
     assert codes(generate_runtime(tmp_path, verify=True).problems) == ["not-staged"]
 
@@ -1149,7 +1232,7 @@ def test_a_run_without_verify_does_not_fail_on_a_change(tmp_path: Path) -> None:
 def test_verify_does_not_read_the_index_after_a_problem(tmp_path: Path) -> None:
     committed_repository(tmp_path)
     (tmp_path / "AGENTS.md").write_bytes(b"# Mine\n")
-    git(tmp_path, "rm", "-q", "--cached", "knowledge/alpha/AGENTS.md")
+    git(tmp_path, "rm", "-q", "--cached", ".claude/references/alpha.md")
     assert codes(generate_runtime(tmp_path, verify=True).problems) == ["not-generated"]
 
 
@@ -1203,11 +1286,11 @@ def test_the_command_prints_each_change_and_a_summary(tmp_path: Path) -> None:
 def test_the_command_prints_a_removal_and_a_note(tmp_path: Path) -> None:
     write_tree(tmp_path)
     (tmp_path / "CLAUDE.md").write_text("x", encoding="utf-8")
-    stale = tmp_path / "knowledge/old/AGENTS.md"
-    stale.parent.mkdir()
+    stale = tmp_path / ".claude/references/old.md"
+    stale.parent.mkdir(parents=True)
     stale.write_text(f"{MARKER}\n", encoding="utf-8")
     result = RUNNER.invoke(app, ["runtime", str(tmp_path)])
-    assert "removed knowledge/old/AGENTS.md\n" in result.output
+    assert "removed .claude/references/old.md\n" in result.output
     assert "note: CLAUDE.md exists" in result.output
 
 
@@ -1279,28 +1362,28 @@ def test_no_tracked_file_with_the_marker_lacks_a_node() -> None:
 
 
 def test_each_link_in_a_committed_file_resolves() -> None:
+    generated = {(REPO / entry.path).resolve() for entry in real_output()}
     count = 0
     for entry in real_output():
         path = REPO / entry.path
         links = local_links(path.read_text(encoding="utf-8"))
-        assert links, entry.path
         for link in links:
             count += 1
-            assert resolves(link, path.parent, REPO), f"{entry.path}: {link}"
+            assert link_target(link, path.parent) in generated, f"{entry.path}: {link}"
     assert count >= len(real_output())
 
 
 def test_each_link_in_a_review_file_resolves(tmp_path: Path) -> None:
-    for folder in (*TREE_FOLDERS,):
-        shutil.copytree(REPO / folder, tmp_path / folder)
+    shutil.copytree(REPO / "knowledge", tmp_path / "knowledge")
     report = generate_runtime(tmp_path, proposals=True)
     assert not report.problems
     review = tmp_path / REVIEW_FOLDER
     files = list(review.rglob("*.md"))
     assert len(files) == len(report.files)
+    generated = {path.resolve() for path in files}
     for path in files:
         for link in local_links(path.read_text(encoding="utf-8")):
-            assert resolves(link, path.parent, tmp_path), f"{path}: {link}"
+            assert link_target(link, path.parent) in generated, f"{path}: {link}"
 
 
 def hook_config() -> dict[str, Any]:
@@ -1327,13 +1410,17 @@ def test_the_hook_runs_on_each_commit_and_verifies() -> None:
 def test_the_real_root_names_the_domains_the_governance_and_each_skill() -> None:
     text = (REPO / "AGENTS.md").read_text(encoding="utf-8")
     assert (
-        "Read [Digital product development](knowledge/digital-product-development/node.md)." in text
+        "Read [Digital product development](.claude/references/digital-product-development.md)."
+        in text
     )
-    assert "[Governance](governance/policies/node.md) loads by itself." in text
+    assert "[Governance](.claude/rules/knowledge/governance.md) loads by itself." in text
     for policy in ("lifecycle", "approval", "change-rules", "language-rules", "schema-rules"):
-        assert f"(governance/policies/{policy}/node.md)" in text
+        assert f"(.claude/references/{policy}.md)" in text
     for skill in ("design-settings-interface", "review-screen-hierarchy"):
         assert f"- `{skill}`: " in text
+        assert f"]({skill}" not in text
+        assert f"skills/{skill}" not in text
+    assert "node.md)" not in text
 
 
 def test_the_real_root_holds_no_setup_and_no_command() -> None:
@@ -1385,8 +1472,7 @@ def test_the_real_review_result_lists_directives_at_a_leaf_with_its_inherited_on
     report = compile_tree(REPO, proposals=True)
     assert report.compiled is not None
     files = {entry.path.as_posix(): entry for entry in render_files(build_view(report.compiled))}
-    leaf = "knowledge/digital-product-development/ui-ux-design/visual-design/visual-grouping"
-    text = files[f"{REVIEW}/{leaf}/AGENTS.proposals.md"].text
+    text = files[f"{REVIEW}/claude/references/visual-grouping.proposals.md"].text
     expected = {entry.directive.id for entry in report.compiled.applied["visual-grouping"]}
     found = set(re.findall(r" \^([a-z0-9-]+) \(proposed\)$", text, re.MULTILINE))
     assert found == expected

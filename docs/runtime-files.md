@@ -4,9 +4,9 @@
 
 **Status:** Built.
 
-This layer generates the files an agent tool loads: the root `AGENTS.md`, a folder `AGENTS.md` beside most nodes, path rules, and skills. Claude Code is the first target, and no hook injects context, because the tool loads these files with its own mechanisms. The code is in `engine/runtime/`.
+This layer generates the files an agent tool loads: the root `AGENTS.md`, a reference page for most nodes, path rules, and skills. Claude Code is the first target, and no hook injects context, because the tool loads these files with its own mechanisms. The code is in `engine/runtime/`.
 
-The generated files are output, and the repo still commits them, because an agent tool reads them straight from a clone. A node file stays the source, so a change goes in the node and the command writes the file again. A hand edit doesn't survive.
+The generated files sit in `AGENTS.md` and `.claude/`, and none of them sits in `knowledge/`. They are output, and the repo still commits them, because an agent tool reads them straight from a clone. A node file stays the source, so a change goes in the node and the command writes the file again. A hand edit doesn't survive.
 
 ## Generate
 
@@ -26,34 +26,34 @@ A rejected tree leaves the committed files alone, so an agent keeps its entry po
 
 ## What each node becomes
 
-| Node                               | Generated file                                  | How it loads                               |
-| ---------------------------------- | ----------------------------------------------- | ------------------------------------------ |
-| The root                           | `AGENTS.md`                                     | At session start                           |
-| A skill                            | `.claude/skills/<id>/SKILL.md`                  | The agent picks it from the skill listing  |
-| The target of a `ka:PathPointer`   | `.claude/rules/knowledge/<id>.md` with `paths`  | When the agent touches a matching file     |
-| The target of a `ka:AlwaysPointer` | `.claude/rules/knowledge/<id>.md` without paths | At session start                           |
-| Any other node                     | `AGENTS.md` beside its `node.md`                | When the agent opens a file in that folder |
+| Node                               | Generated file                                  | How it loads                              |
+| ---------------------------------- | ----------------------------------------------- | ----------------------------------------- |
+| The root                           | `AGENTS.md`                                     | At session start                          |
+| A skill                            | `.claude/skills/<id>/SKILL.md`                  | The agent picks it from the skill listing |
+| The target of a `ka:PathPointer`   | `.claude/rules/knowledge/<id>.md` with `paths`  | When the agent touches a matching file    |
+| The target of a `ka:AlwaysPointer` | `.claude/rules/knowledge/<id>.md` without paths | At session start                          |
+| Any other node                     | `.claude/references/<id>.md`                    | When the agent follows a link to it       |
 
-A `ka:TextPointer` adds no file. It becomes a line that holds the trigger and a link, such as `You decide how a screen looks. Read [Visual design](visual-design/node.md).`, and following that link loads the folder `AGENTS.md` beside the node.
+A `ka:TextPointer` adds no file. It becomes a line that holds the trigger and a link, such as `You decide how a screen looks. Read [Visual design](visual-design.md).`, and following that link opens the reference page of the node.
 
-A node file names its pointer targets by ID. The generated files turn each ID into a real path, and that is a large part of what a folder file adds.
+A node file names its pointer targets by ID. The generated files turn each ID into the path of its generated file, so each link in a generated file goes to another generated file, and no link goes to a node file. The root links each domain and the governance, and names each skill with no link. A skill also links the page of each node in `uses`.
 
-A skill behind a path or always pointer gets both a skill file and a rule. A path rule also matches its own node file, so a text pointer that opens the node still loads the rule.
+A skill behind a path or always pointer gets both a skill file and a rule, and a link to it goes to the rule. A path rule also matches its own node file.
 
 ## What a file holds
 
 Each file puts its directives first, then its procedures, then its references.
 
-| File        | Holds                                                                                                                |
-| ----------- | -------------------------------------------------------------------------------------------------------------------- |
-| Root        | The state of the graph, its directives, the body of `knowledge/node.md`, the domains, the governance, and the skills |
-| Skill       | Its directives and exceptions, its body, and its pointers                                                            |
-| Path rule   | Its directives and exceptions, the definition, the body, and its pointers                                            |
-| Folder file | Its directives and exceptions, and its pointers. The definition and the body are in the node                         |
+| File           | Holds                                                                                                                |
+| -------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Root           | The state of the graph, its directives, the body of `knowledge/node.md`, the domains, the governance, and the skills |
+| Skill          | Its directives and exceptions, its body, its pointers, and a link to each node in `uses`                             |
+| Path rule      | Its directives and exceptions, the definition, the body, and its pointers                                            |
+| Reference page | Its directives and exceptions, the definition, the body, and its pointers                                            |
 
 The root holds only what an agent can't work out from the files. It names each domain, the governance node and its policies, and each skill with its description, so an agent can still find a skill if the tool drops its description. Setup, paths, and commands stay in the README and in these pages. The architecture facts come from the body of `knowledge/node.md`, so they go through review like any other node.
 
-A directive list holds what applies at that node and nothing else: inherited directives, attached ones, and `applies`, minus each one an [exception](directive-semantics.md#stepping-out) stops. Each directive keeps its `^id`, and each group links to the node that holds it. A list is complete for its own node, so the files for a node and its parent can repeat a line.
+A directive list holds what applies at that node and nothing else: inherited directives, attached ones, and `applies`, minus each one an [exception](directive-semantics.md#stepping-out) stops. Each directive keeps its `^id`, and each group links to the generated file of the node that holds it. A list is complete for its own node, so the files for a node and its parent can repeat a line.
 
 ## Nothing is in force yet
 
@@ -88,14 +88,15 @@ Claude Code also loads `AGENTS.md`, `.claude/rules/`, and `.claude/skills/` from
 | `AGENTS.md`                       | `build/runtime-proposals/AGENTS.proposals.md`                      |
 | `.claude/skills/<id>/SKILL.md`    | `build/runtime-proposals/claude/skills/<id>/SKILL.proposals.md`    |
 | `.claude/rules/knowledge/<id>.md` | `build/runtime-proposals/claude/rules/knowledge/<id>.proposals.md` |
+| `.claude/references/<id>.md`      | `build/runtime-proposals/claude/references/<id>.proposals.md`      |
 
-Each link in the copy resolves from where the copy sits, so a line in the copy can hold more `../` than the committed line. A rejected tree removes the copy.
+Each link in the copy goes to another file of the copy. A link in the body of a node keeps its text, so it fails with `link` in the copy even when it passes in the committed files. No node body holds a link today. A rejected tree removes the copy.
 
 The [review queue](human-interface.md#read-the-knowledge) lists the same effect for each entity, and names the generated files it reaches.
 
 ## Why a skill holds a copy
 
-A skill is an entry point in the middle of the tree, so it has to carry the directives that reach it. The build copies them into the skill file, and doesn't list the nodes as required reads.
+A skill is an entry point in the middle of the tree, so it has to carry the directives that reach it. The build copies them into the skill file. It links the page of each node in `uses` too, but the skill doesn't depend on a read.
 
 Compaction decides this. After compaction, Claude Code re-attaches each invoked skill and keeps the first 5,000 tokens, while it restores only a few of the files an agent read. A required read also leaves the choice to the agent, and a node file holds proposals and rules that an exception stops. `design-settings-interface` draws 39 directives from 11 nodes, so a list of reads would be the weaker answer.
 
@@ -107,11 +108,11 @@ The copy can't go stale, because the hook compares it with a fresh generation on
 
 A generated file holds one marker line: the first line, or the first line after the front matter. The generator changes or removes a file only if it holds that marker, so your own files are safe:
 
-- A rule directly in `.claude/rules/`, a skill folder of your own, and an `AGENTS.md` outside `knowledge/`, `skills/`, and `governance/` all stay as they are.
+- A rule directly in `.claude/rules/`, a skill folder of your own, a page of your own in `.claude/references/`, and an `AGENTS.md` in a subfolder outside `knowledge/` all stay as they are.
 - A file without the marker at a generated path fails with `not-generated`, and the run writes nothing. Move the file, then run again.
 - A symbolic link in a generated path fails the same way, so the generator can't write through a link to another file.
 
-The parser reads the same marker. A Markdown file in a node folder must be `node.md` or a generated file, so a hand-written `AGENTS.md` there fails with `file-name`. So does a generated one after someone removes its marker.
+No generated file sits in `knowledge/`. A Markdown file there must be `node.md`, so the parser fails any other one with `file-name`, with the marker or without it.
 
 If a `CLAUDE.md`, `.claude/CLAUDE.md`, or `CLAUDE.local.md` sits in the repo root, Claude Code reads it and skips `AGENTS.md`. The command prints a note that names the import line to add to that file, and the note stops once a file imports the root. In a project, [`ka adopt`](template-packaging.md#your-own-files) adds the line for you.
 
@@ -133,11 +134,10 @@ From the Claude Code docs on 2026-11-05:
 | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | The root `AGENTS.md`            | At session start, if no `CLAUDE.md`, `.claude/CLAUDE.md`, or `CLAUDE.local.md` takes its place. Needs v2.1.277 or later.    | The tool    |
 | Each skill name and description | At session start, in a listing with a budget of 1% of the context window. On overflow the least-used descriptions go first. | The tool    |
-| A folder `AGENTS.md`            | When the agent opens a file in that folder with the Read tool, if the folder has no `CLAUDE.md`                             | The tool    |
 | A rule with `paths`             | When the agent uses the Read, Write, or Edit tool on a matching file, or reads one file with a shell command                | The tool    |
 | A rule without `paths`          | At session start                                                                                                            | The tool    |
 | A skill body                    | When the agent uses the skill                                                                                               | The agent   |
-| A node behind a text pointer    | When the agent opens it                                                                                                     | The agent   |
+| A reference page behind a link  | When the agent opens it                                                                                                     | The agent   |
 
 And after compaction:
 
@@ -146,7 +146,8 @@ And after compaction:
 | A root `CLAUDE.md` and a rule without `paths` | Injected again from disk                                                                |
 | The skill listing                             | Rebuilt and injected again                                                              |
 | A skill body                                  | Injected again, up to 5,000 tokens for each skill and 25,000 in total, oldest out first |
-| A rule with `paths` and a folder file         | Gone from the context until a matching file loads it again                              |
+| A rule with `paths`                           | Gone from the context until a matching file loads it again                              |
+| A reference page                              | Gone from the context unless the tool restores it with the few files it keeps           |
 
 Patterns in `paths` start from the folder that holds `.claude`. The docs show `src/**/*`, so write that form rather than `src/**`.
 
@@ -174,13 +175,13 @@ These codes come from this command. Each other code comes from a check that the 
 | Code            | What it reports                                                                       |
 | --------------- | ------------------------------------------------------------------------------------- |
 | `not-generated` | A generated path holds a file without the marker, a folder, or a symbolic link        |
-| `link`          | A generated file links to a path that doesn't exist in the repository                 |
-| `size`          | The directives of a skill, or a whole rule or folder file, go over the limit          |
+| `link`          | A generated file links to a path where the generator writes no file                   |
+| `size`          | The directives of a skill, or a whole rule or reference page, go over the limit       |
 | `changed`       | With `--verify`, a file differed from a fresh generation, or no node generates it now |
 | `not-staged`    | With `--verify`, the git index doesn't hold a generated file                          |
 | `write`         | The command can't change a path, because a file or a permission blocks it             |
 
-A link in the body of a node resolves from the generated file, not from the node file, so it usually fails with `link`. To reach another node, add a pointer.
+A link in the body of a node resolves from the generated file, not from the node file, and it has to go to another generated file. A link to a node file, a doc, or a source file fails with `link`. To reach another node, add a pointer. To name a file, write its path in a code span.
 
 ## What it does not check yet
 
@@ -195,7 +196,6 @@ A link in the body of a node resolves from the generated file, not from the node
 This layer has been tested by reading the generated bytes, not by running a model. These points rest on the Claude Code docs, and only a real session can confirm them:
 
 - That the tool loads the root and lists both skills.
-- That a read in a deep node loads the folder files above it as well as its own. The file lists are complete for each node, so the result is correct either way, and the cost differs.
-- That `governance/**/*` loads the governance rule.
+- That `knowledge/**/*` loads the governance rule.
 - That a root `AGENTS.md` is injected again after compaction. The docs state this for a root `CLAUDE.md`.
 - That an agent follows a pointer when its trigger holds. The [graph checks](graph-checks.md) prove that every node can be found, not that it gets read.

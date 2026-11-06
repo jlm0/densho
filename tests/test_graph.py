@@ -16,13 +16,14 @@ from engine.parser import ParsedNode, parse_tree
 type Fields = dict[str, Any]
 
 REPO = Path(__file__).resolve().parents[1]
-VIEW = SchemaView(str(REPO / "governance/schema/metamodel.yaml"))
+VIEW = SchemaView(str(REPO / "knowledge/governance/schema/metamodel.yaml"))
 GOVERNED = {"status": "accepted", "origin": "template"}
 KNOWLEDGE = {**GOVERNED, "knowledge_type": "domain"}
 MISSING_ID = "and no node or directive has this ID."
 NO_ROUTE = "No chain of pointers from the root node or a skill reaches this node."
 NO_SKILL_EDGE = "Add uses or applies, so the skill names what it needs."
 ROOT_MOVE = "Move the root node to knowledge/node.md."
+SKILL_MOVE = "Move this skill to knowledge/skills."
 DEPTH_LIMIT = 6
 
 
@@ -46,7 +47,7 @@ SAMPLE: dict[str, Fields] = {
         "pointers": [text_pointer("design"), skill_pointer("review")],
     },
     "design": {
-        "file": "knowledge/design/node.md",
+        "file": "knowledge/nodes/design/node.md",
         "kind": "ka:Domain",
         **KNOWLEDGE,
         "pointers": [text_pointer("ui"), text_pointer("research")],
@@ -54,7 +55,7 @@ SAMPLE: dict[str, Fields] = {
         "directives": [directive("use-a-verb"), directive("be-brief")],
     },
     "ui": {
-        "file": "knowledge/design/ui/node.md",
+        "file": "knowledge/nodes/design/ui/node.md",
         "kind": "ka:Discipline",
         **KNOWLEDGE,
         "broader": ["design"],
@@ -63,7 +64,7 @@ SAMPLE: dict[str, Fields] = {
         "informs": ["research"],
     },
     "research": {
-        "file": "knowledge/design/research/node.md",
+        "file": "knowledge/nodes/design/research/node.md",
         "kind": "ka:Discipline",
         **KNOWLEDGE,
         "broader": ["design"],
@@ -72,21 +73,21 @@ SAMPLE: dict[str, Fields] = {
         "informs": ["ui"],
     },
     "visual": {
-        "file": "knowledge/design/ui/visual/node.md",
+        "file": "knowledge/nodes/design/ui/visual/node.md",
         "kind": "ka:PracticeArea",
         **KNOWLEDGE,
         "broader": ["ui", "design"],
         "pointers": [text_pointer("hierarchy")],
     },
     "motion": {
-        "file": "knowledge/design/ui/motion/node.md",
+        "file": "knowledge/nodes/design/ui/motion/node.md",
         "kind": "ka:Concept",
         **KNOWLEDGE,
         "broader": ["ui"],
         "depends_on": ["hierarchy"],
     },
     "hierarchy": {
-        "file": "knowledge/design/ui/visual/hierarchy/node.md",
+        "file": "knowledge/nodes/design/ui/visual/hierarchy/node.md",
         "kind": "ka:Concept",
         **KNOWLEDGE,
         "broader": ["visual"],
@@ -94,7 +95,7 @@ SAMPLE: dict[str, Fields] = {
         "directives": [directive("show-order", also_attached_to=["motion", "root"])],
     },
     "settings": {
-        "file": "knowledge/settings/node.md",
+        "file": "knowledge/nodes/settings/node.md",
         "kind": "ka:Concept",
         **GOVERNED,
         "knowledge_type": "workspace",
@@ -102,7 +103,7 @@ SAMPLE: dict[str, Fields] = {
         "implements": ["hierarchy"],
     },
     "review": {
-        "file": "skills/review/node.md",
+        "file": "knowledge/skills/review/node.md",
         "kind": "ka:Skill",
         **KNOWLEDGE,
         "description": "Use this skill for a review.",
@@ -152,8 +153,7 @@ def render(node_id: str, fields: Fields) -> str:
 
 
 def write_tree(repository: Path, nodes: dict[str, Fields]) -> None:
-    for folder in ("knowledge", "skills"):
-        (repository / folder).mkdir(exist_ok=True)
+    (repository / "knowledge").mkdir(exist_ok=True)
     for node_id, fields in nodes.items():
         path = repository / fields["file"]
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -219,9 +219,8 @@ def test_a_missing_folder_is_a_parse_problem(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.chdir(tmp_path)
-    (tmp_path / "knowledge").mkdir()
     assert [str(problem) for problem in check_tree(Path())[1]] == [
-        "skills:1: folder: The folder does not exist."
+        "knowledge:1: folder: The folder does not exist."
     ]
 
 
@@ -234,13 +233,13 @@ def test_a_parse_problem_stops_the_graph_checks(tree: Tree) -> None:
 
 def test_two_nodes_cannot_share_an_id(tree: Tree) -> None:
     write_tree(tree.repository, tree.nodes)
-    copy_path = tree.repository / "knowledge/copy/node.md"
-    copy_path.parent.mkdir()
-    original = tree.repository / "knowledge/design/ui/motion/node.md"
+    copy_path = tree.repository / "knowledge/nodes/copy/node.md"
+    copy_path.parent.mkdir(parents=True)
+    original = tree.repository / "knowledge/nodes/design/ui/motion/node.md"
     copy_path.write_text(original.read_text(encoding="utf-8"), encoding="utf-8")
-    message = "The ID motion is already in use at knowledge/copy/node.md:2."
+    message = "The ID motion is already in use at knowledge/nodes/copy/node.md:2."
     assert [str(problem) for problem in check_tree(Path())[1]] == [
-        f"knowledge/design/ui/motion/node.md:2: duplicate-id: {message}"
+        f"knowledge/nodes/design/ui/motion/node.md:2: duplicate-id: {message}"
     ]
 
 
@@ -275,7 +274,7 @@ def test_a_duplicate_id_does_not_stop_the_node_rules(tree: Tree) -> None:
     tree.change("design", directives=[directive("motion"), directive("use-a-verb")])
     tree.change("settings", knowledge_type="domain")
     tree.change("review", uses=[], applies=[])
-    tree.change("visual", file="skills/visual/node.md")
+    tree.change("visual", file="knowledge/skills/visual/node.md")
     assert sorted(tree.codes()) == ["duplicate-id", "implements", "placement", "skill"]
 
 
@@ -295,7 +294,7 @@ def test_a_graph_needs_a_root(tree: Tree) -> None:
 
 def second_root(tree: Tree, target: str) -> None:
     tree.nodes["extra"] = {
-        "file": "knowledge/extra/node.md",
+        "file": "knowledge/nodes/extra/node.md",
         "kind": "ka:Root",
         **GOVERNED,
         "pointers": [text_pointer(target)],
@@ -327,17 +326,17 @@ def test_a_missing_root_does_not_stop_references(tree: Tree) -> None:
 
 
 def test_the_root_must_be_at_the_root_file(tree: Tree) -> None:
-    tree.change("root", file="knowledge/top/node.md")
+    tree.change("root", file="knowledge/nodes/top/node.md")
     assert tree.problems() == [tree.expect("root", "kind: ka:Root", "placement", ROOT_MOVE)]
 
 
 def test_the_root_cannot_be_under_skills(tree: Tree) -> None:
-    tree.change("root", file="skills/root/node.md")
+    tree.change("root", file="knowledge/skills/root/node.md")
     assert tree.problems() == [tree.expect("root", "kind: ka:Root", "placement", ROOT_MOVE)]
 
 
 def test_only_the_root_can_use_the_root_file(tree: Tree) -> None:
-    tree.change("root", file="knowledge/top/node.md")
+    tree.change("root", file="knowledge/nodes/top/node.md")
     tree.change("design", file="knowledge/node.md")
     only_root = "Only the root node can use this file. Set kind to ka:Root or move this node."
     assert tree.problems() == [
@@ -347,54 +346,66 @@ def test_only_the_root_can_use_the_root_file(tree: Tree) -> None:
 
 
 def test_a_skill_must_be_under_skills(tree: Tree) -> None:
-    tree.change("review", file="knowledge/review/node.md")
-    assert tree.problems() == [
-        tree.expect("review", "kind: ka:Skill", "placement", "Move this skill to skills.")
-    ]
+    tree.change("review", file="knowledge/nodes/review/node.md")
+    assert tree.problems() == [tree.expect("review", "kind: ka:Skill", "placement", SKILL_MOVE)]
 
 
 def test_a_knowledge_node_cannot_be_under_skills(tree: Tree) -> None:
-    tree.change("motion", file="skills/motion/node.md")
+    tree.change("motion", file="knowledge/skills/motion/node.md")
     assert tree.problems() == [
-        tree.expect("motion", "kind: ka:Concept", "placement", "Move this node out of skills.")
+        tree.expect(
+            "motion", "kind: ka:Concept", "placement", "Move this node out of knowledge/skills."
+        )
+    ]
+
+
+@pytest.mark.parametrize(
+    "file",
+    ["knowledge/motion/node.md", "knowledge/.ka/motion/node.md", "knowledge/x/nodes/node.md"],
+)
+def test_a_knowledge_node_must_be_under_nodes(tree: Tree, file: str) -> None:
+    tree.change("motion", file=file)
+    assert tree.problems() == [
+        tree.expect("motion", "kind: ka:Concept", "placement", "Move this node to knowledge/nodes.")
     ]
 
 
 def test_a_policy_node_joins_the_graph(tree: Tree) -> None:
-    tree.change("motion", file="governance/policies/motion/node.md")
+    tree.change("motion", file="knowledge/governance/policies/motion/node.md")
     assert tree.problems() == []
     assert "motion" in {item.node.id for item in check_tree(Path())[0]}
 
 
 def test_a_node_in_another_governance_folder_fails(tree: Tree) -> None:
-    tree.change("motion", file="governance/language/motion/node.md")
+    tree.change("motion", file="knowledge/governance/language/motion/node.md")
     assert tree.problems() == [
         tree.expect(
-            "motion", "kind: ka:Concept", "placement", "Move this node to governance/policies."
+            "motion",
+            "kind: ka:Concept",
+            "placement",
+            "Move this node to knowledge/governance/policies.",
         )
     ]
 
 
 def test_a_node_beside_the_policy_folder_fails(tree: Tree) -> None:
-    tree.change("motion", file="governance/node.md")
+    tree.change("motion", file="knowledge/governance/node.md")
     assert tree.codes() == ["placement"]
 
 
 def test_a_skill_cannot_be_a_policy(tree: Tree) -> None:
-    tree.change("review", file="governance/policies/review/node.md")
-    assert tree.problems() == [
-        tree.expect("review", "kind: ka:Skill", "placement", "Move this skill to skills.")
-    ]
+    tree.change("review", file="knowledge/governance/policies/review/node.md")
+    assert tree.problems() == [tree.expect("review", "kind: ka:Skill", "placement", SKILL_MOVE)]
 
 
 def test_the_root_cannot_be_a_policy(tree: Tree) -> None:
-    tree.change("root", file="governance/policies/node.md")
+    tree.change("root", file="knowledge/governance/policies/node.md")
     assert "placement" in tree.codes()
 
 
 def test_a_parse_problem_in_a_policy_stops_the_graph_checks(tree: Tree) -> None:
     write_tree(tree.repository, tree.nodes)
-    path = tree.repository / "governance/policies/bad/node.md"
+    path = tree.repository / "knowledge/governance/policies/bad/node.md"
     path.parent.mkdir(parents=True)
     path.write_text("no front matter\n", encoding="utf-8")
     assert [problem.code for problem in check_tree(Path())[1]] == ["front-matter"]
@@ -402,14 +413,14 @@ def test_a_parse_problem_in_a_policy_stops_the_graph_checks(tree: Tree) -> None:
 
 def test_a_misnamed_file_under_governance_is_a_problem(tree: Tree) -> None:
     write_tree(tree.repository, tree.nodes)
-    path = tree.repository / "governance/schema/notes.md"
+    path = tree.repository / "knowledge/governance/schema/notes.md"
     path.parent.mkdir(parents=True)
     path.write_text("# Notes\n", encoding="utf-8")
     assert [problem.code for problem in check_tree(Path())[1]] == ["file-name"]
 
 
 def test_a_missing_governance_folder_passes(tree: Tree) -> None:
-    assert not (tree.repository / "governance").exists()
+    assert not (tree.repository / "knowledge/governance").exists()
     assert tree.problems() == []
 
 
@@ -493,7 +504,7 @@ def test_a_broken_reference_does_not_stop_cycles_or_associations(tree: Tree) -> 
 
 def test_the_sample_graph_has_each_reference_field(tree: Tree) -> None:
     write_tree(tree.repository, tree.nodes)
-    items, _ = parse_tree([Path("knowledge"), Path("skills")])
+    items, _ = parse_tree([Path("knowledge")])
     found = {reference.field for item in items for reference in references_of(item)}
     assert found == {*EDGE_FIELDS, "target", "also_attached_to"}
 
@@ -797,7 +808,7 @@ def chain_tree(tree: Tree, hops: int) -> None:
     for index in range(1, hops + 1):
         node_id = f"hop-{index}"
         tree.nodes[node_id] = {
-            "file": f"knowledge/chain/{index}/node.md",
+            "file": f"knowledge/nodes/chain/{index}/node.md",
             "kind": "ka:Domain",
             **KNOWLEDGE,
         }
@@ -826,8 +837,8 @@ def test_seven_hops_fail(tree: Tree) -> None:
 def test_each_node_past_the_limit_fails(tree: Tree) -> None:
     chain_tree(tree, DEPTH_LIMIT + 2)
     assert [problem.split(":")[0] for problem in tree.problems() if ": depth: " in problem] == [
-        "knowledge/chain/7/node.md",
-        "knowledge/chain/8/node.md",
+        "knowledge/nodes/chain/7/node.md",
+        "knowledge/nodes/chain/8/node.md",
     ]
 
 
@@ -917,7 +928,7 @@ def report_with(focus: URIRef | BNode | None, path: URIRef | None, value: URIRef
 @pytest.fixture
 def parsed(tree: Tree) -> list[ParsedNode]:
     write_tree(tree.repository, tree.nodes)
-    return parse_tree([Path("knowledge"), Path("skills")])[0]
+    return parse_tree([Path("knowledge")])[0]
 
 
 def root_of(items: list[ParsedNode]) -> ParsedNode:

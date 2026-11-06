@@ -17,18 +17,15 @@ from engine.generated.metamodel import (
     SkillPointer,
     TextPointer,
 )
+from engine.layout import KNOWLEDGE_FOLDER, NODE_FILE_NAME
 from engine.parser.body import read_body
 from engine.parser.front_matter import read_front_matter
-from engine.parser.generated import is_generated_file
 from engine.parser.result import FieldPath, ParsedNode, Problem, line_of
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping, Sequence
     from pathlib import Path
 
-NODE_FILE_NAME = "node.md"
-GOVERNANCE_FOLDER = "governance"
-POLICY_FOLDER = "governance/policies"
 MARKDOWN_SUFFIXES = frozenset({".md", ".markdown", ".mdown", ".mkd"})
 CONTROL_CHARACTER = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]")
 NODE_CLASSES: tuple[type[Node], ...] = (Root, Domain, Discipline, PracticeArea, Concept, Skill)
@@ -109,9 +106,7 @@ def parse_file(path: Path) -> ParsedNode | list[Problem]:
 
 
 def node_folders(repository: Path) -> list[Path]:
-    folders = [repository / "knowledge", repository / "skills"]
-    governance = repository / GOVERNANCE_FOLDER
-    return [*folders, governance] if governance.is_dir() else folders
+    return [repository / KNOWLEDGE_FOLDER]
 
 
 def parse_tree(roots: Iterable[Path]) -> tuple[list[ParsedNode], list[Problem]]:
@@ -141,8 +136,6 @@ def _read_folder(root: Path, nodes: list[ParsedNode], problems: list[Problem]) -
 
 def _read_node_file(path: Path, nodes: list[ParsedNode], problems: list[Problem]) -> None:
     if path.name != NODE_FILE_NAME:
-        if is_generated_file(path):
-            return
         message = f"A Markdown file in this folder must have the name {NODE_FILE_NAME}."
         problems.append(Problem(path, 1, "file-name", message))
         return

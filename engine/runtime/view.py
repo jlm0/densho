@@ -12,7 +12,7 @@ from engine.generated.metamodel import (
     Status,
     TaxonomyNode,
 )
-from engine.parser.node import POLICY_FOLDER
+from engine.layout import POLICY_FOLDER
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -96,7 +96,7 @@ class RuntimeView:
     references: tuple[PointerLine, ...]
     skills: tuple[NodeView, ...]
     rules: tuple[NodeView, ...]
-    folders: tuple[NodeView, ...]
+    pages: tuple[NodeView, ...]
 
 
 def pointer_mechanism(pointer: object) -> LoadMechanism:
@@ -125,6 +125,15 @@ def _pointers(node: Node, links: Mapping[str, NodeLink]) -> tuple[PointerLine, .
         PointerLine(pointer_mechanism(pointer), links[pointer.target], pointer.trigger)
         for pointer in node.pointers or []
     )
+
+
+def _skill_pointers(node: Node, links: Mapping[str, NodeLink]) -> tuple[PointerLine, ...]:
+    lines = _pointers(node, links)
+    if not isinstance(node, Skill):
+        return lines
+    pointed = {line.target.id for line in lines}
+    unpointed = [used for used in node.uses or [] if used not in pointed]
+    return (*lines, *(PointerLine(LoadMechanism.TEXT, links[used], None) for used in unpointed))
 
 
 def _tool_loaded_targets(nodes: Sequence[Node]) -> dict[str, set[str]]:
@@ -186,7 +195,7 @@ def build_view(compiled: CompiledGraph) -> RuntimeView:
             ),
             node.definition if isinstance(node, TaxonomyNode) else None,
             node.body,
-            _pointers(node, links),
+            _skill_pointers(node, links),
             node.description if isinstance(node, Skill) else None,
             tuple(paths),
         )
@@ -213,7 +222,7 @@ def build_view(compiled: CompiledGraph) -> RuntimeView:
         references=tuple(line for line in root_lines if line.target.id not in named),
         skills=tuple(view_of(node) for node in others if isinstance(node, Skill)),
         rules=tuple(view_of(node, rule_paths(node)) for node in others if node.id in tool_loaded),
-        folders=tuple(
+        pages=tuple(
             view_of(node)
             for node in others
             if node.id not in tool_loaded and not isinstance(node, Skill)

@@ -138,12 +138,12 @@ SAMPLE = {
         front=pointers("alpha", "gamma"),
         body="## Architecture\n\nA fact about the root.\n",
     ),
-    "knowledge/alpha/node.md": node(
+    "knowledge/nodes/alpha/node.md": node(
         "alpha",
         front=pointers("beta", "review"),
         rules=rule("keep") + rule("wait", "Run the other check."),
     ),
-    "knowledge/alpha/beta/node.md": node(
+    "knowledge/nodes/alpha/beta/node.md": node(
         "beta",
         "ka:Concept",
         front=(
@@ -152,8 +152,8 @@ SAMPLE = {
         ),
         rules=rule("bound", "Run the third check.", scope="node"),
     ),
-    "knowledge/gamma/node.md": node("gamma"),
-    "skills/review/node.md": node(
+    "knowledge/nodes/gamma/node.md": node("gamma"),
+    "knowledge/skills/review/node.md": node(
         "review",
         "ka:Skill",
         front=(
@@ -184,9 +184,10 @@ def write_tree(repository: Path, sources: dict[str, str] | None = None) -> None:
         return [name for name in names if Path(folder).name == "branches" and name != ".gitkeep"]
 
     shutil.copytree(
-        REPO / "governance/language", repository / "governance/language", ignore=no_branch_files
+        REPO / "knowledge/governance/language",
+        repository / "knowledge/governance/language",
+        ignore=no_branch_files,
     )
-    (repository / "skills").mkdir(exist_ok=True)
     for relative, text in (SAMPLE if sources is None else sources).items():
         path = repository / relative
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -310,7 +311,7 @@ def hostile_tree(payload: str) -> dict[str, str]:
             ),
             body=f"Intro {payload} outro.\n",
         ),
-        "knowledge/alpha/node.md": (
+        "knowledge/nodes/alpha/node.md": (
             f"---\nid: alpha\nkind: ka:Domain\ntitle: {quoted}\nstatus: proposed\n"
             f"origin: template\nknowledge_type: domain\nsources:\n  - {quoted}\n---\n\n"
             f"## Definition\n\nIntro {payload} outro.\n\n## Directives\n\n"
@@ -321,7 +322,7 @@ def hostile_tree(payload: str) -> dict[str, str]:
             )
             + f"\n## Notes\n\nIntro {payload} outro.\n"
         ),
-        "knowledge/alpha/beta/node.md": node(
+        "knowledge/nodes/alpha/beta/node.md": node(
             "beta",
             "ka:Concept",
             title=quoted,
@@ -330,7 +331,7 @@ def hostile_tree(payload: str) -> dict[str, str]:
                 f"    reason: {quoted}\n    status: proposed\n"
             ),
         ),
-        "skills/review/node.md": node(
+        "knowledge/skills/review/node.md": node(
             "review",
             "ka:Skill",
             title=quoted,
@@ -365,7 +366,7 @@ def test_a_hostile_value_that_passes_each_check_stays_safe(tmp_path: Path) -> No
     image = f"<img src=x onerror={PWNED}>"
     sources = {
         "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha")),
-        "knowledge/alpha/node.md": (
+        "knowledge/nodes/alpha/node.md": (
             f"---\nid: alpha\nkind: ka:Domain\ntitle: {json.dumps(image)}\nstatus: proposed\n"
             "origin: template\nknowledge_type: domain\n---\n\n"
             f"## Definition\n\nA {image} value.\n\n"
@@ -609,8 +610,10 @@ def test_the_tree_markup_balances() -> None:
 def test_the_tree_opens_the_top_levels_only() -> None:
     sources = {
         **SAMPLE,
-        "knowledge/alpha/beta/deep/node.md": node("deep", "ka:Concept", front="broader: [beta]\n"),
-        "knowledge/alpha/beta/node.md": node(
+        "knowledge/nodes/alpha/beta/deep/node.md": node(
+            "deep", "ka:Concept", front="broader: [beta]\n"
+        ),
+        "knowledge/nodes/alpha/beta/node.md": node(
             "beta", "ka:Concept", front="broader: [alpha]\n" + pointers("deep")
         ),
     }
@@ -622,11 +625,11 @@ def test_the_tree_opens_the_top_levels_only() -> None:
 def test_a_node_with_two_parents_says_that_it_is_listed_above() -> None:
     sources = {
         **SAMPLE,
-        "knowledge/alpha/beta/node.md": node(
+        "knowledge/nodes/alpha/beta/node.md": node(
             "beta", "ka:Concept", front="broader: [alpha, gamma]\n"
         ),
     }
-    sources["skills/review/node.md"] = node(
+    sources["knowledge/skills/review/node.md"] = node(
         "review",
         "ka:Skill",
         front=f"description: {SKILL_DESCRIPTION}\nuses: [beta]\n",
@@ -646,7 +649,7 @@ def test_the_first_page_states_what_is_in_force() -> None:
 def test_the_counts_use_each_singular() -> None:
     sources = {
         "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha")),
-        "knowledge/alpha/node.md": node("alpha", status="accepted"),
+        "knowledge/nodes/alpha/node.md": node("alpha", status="accepted"),
     }
     page = site_of(sources)["index.html"]
     assert "1 entity waits for review: 1 node, 0 directives, and 0 exceptions." in page
@@ -655,7 +658,7 @@ def test_the_counts_use_each_singular() -> None:
 def test_no_proposal_shows_an_empty_queue() -> None:
     sources = {
         "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha"), status="accepted"),
-        "knowledge/alpha/node.md": node("alpha", status="accepted"),
+        "knowledge/nodes/alpha/node.md": node("alpha", status="accepted"),
     }
     site = site_of(sources)
     assert "No entity waits for review." in site["index.html"]
@@ -672,8 +675,8 @@ def test_a_node_page_shows_each_part() -> None:
     assert "You need beta." in page
     assert "loads by: text" in page
     assert 'href="beta.html"' in page
-    assert "knowledge/alpha/node.md" in page
-    assert "knowledge/alpha/AGENTS.md" in page
+    assert "knowledge/nodes/alpha/node.md" in page
+    assert ".claude/references/alpha.md" in page
 
 
 def test_a_node_page_links_up_with_a_relative_path() -> None:
@@ -694,14 +697,14 @@ def test_the_trail_runs_from_the_root_to_the_parent() -> None:
 
 ACCEPTED_SAMPLE = {
     "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha")),
-    "knowledge/alpha/node.md": node(
+    "knowledge/nodes/alpha/node.md": node(
         "alpha",
         front=pointers("beta"),
         rules=rule("firm", "Run the firm check.", status="accepted")
         + rule("fresh", "Run the fresh check.")
         + rule("faded", "Run the faded check.", status="deprecated"),
     ),
-    "knowledge/alpha/beta/node.md": node(
+    "knowledge/nodes/alpha/beta/node.md": node(
         "beta",
         "ka:Concept",
         front=(
@@ -768,7 +771,7 @@ def test_a_deprecated_directive_stays_on_its_node_page_only_for_reference() -> N
 def test_an_exception_on_a_deprecated_directive_still_renders() -> None:
     sources = {
         **ACCEPTED_SAMPLE,
-        "knowledge/alpha/beta/node.md": node(
+        "knowledge/nodes/alpha/beta/node.md": node(
             "beta",
             "ka:Concept",
             front=(
@@ -786,7 +789,7 @@ def test_an_exception_on_a_deprecated_directive_still_renders() -> None:
 def test_each_edge_of_a_directive_and_a_node_links_to_its_target() -> None:
     sources = {
         "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha", "gamma")),
-        "knowledge/alpha/node.md": node(
+        "knowledge/nodes/alpha/node.md": node(
             "alpha",
             front="related: [gamma]\n",
             rules=rule("base-rule")
@@ -796,8 +799,8 @@ def test_each_edge_of_a_directive_and_a_node_links_to_its_target() -> None:
                 extra="  - also_attached_to: gamma\n  - refines: base-rule\n",
             ),
         ),
-        "knowledge/gamma/node.md": node("gamma"),
-        "skills/review/node.md": node(
+        "knowledge/nodes/gamma/node.md": node("gamma"),
+        "knowledge/skills/review/node.md": node(
             "review",
             "ka:Skill",
             front=(
@@ -828,7 +831,7 @@ def test_a_path_pointer_shows_its_patterns() -> None:
                 '    trigger: You need alpha.\n    paths:\n      - "src/**/*"\n'
             ),
         ),
-        "knowledge/alpha/node.md": node("alpha"),
+        "knowledge/nodes/alpha/node.md": node("alpha"),
     }
     page = site_of(sources)["nodes/root.html"]
     assert "loads by: path" in page
@@ -845,8 +848,8 @@ def test_the_generated_file_of_a_rule_and_a_skill_are_named() -> None:
                 "    trigger: You need alpha.\n"
             ),
         ),
-        "knowledge/alpha/node.md": node("alpha"),
-        "skills/review/node.md": node(
+        "knowledge/nodes/alpha/node.md": node("alpha"),
+        "knowledge/skills/review/node.md": node(
             "review",
             "ka:Skill",
             front=f"description: {SKILL_DESCRIPTION}\nuses: [alpha]\n",
@@ -864,7 +867,7 @@ def test_the_queue_lists_each_proposed_entity_under_its_node() -> None:
     alpha = page.split('id="node-alpha"')[1].split("</section>")[0]
     assert "Run the check." in alpha
     assert "Run the other check." in alpha
-    assert "knowledge/alpha/node.md:" in alpha
+    assert "knowledge/nodes/alpha/node.md:" in alpha
     beta = page.split('id="node-beta"')[1].split("</section>")[0]
     assert "A reason for beta." in beta
     assert "Run the third check." in beta
@@ -912,7 +915,7 @@ def test_the_queue_counts_only_what_waits() -> None:
 def test_the_queue_leaves_out_an_accepted_exception() -> None:
     sources = {
         **ACCEPTED_SAMPLE,
-        "knowledge/alpha/beta/node.md": node(
+        "knowledge/nodes/alpha/beta/node.md": node(
             "beta",
             "ka:Concept",
             front=(
@@ -932,11 +935,11 @@ def test_the_queue_leaves_out_an_accepted_exception() -> None:
 def test_the_queue_shows_a_node_with_two_parents_once() -> None:
     sources = {
         **SAMPLE,
-        "knowledge/alpha/beta/node.md": node(
+        "knowledge/nodes/alpha/beta/node.md": node(
             "beta", "ka:Concept", front="broader: [alpha, gamma]\n"
         ),
     }
-    sources["skills/review/node.md"] = node(
+    sources["knowledge/skills/review/node.md"] = node(
         "review", "ka:Skill", front=f"description: {SKILL_DESCRIPTION}\nuses: [beta]\n"
     )
     page = site_of(sources)["review.html"]
@@ -946,7 +949,7 @@ def test_the_queue_shows_a_node_with_two_parents_once() -> None:
 def test_the_queue_leaves_out_a_node_with_nothing_proposed() -> None:
     sources = {
         "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha")),
-        "knowledge/alpha/node.md": node("alpha", status="accepted"),
+        "knowledge/nodes/alpha/node.md": node("alpha", status="accepted"),
     }
     page = site_of(sources)["review.html"]
     assert 'id="node-root"' in page
@@ -956,7 +959,7 @@ def test_the_queue_leaves_out_a_node_with_nothing_proposed() -> None:
 def test_a_proposed_directive_on_an_accepted_node_is_named_without_the_node() -> None:
     sources = {
         "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha"), status="accepted"),
-        "knowledge/alpha/node.md": node("alpha", status="accepted", rules=rule("wait")),
+        "knowledge/nodes/alpha/node.md": node("alpha", status="accepted", rules=rule("wait")),
     }
     page = site_of(sources)["review.html"]
     assert "uv run ka accept wait</code>" in page
@@ -967,7 +970,7 @@ def test_a_proposed_node_states_that_acceptance_changes_no_file() -> None:
     page = site_of(SAMPLE)["review.html"]
     gamma = page.split('id="node-gamma"')[1].split("</section>")[0]
     assert "Acceptance changes no directive and no generated file." in gamma
-    assert "knowledge/gamma/node.md:5" in gamma
+    assert "knowledge/nodes/gamma/node.md:5" in gamma
 
 
 def test_the_queue_states_what_a_directive_reaches() -> None:
@@ -975,7 +978,7 @@ def test_the_queue_states_what_a_directive_reaches() -> None:
     entry = page.split('id="node-alpha"')[1].split("</li>")[0]
     assert "reaches 1 node:" in entry
     assert "1 generated file lists it:" in entry
-    assert "knowledge/alpha/AGENTS.md" in entry
+    assert ".claude/references/alpha.md" in entry
 
 
 def test_the_queue_counts_a_directive_with_several_nodes() -> None:
@@ -993,8 +996,8 @@ def test_the_queue_states_the_effect_of_an_exception() -> None:
     beta = page.split('id="node-beta"')[1].split("</section>")[0]
     entry = beta.split("<h4>Exceptions</h4>")[1]
     assert "on acceptance: stops the directive at this node" in entry
-    assert "knowledge/alpha/beta/AGENTS.md" in entry
-    assert "knowledge/alpha/beta/node.md:" in entry
+    assert ".claude/references/beta.md" in entry
+    assert "knowledge/nodes/alpha/beta/node.md:" in entry
 
 
 def test_the_queue_limits_the_list_of_what_a_directive_reaches() -> None:
@@ -1002,10 +1005,10 @@ def test_the_queue_limits_the_list_of_what_a_directive_reaches() -> None:
     names = [f"leaf{chr(ord('a') + index)}" for index in range(extra_count)]
     sources = {
         "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha")),
-        "knowledge/alpha/node.md": node("alpha", front=pointers(*names), rules=rule("wide")),
+        "knowledge/nodes/alpha/node.md": node("alpha", front=pointers(*names), rules=rule("wide")),
     }
     for name in names:
-        sources[f"knowledge/alpha/{name}/node.md"] = node(
+        sources[f"knowledge/nodes/alpha/{name}/node.md"] = node(
             name, "ka:Concept", front="broader: [alpha]\n"
         )
     page = site_of(sources)["review.html"]
@@ -1038,13 +1041,13 @@ def test_the_queue_says_that_a_person_runs_the_command() -> None:
 
 def test_a_project_page_names_the_project_command(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    (tmp_path / ".ka").mkdir()
-    (tmp_path / ".ka/ka").write_text("#!/bin/sh\n", encoding="utf-8")
+    (tmp_path / "knowledge/.ka").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "knowledge/.ka/ka").write_text("#!/bin/sh\n", encoding="utf-8")
     report = write_view(tmp_path)
     assert report.problems == []
     page = (tmp_path / VIEW_FOLDER / "review.html").read_text(encoding="utf-8")
-    assert ".ka/ka accept --subtree alpha</code>" in page
-    assert "<code>.ka/ka runtime</code>" in page
+    assert "knowledge/.ka/ka accept --subtree alpha</code>" in page
+    assert "<code>knowledge/.ka/ka runtime</code>" in page
     assert "uv run ka" not in page
 
 
@@ -1144,7 +1147,7 @@ def test_a_deleted_node_removes_its_page(tmp_path: Path) -> None:
     write_tree(tmp_path)
     assert write_view(tmp_path).problems == []
     assert (tmp_path / VIEW_FOLDER / "nodes/gamma.html").exists()
-    shutil.rmtree(tmp_path / "knowledge/gamma")
+    shutil.rmtree(tmp_path / "knowledge/nodes/gamma")
     root = tmp_path / "knowledge/node.md"
     root.write_text(
         root.read_text(encoding="utf-8").replace(text_pointer("gamma"), ""), encoding="utf-8"
@@ -1158,7 +1161,7 @@ def test_a_deleted_node_removes_its_page(tmp_path: Path) -> None:
 def test_a_rejected_tree_removes_the_earlier_view(tmp_path: Path) -> None:
     write_tree(tmp_path)
     assert write_view(tmp_path).problems == []
-    path = tmp_path / "knowledge/gamma/node.md"
+    path = tmp_path / "knowledge/nodes/gamma/node.md"
     path.write_text("not a node\n", encoding="utf-8")
     result = RUNNER.invoke(app, ["view", str(tmp_path)])
     assert result.exit_code == 1
@@ -1169,7 +1172,7 @@ def test_a_rejected_tree_removes_the_earlier_view(tmp_path: Path) -> None:
 
 def test_a_language_problem_also_stops_the_view(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    path = tmp_path / "knowledge/gamma/node.md"
+    path = tmp_path / "knowledge/nodes/gamma/node.md"
     path.write_text(
         node("gamma", rules=rule("bad-rule", "This sentence does not open with a verb.")),
         encoding="utf-8",
@@ -1181,7 +1184,6 @@ def test_a_language_problem_also_stops_the_view(tmp_path: Path) -> None:
 
 def test_an_empty_tree_reports_empty_tree(tmp_path: Path) -> None:
     write_tree(tmp_path, {})
-    (tmp_path / "knowledge").mkdir()
     report = write_view(tmp_path)
     assert [problem.code for problem in report.problems] == ["empty-tree"]
 
@@ -1232,8 +1234,7 @@ def test_a_symbolic_link_blocks_the_write(tmp_path: Path) -> None:
 
 
 def test_the_real_tree_gives_a_safe_site(tmp_path: Path) -> None:
-    for folder in ("knowledge", "skills", "governance"):
-        shutil.copytree(REPO / folder, tmp_path / folder)
+    shutil.copytree(REPO / "knowledge", tmp_path / "knowledge")
     report = write_view(tmp_path)
     assert report.problems == []
     files = view_files(tmp_path)
@@ -1246,8 +1247,7 @@ def test_the_real_tree_gives_a_safe_site(tmp_path: Path) -> None:
 
 
 def test_the_queue_count_equals_the_pending_list_on_the_real_tree(tmp_path: Path) -> None:
-    for folder in ("knowledge", "skills", "governance"):
-        shutil.copytree(REPO / folder, tmp_path / folder)
+    shutil.copytree(REPO / "knowledge", tmp_path / "knowledge")
     assert write_view(tmp_path).problems == []
     pending, problems = pending_entities(tmp_path)
     assert problems == []
@@ -1291,10 +1291,10 @@ def test_a_deep_chain_renders() -> None:
             "ka:Root",
             front=pointers(*(f"n{index}" for index in range(depth))),
         ),
-        "knowledge/n0/node.md": node("n0"),
+        "knowledge/nodes/n0/node.md": node("n0"),
     }
     for index in range(1, depth):
-        sources[f"knowledge/n{index}/node.md"] = node(
+        sources[f"knowledge/nodes/n{index}/node.md"] = node(
             f"n{index}", "ka:Concept", front=f"broader: [n{index - 1}]\n"
         )
     files = render_site(parsed(sources), Path())

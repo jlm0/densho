@@ -8,9 +8,9 @@ Each node is one Markdown file with YAML front matter. The parser in `engine/par
 
 ## Where nodes live
 
-Each node is a file with the name `node.md`, in its own folder. The root node is `knowledge/node.md`. Other knowledge nodes go under `knowledge/`, skills go under `skills/`, and policies go under `governance/policies/`.
+Each node is a file with the name `node.md`, in its own folder. The root node is `knowledge/node.md`. Other knowledge nodes go under `knowledge/nodes/`, skills go under `knowledge/skills/`, and policies go under `knowledge/governance/policies/`.
 
-A folder can also hold a generated `AGENTS.md`. The parser skips a Markdown file that holds the marker of a [generated file](runtime-files.md#hand-written-files), and any other Markdown file with another name fails with `file-name`.
+No generated file sits beside a node. The [runtime files](runtime-files.md) go to `AGENTS.md` and `.claude/`, so a Markdown file with another name under `knowledge/` fails with `file-name`, even when it holds the generated marker.
 
 The folder path is only for navigation. Identity and relationships come from `id` and the edges, so a file can move without changing what it means.
 
@@ -84,7 +84,7 @@ A value is plain text, so put one that holds Markdown syntax in backticks:
 ## Check your nodes
 
 ```sh
-uv run ka parse knowledge skills governance
+uv run ka parse knowledge
 ```
 
 Each problem prints as `path:line: code: message`. The git hook runs the same command on each commit.

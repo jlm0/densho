@@ -25,7 +25,7 @@ from engine.parser import ParsedNode, Problem, parse_source
 from engine.vendor import ste_lint
 
 REPO = Path(__file__).resolve().parents[1]
-LANGUAGE = REPO / "governance/language"
+LANGUAGE = REPO / "knowledge/governance/language"
 VENDORED = REPO / "engine/vendor"
 VENDORED_DIGEST = "fff04bf85c1e8bd8dc69dcedc63a5d88ed513dfa24e505f9cb8318a4596c99cd"
 HARNESS_ENTRY_CAP = 1536
@@ -746,9 +746,7 @@ def test_a_masked_text_hides_code_but_the_plain_text_keeps_it() -> None:
 
 
 def write_tree(repository: Path, nodes: dict[str, str] | None = None) -> None:
-    shutil.copytree(LANGUAGE, repository / "governance/language", ignore=base_only)
-    for folder in ("knowledge", "skills"):
-        (repository / folder).mkdir()
+    shutil.copytree(LANGUAGE, repository / "knowledge/governance/language", ignore=base_only)
     for relative, source in (nodes or {}).items():
         path = repository / relative
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -762,7 +760,7 @@ def test_an_empty_tree_lints_only_the_grammar_rules(tmp_path: Path) -> None:
 
 def test_a_bad_grammar_rule_fails_with_its_location_in_the_grammar_file(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    path = tmp_path / "governance/language/grammar.yaml"
+    path = tmp_path / "knowledge/governance/language/grammar.yaml"
     text = path.read_text(encoding="utf-8")
     bad = "Tests pass."
     good = "Do not repeat a rule."
@@ -787,7 +785,7 @@ def test_each_rule_section_reaches_the_language_check(
     tmp_path: Path, section: str, text: str
 ) -> None:
     write_tree(tmp_path)
-    path = tmp_path / "governance/language/grammar.yaml"
+    path = tmp_path / "knowledge/governance/language/grammar.yaml"
     source = path.read_text(encoding="utf-8")
     addition = f"  - text: {text}\n    review: true\n"
     path.write_text(source.replace(f"{section}:\n", f"{section}:\n{addition}"), encoding="utf-8")
@@ -798,17 +796,17 @@ def test_each_rule_section_reaches_the_language_check(
 
 def test_a_node_directive_that_repeats_a_grammar_rule_fails(tmp_path: Path) -> None:
     write_tree(
-        tmp_path, {"knowledge/a/node.md": node_source(directives=("Do not repeat a rule.",))}
+        tmp_path, {"knowledge/nodes/a/node.md": node_source(directives=("Do not repeat a rule.",))}
     )
     problems = check_language(tmp_path)[1]
     assert [problem.code for problem in problems] == ["duplicate-rule"]
-    assert problems[0].path == tmp_path / "knowledge/a/node.md"
-    assert "governance/language/grammar.yaml:" in problems[0].message
+    assert problems[0].path == tmp_path / "knowledge/nodes/a/node.md"
+    assert "knowledge/governance/language/grammar.yaml:" in problems[0].message
 
 
 def test_a_grammar_rule_uses_the_base_vocabulary_only(tmp_path: Path) -> None:
-    write_tree(tmp_path, {"knowledge/a/node.md": node_source("a")})
-    (tmp_path / "governance/language/branches/a.yaml").write_text(
+    write_tree(tmp_path, {"knowledge/nodes/a/node.md": node_source("a")})
+    (tmp_path / "knowledge/governance/language/branches/a.yaml").write_text(
         "prohibited:\n  branch term:\n    - rule\n", encoding="utf-8"
     )
     assert check_language(tmp_path)[1] == []
@@ -819,16 +817,20 @@ def test_the_repository_language_files_are_valid() -> None:
 
 
 def test_a_tree_with_problems_reports_them(tmp_path: Path) -> None:
-    write_tree(tmp_path, {"knowledge/a/node.md": node_source(directives=("Tests pass.",))})
+    write_tree(tmp_path, {"knowledge/nodes/a/node.md": node_source(directives=("Tests pass.",))})
     count, problems = check_language(tmp_path)
     assert count == len(all_rules()) + 1
     assert [problem.code for problem in problems] == ["opening"]
-    assert problems[0].path == tmp_path / "knowledge/a/node.md"
+    assert problems[0].path == tmp_path / "knowledge/nodes/a/node.md"
 
 
 @pytest.mark.parametrize(
     "relative",
-    ["skills/a/node.md", "governance/policies/a/node.md", "governance/language/a/node.md"],
+    [
+        "knowledge/skills/a/node.md",
+        "knowledge/governance/policies/a/node.md",
+        "knowledge/governance/language/a/node.md",
+    ],
 )
 def test_each_node_folder_counts(tmp_path: Path, relative: str) -> None:
     write_tree(tmp_path, {relative: node_source(directives=("Tests pass.",))})
@@ -839,8 +841,8 @@ def test_a_parse_problem_stops_the_language_checks(tmp_path: Path) -> None:
     write_tree(
         tmp_path,
         {
-            "knowledge/a/node.md": "no front matter\n",
-            "knowledge/b/node.md": node_source(directives=("Tests pass.",)),
+            "knowledge/nodes/a/node.md": "no front matter\n",
+            "knowledge/nodes/b/node.md": node_source(directives=("Tests pass.",)),
         },
     )
     count, problems = check_language(tmp_path)
@@ -848,15 +850,14 @@ def test_a_parse_problem_stops_the_language_checks(tmp_path: Path) -> None:
     assert [problem.code for problem in problems] == ["front-matter"]
 
 
-def test_a_missing_node_folder_is_a_problem(tmp_path: Path) -> None:
+def test_a_missing_skill_folder_passes(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    (tmp_path / "skills").rmdir()
-    assert [problem.code for problem in check_language(tmp_path)[1]] == ["folder"]
+    assert not (tmp_path / "knowledge/skills").exists()
+    assert check_language(tmp_path)[1] == []
 
 
 def test_a_missing_profile_is_a_problem(tmp_path: Path) -> None:
     (tmp_path / "knowledge").mkdir()
-    (tmp_path / "skills").mkdir()
     count, problems = check_language(tmp_path)
     assert count == 0
     assert [(problem.path.name, problem.code) for problem in problems] == [
@@ -965,23 +966,25 @@ def branch_tree(repository: Path, branch: str, content: str) -> None:
     write_tree(
         repository,
         {
-            "knowledge/top/node.md": node_source("top", directives=("Frob the top file.",)),
-            "knowledge/top/mid/node.md": node_source(
+            "knowledge/nodes/top/node.md": node_source("top", directives=("Frob the top file.",)),
+            "knowledge/nodes/top/mid/node.md": node_source(
                 "mid", broader=("top",), directives=("Frob the middle file.",)
             ),
-            "knowledge/top/mid/low/node.md": node_source(
+            "knowledge/nodes/top/mid/low/node.md": node_source(
                 "low", broader=("mid",), directives=("Frob the lowest file.",)
             ),
-            "knowledge/other/node.md": node_source("other", directives=("Frob the other file.",)),
+            "knowledge/nodes/other/node.md": node_source(
+                "other", directives=("Frob the other file.",)
+            ),
         },
     )
-    (repository / f"governance/language/branches/{branch}.yaml").write_text(
+    (repository / f"knowledge/governance/language/branches/{branch}.yaml").write_text(
         content, encoding="utf-8"
     )
 
 
 def add_skill(repository: Path, source: str) -> None:
-    folder = repository / "skills/s"
+    folder = repository / "knowledge/skills/s"
     folder.mkdir(parents=True)
     (folder / "node.md").write_text(source, encoding="utf-8")
 
@@ -1074,7 +1077,7 @@ def test_a_branch_prohibition_keeps_the_base_category() -> None:
 
 def test_a_branch_with_no_node_is_a_problem(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    path = tmp_path / "governance/language/branches/missing.yaml"
+    path = tmp_path / "knowledge/governance/language/branches/missing.yaml"
     path.write_text("approved_verbs: [frob]\n", encoding="utf-8")
     problems = check_language(tmp_path)[1]
     assert [(problem.path, problem.code, problem.line) for problem in problems] == [
@@ -1085,7 +1088,7 @@ def test_a_branch_with_no_node_is_a_problem(tmp_path: Path) -> None:
 
 def test_a_bad_branch_file_is_a_problem(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    path = tmp_path / "governance/language/branches/sample.yaml"
+    path = tmp_path / "knowledge/governance/language/branches/sample.yaml"
     path.write_text("approved_verbs: 1\n", encoding="utf-8")
     problems = check_language(tmp_path)[1]
     assert [(problem.path, problem.code) for problem in problems] == [(path, "language-profile")]
@@ -1094,7 +1097,7 @@ def test_a_bad_branch_file_is_a_problem(tmp_path: Path) -> None:
 @pytest.mark.parametrize("name", ["sample.yml", "sample.txt"])
 def test_a_branch_file_with_a_wrong_suffix_is_a_problem(tmp_path: Path, name: str) -> None:
     write_tree(tmp_path)
-    path = tmp_path / "governance/language/branches" / name
+    path = tmp_path / "knowledge/governance/language/branches" / name
     path.write_text("approved_verbs: [frob]\n", encoding="utf-8")
     problems = check_language(tmp_path)[1]
     assert [(problem.path, problem.code) for problem in problems] == [(path, "language-profile")]
@@ -1102,7 +1105,7 @@ def test_a_branch_file_with_a_wrong_suffix_is_a_problem(tmp_path: Path, name: st
 
 def test_all_profile_problems_print_together(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    language = tmp_path / "governance/language"
+    language = tmp_path / "knowledge/governance/language"
     (language / "grammar.yaml").write_text("", encoding="utf-8")
     (language / "vocabulary.yaml").write_text("", encoding="utf-8")
     (language / "branches/sample.yaml").write_text("x: 1\n", encoding="utf-8")
@@ -1118,7 +1121,7 @@ def test_all_profile_problems_print_together(tmp_path: Path) -> None:
 
 def test_the_language_folder_needs_no_branch_folder(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    shutil.rmtree(tmp_path / "governance/language/branches")
+    shutil.rmtree(tmp_path / "knowledge/governance/language/branches")
     assert check_language(tmp_path) == (len(all_rules()), [])
 
 
@@ -1144,7 +1147,7 @@ def run_no_model_script(repository: Path) -> str:
 
 
 def remove_the_grammar_rules(repository: Path) -> None:
-    path = repository / "governance/language/grammar.yaml"
+    path = repository / "knowledge/governance/language/grammar.yaml"
     source = path.read_text(encoding="utf-8")
     kept = source[: source.index("directive_rules:")]
     empty = "directive_rules: []\ntrigger_rules: []\ndescription_rules: []\n"
@@ -1158,13 +1161,13 @@ def test_an_empty_tree_with_no_rules_does_not_load_the_model(tmp_path: Path) -> 
 
 
 def test_a_node_with_no_text_and_no_rules_does_not_load_the_model(tmp_path: Path) -> None:
-    write_tree(tmp_path, {"knowledge/a/node.md": node_source()})
+    write_tree(tmp_path, {"knowledge/nodes/a/node.md": node_source()})
     remove_the_grammar_rules(tmp_path)
     assert run_no_model_script(tmp_path) == "0 0 False"
 
 
 def test_a_tree_with_text_loads_the_model(tmp_path: Path) -> None:
-    write_tree(tmp_path, {"knowledge/a/node.md": node_source(directives=("Run the suite.",))})
+    write_tree(tmp_path, {"knowledge/nodes/a/node.md": node_source(directives=("Run the suite.",))})
     remove_the_grammar_rules(tmp_path)
     assert run_no_model_script(tmp_path) == "1 0 True"
 

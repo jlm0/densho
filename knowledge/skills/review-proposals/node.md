@@ -164,6 +164,6 @@ knowledge/.ka/ka view
 grep -rl -F -e '^<id> (proposed)' build/runtime-proposals/
 ```
 
-- `--subtree` follows `broader`. It does not reach a skill, so name a skill by its ID.
+- `--subtree` follows `broader`. Only the subtree of the root reaches a skill, so name a skill by its ID.
 - `knowledge/.ka/ka view` writes a site to `build/view/`. Its `review.html` groups the queue by node, for the person to read.
 - The `grep` search lists each file of the review copy that holds a directive after acceptance.

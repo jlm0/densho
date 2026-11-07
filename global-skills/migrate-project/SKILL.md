@@ -42,7 +42,7 @@ A project owns its copy of the template, and the project decides what it takes. 
 03. Move a `knowledge/` or `.claude/references/` folder of the project to `knowledge-migration/source/`.
 04. If `knowledge/.ka/ka` does not exist, ask a person which disciplines the project takes.
 05. Run the install command from `### Commands` with the disciplines of the answer.
-06. If the project keeps its own `.pre-commit-config.yaml`, add the `3` local hooks from `### Commands`.
+06. If the project keeps its own `.pre-commit-config.yaml`, add the `4` local hooks from `### Commands`.
 07. If you moved a hand-written `AGENTS.md`, ask a person whether the old root stays in force during the review.
 08. Tell a person that you recommend that the old root stays.
 09. If the old root stays, add the line `@knowledge-migration/source/root-agents.md` to `CLAUDE.md`.
@@ -254,7 +254,7 @@ This search prints the path and the line only. Read each hit, and do not repeat 
 git grep --untracked -n -I -i -E '(AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9]{20,}|xox[abprs]-|BEGIN [A-Z ]*PRIVATE KEY|(password|passwd|secret|token|api[_-]?key).?[[:space:]]*[:=][[:space:]]*[^[:space:]]|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[a-z]{2,})' -- <paths> | cut -d: -f1,2
 ```
 
-Secret material also covers each credential, session header, one-time code, and personal identity list that the search does not match. No hook searches for secret material.
+Secret material also covers each credential, session header, one-time code, and personal identity list that the search does not match. The `knowledge-checks` hook searches only `knowledge/`, and it finds only the forms of the `secret` and `email` checks.
 
 ### Commands
 
@@ -264,4 +264,4 @@ uvx --python 3.14 copier copy --trust --defaults --vcs-ref=HEAD --data 'discipli
 
 Replace each `<id>` with a discipline from the answer of the person. `copier.yml` of the template lists the choices under `disciplines`. Leave out `--data` to take each discipline.
 
-The `3` local hooks are `conflict-markers`, `rejected-hunks`, and `knowledge-checks`. Read them in `.pre-commit-config.yaml.jinja` in a clone of the template.
+The `4` local hooks are `conflict-markers`, `rejected-hunks`, `knowledge-checks`, and `eval-tasks`. Read them in `.pre-commit-config.yaml.jinja` in a clone of the template.

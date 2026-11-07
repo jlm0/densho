@@ -537,6 +537,15 @@ def test_an_unknown_command_fails(text: str, bad: str) -> None:
     assert unknown_commands(f"{text}\n{bad}\n") == [bad.strip("`")]
 
 
+def test_the_migration_names_each_hook_of_the_template(migrate_text: str) -> None:
+    config = (REPO / ".pre-commit-config.yaml.jinja").read_text(encoding="utf-8")
+    hooks = re.findall(r"^ +- id: (\S+)$", config, re.MULTILINE)
+    line = next(line for line in migrate_text.splitlines() if "local hooks are" in line)
+    assert re.findall(r"`([a-z-]+)`", line.split(". ")[0]) == hooks
+    assert f"`{len(hooks)}` local hooks" in line
+    assert migrate_text.count(f"the `{len(hooks)}` local hooks") == 1
+
+
 def test_each_problem_code_exists(migrate_text: str) -> None:
     assert unknown_problem_codes(migrate_text) == []
 

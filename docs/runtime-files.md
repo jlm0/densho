@@ -56,7 +56,7 @@ Each file puts its directives first, then its procedures, then its references.
 | Path rule      | Its directives and exceptions, the definition, the body, and its pointers                                            |
 | Reference page | Its directives and exceptions, the definition, the body, and its pointers                                            |
 
-The root holds only what an agent can't work out from the files. It names each domain, the governance node and its policies, and each skill with its description, so an agent can still find a skill if the tool drops its description. Setup, paths, and commands stay in the README and in these pages. The architecture facts come from the body of `knowledge/node.md`, so they go through review like any other node.
+The root holds only what an agent can't work out from the files. It names each domain, the governance node and its policies, and each skill with its description, so an agent can still find a skill if the tool drops its description. Setup, paths, and commands stay in the README and in these pages. The architecture facts come from the body of `knowledge/node.md`. A body change needs no review, so a reviewer reads it in the diff.
 
 A directive list holds what applies at that node and nothing else: inherited directives, attached ones, and `applies`, minus each one an [exception](directive-semantics.md#stepping-out) stops. Each directive keeps its `^id`, and each group links to the generated file of the node that holds it. A list is complete for its own node, so the files for a node and its parent can repeat a line.
 

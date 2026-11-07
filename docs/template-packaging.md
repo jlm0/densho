@@ -47,10 +47,10 @@ uvx --python 3.14 copier copy --trust --defaults --vcs-ref=HEAD \
   https://github.com/jlm0/densho.git .
 ```
 
-| Question               | Default  | What it decides                                                                                                                       |
-| ---------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `disciplines`          | All four | Which disciplines the project receives: `software-engineering`, `ui-ux-design`, `product-strategy`, and `brand-design`                |
-| `keep_template_status` | `false`  | Whether what the template accepted stays `accepted`. See [which status knowledge arrives with](#which-status-knowledge-arrives-with). |
+| Question               | Default | What it decides                                                                                                                                           |
+| ---------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `disciplines`          | All six | Which disciplines the project receives: `product-strategy`, `user-research`, `brand-design`, `content-design`, `ui-ux-design`, and `software-engineering` |
+| `keep_template_status` | `false` | Whether what the template accepted stays `accepted`. See [which status knowledge arrives with](#which-status-knowledge-arrives-with).                     |
 
 A third question, `started_from`, records the start commit, so keep its default. Copier records each answer in `.copier-answers.yml`, and a pull reuses them.
 
@@ -64,7 +64,7 @@ Leaving a discipline out removes:
 - Each skill that uses or applies something you left out. A skill that draws only on what you keep, or only on the governance, arrives. The four preset skills, three of the [improvement loop](improvement-loop.md) and the [eval](evaluation.md) skill, draw only on the governance, so every install has them.
 - Each `informs`, `related`, `also_attached_to`, or `refines` entry, and each pointer, that names something you left out. The node or directive that held it stays.
 
-If a node you keep `depends_on` a node in another discipline, the install adds that discipline and prints a note. Brand design is an example: a brand positioning statement depends on the positioning components of product strategy, so `[brand-design]` brings product strategy too.
+If a node you keep `depends_on` a node in another discipline, the install adds that discipline and prints a note. The template has no such link: a handoff from one discipline to the next is an `informs` edge, so `[brand-design]` arrives without product strategy, and the edge from product positioning to brand strategy goes with it.
 
 A link of any other kind to something you left out, such as `broader`, `uses`, or `conflicts_with`, stops the command with `select`, and no file changes. The template has no such link, and its tests install each discipline on its own to keep it that way.
 
@@ -109,7 +109,7 @@ If you answer yes to `keep_template_status`, an entity that the template accepte
 
 Answer yes only if you accept that content for your project, because each accepted directive is in force from the first commit. Today the template has accepted nothing, so the answer changes nothing yet.
 
-A selection changes some entities: removing a link changes the node or directive that held it. Such an entity no longer matches the template's history, so it arrives as `proposed` with either answer. With only `ui-ux-design`, that's three nodes and one directive, if the template had accepted them.
+A selection changes some entities: removing a link changes the node or directive that held it. Such an entity no longer matches the template's history, so it arrives as `proposed` with either answer. With only `ui-ux-design`, that's four nodes and 67 directives, if the template had accepted them. Most of the directives are accessibility and responsive design rules that lose an attachment to software testing or frontend engineering.
 
 A pull follows the stricter rule, whatever you answered at the install. Anything new or changed in a reviewed field arrives as `proposed`. The template can't promote an entity in your project either: a status that becomes `accepted` in a pull goes back to `proposed`, even when nothing else changed. Once the last commit holds `knowledge/.densho/history.jsonl` or a node file, `--keep-accepted` keeps nothing and prints a note. The hook stops a new `accepted` entity, and `pull-promotion` stops one that the pull moves to `accepted`.
 
@@ -215,7 +215,7 @@ knowledge/.densho/densho history --drift
 
 For a moved node that the template also changed, the line names both `path` and the changed field. To take the change, read the template's version and edit your node.
 
-The disciplines you left out at the install aren't listed one entity at a time. Each one gets a single `note:` line with a count, such as `note: 215 entities of ui-ux-design are not in this tree, because disciplines leaves the discipline out.` The count covers each entity that the history places under the folder of that discipline, and its vocabulary branch. A skill that only the left-out discipline used still gets its own line, because the history can't tell which discipline a skill served.
+The disciplines you left out at the install aren't listed one entity at a time. Each one gets a single `note:` line with a count, such as `note: 217 entities of ui-ux-design are not in this tree, because disciplines leaves the discipline out.` The count covers each entity that the history places under the folder of that discipline, and its vocabulary branch. A skill that only the left-out discipline used still gets its own line, because the history can't tell which discipline a skill served.
 
 ## The change history
 

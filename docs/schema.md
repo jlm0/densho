@@ -80,7 +80,7 @@ An edge states a relationship. Each edge is a field on the node that holds it, a
 | `uses`       | Knowledge that the skill composes                          | Skill                             |
 | `applies`    | Directives that the skill applies                          | Skill                             |
 
-`informs` is the flow edge. Use it for each handoff from one step to the next, whether the two steps sit in one discipline or in two: product positioning informs brand design, for example. `depends_on` is stronger. It means the node makes no sense without the other, the way an error budget needs a service level objective, so a handoff never uses it. Each reference page lists the flow both ways, in its [Comes from and Goes to](runtime-files.md#the-flow-of-a-node) sections.
+`informs` is the flow edge. Use it for each handoff from one step to the next, whether the two steps sit in one discipline or in two: product positioning informs brand strategy, for example. `depends_on` is stronger. It means the node makes no sense without the other, the way an error budget needs a service level objective, so a handoff never uses it. Each reference page lists the flow both ways, in its [Comes from and Goes to](runtime-files.md#the-flow-of-a-node) sections.
 
 ## Pointers
 

@@ -27,7 +27,7 @@ uv run pre-commit run --all-files
 | `knowledge/node.md`                                                               | The root node                                                      |
 | `knowledge/nodes/`                                                                | The knowledge nodes: concepts and directives                       |
 | `knowledge/skills/`                                                               | Skill sources built from the knowledge tree                        |
-| `knowledge/evals/`                                                                | Eval tasks for each discipline, with known good and bad outputs    |
+| `knowledge/evals/`                                                                | Eval tasks, with known good and bad outputs                        |
 | `knowledge/governance/policies/`                                                  | Lifecycle, approval, and change rules, written as nodes            |
 | `knowledge/governance/language/`                                                  | The directive grammar and the vocabularies                         |
 | `knowledge/governance/schema/`                                                    | The metamodel: node kinds, relationship kinds, and required fields |

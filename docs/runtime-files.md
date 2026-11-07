@@ -62,13 +62,14 @@ A directive list holds what applies at that node and nothing else: inherited dir
 
 ## The flow of a node
 
-An `informs` edge says that the output of one node is an input of another. A reference page or a rule shows these edges in both directions, after the body and before the references, so an agent at one step sees the step before it and the step after it:
+An `informs` edge says that the output of one node is an input of another. A reference page or a rule shows these edges in both directions, after the body and before the references, so an agent at one step sees the step before it and the step after it. The page for interaction design opens its flow like this:
 
 ```text
 ## Comes from
 
 The output of each node in this list is an input of this node.
 
+- [Evaluative research](evaluative-research.md)
 - [Information architecture](information-architecture.md)
 ```
 
@@ -81,7 +82,7 @@ The output of each node in this list is an input of this node.
 The default result holds only what the [governance workflow](governance-workflow.md) puts in force. Every seed entity is still `proposed`, so today the committed files hold the nodes and the pointers but no directive. The root says so plainly, so an agent doesn't assume a rule:
 
 ```text
-No directive is in force. The graph holds 487 directives and 1 exception that are not in force.
+No directive is in force. The graph holds 485 directives and 1 exception that are not in force.
 
 Treat a directive as a rule only when its `status` is `accepted`. A generated file lists only the directives that apply at its own node.
 ```

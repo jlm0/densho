@@ -55,12 +55,14 @@ An agent proposes each entity, and a person accepts it. Run the steps in the tem
 03. Add a `densho:TextPointer` from the parent to each new node, with a trigger in the present tense.
 04. Write each directive in the form of `### Node skeleton`.
 05. Set `sources` of each directive to the URL of each opened page that states it.
-06. Link each related node with `related`, `informs`, or `depends_on`.
-07. Before you add a directive to a node that a skill uses, run `uv run densho directives --at <skill-id>`.
-08. Add a skill only for an ordered procedure that no skill holds.
-09. Keep each procedure of a skill to `9` steps.
-10. If you add a `densho:Discipline` node, add its ID to `choices` and `default` of `disciplines` in `copier.yml`.
-11. Add each new opening verb to `knowledge/governance/language/branches/<discipline-id>.yaml`.
+06. Use `informs` when the output of a node is an input of another node.
+07. Use `depends_on` only when a node has no meaning without another node.
+08. Use `related` when two nodes coexist and no flow joins them.
+09. Before you add a directive to a node that a skill uses, run `uv run densho directives --at <skill-id>`.
+10. Add a skill only for an ordered procedure that no skill holds.
+11. Keep each procedure of a skill to `9` steps.
+12. If you add a `densho:Discipline` node, add its ID to `choices` and `default` of `disciplines` in `copier.yml`.
+13. Add each new opening verb to `knowledge/governance/language/branches/<discipline-id>.yaml`.
 
 ### Check the work
 

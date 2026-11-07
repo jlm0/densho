@@ -36,6 +36,21 @@ pointers:
     target: contract-testing
     trigger: A test uses a test double for another service.
   - kind: densho:TextPointer
+    target: black-box-test-techniques
+    trigger: You choose the test inputs for a behavior from its specification.
+  - kind: densho:TextPointer
+    target: property-based-testing
+    trigger: You write a test that generates its own input values.
+  - kind: densho:TextPointer
+    target: model-based-testing
+    trigger: You generate tests from a model of the system under test.
+  - kind: densho:TextPointer
+    target: code-coverage
+    trigger: You measure the code coverage of a test suite.
+  - kind: densho:TextPointer
+    target: mutation-testing
+    trigger: You check whether the tests detect a change in the covered code.
+  - kind: densho:TextPointer
     target: ai-evaluations
     trigger: You test the output of an AI model or an AI feature.
 ---

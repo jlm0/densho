@@ -101,7 +101,7 @@ status: rejected
 rejection_reason: The project keeps one style guide, and this rule repeats it.
 ```
 
-In a directive or an exception the field sits next to `status`, in the same form. There is no `ka reject`, so you edit the line by hand. The reason needs no review, so you can reword it later.
+In a directive or an exception the field sits next to `status`, in the same form. There is no `ka reject`, so you edit the line by hand, or let the `review-proposals` skill write your reason for you, as the [improvement loop](improvement-loop.md#review-the-queue) explains. The reason needs no review, so you can reword it later.
 
 The entity stays in the file as a record that someone weighed it, so the same idea doesn't come back unread. `--pending` stops listing it, and no generated file holds it. To look at it again, set it back to `proposed`. It can't go straight to `accepted`, which fails `status-jump`, so a reviewer reads it again first. When nobody needs the record any more, delete the entity. Git history keeps it.
 

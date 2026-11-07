@@ -15,6 +15,14 @@ pointers:
       - knowledge/**/*
 ---
 
+## Directives
+
+- When a person corrects your work, propose the change with `propose-knowledge`. ^propose-corrections
+  - scope: node
+  - basis: judgment
+  - status: proposed
+  - origin: template
+
 ## Architecture
 
 - A pointer or an edge carries meaning. A folder path only helps navigation, so a file can move and keep its meaning.

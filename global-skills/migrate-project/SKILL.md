@@ -1,11 +1,11 @@
 ---
-name: migrate-and-reconcile-knowledge
-description: Convert the knowledge of a project into governed nodes, or pull template changes into a project. Use when a person asks for a knowledge migration or a template pull.
+name: migrate-project
+description: Convert the rules and the docs of an existing project into proposed workspace nodes. Use when a person asks for a knowledge migration.
 ---
 
-# Migrate and reconcile knowledge
+# Migrate a project
 
-This skill has two jobs. Migration converts the knowledge of an existing project into nodes of the knowledge architecture. Reconciliation pulls template changes into a project. Do one job in each session. If compaction removes this skill, invoke it again.
+This skill converts the knowledge of an existing project into proposed workspace nodes of the knowledge architecture. Later template pulls use the `sync-template` skill of the project. If compaction removes this skill, invoke it again.
 
 A project owns its copy of the template, and the project decides what it takes. An agent proposes an entity, and a person accepts it.
 
@@ -22,8 +22,6 @@ A project owns its copy of the template, and the project decides what it takes. 
 - Do not remove a source file.
 - Do not use `--no-verify`.
 - Do not edit `knowledge/.ka/history.jsonl` in a project.
-- Do not pull a template change until a person asks for the pull.
-- Find each entity by its `id`, not by its path.
 - If a person does not answer a question, stop the job.
 
 ## Migration
@@ -42,15 +40,16 @@ A project owns its copy of the template, and the project decides what it takes. 
 01. Move a hand-written `AGENTS.md` to `knowledge-migration/source/root-agents.md`.
 02. Move each `.claude/skills/<id>/SKILL.md` that you convert to `knowledge-migration/source/skills/<id>.md`.
 03. Move a `knowledge/` or `.claude/references/` folder of the project to `knowledge-migration/source/`.
-04. If `knowledge/.ka/ka` does not exist, run the install command from `### Commands`.
-05. If the project keeps its own `.pre-commit-config.yaml`, add the `3` local hooks from `### Commands`.
-06. Ask a person whether the old root stays in force during the review.
-07. Tell a person that you recommend that the old root stays.
-08. If the old root stays, add the line `@knowledge-migration/source/root-agents.md` to `CLAUDE.md`.
-09. Run `knowledge/.ka/ka adopt`.
-10. If `pre-commit` does not exist, run `uv tool install pre-commit`.
-11. Run `pre-commit install`.
-12. Commit the install before you add a node.
+04. If `knowledge/.ka/ka` does not exist, ask a person which disciplines the project takes.
+05. Run the install command from `### Commands` with the disciplines of the answer.
+06. If the project keeps its own `.pre-commit-config.yaml`, add the `3` local hooks from `### Commands`.
+07. If you moved a hand-written `AGENTS.md`, ask a person whether the old root stays in force during the review.
+08. Tell a person that you recommend that the old root stays.
+09. If the old root stays, add the line `@knowledge-migration/source/root-agents.md` to `CLAUDE.md`.
+10. Run `knowledge/.ka/ka adopt`.
+11. If `pre-commit` does not exist, run `uv tool install pre-commit`.
+12. Run `pre-commit install`.
+13. Commit the install before you add a node.
 
 ### Classify the source
 
@@ -76,7 +75,7 @@ A project owns its copy of the template, and the project decides what it takes. 
 12. Set `sources` of each directive to the path and the line of its source.
 13. Set `basis: judgment` on each directive whose source cites no standard, no study, and no named method.
 14. Set `basis` to `standard`, `research`, or `practitioner` on each other directive, from the kind of its cited source.
-15. If a rule covers each task in the project, put it in `knowledge/node.md` with `scope: subtree`.
+15. If a rule covers each task in the project, put it in `knowledge/node.md` with `scope: node`.
 16. If a rule also covers the child documents of its document, set `scope: subtree`.
 17. Set `scope: node` on each other rule.
 18. In a rule, replace each path of a converted document with the node ID.
@@ -112,61 +111,10 @@ A project owns its copy of the template, and the project decides what it takes. 
 3. Report each change to `knowledge/governance/language/`, which no `status` covers.
 4. Report each `secret` row, with its path and its line only.
 5. Tell a person that no migrated directive applies until a person accepts it.
-6. Give a person the command `knowledge/.ka/ka governance --pending` to read the list for review.
-7. Tell a person to remove the old root line from `CLAUDE.md` after the review.
-8. Tell a person to remove `knowledge-migration/` and the converted source files after the review.
-
-## Reconciliation
-
-### Read what changed
-
-01. If `git status --short` prints a line, ask a person to commit the work first.
-02. If `.copier-answers.yml` does not exist, report that the project has no template record.
-03. Read `_src_path` and `_commit` from `.copier-answers.yml`.
-04. Run `git clone --quiet <_src_path> <clone>` with a new folder outside the project as `<clone>`.
-05. Run `git -C <clone> log --oneline <_commit>..HEAD` to list the template commits.
-06. Save the output of `knowledge/.ka/ka history --drift` to a file outside the project.
-07. List each line of `<clone>/knowledge/.ka/history.jsonl` with a higher `change` than the last line of `knowledge/.ka/history.jsonl`.
-08. Match each listed line to a drift line by `kind` and `id`.
-09. Put each listed line in one class from `### Pull classes`.
-10. Mark each match with a drift `status` of `accepted`, which leaves force if a reviewed field changes.
-11. Report the classes and the marks to a person.
-12. Ask a person whether to pull.
-13. If a person declines the pull, remove `<clone>`.
-14. For each `collision`, ask a person for a new `id` of the project entity.
-15. Commit each new `id` before you run the update.
-
-### Pull the changes
-
-1. Run the update command from `### Commands`.
-2. Run `git grep -n -E '^(<{7} |>{7} )'` to list each conflict.
-3. Run `git status --short` to list each `.rej` file.
-
-### Resolve each entity
-
-01. For each `same field` entity, read the base text with `git -C <clone> show <_commit>:<path>`.
-02. Show a person the base text, the project text, and the template text, with your recommendation.
-03. Write the text that a person chooses in place of the conflict markers.
-04. For each `moved` entity, read the template change with `git -C <clone> diff <_commit> HEAD -- <path>`.
-05. Ask a person whether to take the template change.
-06. Edit the node at the `path` of its drift line.
-07. For each `deleted` entity, keep it out of the project unless a person asks for it.
-08. If a person declines a change to a file, run `git checkout HEAD -- <path>` on that file.
-09. Compare `.pre-commit-config.yaml` with `<clone>/.pre-commit-config.yaml.jinja`.
-10. Compare `.gitignore` with `<clone>/.gitignore.jinja`.
-11. Report each line that the template file adds.
-
-### Finish the pull
-
-1. Run `knowledge/.ka/ka adopt` after you resolve each entity.
-2. Read each entity that the command sets to `proposed`.
-3. Tell a person that each entity that goes back to `proposed` leaves force until a person accepts it.
-4. Run `knowledge/.ka/ka history --drift` again.
-5. Report each new drift line with the `action` `changed` or `removed`.
-6. Report the count of drift lines with the `action` `added`.
-7. Remove `<clone>`.
-8. Run `git add -A` for the pull.
-9. Commit the pull.
+6. Tell a person to review the proposals with the `review-proposals` skill of the project.
+7. Tell a person to remove the old text from `CLAUDE.md` after a person accepts its replacements.
+8. Tell a person to keep only the `@AGENTS.md` import and personal items in `CLAUDE.md`.
+9. Tell a person to remove `knowledge-migration/` and the converted source files after the review.
 
 ## References
 
@@ -304,34 +252,12 @@ git grep --untracked -n -I -i -E '(AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9]{20,}|s
 
 Secret material also covers each credential, session header, one-time code, and personal identity list that the search does not match. No hook searches for secret material.
 
-### Pull classes
-
-Leave `status` out when you compare `fields`. A template `status` does not carry over, because `knowledge/.ka/ka adopt` sets it back.
-
-The last line of `knowledge/.ka/ka history --drift` is a count. Each other line is a JSON object.
-
-| Class              | Template line | Drift line                             | What the update does                           | What you do             |
-| ------------------ | ------------- | -------------------------------------- | ---------------------------------------------- | ----------------------- |
-| `clean`            | any           | none                                   | applies it                                     | read the result         |
-| `moved`            | `changed`     | `fields` holds `path` or `holder`      | does not reach the new path, with no conflict  | take the change by hand |
-| `deleted`          | `changed`     | `action` is `removed`                  | keeps it out                                   | report it               |
-| `other field`      | `changed`     | no shared field                        | merges it when the lines differ                | read the result         |
-| `same field`       | `changed`     | a shared field with a different digest | writes conflict markers when the lines overlap | ask a person            |
-| `same result`      | `changed`     | a shared field with the same digest    | keeps one text                                 | read the result         |
-| `collision`        | `added`       | `added` with the same `id`             | ends with `duplicate-id`                       | commit a new `id` first |
-| `template removal` | `removed`     | any                                    | removes the file, or writes conflict markers   | ask a person            |
-| `vocabulary`       | `file`        | any                                    | merges the file                                | read the words          |
-
-- The drift line and the template line each hold a digest for each field in `content`.
-- A pointer conflict in front matter can split one pointer. Keep each pointer whole, with its `kind`, `target`, and `trigger`.
-- The update can bring back the generated file of a removed node in `.claude/`. `knowledge/.ka/ka adopt` removes it.
-- A rename fails `removed-accepted` when the entity is `accepted`. Set it to `deprecated` in one commit, and remove it in a later commit.
-
 ### Commands
 
 ```sh
-uvx --python 3.14 copier copy --trust --defaults --vcs-ref=HEAD https://github.com/jlm0/knowledge-architecture.git .
-uvx --python 3.14 copier update --trust --defaults --vcs-ref=HEAD
+uvx --python 3.14 copier copy --trust --defaults --vcs-ref=HEAD --data 'disciplines=[<id>, <id>]' https://github.com/jlm0/knowledge-architecture.git .
 ```
+
+Replace each `<id>` with a discipline from the answer of the person. `copier.yml` of the template lists the choices under `disciplines`. Leave out `--data` to take each discipline.
 
 The `3` local hooks are `conflict-markers`, `rejected-hunks`, and `knowledge-checks`. Read them in `.pre-commit-config.yaml.jinja` in a clone of the template.

@@ -37,7 +37,7 @@ uv run pre-commit run --all-files
 | `docs/`                                                                           | The overview and a page for each layer                             |
 | `build/`                                                                          | Generated output. Git ignores it.                                  |
 | `copier.yml`, `*.jinja`                                                           | What a project receives, and the files only a project holds        |
-| `global-skills/`                                                                  | A skill you install yourself. A project doesn't receive it.        |
+| `global-skills/`                                                                  | Skills you install yourself. A project doesn't receive them.       |
 
 You edit `knowledge/`. Agents read `AGENTS.md` and `.claude/`.
 
@@ -53,7 +53,7 @@ pre-commit install
 
 The install asks which disciplines to take and whether to keep what the template accepted. `--defaults` takes every discipline, with each entity as a proposal. Run `git init` before `pre-commit install` if the folder has no repo. In a project, `knowledge/.ka/ka` takes the place of `uv run ka`. To pull a later template change, run `uvx --python 3.14 copier update --trust --defaults --vcs-ref=HEAD`, then `knowledge/.ka/ka adopt`.
 
-The template ships domain knowledge, which is universal. A project writes workspace knowledge about its own code, under the same governance. [Template packaging](docs/template-packaging.md) explains each step, and the [migration and reconciliation skill](docs/migration-and-reconciliation.md) converts the rules a project already has.
+The template ships domain knowledge, which is universal. A project writes workspace knowledge about its own code, under the same governance. [Template packaging](docs/template-packaging.md) explains each step, and the [migration skill](docs/migration-and-reconciliation.md) converts the rules a project already has. Each project also gets three skills that turn your corrections into proposals, review them with you, and sync with the template: the [improvement loop](docs/improvement-loop.md).
 
 ## Run the checks
 

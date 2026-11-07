@@ -4,31 +4,31 @@
 
 **Status:** Built.
 
-This layer is one global skill with two jobs. Migration converts the knowledge of an existing project into nodes that pass the checks. Reconciliation pulls template changes into a project that has drifted. An agent does the work and proposes the result, and you decide what stands.
+This layer is two skills. `migrate-project` converts the knowledge of an existing project into nodes that pass the checks. `sync-template` pulls template changes into a project that has drifted. An agent does the work and proposes the result, and you decide what stands.
 
-The source is `global-skills/migrate-and-reconcile-knowledge/SKILL.md`. It adds no check and no command. It uses the ones a project already has: the [hooks](template-packaging.md), `knowledge/.ka/ka adopt`, `knowledge/.ka/ka history --drift`, and the change history in `knowledge/.ka/history.jsonl`.
+Migration runs before a project has a graph, so its skill lives outside every project, in `global-skills/migrate-project/SKILL.md`. A pull runs inside a project, so its skill is a preset that every install receives, generated from `knowledge/skills/sync-template/node.md`. Neither adds a check or a command. They use the ones a project already has: the [hooks](template-packaging.md), `knowledge/.ka/ka adopt`, `knowledge/.ka/ka history --drift`, and the change history in `knowledge/.ka/history.jsonl`.
 
-## Install the skill
+## Install the migration skill
 
-The skill lives outside each project, so it works before a project has the template, and one copy serves every project. An install of the template doesn't carry it. `copier.yml` copies only the paths it names, and a test checks that `global-skills/` stays out.
+One copy of the migration skill serves every project. An install of the template doesn't carry it. `copier.yml` copies only the paths it names, and a test checks that `global-skills/` stays out.
 
 Installing it is your choice. From a clone of this repo:
 
 ```sh
-cp -R global-skills/migrate-and-reconcile-knowledge ~/.claude/skills/
+cp -R global-skills/migrate-project ~/.claude/skills/
 ```
 
-Run the same command to take a newer copy. Then ask an agent to migrate the knowledge of a project, or to pull template changes.
+Run the same command to take a newer copy. Then ask an agent to migrate the knowledge of a project. You don't install `sync-template`, because the project already has it.
 
 ## Migrate a project
 
 Commit your work first, because the agent asks for a clean tree before it starts. It then takes these steps:
 
 1. It asks which files hold project knowledge, and it searches them for secret material.
-2. It moves the files that the install would collide with, then installs the template and commits.
+2. It moves the files that the install would collide with, asks which disciplines the project takes, then installs the template and commits.
 3. It puts each item of each source file in one class, and it writes one row for the item in a ledger.
 4. It writes the nodes, then runs the checks and corrects what they report.
-5. It commits through the project hooks and reports what it did.
+5. It commits through the project hooks and reports what it did, with the next steps for you.
 
 ### Where each item goes
 
@@ -46,11 +46,11 @@ Not everything is a rule, and the skill doesn't force prose into one.
 | A rule about the old rule system, such as its grammar          | Stays at its path, with the replacement noted      |
 | A rule that fails the checks after two edits, or anything else | Stays at its path, and `## Not converted` shows it |
 
-Project knowledge becomes workspace knowledge, with `knowledge_type: workspace` and `origin: project`. Each directive names its source file and line in `sources`, and `## Rule groups` in the body keeps the headings the rules sat under. Its `basis` is `judgment` unless the old rule cites a standard, a study, or a named method, because a project file is a record of a decision and not evidence for it. A skill whose source sets `disable-model-invocation: true` gets `invocation: person`, and every other skill gets `invocation: agent`.
+Project knowledge becomes workspace knowledge, with `knowledge_type: workspace` and `origin: project`. A rule that covers every task goes on the root with `scope: node`, so it loads with `AGENTS.md` and isn't copied into every skill. Each directive names its source file and line in `sources`, and `## Rule groups` in the body keeps the headings the rules sat under. Its `basis` is `judgment` unless the old rule cites a standard, a study, or a named method, because a project file is a record of a decision and not evidence for it. A skill whose source sets `disable-model-invocation: true` gets `invocation: person`, and every other skill gets `invocation: agent`.
 
 ### What you get
 
-Everything arrives as `proposed`, so no migrated rule binds an agent until you accept it. The skill never changes a `status` to `accepted`. To read what waits, run `knowledge/.ka/ka view`, or `knowledge/.ka/ka governance --pending` in a terminal. The [human interface](human-interface.md#in-a-project) has the steps from there.
+Everything arrives as `proposed`, so no migrated rule binds an agent until you accept it. The skill never changes a `status` to `accepted`. To go through what waits, run `/review-proposals` in the project, as the [improvement loop](improvement-loop.md#review-the-queue) explains. You can also run `knowledge/.ka/ka view`, or `knowledge/.ka/ka governance --pending` in a terminal, and the [human interface](human-interface.md#in-a-project) has the steps from there.
 
 Your old rules can stay in force in the meantime. A hand-written root `AGENTS.md` has to leave its path, because the generator owns it, so the agent moves it to `knowledge-migration/source/root-agents.md` and asks whether to keep it loading with this line in `CLAUDE.md`:
 
@@ -69,7 +69,7 @@ The skill recommends keeping it. The agent removes no source file, and other sou
 | `## Edited rules`  | The source text and the new text of each rule the agent changed |
 | `## Items`         | One row for each source item, with its class and its target     |
 
-After your review, remove the line from `CLAUDE.md`, the `knowledge-migration/` folder, and the converted source files.
+Once you accept the replacements, remove the old text from `CLAUDE.md`. Keep only the `@AGENTS.md` import and your personal items there, because otherwise the agent loads two versions of each rule. Then remove the `@knowledge-migration/source/root-agents.md` line, the `knowledge-migration/` folder, and the converted source files. The report at the end of the migration tells you each of these steps.
 
 ### Words the vocabulary lacks
 
@@ -77,7 +77,7 @@ A real rule set opens with verbs the vocabulary doesn't approve. The agent adds 
 
 ## Pull template changes
 
-Nothing forces a pull. A project can stay where it is, and the agent pulls only when you ask. Commit your work first, then ask. The agent:
+Nothing forces a pull. A project can stay where it is, and the agent pulls only when you ask. Commit your work first, then run `/sync-template`. The agent:
 
 1. Clones the template into a folder outside the project, from `_src_path` in `.copier-answers.yml`.
 2. Reads each new line of the template's `knowledge/.ka/history.jsonl`, and matches it by `kind` and `id` to the output of `knowledge/.ka/ka history --drift`.
@@ -85,21 +85,24 @@ Nothing forces a pull. A project can stay where it is, and the agent pulls only 
 4. Runs `copier update`, resolves each entity with you, and runs `knowledge/.ka/ka adopt`.
 5. Reports what left force and what still differs, then commits through the hooks.
 
+The same skill can also send one of your own rules to the template. The [improvement loop](improvement-loop.md#send-a-rule-to-the-template) explains that half.
+
 A pull doesn't promote anything. `knowledge/.ka/ka adopt` sets a changed entity to `proposed`, even if the template accepted it. If you accepted an entity and the pull changes a reviewed field, it leaves force until you accept it again, and the agent tells you so before it pulls.
 
 ### How each change sorts
 
-| Class              | What it means                                    | What happens                                                               |
-| ------------------ | ------------------------------------------------ | -------------------------------------------------------------------------- |
-| `clean`            | You didn't change it                             | The update applies it                                                      |
-| `moved`            | You moved the node                               | The update can't reach it, so the agent shows the change and edits by hand |
-| `deleted`          | You removed the node                             | It stays removed, and the agent reports it                                 |
-| `other field`      | You each changed a different field               | The update merges it, and the agent reads the result                       |
-| `same field`       | You each changed one field to a different result | You choose                                                                 |
-| `same result`      | You each made the same change                    | One text stays                                                             |
-| `collision`        | You each added the same `id`                     | The agent asks for a new `id` and commits it before the update             |
-| `template removal` | The template removed something you hold          | You choose                                                                 |
-| `vocabulary`       | A vocabulary file changed                        | The update merges it, and the agent reads the words                        |
+| Class               | What it means                                    | What happens                                                               |
+| ------------------- | ------------------------------------------------ | -------------------------------------------------------------------------- |
+| `outside selection` | It belongs to a discipline you left out          | The update keeps it out, and the agent skips it                            |
+| `clean`             | You didn't change it                             | The update applies it                                                      |
+| `moved`             | You moved the node                               | The update can't reach it, so the agent shows the change and edits by hand |
+| `deleted`           | You removed the node                             | It stays removed, and the agent reports it                                 |
+| `other field`       | You each changed a different field               | The update merges it, and the agent reads the result                       |
+| `same field`        | You each changed one field to a different result | You choose                                                                 |
+| `same result`       | You each made the same change                    | One text stays                                                             |
+| `collision`         | You each added the same `id`                     | The agent asks for a new `id` and commits it before the update             |
+| `template removal`  | The template removed something you hold          | You choose                                                                 |
+| `vocabulary`        | A vocabulary file changed                        | The update merges it, and the agent reads the words                        |
 
 ### A node that both sides changed
 
@@ -142,11 +145,11 @@ The project hooks read the result on each commit. These broken outputs each fail
 | A conflict marker stays                     | the `conflict-markers` hook |
 | A rejected hunk stays                       | the `rejected-hunks` hook   |
 
-A test holds the skill to the [language checks](language-checks.md): the description and each rule and step pass the same rules as a skill in the graph. The same test checks that each command, problem code, and named section in the text exists, that the node example in the text parses, and that the steps fit in what compaction keeps.
+A test holds `migrate-project` to the [language checks](language-checks.md): the description and each rule and step pass the same rules as a skill in the graph. The same test checks that each command, problem code, and named section in the text exists, that the node example in the text parses, that the steps fit in what compaction keeps, that the file stays within 500 lines, and that the skill tells you to remove the old text from `CLAUDE.md`. `sync-template` is a node, so `ka language` reads its description and directives on each commit, and a test checks each command and named section in it.
 
 ## What it has run against
 
-The skill text has been followed step by step in temporary projects, against the agent rules of an earlier project: 74 Markdown files, a skill, and the scripts beside them, which came to 4,050 items. A script wrote the mechanical rows, as the skill allows for a large source, and the `secret` rows are values planted for the test.
+The migration and pull steps, then still one skill, have been followed step by step in temporary projects, against the agent rules of an earlier project: 74 Markdown files, a skill, and the scripts beside them, which came to 4,050 items. A script wrote the mechanical rows, as the skill allows for a large source, and the `secret` rows are values planted for the test.
 
 | Class           | Items |
 | --------------- | ----- |
@@ -164,6 +167,8 @@ The skill text has been followed step by step in temporary projects, against the
 
 That made 32 nodes under the root, and each hook passed. With the seed, 1,390 entities wait for review. It ran in both orders: into a project with the template already installed, and into a repo with history where the rules came first. A pull ran on the result, with a moved node, a deleted node, both sides changing one field, a colliding `id`, and a declined change.
 
+After the split, each skill was followed again: `migrate-project` on a small `CLAUDE.md` of rules in a repo with history, and `sync-template` on a pull from a local clone of the template into a project that took one discipline.
+
 ## What it does not check yet
 
 - Secret material, in a hook. A key in a rule or a body passes every hook, so the search in the skill is the only check, and it finds only the forms it names.
@@ -173,12 +178,13 @@ That made 32 nodes under the root, and each hook passed. With the seed, 1,390 en
 - A copy of a skill for another tool, such as `.agents/skills/`. It stays at its path, and its text can name an old path.
 - `.pre-commit-config.yaml` and `.gitignore`. The agent compares them with the template by hand and reports each new line.
 - The job itself. The test reads the skill text and doesn't run a model.
+- The steps of `sync-template`. As a node, only its description and directives go through the language checks.
 
 ## What only a real session can show
 
 The agent that followed the text in those runs also wrote it, and it had a conversion script. Only a real session with the installed skill can confirm these points:
 
-- That the tool lists the skill and picks it from its description.
+- That the tool lists `migrate-project` and picks it from its description.
 - That an agent with only the skill, and no knowledge of how it was written, reaches the same result.
 - That the `CLAUDE.md` line loads the moved root. This rests on the Claude Code docs.
 - How well the questions work with a person who answers them live.

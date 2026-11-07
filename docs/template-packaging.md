@@ -61,7 +61,7 @@ A discipline brings its practice areas and concepts, with their directives. A no
 Leaving a discipline out removes:
 
 - Each of its nodes, and its branch vocabulary in `knowledge/governance/language/branches/`.
-- Each skill that uses or applies something you left out. A skill that draws only on what you keep, or only on the governance, arrives.
+- Each skill that uses or applies something you left out. A skill that draws only on what you keep, or only on the governance, arrives. The three preset skills of the [improvement loop](improvement-loop.md) draw only on the governance, so every install has them.
 - Each `informs`, `related`, `also_attached_to`, or `refines` entry, and each pointer, that names something you left out. The node or directive that held it stays.
 
 If a node you keep `depends_on` a node in another discipline, the install adds that discipline and prints a note. Brand design is an example: a brand positioning statement depends on the positioning components of product strategy, so `[brand-design]` brings product strategy too.
@@ -168,7 +168,7 @@ uvx --python 3.14 copier update --trust --defaults --vcs-ref=HEAD
 
 Copier replays your changes on a new copy of the template. It asks for `--trust` because it runs `knowledge/.ka/ka select` on each copy that it renders, which keeps your choice of disciplines.
 
-Resolve any conflict, then run `knowledge/.ka/ka adopt`, read the result, and commit. The hook stops the commit if you skip a step.
+Resolve any conflict, then run `knowledge/.ka/ka adopt`, read the result, and commit. The hook stops the commit if you skip a step. The preset skill `sync-template` walks a pull with you, from reading what changed to the commit, as [migration and reconciliation](migration-and-reconciliation.md#pull-template-changes) explains.
 
 Your `started_from` stays. `_commit`, the engine pin, and `knowledge/.ka/history.jsonl` move. Copier doesn't merge the generated files, so they never conflict, and `knowledge/.ka/ka adopt` writes them again. It also removes a generated file that a pull brought back for a node you deleted.
 
@@ -216,7 +216,7 @@ For a moved node that the template also changed, the line names both `path` and 
 
 ## The change history
 
-`knowledge/.ka/history.jsonl` lists each change to the template, one entity on each line, for an agent to read. A search for an ID finds every change to that entity, wherever its file sits now. The [migration and reconciliation skill](migration-and-reconciliation.md) reads this file.
+`knowledge/.ka/history.jsonl` lists each change to the template, one entity on each line, for an agent to read. A search for an ID finds every change to that entity, wherever its file sits now. The [`sync-template` skill](migration-and-reconciliation.md#pull-template-changes) reads this file.
 
 ```json
 {"change":3,"kind":"directive","id":"limit-color-palette","action":"changed","fields":["text"],"path":"knowledge/nodes/digital-product-development/ui-ux-design/visual-design/node.md","status":"proposed","content":{"holder":"83a83f3fa4a73c2e","scope":"f1d3984b3638714f","sources":"7ca2a8e719470e72","text":"9f9068e089663fe3"}}

@@ -29,6 +29,7 @@ REPO = Path(__file__).resolve().parents[1]
 GIT = shutil.which("git") or "git"
 UV = shutil.which("uv") or "uv"
 SHA = "0123456789abcdef0123456789abcdef01234567"
+PRESET_SKILLS = ("propose-knowledge", "review-proposals", "sync-template")
 PLANTED = (
     "planted-notes.md",
     ".planted-docs/plan.md",
@@ -436,6 +437,26 @@ def test_each_single_selection_passes_each_check(
     assert report.problems == []
     assert set(selection) <= set(report.disciplines or ())
     assert checked_tree(project).problems == []
+    assert generate_runtime(project, proposals=False, verify=False).problems == []
+    assert missing_presets(project) == []
+
+
+def missing_presets(project: Path) -> list[str]:
+    return [
+        name
+        for name in PRESET_SKILLS
+        if not (project / "knowledge/skills" / name / "node.md").is_file()
+        or not (project / ".claude/skills" / name / "SKILL.md").is_file()
+    ]
+
+
+def test_the_preset_check_finds_a_missing_preset(installed: Path, tmp_path: Path) -> None:
+    project = tmp_path / "project"
+    shutil.copytree(installed, project)
+    assert missing_presets(project) == []
+    (project / ".claude/skills/review-proposals/SKILL.md").unlink()
+    shutil.rmtree(project / "knowledge/skills/sync-template")
+    assert missing_presets(project) == ["review-proposals", "sync-template"]
 
 
 def test_the_template_ships_no_instruction_file(source: Path, installed: Path) -> None:

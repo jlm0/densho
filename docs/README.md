@@ -6,7 +6,7 @@ The goal is one source of truth that people can read and review, that agents loa
 
 ## The library
 
-Think of the system as a library, where each node is a book. The first two layers define and read one book. The next four make the library trustworthy, one stocks it, and the rest deliver it to agents, projects, and people.
+Think of the system as a library, where each node is a book. The first two layers define and read one book. The next four make the library trustworthy, one stocks it, the next five deliver it to agents, projects, and people, and the last brings back what they learn.
 
 | Layer                                                           | In the library                                | Status |
 | --------------------------------------------------------------- | --------------------------------------------- | ------ |
@@ -22,6 +22,7 @@ Think of the system as a library, where each node is a book. The first two layer
 | [Template packaging](template-packaging.md)                     | The library in a box                          | Built  |
 | [Migration and reconciliation](migration-and-reconciliation.md) | The moving crew                               | Built  |
 | [Human interface](human-interface.md)                           | The reading room                              | Built  |
+| [Improvement loop](improvement-loop.md)                         | The suggestion box                            | Built  |
 
 Each page explains how to use what exists today, and ends with what it does not check yet.
 

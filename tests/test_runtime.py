@@ -55,10 +55,20 @@ TOOL_ON_DEMAND_CHARACTERS = 40_000
 ROOT_LINES = 200
 SKILL_LINES = 500
 USAGE_ERROR = 2
+FENCED_BLOCK = re.compile(r"^```[^\n]*\n.*?^```$", re.MULTILINE | re.DOTALL)
+DIRECTIVE_ID = re.compile(r" \^([a-z0-9-]+)(?: \(\w+\))?$", re.MULTILINE)
 RULE_LINE = (
     "- Run the {0} check. ^{0}\n  - scope: {1}\n  - basis: judgment\n  - status: {2}\n"
     "  - origin: template\n"
 )
+
+
+def outside_code_blocks(text: str) -> str:
+    return FENCED_BLOCK.sub("", text)
+
+
+def listed_directives(text: str) -> set[str]:
+    return set(DIRECTIVE_ID.findall(outside_code_blocks(text)))
 
 
 def rule(directive_id: str, status: str = "accepted", scope: str = "subtree") -> str:
@@ -1537,10 +1547,22 @@ def test_each_committed_file_holds_only_directives_in_force() -> None:
     assert report.compiled is not None
     in_force = set(report.compiled.directives)
     for entry in real_output():
-        text = (REPO / entry.path).read_text(encoding="utf-8")
-        assert set(re.findall(r" \^([a-z0-9-]+)(?: \(\w+\))?$", text, re.MULTILINE)) <= in_force
+        text = outside_code_blocks((REPO / entry.path).read_text(encoding="utf-8"))
+        assert listed_directives(text) <= in_force
         assert "(proposed)" not in text
         assert "NOT IN FORCE" not in text
+
+
+def test_the_directive_search_skips_only_an_example_in_a_code_block() -> None:
+    text = (
+        "- Keep it. ^kept\n- Read it. ^read (proposed)\n\n"
+        "```markdown\n- Run it. ^example\n```\n\n- Show it. ^shown\n"
+    )
+    assert listed_directives(text) == {"kept", "read", "shown"}
+    unfenced = text.replace("```markdown\n", "")
+    assert listed_directives(unfenced) == {"kept", "read", "example", "shown"}
+    assert "(proposed)" not in outside_code_blocks("```sh\ngrep '^<id> (proposed)'\n```\n")
+    assert "(proposed)" in outside_code_blocks("Run grep '^<id> (proposed)'.\n")
 
 
 def test_the_review_result_of_the_real_seed_holds_each_applied_directive() -> None:

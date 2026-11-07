@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-A project that [installs the template](template-packaging.md) receives this knowledge. It is ordinary content: one domain, fourteen skills, and a few language terms, and it goes through the same checks and the same workflow as anything a project adds. Nothing in it binds an agent until a person accepts it.
+A project that [installs the template](template-packaging.md) receives this knowledge. It is ordinary content: one domain, fourteen domain skills, and a few language terms, and it goes through the same checks and the same workflow as anything a project adds. Each install also gets the three preset skills of the [improvement loop](improvement-loop.md), which aren't part of any discipline. Nothing in it binds an agent until a person accepts it.
 
 ## What ships
 
@@ -142,6 +142,18 @@ The knowledge is yours to change:
 - To give a domain node project values, such as your brand colors, add a workspace node that names it in `implements`.
 - To add a rule, follow the grammar in [language checks](language-checks.md). If it opens with a verb the vocabulary doesn't approve, add the verb to `knowledge/governance/language/vocabulary.yaml`, or to `knowledge/governance/language/branches/<node-id>.yaml` if only one branch needs it.
 - To remove a branch, delete its nodes, each reference to them, and any branch vocabulary named after them. The [graph checks](graph-checks.md) list what still points at a deleted node. An accepted entity goes through [deprecation first](governance-workflow.md#remove-something).
+
+## Add a discipline
+
+The four disciplines were written with the procedure that the `author-domain` skill now holds, and you can use it to add another discipline or a practice area to your copy of the template. It lives in `global-skills/`, like the migration skill, so a project doesn't receive it. Installing it is your choice. From a clone of this repo:
+
+```sh
+cp -R global-skills/author-domain ~/.claude/skills/
+```
+
+Then ask an agent to add the discipline, and give it an outline: the practice areas, the frameworks, and the skills you expect. The agent opens each source before it cites it, keeps a source log with the version of each page and the facts it supports, and writes each rule in its own words. A framework that only a book describes gets cited through a page the agent could open, such as an article by the author, with the book named in the log. A framework with no page to support it is left out and reported. Each new entity is `proposed`, `origin: template`, and has a `basis` that fits its source.
+
+A new discipline also needs a line in the `disciplines` question of `copier.yml`, so that an install can offer it, and the skill adds it.
 
 ## Language terms
 

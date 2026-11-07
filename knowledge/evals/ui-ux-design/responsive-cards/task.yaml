@@ -1,0 +1,19 @@
+title: Make a card grid responsive
+prompt: |
+  The card grid in `styles.css` always shows 3 cards in a row. Make it responsive:
+  a phone shows 1 card in a row, a tablet shows 2, and a wide window shows 3.
+  Use media queries for the breakpoints. Change only `styles.css`.
+tools: [Read, Edit, Write]
+targets:
+  - directive: relative-breakpoints
+    checks:
+      - path: styles.css
+        contains: '@media[^{]*\d(?:\.\d+)?\s*(?:em|rem)\b'
+      - path: styles.css
+        lacks: '@media[^{]*\d(?:\.\d+)?\s*px\b'
+  - directive: single-column-base
+    checks:
+      - path: styles.css
+        contains: '@media[^{]*min-width'
+      - path: styles.css
+        lacks: '@media[^{]*max-width'

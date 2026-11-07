@@ -21,10 +21,16 @@ from engine.layout import KNOWLEDGE_FOLDER, NODE_FILE_NAME
 from engine.parser.body import read_body
 from engine.parser.front_matter import read_front_matter
 from engine.parser.result import FieldPath, ParsedNode, Problem, line_of
-from engine.parser.scripts import SKILLS_IN_KNOWLEDGE, folder_of, read_scripts, script_folders
+from engine.parser.scripts import (
+    EVALS_IN_KNOWLEDGE,
+    SKILLS_IN_KNOWLEDGE,
+    folder_of,
+    read_scripts,
+    script_folders,
+)
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable, Mapping, Sequence
+    from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
     from pathlib import Path
 
 MARKDOWN_SUFFIXES = frozenset({".md", ".markdown", ".mdown", ".mkd"})
@@ -121,13 +127,18 @@ def parse_tree(roots: Iterable[Path]) -> tuple[list[ParsedNode], list[Problem]]:
     return nodes, problems
 
 
+def _walk(root: Path, report_error: Callable[[OSError], None]) -> Iterator[Path]:
+    evals = root / EVALS_IN_KNOWLEDGE
+    for folder, folders, names in root.walk(on_error=report_error):
+        folders[:] = [name for name in folders if folder / name != evals]
+        yield from (folder / name for name in names)
+
+
 def _read_folder(root: Path, nodes: list[ParsedNode], problems: list[Problem]) -> None:
     def report_error(error: OSError) -> None:
         problems.append(Problem(root, 1, "read", str(error)))
 
-    found = sorted(
-        folder / name for folder, _, names in root.walk(on_error=report_error) for name in names
-    )
+    found = sorted(_walk(root, report_error))
     node_files = (path for path in found if path.name == NODE_FILE_NAME)
     folders = script_folders(node_files, root / SKILLS_IN_KNOWLEDGE)
     in_scripts: dict[Path, list[Path]] = {folder: [] for folder in folders}

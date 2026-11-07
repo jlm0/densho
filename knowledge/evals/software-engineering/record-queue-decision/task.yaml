@@ -1,0 +1,17 @@
+title: Record the decision to move the job queue to PostgreSQL
+prompt: |
+  We decided to move the job queue from SQLite to PostgreSQL. Several workers
+  now write to the queue at the same time, and SQLite locks the whole database
+  on each write. Record this decision in `docs/decisions/`.
+tools: [Read, Write, Glob]
+targets:
+  - directive: number-decision-records
+    checks:
+      - path: "docs/decisions/0003*.md"
+        contains: '\S'
+  - directive: decision-record-sections
+    checks:
+      - path: "docs/decisions/*.md"
+        contains: '(?i)^\W*status\b'
+      - path: "docs/decisions/*.md"
+        contains: '(?i)^\W*consequences\b'

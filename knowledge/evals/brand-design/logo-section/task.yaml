@@ -1,0 +1,24 @@
+title: Write the logo section of brand guidelines
+prompt: |
+  Write the logo section of `guidelines.md` for the logo that `logo.md` describes.
+  Replace the `TODO` line under `## Logo`. Change only `guidelines.md`.
+tools: [Read, Edit, Write]
+targets:
+  - directive: logo-clear-space
+    checks:
+      - path: guidelines.md
+        contains: '(?i)(?:clear ?space|exclusion zone|safe (?:area|zone))[^\n]*(?:\bheight\b|\bwidth\b|\bsymbol\b|\bleaf\b|\bletter\b|%|\bhalf\b|\bquarter\b|\bfraction\b)'
+  - directive: logo-minimum-size
+    checks:
+      - path: guidelines.md
+        contains: '(?i)\bminimum (?:size|width|height)\b'
+      - path: guidelines.md
+        contains: '(?i)\b\d+(?:\.\d+)?\s*(?:mm|cm|millimet(?:re|er)s?)\b'
+      - path: guidelines.md
+        contains: '(?i)\b\d+\s*(?:px|pixels|dp)\b'
+  - directive: logo-color-versions
+    checks:
+      - path: guidelines.md
+        contains: '(?i)\blight\b[^\n.]{0,40}\bbackgrounds?\b'
+      - path: guidelines.md
+        contains: '(?i)\bdark\b[^\n.]{0,40}\bbackgrounds?\b'

@@ -1,0 +1,26 @@
+title: Choose a north star metric and its inputs
+prompt: |
+  Choose the north star metric of the product that `product.md` describes, and
+  the input metrics that drive it. Write the name of the north star metric on the
+  first line of `north-star.md`, and the reason under it. Write the input metrics
+  to `inputs.md`, with one top-level bullet for each input metric.
+tools: [Read, Write]
+targets:
+  - directive: no-user-count-north-star
+    checks:
+      - path: north-star.md
+        contains: '\A\s*\S'
+      - path: north-star.md
+        lacks: '(?i)\A\s*[^\n]*\b(?:(?:daily|weekly|monthly)?\s*active users|registered users|sign-?ups|[DWM]AU|number of users|user count)\b'
+  - directive: leading-north-star
+    checks:
+      - path: north-star.md
+        contains: '\A\s*\S'
+      - path: north-star.md
+        lacks: '(?i)\A\s*[^\n]*\b(?:revenue|MRR|ARR|sales|profit|income)\b'
+  - directive: north-star-inputs
+    checks:
+      - path: inputs.md
+        contains: '(?m)^[-*+][ \t]+\S'
+        min: 3
+        max: 5

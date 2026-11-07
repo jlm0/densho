@@ -1,0 +1,4 @@
+- Share of new households that plan a second week
+- Planned meals for each household and week
+- Share of shopping lists that become an order
+- Share of planned meals that the household marks as cooked

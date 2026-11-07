@@ -5,7 +5,7 @@ A build generates this file from the node files. Change a node file, not this fi
 
 ## Directives
 
-No directive is in force. The graph holds 504 directives and 1 exception that are not in force.
+No directive is in force. The graph holds 508 directives and 1 exception that are not in force.
 
 Treat a directive as a rule only when its `status` is `accepted`. A generated file lists only the directives that apply at its own node.
 
@@ -39,6 +39,7 @@ If compaction removes a skill, invoke the skill again.
 - `define-brand-voice`: Define the voice traits and the tone guidance of a brand from its personality and its readers. Use when you define or change the voice of a brand.
 - `define-success-metrics`: Define the goals, the signals, and the metrics of a product or a feature. Use when you decide how to measure the success of a product or a feature.
 - `design-settings-interface`: Design a settings interface from its options and its users. Use when you design or change a settings screen.
+- `evaluate-knowledge`: Run the eval tasks of a discipline with and without its directives, and propose deprecations. Use when a person asks whether the directives of a discipline help. Only a person can start this skill.
 - `map-opportunities`: Map the customer needs, the solutions, and the assumption tests under one product outcome. Use when a team chooses the next customer need that it works on.
 - `prioritize-work`: Order a backlog or a roadmap with RICE, cost of delay, MoSCoW, or the Kano model. Use when you set the order of the work of a team.
 - `propose-knowledge`: Convert a correction or a repeated note into one small knowledge proposal. Use when a person corrects your work.

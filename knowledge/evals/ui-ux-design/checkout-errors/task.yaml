@@ -1,0 +1,21 @@
+title: Write the error messages of a checkout form
+prompt: |
+  Write the text of each error message in `messages.json` for the checkout form
+  of a web shop. Replace each `TODO` value. `provider-codes.md` lists the codes
+  that the payment provider sends. Change only `messages.json`.
+tools: [Read, Edit, Write]
+targets:
+  - directive: no-blame-in-errors
+    checks:
+      - path: messages.json
+        contains: '(?m)^\s*"\w+"\s*:\s*"(?!TODO")[^"]{10,}"'
+        min: 4
+      - path: messages.json
+        lacks: '(?i)\b(?:invalid|illegal)\b'
+  - directive: plain-error-message
+    checks:
+      - path: messages.json
+        contains: '(?m)^\s*"\w+"\s*:\s*"(?!TODO")[^"]{10,}"'
+        min: 4
+      - path: messages.json
+        lacks: '(?i)\b(?:code|error|err)\b\W{0,3}\d|\(\s*\d{2,}\s*\)|#\d{2,}'

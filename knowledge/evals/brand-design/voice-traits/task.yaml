@@ -1,0 +1,18 @@
+title: Define the voice traits of a brand
+prompt: |
+  Define the voice of the brand that `brand.md` describes. Write it to `voice.md`.
+  Give each voice trait a `##` heading, and use a `##` heading only for a voice trait.
+tools: [Read, Write]
+targets:
+  - directive: voice-trait-count
+    checks:
+      - path: voice.md
+        contains: '(?m)^##[ \t]+\S'
+        min: 3
+        max: 4
+  - directive: trait-to-avoid
+    checks:
+      - path: voice.md
+        contains: '(?m)^##[ \t]+\S'
+      - path: voice.md
+        lacks: '(?ims)^##[ \t](?:(?!^##[ \t]|\bbut not\b|\bavoid\b|\bnot too\b).)*(?=^##[ \t]|\Z)'

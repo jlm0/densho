@@ -6,7 +6,7 @@ The goal is one source of truth that people can read and review, that agents loa
 
 ## The library
 
-Think of the system as a library, where each node is a book. The first two layers define and read one book. The next four make the library trustworthy, one stocks it, the next five deliver it to agents, projects, and people, and the last brings back what they learn.
+Think of the system as a library, where each node is a book. The first two layers define and read one book. The next four make the library trustworthy, one stocks it, the next five deliver it to agents, projects, and people, and the last two bring back what they learn and test whether it helps.
 
 | Layer                                                           | In the library                                | Status |
 | --------------------------------------------------------------- | --------------------------------------------- | ------ |
@@ -23,6 +23,7 @@ Think of the system as a library, where each node is a book. The first two layer
 | [Migration and reconciliation](migration-and-reconciliation.md) | The moving crew                               | Built  |
 | [Human interface](human-interface.md)                           | The reading room                              | Built  |
 | [Improvement loop](improvement-loop.md)                         | The suggestion box                            | Built  |
+| [Evaluation](evaluation.md)                                     | The reader test                               | Built  |
 
 Each page explains how to use what exists today, and ends with what it does not check yet.
 
@@ -57,6 +58,8 @@ Each page explains how to use what exists today, and ends with what it does not 
 | `uv run ka select`                  | Removes the disciplines a project left out | [Template packaging](template-packaging.md)   |
 | `uv run ka history`                 | Records template changes for agents        | [Template packaging](template-packaging.md)   |
 | `uv run ka history --drift`         | Lists differences from the history         | [Template packaging](template-packaging.md)   |
+| `uv run ka eval --check`            | Grades the known outputs of the eval tasks | [Evaluation](evaluation.md)                   |
+| `uv run ka eval --discipline <id>`  | Runs the eval tasks with and without it    | [Evaluation](evaluation.md)                   |
 | `uv run pytest`                     | Runs the tests                             |                                               |
 | `uv run pyright`                    | Checks types in strict mode                |                                               |
 | `uv run ruff check`                 | Lints the Python code                      |                                               |
@@ -64,7 +67,7 @@ Each page explains how to use what exists today, and ends with what it does not 
 
 In a project, `knowledge/.ka/ka` takes the place of `uv run ka`.
 
-In this repo, the git hook runs these checks on each commit: file hygiene, the lock file, the engine constraints, the schema lint, the generated models, the knowledge nodes, the graph checks, the directive checks, the governance checks, the language checks, the compiled outputs, the runtime files, the template history, Ruff lint and format, Markdown format, Pyright, and the tests. [A project runs fewer](template-packaging.md#the-git-hook).
+In this repo, the git hook runs these checks on each commit: file hygiene, the lock file, the engine constraints, the schema lint, the generated models, the knowledge nodes, the graph checks, the directive checks, the governance checks, the language checks, the compiled outputs, the runtime files, the template history, the eval tasks, Ruff lint and format, Markdown format, Pyright, and the tests. [A project runs fewer](template-packaging.md#the-git-hook).
 
 ## Where the code lives
 
@@ -82,4 +85,5 @@ In this repo, the git hook runs these checks on each commit: file hygiene, the l
 | `runtime/`           | Generates the files that an agent tool loads                                            |
 | `template/`          | Takes in template knowledge, applies the choice of disciplines, and records the history |
 | `interface/`         | Writes the site for people, and accepts what a person approves                          |
+| `evaluation/`        | Grades the eval tasks, and runs them with and without the knowledge of a discipline     |
 | `vendor/`            | A third-party linter, kept unchanged with its license                                   |

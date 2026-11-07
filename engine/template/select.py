@@ -7,7 +7,7 @@ from engine.disciplines import memberships, read_answer
 from engine.generated.metamodel import Origin, Skill
 from engine.graph.references import edge_targets, references_of
 from engine.language.profile import BRANCH_FOLDER, BRANCH_SUFFIX
-from engine.layout import KNOWLEDGE_FOLDER, LANGUAGE_FOLDER, SKILLS_FOLDER
+from engine.layout import EVALS_FOLDER, KNOWLEDGE_FOLDER, LANGUAGE_FOLDER, SKILLS_FOLDER
 from engine.parser.node import node_folders, parse_source, parse_tree, universal_newlines
 from engine.parser.result import ParsedNode, Problem
 
@@ -228,6 +228,8 @@ def _doomed_paths(repository: Path, items: Sequence[ParsedNode], removed: set[st
         for node_id in sorted(removed)
         if (vocabularies / f"{node_id}{BRANCH_SUFFIX}").is_file()
     ]
+    evals = repository / EVALS_FOLDER
+    paths += [evals / node_id for node_id in sorted(removed) if (evals / node_id).is_dir()]
     return sorted(paths)
 
 

@@ -1,0 +1,5 @@
+feat(config)!: take only a Path in parse_config
+
+Add load_defaults(), which returns the default settings.
+
+BREAKING CHANGE: parse_config raises TypeError when it receives a string path.

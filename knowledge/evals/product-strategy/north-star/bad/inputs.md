@@ -1,0 +1,7 @@
+- New sign-ups
+- Recipe views
+- Planning sessions
+- Shopping lists made
+- Orders placed
+- Subscription renewals
+- App store rating

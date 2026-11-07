@@ -91,6 +91,12 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: eval-tasks
+        name: grade the known outputs of the eval tasks
+        entry: uv run --frozen ka eval --check
+        language: system
+        pass_filenames: false
+        files: ^(knowledge|engine)/|^uv\.lock$
       - id: ruff-check
         name: ruff check
         entry: uv run --frozen ruff check --fix
@@ -106,6 +112,7 @@ repos:
         entry: uv run --frozen mdformat
         language: system
         types: [markdown]
+        exclude: ^knowledge/evals/
       - id: pyright
         name: pyright
         entry: uv run --frozen pyright

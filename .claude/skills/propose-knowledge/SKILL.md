@@ -27,8 +27,9 @@ In a project, run the engine as `knowledge/.ka/ka`. In the template repo, use `u
 2. Find the entity of each ID on that line in `knowledge/`.
 3. If no ID on the line is still `proposed`, remove the note file and its line in `MEMORY.md`.
 4. Run the search from `### Signal search` to find each node with a `## Signals` section.
-5. Remove each citation line whose ID is not `proposed`. Remove the heading when no line stays.
-6. Tell the person which notes and which citation lines you removed.
+5. Remove each citation line whose ID is not `proposed`. Keep a line of the class `eval` while its directive is `accepted`.
+6. Remove the heading when no line stays.
+7. Tell the person which notes and which citation lines you removed.
 
 ### Classify the signal
 

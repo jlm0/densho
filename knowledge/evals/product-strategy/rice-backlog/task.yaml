@@ -1,0 +1,21 @@
+title: Score a backlog with RICE
+prompt: |
+  Score each item of `backlog.md` with RICE. Write the result to `rice.csv`.
+  Use the header `item,reach,impact,confidence,effort,score` and one row for
+  each item. Write confidence as a percentage. Do not put a comma inside a value.
+tools: [Read, Write]
+targets:
+  - directive: impact-scale
+    checks:
+      - path: rice.csv
+        contains: '(?m)^(?!item,)[^,\n]+,[^,\n]+,\s*(?:3|2|1|0?\.5|0?\.25)(?:\.0+)?\s*,'
+        min: 3
+      - path: rice.csv
+        lacks: '(?m)^(?!item,)[^,\n]+,[^,\n]+,(?!\s*(?:3|2|1|0?\.5|0?\.25)(?:\.0+)?\s*,)'
+  - directive: confidence-scale
+    checks:
+      - path: rice.csv
+        contains: '(?m)^(?!item,)(?:[^,\n]+,){3}\s*(?:100|80|50)(?:\.0+)?\s*%\s*,'
+        min: 3
+      - path: rice.csv
+        lacks: '(?m)^(?!item,)(?:[^,\n]+,){3}(?!\s*(?:100|80|50)(?:\.0+)?\s*%\s*,)'

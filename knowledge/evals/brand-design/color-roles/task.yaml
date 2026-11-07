@@ -1,0 +1,22 @@
+title: Add color roles to the design tokens of a brand
+prompt: |
+  Add the color roles `primary`, `on-primary`, `surface`, `on-surface`, and `error`
+  to `tokens.json`, in a group `role` next to the group `palette`.
+  The product has a light appearance and a dark appearance.
+tools: [Read, Edit, Write]
+targets:
+  - directive: role-as-alias
+    checks:
+      - path: tokens.json
+        contains: '\{palette\.[\w.-]+\}'
+        min: 5
+      - path: tokens.json
+        contains: '#[0-9a-fA-F]{6}\b'
+        min: 8
+        max: 8
+  - directive: light-and-dark-role-values
+    checks:
+      - path: tokens.json
+        contains: '(?i)"[^"\n]*\blight\b[^"\n]*"\s*:'
+      - path: tokens.json
+        contains: '(?i)"[^"\n]*\bdark\b[^"\n]*"\s*:'

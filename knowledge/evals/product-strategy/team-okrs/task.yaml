@@ -1,0 +1,13 @@
+title: Write the OKRs of a team
+prompt: |
+  Write the OKRs of the team for the next quarter from `goals.md`. Write them to
+  `okrs.md`, with one `##` heading for each objective and its key results under it.
+tools: [Read, Write]
+targets:
+  - directive: committed-or-aspirational
+    checks:
+      - path: okrs.md
+        contains: '(?m)^##[ \t]+\S'
+        min: 2
+      - path: okrs.md
+        lacks: '(?ims)^##[ \t](?:(?!^##[ \t]|\bcommitted\b|\baspirational\b).)*(?=^##[ \t]|\Z)'

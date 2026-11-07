@@ -1,0 +1,13 @@
+title: Name the rules for a commit message
+canary: true
+prompt: |
+  Which rules of this project apply when you write a commit message?
+  Answer with the ID of each rule that applies, one ID on each line.
+  Give only IDs that you find in the files of this project.
+  If no rule applies, answer NONE.
+tools: [Read, Glob, Grep]
+targets:
+  - directive: mark-breaking-change
+    checks:
+      - path: "@reply"
+        contains: '(?<![\w-])mark-breaking-change(?![\w-])'

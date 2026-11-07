@@ -116,6 +116,7 @@ PRESETS = {
     "propose-knowledge": Invocation.agent,
     "review-proposals": Invocation.person,
     "sync-template": Invocation.person,
+    "evaluate-knowledge": Invocation.person,
 }
 ROOT_TRIGGER = "propose-corrections"
 PLANTED_SECRETS = {

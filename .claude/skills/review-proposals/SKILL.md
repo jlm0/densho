@@ -16,6 +16,7 @@ No directive is in force at this node.
 
 - The queue: each `proposed` entity that `knowledge/.ka/ka governance --pending` lists
 - The citation of each proposal in `## Signals` of its node
+- Each `accepted` directive with a line of the class `eval` in `## Signals`: a proposal to deprecate it
 - A person who decides on each proposal
 
 In a project, run the engine as `knowledge/.ka/ka`. In the template repo, use `uv run ka` in its place.
@@ -27,9 +28,10 @@ In a project, run the engine as `knowledge/.ka/ka`. In the template repo, use `u
 1. If `git status --short` lists a file under `knowledge/`, ask the person to commit it first. `ka accept` reads the last commit.
 2. Run `knowledge/.ka/ka governance --pending`. Save the output to a file outside the repo.
 3. Run `knowledge/.ka/ka runtime --proposals`. It writes the review copy to `build/runtime-proposals/`.
-4. Find the branch of each entity, as `### Branches` states.
-5. Show the person one line for each branch, with its count of nodes, directives, and exceptions.
-6. Ask the person which branch to review first.
+4. Run the search from `### Eval signals`. Add each `accepted` directive that it lists to the queue as a deprecation.
+5. Find the branch of each entity, as `### Branches` states.
+6. Show the person one line for each branch, with its count of nodes, directives, and exceptions.
+7. Ask the person which branch to review first.
 
 ### Explain each proposal
 
@@ -45,14 +47,16 @@ Do these steps for each proposal of one branch. Then go to the next branch.
 
 ### Record the decision
 
-1. Ask the person to decide on each proposal of the branch: accept, reject, or keep for later.
-2. For the proposals that the person accepts, write one `knowledge/.ka/ka accept` command with their names. The person runs it.
-3. For each proposal that the person rejects, ask the person for the reason.
-4. Set its `status` to `rejected`, and add the reason in the form of `### Rejection`.
-5. Do not change a proposal that the person keeps for later.
-6. Run `knowledge/.ka/ka runtime`. Correct each problem from the first line down.
-7. Show the person `git diff`, and ask whether to commit the decisions now.
-8. After the commit, invoke the `propose-knowledge` skill. Its first steps remove the notes and the citations of the decided proposals.
+01. Ask the person to decide on each proposal of the branch: accept, reject, or keep for later.
+02. For the proposals that the person accepts, write one `knowledge/.ka/ka accept` command with their names. The person runs it.
+03. For each proposal that the person rejects, ask the person for the reason.
+04. Set its `status` to `rejected`, and add the reason in the form of `### Rejection`.
+05. Do not change a proposal that the person keeps for later.
+06. For each deprecation that the person approves, set the `status` of the directive to `deprecated`. Remove each eval target that names it, and each eval task with no target left.
+07. For each deprecation that the person declines, remove its `eval` line.
+08. Run `knowledge/.ka/ka runtime`. Correct each problem from the first line down.
+09. Show the person `git diff`, and ask whether to commit the decisions now.
+10. After the commit, invoke the `propose-knowledge` skill. Its first steps remove the notes and the citations of the decided proposals.
 
 ### Report the review
 
@@ -115,6 +119,16 @@ A node or an exception holds the fields in its front matter. A directive holds t
 - Write the reason as plain text, with no backticks. The parser rejects a code span inside the value.
 - Before you reject a node, leave no `proposed` or `accepted` directive or exception in it.
 - Before you reject an entity, remove each reference to it from the entities that are not `rejected`.
+
+### Eval signals
+
+```sh
+git grep -n -E '^- `[a-z0-9-]+`: [0-9-]+, eval\.' -- knowledge/
+```
+
+- The `evaluate-knowledge` skill writes each hit. The line gives the passes with and without the discipline.
+- A hit for a `proposed` directive is its signal. A hit for an `accepted` directive proposes its deprecation.
+- An eval target is a `directive` entry in a `task.yaml` file under `knowledge/evals/`.
 
 ### Commands
 

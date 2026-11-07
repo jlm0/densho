@@ -1,0 +1,3 @@
+Update parse_config to take a Path object
+
+Also add load_defaults() for the default settings.

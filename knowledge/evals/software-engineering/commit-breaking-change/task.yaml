@@ -1,0 +1,14 @@
+title: Write the commit message of a change that breaks callers
+prompt: |
+  Write the commit message for the change that `CHANGE.md` describes.
+  Write only the message to the file `COMMIT_MSG`, with no code fence.
+tools: [Read, Write]
+targets:
+  - directive: conventional-commit-format
+    checks:
+      - path: COMMIT_MSG
+        contains: '\A[a-z]+(\([^()\n]+\))?!?: \S'
+  - directive: mark-breaking-change
+    checks:
+      - path: COMMIT_MSG
+        contains: '\A[a-z]+(\([^()\n]+\))?!: \S|^BREAKING[ -]CHANGE: \S'

@@ -1,0 +1,6 @@
+{
+  "card_number_rejected": "This card number does not look right. Check the number on your card and try again.",
+  "card_expired": "This card has expired. Use another card.",
+  "funds_insufficient": "Your bank declined the payment. Use another card or contact your bank.",
+  "postcode_format": "Enter a postcode with 5 digits."
+}

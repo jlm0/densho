@@ -1,11 +1,13 @@
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated
+from typing import TYPE_CHECKING, Annotated, cast
 
 import typer
 
 from engine.compiler import build_tree
 from engine.compiler.output import NOTICES
 from engine.directives import check_directives, resolve_directives
+from engine.evaluation import EvalOptions, check_tasks, report_markdown, run_eval
 from engine.governance import check_governance, pending_entities
 from engine.graph import check_tree
 from engine.interface import (
@@ -331,3 +333,70 @@ def history(
         for entry in report.entries:
             typer.echo(entry.model_dump_json())
     _finish(f"{len(report.entries)} entities differ from the history", report.problems)
+
+
+@app.command(name="eval")
+def evaluate(  # noqa: PLR0913
+    repository: Annotated[Path, typer.Argument(help=REPOSITORY_HELP)] = Path(),
+    *,
+    check: Annotated[
+        bool,
+        typer.Option(
+            "--check",
+            help="Check each eval task, and grade its good and bad outputs. Make no model call.",
+        ),
+    ] = False,
+    discipline: Annotated[
+        str | None, typer.Option(help="Run the eval tasks of this discipline ID.")
+    ] = None,
+    task: Annotated[
+        list[str] | None,
+        typer.Option(help="Run only this task, with the canary. Repeat it for more tasks."),
+    ] = None,
+    runs: Annotated[int, typer.Option(help="The runs of each task in each condition.")] = 1,
+    model: Annotated[str, typer.Option(help="The model of each run.")] = "sonnet",
+    budget: Annotated[
+        float, typer.Option(help="The most USD that the batch spends. No run starts past it.")
+    ] = 5.0,
+    run_budget: Annotated[
+        float, typer.Option(help="The value of --max-budget-usd for each run, in USD.")
+    ] = 0.5,
+    timeout: Annotated[float, typer.Option(help="The seconds before a run stops.")] = 900.0,
+    work: Annotated[
+        Path | None,
+        typer.Option(help="A new folder for the throwaway copies and the report."),
+    ] = None,
+    claude: Annotated[str, typer.Option(help="The claude program.")] = "claude",
+    dry_run: Annotated[
+        bool,
+        typer.Option(
+            "--dry-run",
+            help="Build the conditions and probe each run folder. Make no model call.",
+        ),
+    ] = False,
+) -> None:
+    """Run eval tasks with and without the directives of a discipline. A person runs this."""
+    if check == (discipline is not None):
+        typer.echo("Use --check, or name a discipline with --discipline.")
+        raise typer.Exit(2)
+    if check:
+        count, problems = check_tasks(repository)
+        _finish(f"{count} eval tasks checked", problems)
+        return
+    options = EvalOptions(
+        cast("str", discipline),
+        tuple(task or ()),
+        runs=runs,
+        model=model,
+        budget=budget,
+        run_budget=run_budget,
+        timeout=timeout,
+        work=work,
+        claude=claude,
+        dry_run=dry_run,
+    )
+    report = run_eval(repository, options)
+    if report.work is not None:
+        typer.echo(report_markdown(report, datetime.now(UTC).date().isoformat()))
+        typer.echo(f"The report is in {report.work}.")
+    _finish(f"{len(report.runs)} runs, {report.cost:.4f} USD", report.problems)

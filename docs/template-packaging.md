@@ -60,8 +60,8 @@ A discipline brings its practice areas and concepts, with their directives. A no
 
 Leaving a discipline out removes:
 
-- Each of its nodes, and its branch vocabulary in `knowledge/governance/language/branches/`.
-- Each skill that uses or applies something you left out. A skill that draws only on what you keep, or only on the governance, arrives. The three preset skills of the [improvement loop](improvement-loop.md) draw only on the governance, so every install has them.
+- Each of its nodes, its branch vocabulary in `knowledge/governance/language/branches/`, and its eval tasks in `knowledge/evals/`.
+- Each skill that uses or applies something you left out. A skill that draws only on what you keep, or only on the governance, arrives. The four preset skills, three of the [improvement loop](improvement-loop.md) and the [eval](evaluation.md) skill, draw only on the governance, so every install has them.
 - Each `informs`, `related`, `also_attached_to`, or `refines` entry, and each pointer, that names something you left out. The node or directive that held it stays.
 
 If a node you keep `depends_on` a node in another discipline, the install adds that discipline and prints a note. Brand design is an example: a brand positioning statement depends on the positioning components of product strategy, so `[brand-design]` brings product strategy too.
@@ -83,7 +83,7 @@ A link of any other kind to something you left out, such as `broader`, `uses`, o
 | `.pre-commit-config.yaml`, `.gitignore`                                           | The git hook and the ignore rule for `build/`      |
 | `.copier-answers.yml`                                                             | The record of the template commit and your answers |
 
-A [selection](#choose-the-disciplines) narrows `knowledge/nodes/`, `knowledge/skills/`, the branch vocabularies, and the runtime files.
+A [selection](#choose-the-disciplines) narrows `knowledge/nodes/`, `knowledge/skills/`, `knowledge/evals/`, the branch vocabularies, and the runtime files.
 
 That's the whole list. A project receives no engine source, tests, docs, or lock file. `copier.yml` names each path that a project receives and excludes everything else, so a file that no one listed can't reach a project, even a file that git ignores on the machine that runs the install. Everything under `knowledge/` ships, so the template keeps its own tool files elsewhere: the schema lint settings and the model template sit in `engine/schema/`.
 
@@ -148,13 +148,14 @@ The template repo is private today, and that reaches every project. `copier copy
 
 ## The git hook
 
-A project runs three hooks. None of them needs Python in the project.
+A project runs four hooks. None of them needs Python in the project.
 
-| Hook               | What it does                                            |
-| ------------------ | ------------------------------------------------------- |
-| `conflict-markers` | Stops a commit that still holds a merge marker          |
-| `rejected-hunks`   | Stops a commit that holds a `.rej` file                 |
-| `knowledge-checks` | Runs `knowledge/.ka/ka runtime --verify` on each commit |
+| Hook               | What it does                                                                |
+| ------------------ | --------------------------------------------------------------------------- |
+| `conflict-markers` | Stops a commit that still holds a merge marker                              |
+| `rejected-hunks`   | Stops a commit that holds a `.rej` file                                     |
+| `knowledge-checks` | Runs `knowledge/.ka/ka runtime --verify` on each commit                     |
+| `eval-tasks`       | Runs `knowledge/.ka/ka eval --check` when a file under `knowledge/` changes |
 
 `knowledge/.ka/ka runtime --verify` runs every check, then compares the generated files, as [the git hook](runtime-files.md#the-git-hook) explains. The template's Markdown, Python, and type hooks stay in the template, because they'd rewrite or check files that belong to the project.
 

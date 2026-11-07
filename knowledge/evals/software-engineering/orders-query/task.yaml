@@ -1,0 +1,13 @@
+title: Add a query for the orders of a customer
+prompt: |
+  Add a function `find_orders(connection, customer_id, status)` to `store.py`.
+  It returns each row of the `orders` table for that customer with that status,
+  newest first by `created_at`.
+tools: [Read, Edit, Write]
+targets:
+  - directive: parameterize-queries
+    checks:
+      - path: store.py
+        contains: '(?s)^def find_orders\((?:(?!\n(?:async def|def|class) ).)*?=\s*(?:\?|%s|:\w+)'
+      - path: store.py
+        lacks: '(?s)^def find_orders\((?:(?!\n(?:async def|def|class) ).)*?(?:\bf"""|\bf"|\bf''''''|\bf''|\.format\(|["'']\s*%\s*[\w(]|["'']\s*\+\s*\w)'

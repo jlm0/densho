@@ -34,7 +34,8 @@ wheel-exclude = ["engine/schema"]
 target-version = "py314"
 line-length = 100
 src = [".", "tests"]
-extend-exclude = ["engine/generated", "engine/vendor"]
+extend-exclude = ["engine/generated", "engine/vendor", "knowledge/evals"]
+force-exclude = true
 
 [tool.ruff.lint]
 select = ["ALL"]

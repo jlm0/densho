@@ -1,0 +1,20 @@
+title: Build a sign-up form
+prompt: |
+  Add a sign-up form to the `main` element of `signup.html`. The form asks for
+  the full name, the email address, and a new password, and it has a submit button.
+  Change only `signup.html`.
+tools: [Read, Edit, Write]
+targets:
+  - directive: declare-input-purpose
+    checks:
+      - path: signup.html
+        contains: 'autocomplete\s*=\s*["'']?(?:name|given-name|family-name)\b'
+      - path: signup.html
+        contains: 'autocomplete\s*=\s*["'']?email\b'
+      - path: signup.html
+        contains: 'autocomplete\s*=\s*["'']?new-password\b'
+  - directive: no-placeholder-as-label
+    checks:
+      - path: signup.html
+        contains: '<label\b'
+        min: 3

@@ -18,6 +18,8 @@ Any other Markdown file, and any symbolic link, in these folders is an error, so
 
 A skill folder can also hold a `scripts/` folder. The parser skips every file in it, whatever its name, so a script can be a Markdown file and still pass. The exemption covers only a skill's own `scripts/`. One beside any other node still fails `file-name`. A symbolic link in it still fails, and a file that git ignores, such as a cache, is left out. The [runtime files](runtime-files.md#skill-scripts) copy the folder next to the generated `SKILL.md`.
 
+The parser also skips `knowledge/evals/`, which holds the [eval tasks](evaluation.md#the-eval-tasks). The exemption covers only that folder. A folder named `evals` anywhere else is checked like any other.
+
 ## Example
 
 ```markdown

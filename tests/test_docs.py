@@ -13,6 +13,10 @@ from ruamel.yaml import YAML
 from engine.cli import app
 from engine.compiler import BUILD_CODES, OUTPUT_FOLDER, file_names
 from engine.directives import DIRECTIVE_CODES
+from engine.evaluation.conditions import CANARY_CODE, CONDITION_CODE
+from engine.evaluation.harness import LOGIN_CODE, RUN_CODE
+from engine.evaluation.isolation import ISOLATION_CODES
+from engine.evaluation.tasks import TASK_CODE
 from engine.generated.metamodel import CompiledResult, Concept
 from engine.governance import GOVERNANCE_CODES
 from engine.governance.checks import RESTING_FIELDS
@@ -392,7 +396,7 @@ def documented_commands() -> set[str]:
 
 
 def test_each_documented_command_exists() -> None:
-    commands = {command.callback.__name__ for command in app.registered_commands}
+    commands = {command.name or command.callback.__name__ for command in app.registered_commands}
     assert documented_commands()
     assert documented_commands() <= commands
 
@@ -511,3 +515,13 @@ def test_the_compiled_page_query_runs_on_a_compiled_graph() -> None:
     )
     children = [binding[Variable("child")] for binding in data.query(blocks[0]).bindings]
     assert [str(child).rpartition("/")[2] for child in children] == ["a"]
+
+
+EVAL_PAGE = DOCS / "evaluation.md"
+
+
+@pytest.mark.parametrize(
+    "code", [TASK_CODE, CONDITION_CODE, CANARY_CODE, RUN_CODE, LOGIN_CODE, *ISOLATION_CODES]
+)
+def test_the_eval_page_names_each_code(code: str) -> None:
+    assert f"`{code}`" in EVAL_PAGE.read_text(encoding="utf-8")

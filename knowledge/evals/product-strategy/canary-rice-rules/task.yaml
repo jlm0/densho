@@ -1,0 +1,13 @@
+title: Name the rules for a RICE score
+canary: true
+prompt: |
+  Which rules of this project apply when you score backlog items with RICE?
+  Answer with the ID of each rule that applies, one ID on each line.
+  Give only IDs that you find in the files of this project.
+  If no rule applies, answer NONE.
+tools: [Read, Glob, Grep]
+targets:
+  - directive: reach-from-metrics
+    checks:
+      - path: "@reply"
+        contains: '(?<![\w-])reach-from-metrics(?![\w-])'

@@ -1,0 +1,6 @@
+{
+  "card_number_rejected": "Invalid card number (code 14).",
+  "card_expired": "Error 54: the card has expired.",
+  "funds_insufficient": "Payment declined: insufficient funds (51).",
+  "postcode_format": "Illegal postcode format."
+}

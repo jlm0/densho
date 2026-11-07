@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-Knowledge that grows only when someone sits down to write it falls behind the work. This layer turns the corrections you already give an agent into small proposals, puts each one in front of you for a decision, and sends the ones that would help any project back to the template. It is three preset skills and one directive on the root.
+Knowledge that grows only when someone sits down to write it falls behind the work. This layer turns the corrections you already give an agent into small proposals, puts each one in front of you for a decision, and sends the ones that would help any project back to the template. It is three preset skills and one directive on the root. A fourth preset, `evaluate-knowledge`, tests whether the rules you accepted help, and proposes to deprecate the ones that don't: see [Evaluation](evaluation.md).
 
 | Skill               | Who starts it                         | What it does                                                                                 |
 | ------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------- |
@@ -77,7 +77,7 @@ The citation paraphrases the signal and holds no name or email. It doesn't go in
 
 Claude Code's auto memory is the inbox. It's on by default, and it writes notes to `~/.claude/projects/<project>/memory/`, outside the repo, for one person on one machine. When a note becomes a proposal, the skill adds a `Proposal: <id>` line to the note.
 
-Each run of the skill starts by tidying up. A note whose proposals you have all accepted or rejected leaves auto memory, with its line in `MEMORY.md`. The citation of every decided proposal leaves its node, whoever wrote it. A personal preference never becomes a proposal, so it stays in auto memory, and the two stores don't compete.
+Each run of the skill starts by tidying up. A note whose proposals you have all accepted or rejected leaves auto memory, with its line in `MEMORY.md`. The citation of every decided proposal leaves its node, whoever wrote it. A personal preference never becomes a proposal, so it stays in auto memory, and the two stores don't compete. A citation of the class `eval` stays while its directive is accepted, because it proposes a deprecation.
 
 ## Review the queue
 
@@ -90,6 +90,8 @@ For each proposal it tells you:
 - Its signal, or for template knowledge its `basis` and sources
 - Each conflict: two proposals that ask for opposite things, a proposal that contradicts a rule already in force, one that repeats a rejected entity, an exception against a rule you accept in the same round, or a proposal that rests on another one still waiting
 - What it recommends
+
+An accepted directive with an `eval` line in `## Signals` joins the queue as a proposal to deprecate it. If you agree, the skill sets it to `deprecated` and removes the eval targets that name it. If you don't, it removes the line.
 
 Then it records your decision:
 

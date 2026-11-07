@@ -12,6 +12,7 @@ from jinja2 import Environment
 from ruamel.yaml import YAML
 
 from engine.compiler.tree import checked_tree
+from engine.evaluation import check_tasks
 from engine.generated.metamodel import Discipline, Origin
 from engine.interface import (
     VIEW_FOLDER,
@@ -19,6 +20,7 @@ from engine.interface import (
     command_prefix,
     write_view,
 )
+from engine.layout import EVALS_FOLDER
 from engine.parser.generated import is_generated
 from engine.parser.node import node_folders, parse_tree
 from engine.runtime import generate_runtime
@@ -29,7 +31,7 @@ REPO = Path(__file__).resolve().parents[1]
 GIT = shutil.which("git") or "git"
 UV = shutil.which("uv") or "uv"
 SHA = "0123456789abcdef0123456789abcdef01234567"
-PRESET_SKILLS = ("propose-knowledge", "review-proposals", "sync-template")
+PRESET_SKILLS = ("propose-knowledge", "review-proposals", "sync-template", "evaluate-knowledge")
 PLANTED = (
     "planted-notes.md",
     ".planted-docs/plan.md",
@@ -57,6 +59,7 @@ ALLOWED_FOLDERS = (
     ".claude/rules/knowledge/",
     ".claude/skills/",
     "knowledge/nodes/",
+    "knowledge/evals/",
     "knowledge/skills/",
     "knowledge/governance/language/",
     "knowledge/governance/policies/",
@@ -241,7 +244,9 @@ def test_the_hooks_need_no_python_in_the_project(installed: Path) -> None:
     )
     assert [repo["repo"] for repo in config["repos"]] == ["local"]
     hooks = {hook["id"]: hook for hook in config["repos"][0]["hooks"]}
-    assert set(hooks) == {"conflict-markers", "rejected-hunks", "knowledge-checks"}
+    assert set(hooks) == {"conflict-markers", "rejected-hunks", "knowledge-checks", "eval-tasks"}
+    assert hooks["eval-tasks"]["entry"] == "knowledge/.ka/ka eval --check"
+    assert hooks["eval-tasks"]["pass_filenames"] is False
     assert hooks["knowledge-checks"]["entry"] == "knowledge/.ka/ka runtime --verify"
     assert hooks["knowledge-checks"]["always_run"] is True
     assert hooks["knowledge-checks"]["verbose"] is True
@@ -534,6 +539,9 @@ def test_each_single_selection_passes_each_check(
     assert checked_tree(project).problems == []
     assert generate_runtime(project, proposals=False, verify=False).problems == []
     assert missing_presets(project) == []
+    evals = {path.parts[-3] for path in (project / EVALS_FOLDER).glob("*/*/task.yaml")}
+    assert evals == set(report.disciplines or ())
+    assert check_tasks(project)[1] == []
 
 
 def missing_presets(project: Path) -> list[str]:

@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-A project that [installs the template](template-packaging.md) receives this knowledge. It is ordinary content: one domain, fourteen domain skills, and a few language terms, and it goes through the same checks and the same workflow as anything a project adds. Each install also gets the three preset skills of the [improvement loop](improvement-loop.md), which aren't part of any discipline. Nothing in it binds an agent until a person accepts it.
+A project that [installs the template](template-packaging.md) receives this knowledge. It is ordinary content: one domain, fourteen domain skills, and a few language terms, and it goes through the same checks and the same workflow as anything a project adds. Each install also gets the three preset skills of the [improvement loop](improvement-loop.md) and the [eval](evaluation.md) skill, which aren't part of any discipline, and the eval tasks of the disciplines it takes. Nothing in it binds an agent until a person accepts it.
 
 ## What ships
 

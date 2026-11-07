@@ -4,7 +4,7 @@ from pathlib import Path, PurePath, PurePosixPath
 from typing import TYPE_CHECKING
 
 from engine.git import ignored_paths
-from engine.layout import KNOWLEDGE_FOLDER, SKILLS_FOLDER
+from engine.layout import EVALS_FOLDER, KNOWLEDGE_FOLDER, SKILLS_FOLDER
 from engine.parser.result import Problem, Script
 
 if TYPE_CHECKING:
@@ -12,6 +12,7 @@ if TYPE_CHECKING:
 
 SCRIPTS_FOLDER_NAME = "scripts"
 SKILLS_IN_KNOWLEDGE = SKILLS_FOLDER.relative_to(KNOWLEDGE_FOLDER)
+EVALS_IN_KNOWLEDGE = EVALS_FOLDER.relative_to(KNOWLEDGE_FOLDER)
 EXECUTABLE_BITS = 0o111
 
 

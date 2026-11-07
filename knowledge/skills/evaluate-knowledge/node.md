@@ -1,0 +1,145 @@
+---
+id: evaluate-knowledge
+kind: ka:Skill
+title: Evaluate knowledge
+status: proposed
+origin: template
+knowledge_type: domain
+description: Run the eval tasks of a discipline with and without its directives, and propose deprecations. Use when a person asks whether the directives of a discipline help.
+invocation: person
+uses:
+  - lifecycle
+  - change-rules
+---
+
+## Directives
+
+- Before you run an eval, ask the person for the budget in USD. ^ask-for-the-eval-budget
+  - scope: node
+  - basis: judgment
+  - status: proposed
+  - origin: template
+- Do not start a paid eval run before the dry run passes. ^dry-run-first
+  - scope: node
+  - basis: judgment
+  - status: proposed
+  - origin: template
+- Do not change a `status` when you propose a deprecation. ^no-status-change-in-an-eval
+  - scope: node
+  - basis: judgment
+  - status: proposed
+  - origin: template
+- Report the counts of each directive as raw counts, with no claim of significance. ^raw-eval-counts
+  - scope: node
+  - basis: judgment
+  - status: proposed
+  - origin: template
+
+## Inputs
+
+- The discipline: the ID of a folder in `knowledge/evals/`
+- The count of runs of each task in each condition, and the budget of the person in USD
+- The `claude` command on the `PATH`, with a login
+
+In a project, run the engine as `knowledge/.ka/ka`. In the template repo, use `uv run ka` in its place.
+
+## Procedure
+
+### Check the tasks
+
+1. Run `knowledge/.ka/ka eval --check`. It grades the known good output and the known bad output of each task, with no model call.
+2. If it reports a problem, stop. Tell the person each problem.
+3. Ask the person for the discipline, the count of runs, and the budget.
+4. Tell the person the count of runs: `2` canary runs, then each task once in each condition for each repeat.
+
+### Prove the isolation
+
+1. Run `knowledge/.ka/ka eval --discipline <id> --dry-run`. It checks the login, builds the two conditions, and probes each run folder. The check and the probes cost `0` USD.
+2. If the dry run reports the code `login`, stop. Tell the person that the `claude` command has no login in the run environment.
+3. If the dry run reports another problem, stop. Tell the person each problem, with its code from `### Isolation`.
+
+### Run the eval
+
+1. Run the command from `### Commands` with the budget of the person. The command can run for many minutes, so run it in the background.
+2. The command runs the canary first. If the canary fails, the command stops. Tell the person the canary problem, and do not run the command again.
+3. Read `report.md` in the work folder that the command names.
+
+### Report the result
+
+1. Show the person the table of directives from `report.md`: the passes and the runs in each condition.
+2. State that the sample is small and that the counts show no significance.
+3. Name each run with an error, and its detail. An error is not a pass or a fail.
+4. State the cost of each run and the total cost.
+
+### Propose deprecations
+
+1. Read the lines under `## Deprecation candidates` in `report.md`.
+2. For each line, find the node that holds the directive. The search in `### Directive search` finds it.
+3. Copy the line to `## Signals` at the end of the body of that node. Add the heading if the node has none.
+4. Do not change the `status` of the directive. The line is a body edit, so it needs no review.
+5. Run `knowledge/.ka/ka runtime`. Correct each problem from the first line down.
+6. Show the person `git diff`, and ask whether to commit the lines now.
+7. Tell the person to read the proposals with the `review-proposals` skill.
+
+## Output
+
+A report with raw counts for each directive and each condition, and the cost of each run. One `eval` line in `## Signals` for each deprecation candidate. Or no change, and the reason for it.
+
+## Validation
+
+The diff holds only `## Signals` lines with the class `eval`. No `status` changes. The report states the cost of each run and makes no claim of significance.
+
+## References
+
+### Conditions
+
+- "With": each directive of the discipline is in force. The command accepts them in a copy of `knowledge/` under the work folder.
+- "Without": no directive of the discipline is in force. The command sets them to `proposed` in a second copy.
+- A run folder holds only the generated runtime files of its condition and the fixture of its task. It holds no `knowledge/`.
+- The command never accepts or changes an entity in the project tree.
+
+### Isolation
+
+| Code           | Leak                                                    |
+| -------------- | ------------------------------------------------------- |
+| `memory-file`  | an instruction file from outside the run folder         |
+| `instructions` | no `AGENTS.md` of the run folder                        |
+| `skill`        | a skill of the person or of a plugin                    |
+| `plugin`       | a plugin that is not built in                           |
+| `mcp`          | an MCP server                                           |
+| `agent`        | a custom agent                                          |
+| `output-style` | an output style other than the default                  |
+| `tool`         | a tool that the task does not name                      |
+| `auto-memory`  | an auto memory folder for the run folder                |
+| `git-identity` | a git user other than the neutral identity of the eval  |
+| `probe`        | a probe that did not finish, or a probe that cost money |
+
+### Deprecation candidate
+
+- A candidate has `1` or more runs in each condition, and no error.
+- Its passes with the discipline in force are not above its passes without it, as a share of the runs.
+- The line has this form:
+
+```markdown
+- `<id>`: <date>, eval. With the discipline in force, <a> of <n> runs passed. Without it, <b> of <n> runs passed.
+```
+
+### Commands
+
+```sh
+knowledge/.ka/ka eval --check
+knowledge/.ka/ka eval --discipline <id> --dry-run
+knowledge/.ka/ka eval --discipline <id> --runs <n> --budget <usd>
+knowledge/.ka/ka eval --discipline <id> --task <task-id> --runs <n> --budget <usd>
+```
+
+- `--run-budget` sets `--max-budget-usd` of each run. The default is `0.5` USD.
+- The command does not start a run when the spend so far plus the run budget passes `--budget`.
+- `--model` names the model of each run. The default is `sonnet`.
+- `--work` names the work folder. The default is `build/eval/<time>/`.
+
+### Directive search
+
+```sh
+git grep -n -E '\^<id>$' -- knowledge/
+```

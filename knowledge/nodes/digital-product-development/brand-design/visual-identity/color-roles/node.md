@@ -1,6 +1,6 @@
 ---
 id: color-roles
-kind: ka:Concept
+kind: densho:Concept
 title: Color roles
 status: proposed
 origin: template

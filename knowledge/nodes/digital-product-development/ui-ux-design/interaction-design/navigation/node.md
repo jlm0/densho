@@ -1,6 +1,6 @@
 ---
 id: navigation
-kind: ka:Concept
+kind: densho:Concept
 title: Navigation
 status: proposed
 origin: template

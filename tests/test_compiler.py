@@ -44,7 +44,7 @@ if TYPE_CHECKING:
 REPO = Path(__file__).resolve().parents[1]
 RUNNER = CliRunner()
 GIT = shutil.which("git") or "git"
-KA = Namespace("https://github.com/jlm0/knowledge-architecture/schema/")
+DENSHO = Namespace("https://github.com/jlm0/densho/schema/")
 EXAMPLE = Namespace("https://example.com/")
 IN_FORCE = CompiledResult.in_force
 PROPOSALS = CompiledResult.proposals
@@ -77,16 +77,16 @@ def rule(directive_id: str, status: str = "accepted", scope: str = "subtree", **
 
 def node(
     node_id: str,
-    kind: str = "ka:Domain",
+    kind: str = "densho:Domain",
     *,
     status: str = "accepted",
     front: str = "",
     rules: Iterable[str] = (),
 ) -> str:
-    extra = "knowledge_type: domain\n" if kind != "ka:Root" else ""
+    extra = "knowledge_type: domain\n" if kind != "densho:Root" else ""
     head = f"---\nid: {node_id}\nkind: {kind}\ntitle: {node_id}\nstatus: {status}\n"
     text = f"{head}origin: template\n{extra}{front}---\n"
-    if kind not in {"ka:Root", "ka:Skill"}:
+    if kind not in {"densho:Root", "densho:Skill"}:
         text += "\n## Definition\n\nA meaning.\n"
     joined = "".join(rules)
     return f"{text}\n## Directives\n\n{joined}" if joined else text
@@ -95,7 +95,7 @@ def node(
 def pointers(*targets: str) -> str:
     lines = ["pointers:"]
     for target in targets:
-        lines += ["  - kind: ka:TextPointer", f"    target: {target}"]
+        lines += ["  - kind: densho:TextPointer", f"    target: {target}"]
         lines.append(f"    trigger: You need {target}.")
     return "\n".join(lines) + "\n"
 
@@ -107,7 +107,7 @@ def exception(directive: str, status: str) -> str:
 SAMPLE = {
     "knowledge/node.md": node(
         "root",
-        "ka:Root",
+        "densho:Root",
         front=pointers("alpha", "beta", "delta", "gamma", "retired", "review"),
     ),
     "knowledge/nodes/alpha/node.md": node(
@@ -120,7 +120,7 @@ SAMPLE = {
     ),
     "knowledge/nodes/alpha/beta/node.md": node(
         "beta",
-        "ka:Concept",
+        "densho:Concept",
         status="proposed",
         front=(
             "broader: [alpha]\nexceptions:\n"
@@ -131,11 +131,11 @@ SAMPLE = {
     "knowledge/nodes/delta/node.md": node("delta", rules=[rule("spare", "proposed", "node")]),
     "knowledge/nodes/gamma/node.md": node("gamma", rules=[rule("solid", scope="node")]),
     "knowledge/nodes/retired/node.md": node(
-        "retired", "ka:Concept", status="deprecated", front="broader: [gamma]\n"
+        "retired", "densho:Concept", status="deprecated", front="broader: [gamma]\n"
     ),
     "knowledge/skills/review/node.md": node(
         "review",
-        "ka:Skill",
+        "densho:Skill",
         status="proposed",
         front=(
             "description: Review a sample. Use when a sample needs a review.\ninvocation: agent\n"
@@ -265,7 +265,7 @@ def test_an_accepted_exception_for_an_accepted_directive_stays_in_force() -> Non
         **SAMPLE,
         "knowledge/nodes/alpha/beta/node.md": node(
             "beta",
-            "ka:Concept",
+            "densho:Concept",
             front=f"broader: [alpha]\nexceptions:\n{exception('keep', 'accepted')}",
         ),
     }
@@ -280,7 +280,7 @@ def test_a_deprecated_exception_stays_out_of_both_results() -> None:
         **SAMPLE,
         "knowledge/nodes/alpha/beta/node.md": node(
             "beta",
-            "ka:Concept",
+            "densho:Concept",
             front=f"broader: [alpha]\nexceptions:\n{exception('keep', 'deprecated')}",
         ),
     }
@@ -360,10 +360,10 @@ def test_the_json_applied_list_names_each_directive_status_holder_and_route() ->
     sources = {
         **SAMPLE,
         "knowledge/nodes/alpha/beta/node.md": node(
-            "beta", "ka:Concept", front="broader: [alpha]\n"
+            "beta", "densho:Concept", front="broader: [alpha]\n"
         ),
         "knowledge/nodes/alpha/beta/child/node.md": node(
-            "child", "ka:Concept", front="broader: [beta]\n"
+            "child", "densho:Concept", front="broader: [beta]\n"
         ),
     }
     document = graph_document(compile_items(parsed(sources), Path(), proposals=True))
@@ -437,8 +437,8 @@ def test_the_output_passes_the_generated_shapes(proposals: bool) -> None:  # noq
         data, shacl_graph=shapes, ont_graph=ontology, inference="none"
     )
     assert conforms, text
-    subject = next(data.subjects(KA.result, None))
-    data.set((subject, KA.result, Literal("maybe")))
+    subject = next(data.subjects(DENSHO.result, None))
+    data.set((subject, DENSHO.result, Literal("maybe")))
     conforms, _, _ = pyshacl.validate(
         data, shacl_graph=shapes, ont_graph=ontology, inference="none"
     )
@@ -456,7 +456,7 @@ def test_the_marks_of_the_marked_result() -> None:
     assert text.startswith('{\n  "result": "proposals",\n  "notice": "NOT IN FORCE. ')
     turtle = output.files["graph.proposals.ttl"].decode()
     assert turtle.startswith("# proposals: NOT IN FORCE. ")
-    assert 'ka:result "proposals"' in turtle
+    assert 'densho:result "proposals"' in turtle
     manifest = json.loads(output.files["digests.proposals.json"])
     assert manifest["result"] == "proposals"
 
@@ -469,13 +469,13 @@ def test_the_marks_of_the_default_result() -> None:
     assert "NOT IN FORCE" not in text
     turtle = output.files["graph.ttl"].decode()
     assert turtle.startswith("# in_force: This result holds only ")
-    assert 'ka:result "in_force"' in turtle
+    assert 'densho:result "in_force"' in turtle
     assert json.loads(output.files["digests.json"])["result"] == "in_force"
 
 
 def test_a_tree_with_no_proposal_still_gives_two_digests() -> None:
     sources = {
-        "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha")),
+        "knowledge/node.md": node("root", "densho:Root", front=pointers("alpha")),
         "knowledge/nodes/alpha/node.md": node("alpha", rules=[rule("keep")]),
     }
     default = render_output(compile_items(parsed(sources), Path()))
@@ -522,7 +522,7 @@ def test_the_order_of_the_items_does_not_change_the_bytes() -> None:
 
 def listed_tree(*order: int) -> dict[str, str]:
     pointer_targets = [
-        f"  - kind: ka:TextPointer\n    target: {name}\n    trigger: You need {name}.\n"
+        f"  - kind: densho:TextPointer\n    target: {name}\n    trigger: You need {name}.\n"
         for name in ("alpha", "gamma")
     ]
     links = [pointer_targets[index] for index in order]
@@ -530,13 +530,13 @@ def listed_tree(*order: int) -> dict[str, str]:
     sources_list = [("https://example.com/a", "https://example.com/b")[index] for index in order]
     file_patterns = [('"alpha/**"', '"gamma/**"')[index] for index in order]
     path_pointer = (
-        "  - kind: ka:PathPointer\n    target: gamma\n    trigger: You change a file.\n"
+        "  - kind: densho:PathPointer\n    target: gamma\n    trigger: You change a file.\n"
         f"    paths: [{', '.join(file_patterns)}]\n"
     )
     rules = [rule("first", scope="node"), rule("second", scope="node")]
     return {
         "knowledge/node.md": node(
-            "root", "ka:Root", front=f"pointers:\n{''.join(links)}{path_pointer}"
+            "root", "densho:Root", front=f"pointers:\n{''.join(links)}{path_pointer}"
         ),
         "knowledge/nodes/alpha/node.md": node(
             "alpha", rules=[rules[index] for index in dict.fromkeys(order)]
@@ -544,7 +544,7 @@ def listed_tree(*order: int) -> dict[str, str]:
         "knowledge/nodes/gamma/node.md": node("gamma"),
         "knowledge/nodes/beta/node.md": node(
             "beta",
-            "ka:Concept",
+            "densho:Concept",
             front=f"broader: [{', '.join(edges)}]\nsources: [{', '.join(sources_list)}]\n",
         ),
     }
@@ -584,8 +584,8 @@ def test_each_prefix_in_the_turtle_file_has_its_name() -> None:
     turtle = turtle_of(compile_items(parsed(sources), Path())).decode()
     for line in (
         "@prefix dcterms: <http://purl.org/dc/terms/> .",
-        "@prefix ka: <https://github.com/jlm0/knowledge-architecture/schema/> .",
-        "@prefix node: <https://github.com/jlm0/knowledge-architecture/node/> .",
+        "@prefix densho: <https://github.com/jlm0/densho/schema/> .",
+        "@prefix node: <https://github.com/jlm0/densho/node/> .",
         "@prefix skos: <http://www.w3.org/2004/02/skos/core#> .",
     ):
         assert line in turtle
@@ -600,7 +600,7 @@ def test_a_route_keeps_its_order() -> None:
     sources = {
         **SAMPLE,
         "knowledge/nodes/zed/node.md": node("zed", rules=[rule("zed-rule")]),
-        "knowledge/nodes/zed/ann/node.md": node("ann", "ka:Concept", front="broader: [zed]\n"),
+        "knowledge/nodes/zed/ann/node.md": node("ann", "densho:Concept", front="broader: [zed]\n"),
     }
     document = graph_document(compile_items(parsed(sources), Path()))
     routes = {entry["directive"]: entry["route"] for entry in document["applied"]["ann"]}
@@ -677,24 +677,24 @@ def test_each_build_of_a_graph_gets_the_same_labels(build: Callable[[], Graph]) 
 
 def test_identical_pointers_collapse_and_stay_cheap() -> None:
     copies = "".join(
-        "  - kind: ka:TextPointer\n    target: alpha\n    trigger: You need it.\n"
+        "  - kind: densho:TextPointer\n    target: alpha\n    trigger: You need it.\n"
         for _ in range(200)
     )
     sources = {
-        "knowledge/node.md": node("root", "ka:Root", front=f"pointers:\n{copies}"),
+        "knowledge/node.md": node("root", "densho:Root", front=f"pointers:\n{copies}"),
         "knowledge/nodes/alpha/node.md": node("alpha"),
     }
     compiled = compile_items(parsed(sources), Path())
     output = render_output(compiled)
     assert len(compiled.graph.root.pointers) == 1
-    assert output.files["graph.ttl"].count(b"ka:TextPointer") == 1
+    assert output.files["graph.ttl"].count(b"densho:TextPointer") == 1
 
 
 NASTY_TEXT = 'A "quoted" word, a \\ backslash, a """ run, and the end \\'
 NASTY_SOURCES = {
-    "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha")),
+    "knowledge/node.md": node("root", "densho:Root", front=pointers("alpha")),
     "knowledge/nodes/alpha/node.md": (
-        "---\nid: alpha\nkind: ka:Domain\ntitle: 'Alpha — ✓ 🙂 ''quoted'''\nstatus: accepted\n"
+        "---\nid: alpha\nkind: densho:Domain\ntitle: 'Alpha — ✓ 🙂 ''quoted'''\nstatus: accepted\n"
         "origin: template\nknowledge_type: domain\n"
         "sources:\n  - 'https://example.com/a?b=\"c\"'\n---\n\n"
         f"## Definition\n\n{NASTY_TEXT}\n\nSécond paragraph\twith a tab.\n\n"
@@ -758,7 +758,7 @@ EXACT_JSON = """\
           }
         ],
         "id": "alpha",
-        "kind": "ka:Domain",
+        "kind": "densho:Domain",
         "knowledge_type": "domain",
         "origin": "template",
         "status": "accepted",
@@ -767,7 +767,7 @@ EXACT_JSON = """\
       {
         "definition": "A meaning.",
         "id": "beta",
-        "kind": "ka:Domain",
+        "kind": "densho:Domain",
         "knowledge_type": "domain",
         "origin": "template",
         "status": "accepted",
@@ -777,16 +777,16 @@ EXACT_JSON = """\
     "result": "in_force",
     "root": {
       "id": "root",
-      "kind": "ka:Root",
+      "kind": "densho:Root",
       "origin": "template",
       "pointers": [
         {
-          "kind": "ka:TextPointer",
+          "kind": "densho:TextPointer",
           "target": "alpha",
           "trigger": "You need alpha."
         },
         {
-          "kind": "ka:TextPointer",
+          "kind": "densho:TextPointer",
           "target": "beta",
           "trigger": "You need beta."
         }
@@ -800,48 +800,48 @@ EXACT_JSON = """\
 EXACT_TURTLE = """\
 # in_force: This result holds only the accepted directives and exceptions. It leaves out each proposal.
 
-@prefix ka: <https://github.com/jlm0/knowledge-architecture/schema/> .
-@prefix node: <https://github.com/jlm0/knowledge-architecture/node/> .
+@prefix densho: <https://github.com/jlm0/densho/schema/> .
+@prefix node: <https://github.com/jlm0/densho/node/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
-node:keep a ka:Directive ;
-    ka:basis "judgment" ;
-    ka:origin "template" ;
-    ka:scope "node" ;
-    ka:status "accepted" ;
-    ka:text "Run the keep check." .
+node:keep a densho:Directive ;
+    densho:basis "judgment" ;
+    densho:origin "template" ;
+    densho:scope "node" ;
+    densho:status "accepted" ;
+    densho:text "Run the keep check." .
 
-node:root a ka:Root ;
+node:root a densho:Root ;
     skos:prefLabel "root" ;
-    ka:origin "template" ;
-    ka:pointers [ a ka:TextPointer ;
-            ka:target node:alpha ;
-            ka:trigger "You need alpha." ],
-        [ a ka:TextPointer ;
-            ka:target node:beta ;
-            ka:trigger "You need beta." ] ;
-    ka:status "accepted" .
+    densho:origin "template" ;
+    densho:pointers [ a densho:TextPointer ;
+            densho:target node:alpha ;
+            densho:trigger "You need alpha." ],
+        [ a densho:TextPointer ;
+            densho:target node:beta ;
+            densho:trigger "You need beta." ] ;
+    densho:status "accepted" .
 
-node:alpha a ka:Domain ;
+node:alpha a densho:Domain ;
     skos:definition "A meaning." ;
     skos:prefLabel "alpha" ;
-    ka:directives node:keep ;
-    ka:knowledge_type "domain" ;
-    ka:origin "template" ;
-    ka:status "accepted" .
+    densho:directives node:keep ;
+    densho:knowledge_type "domain" ;
+    densho:origin "template" ;
+    densho:status "accepted" .
 
-node:beta a ka:Domain ;
+node:beta a densho:Domain ;
     skos:definition "A meaning." ;
     skos:prefLabel "beta" ;
-    ka:knowledge_type "domain" ;
-    ka:origin "template" ;
-    ka:status "accepted" .
+    densho:knowledge_type "domain" ;
+    densho:origin "template" ;
+    densho:status "accepted" .
 
-[] a ka:KnowledgeGraph ;
-    ka:nodes node:alpha,
+[] a densho:KnowledgeGraph ;
+    densho:nodes node:alpha,
         node:beta ;
-    ka:result "in_force" ;
-    ka:root node:root .
+    densho:result "in_force" ;
+    densho:root node:root .
 
 """  # noqa: E501
 
@@ -851,7 +851,7 @@ node:beta a ka:Domain ;
 )
 def test_an_escaped_value_survives_both_formats(value: str) -> None:
     sources = {
-        "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha")),
+        "knowledge/node.md": node("root", "densho:Root", front=pointers("alpha")),
         "knowledge/nodes/alpha/node.md": node("alpha").replace("title: alpha", f"title: {value}"),
     }
     compiled = compile_items(parsed(sources), Path(), proposals=True)
@@ -864,7 +864,7 @@ def test_an_escaped_value_survives_both_formats(value: str) -> None:
 
 def test_the_exact_bytes_of_a_small_tree() -> None:
     sources = {
-        "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha", "beta")),
+        "knowledge/node.md": node("root", "densho:Root", front=pointers("alpha", "beta")),
         "knowledge/nodes/alpha/node.md": node(
             "alpha",
             rules=[rule("keep", scope="node"), rule("wait", "proposed", "node")],
@@ -1223,7 +1223,7 @@ REJECTED_SAMPLE = {
     **SAMPLE,
     "knowledge/nodes/thrown/node.md": node(
         "thrown",
-        "ka:Concept",
+        "densho:Concept",
         status="rejected",
         front="broader: [gamma]\nrejection_reason: No need.\n",
         rules=[rule("unused", "rejected", "node", rejection_reason="No need.")],

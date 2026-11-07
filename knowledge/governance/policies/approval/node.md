@@ -1,6 +1,6 @@
 ---
 id: approval
-kind: ka:Concept
+kind: densho:Concept
 title: Approval
 status: proposed
 origin: template

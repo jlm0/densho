@@ -1,6 +1,6 @@
 ---
 id: software-delivery-metrics
-kind: ka:Concept
+kind: densho:Concept
 title: Software delivery metrics
 status: proposed
 origin: template

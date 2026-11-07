@@ -1,6 +1,6 @@
 ---
 id: kano-model
-kind: ka:Concept
+kind: densho:Concept
 title: Kano model
 status: proposed
 origin: template

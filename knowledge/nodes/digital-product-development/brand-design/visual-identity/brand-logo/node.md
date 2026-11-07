@@ -1,6 +1,6 @@
 ---
 id: brand-logo
-kind: ka:Concept
+kind: densho:Concept
 title: Logo
 status: proposed
 origin: template

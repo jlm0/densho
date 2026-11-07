@@ -1,6 +1,6 @@
 ---
 id: review-screen-hierarchy
-kind: ka:Skill
+kind: densho:Skill
 title: Review the hierarchy of a screen
 status: proposed
 origin: template
@@ -15,13 +15,13 @@ applies:
   - contrast-regular-text
   - contrast-large-text
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: information-hierarchy
     trigger: You judge which element a viewer sees first.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: visual-grouping
     trigger: You judge which elements read as one group.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: visual-communication
     trigger: You find prose that a visual form replaces.
 ---

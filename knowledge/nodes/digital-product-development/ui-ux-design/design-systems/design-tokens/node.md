@@ -1,6 +1,6 @@
 ---
 id: design-tokens
-kind: ka:Concept
+kind: densho:Concept
 title: Design tokens
 status: proposed
 origin: template

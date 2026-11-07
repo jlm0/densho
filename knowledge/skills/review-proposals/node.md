@@ -1,6 +1,6 @@
 ---
 id: review-proposals
-kind: ka:Skill
+kind: densho:Skill
 title: Review proposals
 status: proposed
 origin: template
@@ -24,7 +24,7 @@ uses:
   - basis: judgment
   - status: proposed
   - origin: template
-- Do not run the `ka accept` command. ^person-runs-accept
+- Do not run the `densho accept` command. ^person-runs-accept
   - scope: node
   - basis: judgment
   - status: proposed
@@ -37,20 +37,20 @@ uses:
 
 ## Inputs
 
-- The queue: each `proposed` entity that `knowledge/.ka/ka governance --pending` lists
+- The queue: each `proposed` entity that `knowledge/.densho/densho governance --pending` lists
 - The citation of each proposal in `## Signals` of its node
 - Each `accepted` directive with a line of the class `eval` in `## Signals`: a proposal to deprecate it
 - A person who decides on each proposal
 
-In a project, run the engine as `knowledge/.ka/ka`. In the template repo, use `uv run ka` in its place.
+In a project, run the engine as `knowledge/.densho/densho`. In the template repo, use `uv run densho` in its place.
 
 ## Procedure
 
 ### Prepare the queue
 
-1. If `git status --short` lists a file under `knowledge/`, ask the person to commit it first. `ka accept` reads the last commit.
-2. Run `knowledge/.ka/ka governance --pending`. Save the output to a file outside the repo.
-3. Run `knowledge/.ka/ka runtime --proposals`. It writes the review copy to `build/runtime-proposals/`.
+1. If `git status --short` lists a file under `knowledge/`, ask the person to commit it first. `densho accept` reads the last commit.
+2. Run `knowledge/.densho/densho governance --pending`. Save the output to a file outside the repo.
+3. Run `knowledge/.densho/densho runtime --proposals`. It writes the review copy to `build/runtime-proposals/`.
 4. Run the search from `### Eval signals`. Add each `accepted` directive that it lists to the queue as a deprecation.
 5. Find the branch of each entity, as `### Branches` states.
 6. Show the person one line for each branch, with its count of nodes, directives, and exceptions.
@@ -71,13 +71,13 @@ Do these steps for each proposal of one branch. Then go to the next branch.
 ### Record the decision
 
 01. Ask the person to decide on each proposal of the branch: accept, reject, or keep for later.
-02. For the proposals that the person accepts, write one `knowledge/.ka/ka accept` command with their names. The person runs it.
+02. For the proposals that the person accepts, write one `knowledge/.densho/densho accept` command with their names. The person runs it.
 03. For each proposal that the person rejects, ask the person for the reason.
 04. Set its `status` to `rejected`, and add the reason in the form of `### Rejection`.
 05. Do not change a proposal that the person keeps for later.
 06. For each deprecation that the person approves, set the `status` of the directive to `deprecated`. Remove each eval target that names it, and each eval task with no target left.
 07. For each deprecation that the person declines, remove its `eval` line.
-08. Run `knowledge/.ka/ka runtime`. Correct each problem from the first line down.
+08. Run `knowledge/.densho/densho runtime`. Correct each problem from the first line down.
 09. Show the person `git diff`, and ask whether to commit the decisions now.
 10. After the commit, invoke the `propose-knowledge` skill. Its first steps remove the notes and the citations of the decided proposals.
 
@@ -89,11 +89,11 @@ Do these steps for each proposal of one branch. Then go to the next branch.
 
 ## Output
 
-The decision of the person on each proposal of the reviewed branches. An accepted proposal has the status that the `ka accept` run of the person wrote. A rejected proposal has the reason of the person.
+The decision of the person on each proposal of the reviewed branches. An accepted proposal has the status that the `densho accept` run of the person wrote. A rejected proposal has the reason of the person.
 
 ## Validation
 
-Each change to `accepted` comes from a `ka accept` run of the person. Each `rejected` entity holds the reason of the person, with no name and no email. The diff holds no other change to a field that needs review.
+Each change to `accepted` comes from a `densho accept` run of the person. Each `rejected` entity holds the reason of the person, with no name and no email. The diff holds no other change to a field that needs review.
 
 ## References
 
@@ -110,7 +110,7 @@ Each change to `accepted` comes from a `ka accept` run of the person. Each `reje
 | Entity                          | Effect, and how you find it                                                                                            |
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | a directive                     | It applies at its node, and with `scope: subtree` at each node under it. The search in `### Commands` lists its files. |
-| an exception                    | It stops a directive at its node. `knowledge/.ka/ka directives --at <node-id>` names the directive.                    |
+| an exception                    | It stops a directive at its node. `knowledge/.densho/densho directives --at <node-id>` names the directive.            |
 | a node                          | Its definition and its place in the tree. The status of a node does not change which directives apply.                 |
 | a skill                         | Its description goes in the skill listing. With `invocation: person`, only a person starts it.                         |
 | an edit of an `accepted` entity | The entity stays out of force until a person accepts it again. Compare its text with `git show HEAD:<path>`.           |
@@ -120,7 +120,7 @@ Each change to `accepted` comes from a `ka accept` run of the person. Each `reje
 Name a conflict in each of these cases:
 
 - Two proposals ask for opposite actions on the same object.
-- A proposal contradicts a directive that applies at the same node. `knowledge/.ka/ka directives --at <node-id>` lists them.
+- A proposal contradicts a directive that applies at the same node. `knowledge/.densho/densho directives --at <node-id>` lists them.
 - A proposal states the same change as a `rejected` entity.
 - An exception stops a directive that the person accepts in this review.
 - A proposal names another proposal in `broader`, `uses`, `applies`, or an exception. The second proposal also needs a decision.
@@ -156,14 +156,14 @@ git grep -n -E '^- `[a-z0-9-]+`: [0-9-]+, eval\.' -- knowledge/
 ### Commands
 
 ```sh
-knowledge/.ka/ka accept <id> <id>
-knowledge/.ka/ka accept <node-id>:<directive-id>
-knowledge/.ka/ka accept --subtree <node-id>
-knowledge/.ka/ka accept --dry-run <id>
-knowledge/.ka/ka view
+knowledge/.densho/densho accept <id> <id>
+knowledge/.densho/densho accept <node-id>:<directive-id>
+knowledge/.densho/densho accept --subtree <node-id>
+knowledge/.densho/densho accept --dry-run <id>
+knowledge/.densho/densho view
 grep -rl -F -e '^<id> (proposed)' build/runtime-proposals/
 ```
 
 - `--subtree` follows `broader`. Only the subtree of the root reaches a skill, so name a skill by its ID.
-- `knowledge/.ka/ka view` writes a site to `build/view/`. Its `review.html` groups the queue by node, for the person to read.
+- `knowledge/.densho/densho view` writes a site to `build/view/`. Its `review.html` groups the queue by node, for the person to read.
 - The `grep` search lists each file of the review copy that holds a directive after acceptance.

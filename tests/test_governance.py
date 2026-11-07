@@ -49,9 +49,9 @@ RUNNER = CliRunner()
 GIT = shutil.which("git") or "git"
 GIT_IDENTITY = (
     "-c",
-    "user.name=ka-test",
+    "user.name=densho-test",
     "-c",
-    "user.email=ka-test@example.invalid",
+    "user.email=densho-test@example.invalid",
     "-c",
     "commit.gpgsign=false",
     "-c",
@@ -73,7 +73,7 @@ NO_NEED = "The project does not need it."
 
 
 def root_spec(status: str = "proposed", **fields: object) -> Spec:
-    return {"id": "root", "status": status, "kind": "ka:Root", "pointers": ["root"], **fields}
+    return {"id": "root", "status": status, "kind": "densho:Root", "pointers": ["root"], **fields}
 
 
 def rule(directive_id: str, status: str = "proposed", **fields: object) -> Spec:
@@ -85,14 +85,14 @@ def stop(directive_id: str, status: str = "proposed", **fields: object) -> Spec:
 
 
 def node(node_id: str, status: str = "proposed", **fields: object) -> Spec:
-    return {"id": node_id, "status": status, "kind": "ka:Domain", **fields}
+    return {"id": node_id, "status": status, "kind": "densho:Domain", **fields}
 
 
 def concept(node_id: str, *broader: str, status: str = "proposed", **fields: object) -> Spec:
     return {
         "id": node_id,
         "status": status,
-        "kind": "ka:Concept",
+        "kind": "densho:Concept",
         "broader": list(broader),
         **fields,
     }
@@ -113,7 +113,7 @@ def directive_lines(entry: Spec) -> list[str]:
 def pointer_lines(spec: Spec) -> list[str]:
     lines: list[str] = []
     for target in spec.get("pointers", []):
-        lines += ["  - kind: ka:TextPointer", f"    target: {target}"]
+        lines += ["  - kind: densho:TextPointer", f"    target: {target}"]
         lines.append(f"    trigger: {spec.get('trigger', 'You need it.')}")
     return lines
 
@@ -134,9 +134,9 @@ def front_matter(spec: Spec) -> list[str]:
     lines.append(f"origin: {spec.get('origin', 'template')}")
     if "rejection_reason" in spec:
         lines.append(f"rejection_reason: {spec['rejection_reason']}")
-    if spec["kind"] != "ka:Root":
+    if spec["kind"] != "densho:Root":
         lines.append(f"knowledge_type: {spec.get('knowledge_type', 'domain')}")
-    if spec["kind"] == "ka:Skill":
+    if spec["kind"] == "densho:Skill":
         lines += ["description: Review a change. Use when a change lands.", "invocation: agent"]
     for key in (*NODE_EDGES, "sources"):
         if spec.get(key) == []:
@@ -149,7 +149,7 @@ def front_matter(spec: Spec) -> list[str]:
 
 def render(spec: Spec) -> str:
     lines = [*front_matter(spec), ""]
-    if spec["kind"] not in {"ka:Root", "ka:Skill"}:
+    if spec["kind"] not in {"densho:Root", "densho:Skill"}:
         lines += ["## Definition", "", spec.get("definition", "A meaning."), ""]
     if "rules" in spec:
         lines += ["## Directives", ""]
@@ -164,9 +164,9 @@ def render(spec: Spec) -> str:
 def relative_file(spec: Spec) -> str:
     if "file" in spec:
         return spec["file"]
-    if spec["kind"] == "ka:Root":
+    if spec["kind"] == "densho:Root":
         return "knowledge/node.md"
-    folder = "knowledge/skills" if spec["kind"] == "ka:Skill" else "knowledge/nodes"
+    folder = "knowledge/skills" if spec["kind"] == "densho:Skill" else "knowledge/nodes"
     return f"{folder}/{spec['id']}/node.md"
 
 
@@ -345,7 +345,7 @@ def test_each_change_to_a_proposal_passes() -> None:
         {"implements": ["c"]},
         {"definition": "New."},
         {"knowledge_type": "workspace"},
-        {"kind": "ka:Discipline"},
+        {"kind": "densho:Discipline"},
     ],
     ids=lambda change: next(iter(change)),
 )
@@ -356,12 +356,12 @@ def test_each_reviewed_node_field_reopens_the_review(field_change: Spec) -> None
 
 @pytest.mark.parametrize("field_change", [{"uses": ["c"]}, {"applies": ["c"]}], ids=str)
 def test_each_reviewed_skill_field_reopens_the_review(field_change: Spec) -> None:
-    before: Spec = {"id": "a", "status": "accepted", "kind": "ka:Skill", "uses": ["b"]}
+    before: Spec = {"id": "a", "status": "accepted", "kind": "densho:Skill", "uses": ["b"]}
     assert codes([before], [{**before, **field_change}]) == ["accepted-change"]
 
 
 def test_a_skill_description_reopens_the_review() -> None:
-    before: Spec = {"id": "a", "status": "accepted", "kind": "ka:Skill", "uses": ["b"]}
+    before: Spec = {"id": "a", "status": "accepted", "kind": "densho:Skill", "uses": ["b"]}
     entities = governed_entities(parsed(before))
     assert "description" in entities["node", "a"].reviewed
 
@@ -423,7 +423,7 @@ def test_a_new_proposed_directive_on_an_accepted_node_passes() -> None:
 
 
 def test_a_new_pointer_on_an_accepted_root_passes() -> None:
-    root: Spec = {"id": "root", "status": "accepted", "kind": "ka:Root", "pointers": ["a"]}
+    root: Spec = {"id": "root", "status": "accepted", "kind": "densho:Root", "pointers": ["a"]}
     assert compare([root], [{**root, "pointers": ["a", "b"]}]) == []
 
 
@@ -732,7 +732,7 @@ def test_a_project_directive_on_a_template_domain_node_passes() -> None:
 
 
 def test_a_template_root_has_no_knowledge_type_and_passes() -> None:
-    root: Spec = {"id": "root", "status": "proposed", "kind": "ka:Root", "pointers": ["a"]}
+    root: Spec = {"id": "root", "status": "proposed", "kind": "densho:Root", "pointers": ["a"]}
     assert statics(root) == []
 
 
@@ -784,7 +784,7 @@ def test_a_live_node_cannot_rest_on_a_deprecated_node(field: str) -> None:
 
 def test_a_skill_cannot_use_a_deprecated_node() -> None:
     target = node("old", "deprecated")
-    source: Spec = {"id": "a", "status": "proposed", "kind": "ka:Skill", "uses": ["old"]}
+    source: Spec = {"id": "a", "status": "proposed", "kind": "densho:Skill", "uses": ["old"]}
     assert static_codes(target, source) == ["deprecated-reference"]
 
 
@@ -991,7 +991,7 @@ def test_the_base_reads_each_tree_folder(repository: Path) -> None:
     write(
         repository,
         node("a"),
-        {"id": "b", "status": "proposed", "kind": "ka:Skill", "uses": ["a"]},
+        {"id": "b", "status": "proposed", "kind": "densho:Skill", "uses": ["a"]},
         node("c", file="knowledge/governance/policies/c/node.md"),
         node("d", file="elsewhere/d/node.md"),
     )
@@ -1361,7 +1361,7 @@ def discipline_tree(repository: Path, *, status: str) -> list[Spec]:
         concept("item", "dropped", status=status),
     ]
     for spec in specs[2:4]:
-        spec["kind"] = "ka:Discipline"
+        spec["kind"] = "densho:Discipline"
     write(repository, *specs)
     return specs
 
@@ -1835,7 +1835,7 @@ def test_the_pending_list_fails_on_a_parse_problem(repository: Path) -> None:
 
 
 def root_for(*targets: str) -> Spec:
-    return {"id": "root", "status": "accepted", "kind": "ka:Root", "pointers": list(targets)}
+    return {"id": "root", "status": "accepted", "kind": "densho:Root", "pointers": list(targets)}
 
 
 def test_the_directive_list_shows_a_proposal(tmp_path: Path) -> None:
@@ -1930,7 +1930,7 @@ def break_a_policy(repository: Path, old: str, new: str) -> Path:
 
 def test_the_parser_reads_a_broken_policy(tmp_path: Path) -> None:
     repository = repository_copy(tmp_path)
-    path = break_a_policy(repository, "kind: ka:Concept", "kind: ka:Nothing")
+    path = break_a_policy(repository, "kind: densho:Concept", "kind: densho:Nothing")
     result = invoke("parse", str(repository / "knowledge"), str(repository / "governance"))
     assert result.exit_code == 1
     assert f"{path}:3: kind: " in result.output
@@ -1997,12 +1997,13 @@ def test_a_project_can_point_the_root_at_its_own_domain(tmp_path: Path) -> None:
     remove_the_seed(repository)
     (repository / "knowledge/nodes/own").mkdir(parents=True)
     (repository / "knowledge/node.md").write_text(
-        "---\nid: root\nkind: ka:Root\ntitle: Root\nstatus: proposed\norigin: project\n"
-        "pointers:\n  - kind: ka:TextPointer\n    target: own\n    trigger: You need it.\n---\n",
+        "---\nid: root\nkind: densho:Root\ntitle: Root\nstatus: proposed\norigin: project\n"
+        "pointers:\n  - kind: densho:TextPointer\n    target: own\n"
+        "    trigger: You need it.\n---\n",
         encoding="utf-8",
     )
     (repository / "knowledge/nodes/own/node.md").write_text(
-        "---\nid: own\nkind: ka:Domain\ntitle: Own\nstatus: proposed\norigin: project\n"
+        "---\nid: own\nkind: densho:Domain\ntitle: Own\nstatus: proposed\norigin: project\n"
         "knowledge_type: domain\n---\n\n## Definition\n\nA domain.\n",
         encoding="utf-8",
     )
@@ -2114,7 +2115,7 @@ REJECTED_RULE = node("holder", rules=[rule("old-rule", "rejected", rejection_rea
         (node("a", depends_on=["old"]), "depends_on"),
         (node("a", governs=["old"]), "governs"),
         (node("a", knowledge_type="workspace", origin="project", implements=["old"]), "implements"),
-        ({**node("a"), "kind": "ka:Skill", "uses": ["old"]}, "uses"),
+        ({**node("a"), "kind": "densho:Skill", "uses": ["old"]}, "uses"),
         (node("a", pointers=["old"]), "target"),
     ],
 )
@@ -2128,7 +2129,10 @@ def test_a_live_node_cannot_name_a_rejected_node(spec: Spec, field: str) -> None
 @pytest.mark.parametrize(
     ("spec", "field"),
     [
-        ({**node("a"), "kind": "ka:Skill", "uses": ["holder"], "applies": ["old-rule"]}, "applies"),
+        (
+            {**node("a"), "kind": "densho:Skill", "uses": ["holder"], "applies": ["old-rule"]},
+            "applies",
+        ),
         (node("a", rules=[rule("b", refines=["old-rule"])]), "refines"),
         (node("a", rules=[rule("b", conflicts_with=["old-rule"])]), "conflicts_with"),
         (node("a", exceptions=[stop("old-rule")]), "directive"),
@@ -2316,7 +2320,7 @@ CLEAN = [
     "Store a secret in a vault, not in the repository.",
     "A token: a short string.",
     "https://example.com/a",
-    "uvx --from git+https://github.com/a/b.git@0123456789abcdef ka",
+    "uvx --from git+https://github.com/a/b.git@0123456789abcdef densho",
     "Set `basis: judgment`.",
 ]
 
@@ -2385,11 +2389,11 @@ def test_the_exposure_message_holds_no_value(tmp_path: Path) -> None:
 
 
 def test_the_exposure_check_reads_each_file_in_knowledge_only(tmp_path: Path) -> None:
-    plant(tmp_path, {".ka/history.jsonl": PLANTED["github"], "governance/language/a.yaml": "x"})
+    plant(tmp_path, {".densho/history.jsonl": PLANTED["github"], "governance/language/a.yaml": "x"})
     (tmp_path / "docs").mkdir()
     (tmp_path / "docs/a.md").write_text(PLANTED["github"], encoding="utf-8")
     (tmp_path / "knowledge/binary.bin").write_bytes(b"\xff\xfe" + PLANTED["github"].encode())
-    assert exposure_hits(tmp_path) == [("knowledge/.ka/history.jsonl", 2, "secret")]
+    assert exposure_hits(tmp_path) == [("knowledge/.densho/history.jsonl", 2, "secret")]
 
 
 def test_the_exposure_check_does_not_follow_a_link(tmp_path: Path) -> None:
@@ -2434,7 +2438,7 @@ def test_a_basis_change_reopens_the_review() -> None:
 
 
 def test_an_invocation_change_reopens_the_review() -> None:
-    before = {**node("a", "accepted"), "kind": "ka:Skill", "uses": ["b"]}
+    before = {**node("a", "accepted"), "kind": "densho:Skill", "uses": ["b"]}
     after = {**before}
     found = check_changes(
         governed_entities(parsed(before)),
@@ -2502,7 +2506,7 @@ def write_scripts(repository: Path, skill: str, scripts: dict[str, bytes]) -> No
         path.write_bytes(data)
 
 
-SCRIPT_SKILL = {**node("review", "accepted"), "kind": "ka:Skill", "uses": ["review"]}
+SCRIPT_SKILL = {**node("review", "accepted"), "kind": "densho:Skill", "uses": ["review"]}
 
 
 def test_a_script_change_on_an_accepted_skill_fails(repository: Path) -> None:

@@ -42,19 +42,19 @@ def stop(directive_id: str, status: str = "accepted") -> Spec:
 
 
 def domain(node_id: str, **fields: object) -> Spec:
-    return {"id": node_id, "kind": "ka:Domain", **fields}
+    return {"id": node_id, "kind": "densho:Domain", **fields}
 
 
 def concept(node_id: str, *broader: str, **fields: object) -> Spec:
-    return {"id": node_id, "kind": "ka:Concept", "broader": list(broader), **fields}
+    return {"id": node_id, "kind": "densho:Concept", "broader": list(broader), **fields}
 
 
 def skill(node_id: str, *uses: str, **fields: object) -> Spec:
-    return {"id": node_id, "kind": "ka:Skill", "uses": list(uses), **fields}
+    return {"id": node_id, "kind": "densho:Skill", "uses": list(uses), **fields}
 
 
 def root(**fields: object) -> Spec:
-    return {"id": "root", "kind": "ka:Root", **fields}
+    return {"id": "root", "kind": "densho:Root", **fields}
 
 
 def directive_lines(entry: Spec) -> list[str]:
@@ -69,14 +69,14 @@ def directive_lines(entry: Spec) -> list[str]:
 def front_matter(spec: Spec, others: list[str]) -> list[str]:
     lines = [f"id: {spec['id']}", f"kind: {spec['kind']}", f"title: {spec['id']}"]
     lines += [f"status: {spec.get('status', 'accepted')}", "origin: template"]
-    if spec["kind"] == "ka:Root":
+    if spec["kind"] == "densho:Root":
         lines.append("pointers:")
         for other in others:
-            lines += ["  - kind: ka:TextPointer", f"    target: {other}"]
+            lines += ["  - kind: densho:TextPointer", f"    target: {other}"]
             lines.append("    trigger: You need it.")
         return lines
     lines.append("knowledge_type: domain")
-    if spec["kind"] == "ka:Skill":
+    if spec["kind"] == "densho:Skill":
         lines += ["description: Use this skill for a review.", "invocation: agent"]
     for key in LIST_FIELDS:
         if key in spec:
@@ -91,7 +91,7 @@ def front_matter(spec: Spec, others: list[str]) -> list[str]:
 
 def render(spec: Spec, others: list[str]) -> str:
     lines = ["---", *front_matter(spec, others), "---", ""]
-    if spec["kind"] not in {"ka:Root", "ka:Skill"}:
+    if spec["kind"] not in {"densho:Root", "densho:Skill"}:
         lines += ["## Definition", "", "A meaning.", ""]
     if spec.get("rules"):
         lines += ["## Directives", ""]
@@ -102,20 +102,20 @@ def render(spec: Spec, others: list[str]) -> str:
 
 
 def file_of(spec: Spec) -> Path:
-    if spec["kind"] == "ka:Root":
+    if spec["kind"] == "densho:Root":
         return Path("knowledge/node.md")
-    folder = "knowledge/skills" if spec["kind"] == "ka:Skill" else "knowledge/nodes"
+    folder = "knowledge/skills" if spec["kind"] == "densho:Skill" else "knowledge/nodes"
     return Path(folder) / spec["id"] / "node.md"
 
 
 def complete(specs: tuple[Spec, ...]) -> list[Spec]:
-    has_root = any(spec["kind"] == "ka:Root" for spec in specs)
+    has_root = any(spec["kind"] == "densho:Root" for spec in specs)
     return [*specs] if has_root else [root(), *specs]
 
 
 def sources(specs: tuple[Spec, ...]) -> dict[str, tuple[Path, str]]:
     everything = complete(specs)
-    others = [spec["id"] for spec in everything if spec["kind"] != "ka:Root"]
+    others = [spec["id"] for spec in everything if spec["kind"] != "densho:Root"]
     return {spec["id"]: (file_of(spec), render(spec, others)) for spec in everything}
 
 
@@ -1272,7 +1272,7 @@ def test_a_reference_to_a_node_is_a_type_problem(
     assert [str(problem).split(tmp_path.as_posix() + "/")[1] for problem in problems] == [
         (
             f"{location(specs, 'design', text)}: type: {field} cannot name other, which has kind "
-            "ka:Domain."
+            "densho:Domain."
         )
     ]
 

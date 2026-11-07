@@ -1,21 +1,21 @@
 ---
 id: digital-product-development
-kind: ka:Domain
+kind: densho:Domain
 title: Digital product development
 status: proposed
 origin: template
 knowledge_type: domain
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: product-strategy
     trigger: You decide what a product does or who it serves.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-design
     trigger: You define or apply the identity of a product.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: ui-ux-design
     trigger: You design a screen, a flow, or an interface element.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: software-engineering
     trigger: You write, test, or release software.
 ---

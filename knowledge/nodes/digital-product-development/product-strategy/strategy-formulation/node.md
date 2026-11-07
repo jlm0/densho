@@ -1,6 +1,6 @@
 ---
 id: strategy-formulation
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Strategy
 status: proposed
 origin: template
@@ -10,7 +10,7 @@ sources:
 broader:
   - product-strategy
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: strategy-kernel
     trigger: You write the diagnosis, the guiding policy, or the actions of a strategy.
 ---

@@ -1,6 +1,6 @@
 ---
 id: schema-rules
-kind: ka:Concept
+kind: densho:Concept
 title: Schema rules
 status: proposed
 origin: template

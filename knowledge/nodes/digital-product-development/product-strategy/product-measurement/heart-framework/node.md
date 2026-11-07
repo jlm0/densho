@@ -1,6 +1,6 @@
 ---
 id: heart-framework
-kind: ka:Concept
+kind: densho:Concept
 title: HEART framework
 status: proposed
 origin: template

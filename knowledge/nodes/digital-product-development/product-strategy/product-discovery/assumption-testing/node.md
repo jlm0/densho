@@ -1,6 +1,6 @@
 ---
 id: assumption-testing
-kind: ka:Concept
+kind: densho:Concept
 title: Assumption testing
 status: proposed
 origin: template

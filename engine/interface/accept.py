@@ -30,7 +30,7 @@ if TYPE_CHECKING:
 ACCEPT_CODES = ("unknown-id", "not-proposed", "uncommitted", "no-history", "status-line", "write")
 EXCEPTION_SEPARATOR = ":"
 PROJECT_COMMAND = LAUNCHER.as_posix()
-TEMPLATE_COMMAND = "uv run ka"
+TEMPLATE_COMMAND = "uv run densho"
 
 
 @dataclass(frozen=True, slots=True)
@@ -64,7 +64,7 @@ def _named(name: str, entities: Mapping[EntityKey, Entity]) -> Entity | None:
 
 
 def _unknown(repository: Path, name: str) -> Problem:
-    message = f"No entity has the name {name!a}. Run the view, or ka governance --pending."
+    message = f"No entity has the name {name!a}. Run the view, or densho governance --pending."
     return Problem(repository, 1, "unknown-id", message)
 
 

@@ -165,7 +165,7 @@ def edges() -> list[str]:
 
 @pytest.mark.parametrize("name", concrete_classes())
 def test_the_schema_page_names_each_kind(name: str) -> None:
-    assert f"`ka:{name}`" in (DOCS / "schema.md").read_text(encoding="utf-8")
+    assert f"`densho:{name}`" in (DOCS / "schema.md").read_text(encoding="utf-8")
 
 
 @pytest.mark.parametrize("name", edges())
@@ -265,15 +265,15 @@ LANGUAGE_TRIGGERS = {
 def language_example_source(example: str) -> str:
     if example.endswith("changes code."):
         fields = (
-            f"knowledge_type: domain\nkind: ka:Skill\ndescription: {example}\n"
+            f"knowledge_type: domain\nkind: densho:Skill\ndescription: {example}\n"
             "invocation: agent\nuses: [b]\n"
         )
         return f"{LANGUAGE_NODE}{fields}---\n"
     if example in LANGUAGE_TRIGGERS:
-        pointer = f'  - kind: ka:TextPointer\n    target: b\n    trigger: "{example}"\n'
-        return f"{LANGUAGE_NODE}kind: ka:Root\npointers:\n{pointer}---\n"
+        pointer = f'  - kind: densho:TextPointer\n    target: b\n    trigger: "{example}"\n'
+        return f"{LANGUAGE_NODE}kind: densho:Root\npointers:\n{pointer}---\n"
     return (
-        f"{LANGUAGE_NODE}kind: ka:Domain\nknowledge_type: domain\n---\n\n"
+        f"{LANGUAGE_NODE}kind: densho:Domain\nknowledge_type: domain\n---\n\n"
         "## Definition\n\nA.\n\n## Directives\n\n"
         f"- {example} ^b\n  - scope: node\n"
         "  - basis: judgment\n  - status: accepted\n  - origin: template\n"
@@ -311,7 +311,7 @@ def directive_examples() -> list[str]:
 
 
 DIRECTIVE_NODE = (
-    "---\nid: a\nkind: ka:Domain\ntitle: A\nstatus: accepted\norigin: template\n"
+    "---\nid: a\nkind: densho:Domain\ntitle: A\nstatus: accepted\norigin: template\n"
     "knowledge_type: domain\n---\n\n## Definition\n\nA.\n\n"
 )
 
@@ -391,7 +391,7 @@ def test_the_governance_page_names_a_real_directive() -> None:
 
 def documented_commands() -> set[str]:
     texts = [path.read_text(encoding="utf-8") for path in [README, *FILES]]
-    pattern = r"(?:uv run ka|knowledge/\.ka/ka) (\w+)"
+    pattern = r"(?:uv run densho|knowledge/\.densho/densho) (\w+)"
     return {command for text in texts for command in re.findall(pattern, text)}
 
 
@@ -462,7 +462,8 @@ def test_the_interface_page_states_who_runs_the_command(sentence: str) -> None:
 
 
 @pytest.mark.parametrize(
-    "command", ["knowledge/.ka/ka view", "knowledge/.ka/ka accept", "uv run ka view"]
+    "command",
+    ["knowledge/.densho/densho view", "knowledge/.densho/densho accept", "uv run densho view"],
 )
 def test_the_interface_page_names_each_form_of_the_command(command: str) -> None:
     assert command in INTERFACE_PAGE.read_text(encoding="utf-8")
@@ -506,10 +507,10 @@ def test_the_compiled_page_query_runs_on_a_compiled_graph() -> None:
     assert len(blocks) == 1
     data = Graph().parse(
         data="""
-        @prefix ka: <https://github.com/jlm0/knowledge-architecture/schema/> .
+        @prefix densho: <https://github.com/jlm0/densho/schema/> .
         @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-        ka:a skos:broader ka:b ; ka:status "accepted" .
-        ka:c skos:broader ka:b ; ka:status "proposed" .
+        densho:a skos:broader densho:b ; densho:status "accepted" .
+        densho:c skos:broader densho:b ; densho:status "proposed" .
         """,
         format="turtle",
     )

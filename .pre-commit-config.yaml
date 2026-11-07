@@ -20,7 +20,7 @@ repos:
         pass_filenames: false
       - id: engine-constraints
         name: write the locked engine versions for a project
-        entry: uv export --frozen --no-dev --no-emit-project --no-hashes --no-annotate --no-header --quiet --output-file knowledge/.ka/engine-constraints.txt
+        entry: uv export --frozen --no-dev --no-emit-project --no-hashes --no-annotate --no-header --quiet --output-file knowledge/.densho/engine-constraints.txt
         language: system
         pass_filenames: false
         always_run: true
@@ -44,56 +44,56 @@ repos:
         always_run: true
       - id: node-format
         name: parse the knowledge nodes
-        entry: uv run --frozen ka parse knowledge
+        entry: uv run --frozen densho parse knowledge
         language: system
         pass_filenames: false
         always_run: true
       - id: graph-checks
         name: check the knowledge graph
-        entry: uv run --frozen ka graph
+        entry: uv run --frozen densho graph
         language: system
         pass_filenames: false
         always_run: true
       - id: directive-checks
         name: check how directives reach the nodes
-        entry: uv run --frozen ka directives
+        entry: uv run --frozen densho directives
         language: system
         pass_filenames: false
         files: ^(knowledge|engine)/|^uv\.lock$
       - id: governance-checks
         name: check the lifecycle and the change rules
-        entry: uv run --frozen ka governance
+        entry: uv run --frozen densho governance
         language: system
         pass_filenames: false
         always_run: true
       - id: language-checks
         name: check the language of the knowledge nodes
-        entry: uv run --frozen ka language
+        entry: uv run --frozen densho language
         language: system
         pass_filenames: false
         files: ^(knowledge|engine)/|^uv\.lock$
       - id: compiled-outputs
         name: compile the checked graph
-        entry: uv run --frozen ka build
+        entry: uv run --frozen densho build
         language: system
         pass_filenames: false
         files: ^(knowledge|engine)/|^uv\.lock$
       - id: runtime-files
         name: generate the runtime files
-        entry: uv run --frozen ka runtime --verify
+        entry: uv run --frozen densho runtime --verify
         language: system
         pass_filenames: false
         always_run: true
         verbose: true
       - id: template-history
         name: record template changes in the change history
-        entry: uv run --frozen ka history --verify
+        entry: uv run --frozen densho history --verify
         language: system
         pass_filenames: false
         always_run: true
       - id: eval-tasks
         name: grade the known outputs of the eval tasks
-        entry: uv run --frozen ka eval --check
+        entry: uv run --frozen densho eval --check
         language: system
         pass_filenames: false
         files: ^(knowledge|engine)/|^uv\.lock$

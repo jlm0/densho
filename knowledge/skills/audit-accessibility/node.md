@@ -1,6 +1,6 @@
 ---
 id: audit-accessibility
-kind: ka:Skill
+kind: densho:Skill
 title: Audit the accessibility of an interface
 status: proposed
 origin: template
@@ -13,7 +13,7 @@ applies:
   - reflow-at-narrow-width
   - keep-navigation-order
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: accessibility
     trigger: You check the interface against a success criterion or its exception.
 ---

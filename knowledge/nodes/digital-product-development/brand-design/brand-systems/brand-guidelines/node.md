@@ -1,6 +1,6 @@
 ---
 id: brand-guidelines
-kind: ka:Concept
+kind: densho:Concept
 title: Brand guidelines
 status: proposed
 origin: template

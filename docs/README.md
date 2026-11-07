@@ -39,33 +39,33 @@ Each page explains how to use what exists today, and ends with what it does not 
 
 ## Commands
 
-| Command                             | What it does                               | Page                                          |
-| ----------------------------------- | ------------------------------------------ | --------------------------------------------- |
-| `uv run pre-commit run --all-files` | Runs every check on every file             |                                               |
-| `uv run ka parse knowledge`         | Parses each node                           | [Node format](node-format.md)                 |
-| `uv run ka graph`                   | Checks the whole graph                     | [Graph checks](graph-checks.md)               |
-| `uv run ka language`                | Checks the language of the text            | [Language checks](language-checks.md)         |
-| `uv run ka directives`              | Checks which directives apply where        | [Directive semantics](directive-semantics.md) |
-| `uv run ka governance`              | Checks the lifecycle and each change       | [Governance workflow](governance-workflow.md) |
-| `uv run ka governance --pending`    | Lists what waits for review                | [Governance workflow](governance-workflow.md) |
-| `uv run ka build`                   | Runs the checks, then compiles             | [Compiled outputs](compiled-outputs.md)       |
-| `uv run ka build --proposals`       | Compiles what acceptance would add         | [Compiled outputs](compiled-outputs.md)       |
-| `uv run ka runtime`                 | Writes the files an agent tool loads       | [Runtime files](runtime-files.md)             |
-| `uv run ka runtime --proposals`     | Writes a review copy of those files        | [Runtime files](runtime-files.md)             |
-| `uv run ka view`                    | Writes a site for people to read           | [Human interface](human-interface.md)         |
-| `uv run ka accept`                  | Sets what a person approves to `accepted`  | [Human interface](human-interface.md)         |
-| `uv run ka adopt`                   | Takes in template knowledge                | [Template packaging](template-packaging.md)   |
-| `uv run ka select`                  | Removes the disciplines a project left out | [Template packaging](template-packaging.md)   |
-| `uv run ka history`                 | Records template changes for agents        | [Template packaging](template-packaging.md)   |
-| `uv run ka history --drift`         | Lists differences from the history         | [Template packaging](template-packaging.md)   |
-| `uv run ka eval --check`            | Grades the known outputs of the eval tasks | [Evaluation](evaluation.md)                   |
-| `uv run ka eval --discipline <id>`  | Runs the eval tasks with and without it    | [Evaluation](evaluation.md)                   |
-| `uv run pytest`                     | Runs the tests                             |                                               |
-| `uv run pyright`                    | Checks types in strict mode                |                                               |
-| `uv run ruff check`                 | Lints the Python code                      |                                               |
-| `uv run ruff format`                | Formats the Python code                    |                                               |
+| Command                                | What it does                               | Page                                          |
+| -------------------------------------- | ------------------------------------------ | --------------------------------------------- |
+| `uv run pre-commit run --all-files`    | Runs every check on every file             |                                               |
+| `uv run densho parse knowledge`        | Parses each node                           | [Node format](node-format.md)                 |
+| `uv run densho graph`                  | Checks the whole graph                     | [Graph checks](graph-checks.md)               |
+| `uv run densho language`               | Checks the language of the text            | [Language checks](language-checks.md)         |
+| `uv run densho directives`             | Checks which directives apply where        | [Directive semantics](directive-semantics.md) |
+| `uv run densho governance`             | Checks the lifecycle and each change       | [Governance workflow](governance-workflow.md) |
+| `uv run densho governance --pending`   | Lists what waits for review                | [Governance workflow](governance-workflow.md) |
+| `uv run densho build`                  | Runs the checks, then compiles             | [Compiled outputs](compiled-outputs.md)       |
+| `uv run densho build --proposals`      | Compiles what acceptance would add         | [Compiled outputs](compiled-outputs.md)       |
+| `uv run densho runtime`                | Writes the files an agent tool loads       | [Runtime files](runtime-files.md)             |
+| `uv run densho runtime --proposals`    | Writes a review copy of those files        | [Runtime files](runtime-files.md)             |
+| `uv run densho view`                   | Writes a site for people to read           | [Human interface](human-interface.md)         |
+| `uv run densho accept`                 | Sets what a person approves to `accepted`  | [Human interface](human-interface.md)         |
+| `uv run densho adopt`                  | Takes in template knowledge                | [Template packaging](template-packaging.md)   |
+| `uv run densho select`                 | Removes the disciplines a project left out | [Template packaging](template-packaging.md)   |
+| `uv run densho history`                | Records template changes for agents        | [Template packaging](template-packaging.md)   |
+| `uv run densho history --drift`        | Lists differences from the history         | [Template packaging](template-packaging.md)   |
+| `uv run densho eval --check`           | Grades the known outputs of the eval tasks | [Evaluation](evaluation.md)                   |
+| `uv run densho eval --discipline <id>` | Runs the eval tasks with and without it    | [Evaluation](evaluation.md)                   |
+| `uv run pytest`                        | Runs the tests                             |                                               |
+| `uv run pyright`                       | Checks types in strict mode                |                                               |
+| `uv run ruff check`                    | Lints the Python code                      |                                               |
+| `uv run ruff format`                   | Formats the Python code                    |                                               |
 
-In a project, `knowledge/.ka/ka` takes the place of `uv run ka`.
+In a project, `knowledge/.densho/densho` takes the place of `uv run densho`.
 
 In this repo, the git hook runs these checks on each commit: file hygiene, the lock file, the engine constraints, the schema lint, the generated models, the knowledge nodes, the graph checks, the directive checks, the governance checks, the language checks, the compiled outputs, the runtime files, the template history, the eval tasks, Ruff lint and format, Markdown format, Pyright, and the tests. [A project runs fewer](template-packaging.md#the-git-hook).
 

@@ -1,6 +1,6 @@
 ---
 id: brand-strategy
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Brand strategy
 status: proposed
 origin: template
@@ -13,19 +13,19 @@ broader:
 depends_on:
   - product-positioning
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-identity-prism
     trigger: You describe what a brand is, how it behaves, or which users it portrays.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-equity-pyramid
     trigger: You plan or measure how customers come to know, judge, and feel about a brand.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-positioning-statement
     trigger: You write or test the positioning statement of a brand.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-personality
     trigger: You describe the personality of a brand in human traits.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: distinctive-brand-assets
     trigger: You choose, measure, or replace a color, a shape, a character, or a sound that signals the brand.
 ---

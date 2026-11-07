@@ -11,17 +11,17 @@ The generated files sit in `AGENTS.md` and `.claude/`, and none of them sits in 
 ## Generate
 
 ```sh
-uv run ka runtime
+uv run densho runtime
 ```
 
 ```text
 wrote AGENTS.md
 wrote .claude/skills/design-settings-interface/SKILL.md
-406 entities wait for review. Run uv run ka governance --pending to list them.
+406 entities wait for review. Run uv run densho governance --pending to list them.
 in_force: 59 files, 2 written, 0 removed, 0 problems
 ```
 
-The command compiles the graph with the same code as `ka build`, so it runs every check on one reading of the tree. It writes each file that differs and removes each file of its own that no node generates any more. A second run changes nothing.
+The command compiles the graph with the same code as `densho build`, so it runs every check on one reading of the tree. It writes each file that differs and removes each file of its own that no node generates any more. A second run changes nothing.
 
 The count of entities that wait for review is a reminder. It never fails the run, and it doesn't print when the tree fails a check.
 
@@ -29,15 +29,15 @@ A tree that fails a check leaves the committed files alone, so an agent keeps it
 
 ## What each node becomes
 
-| Node                               | Generated file                                  | How it loads                              |
-| ---------------------------------- | ----------------------------------------------- | ----------------------------------------- |
-| The root                           | `AGENTS.md`                                     | At session start                          |
-| A skill                            | `.claude/skills/<id>/SKILL.md`                  | The agent picks it from the skill listing |
-| The target of a `ka:PathPointer`   | `.claude/rules/knowledge/<id>.md` with `paths`  | When the agent touches a matching file    |
-| The target of a `ka:AlwaysPointer` | `.claude/rules/knowledge/<id>.md` without paths | At session start                          |
-| Any other node                     | `.claude/references/<id>.md`                    | When the agent follows a link to it       |
+| Node                                   | Generated file                                  | How it loads                              |
+| -------------------------------------- | ----------------------------------------------- | ----------------------------------------- |
+| The root                               | `AGENTS.md`                                     | At session start                          |
+| A skill                                | `.claude/skills/<id>/SKILL.md`                  | The agent picks it from the skill listing |
+| The target of a `densho:PathPointer`   | `.claude/rules/knowledge/<id>.md` with `paths`  | When the agent touches a matching file    |
+| The target of a `densho:AlwaysPointer` | `.claude/rules/knowledge/<id>.md` without paths | At session start                          |
+| Any other node                         | `.claude/references/<id>.md`                    | When the agent follows a link to it       |
 
-A `ka:TextPointer` adds no file. It becomes a line that holds the trigger and a link, such as `You decide how a screen looks. Read [Visual design](visual-design.md).`, and following that link opens the reference page of the node.
+A `densho:TextPointer` adds no file. It becomes a line that holds the trigger and a link, such as `You decide how a screen looks. Read [Visual design](visual-design.md).`, and following that link opens the reference page of the node.
 
 A node file names its pointer targets by ID. The generated files turn each ID into the path of its generated file, so each link in a generated file goes to another generated file, and no link goes to a node file. The root links each domain and the governance, and names each skill with no link. A skill also links the page of each node in `uses`.
 
@@ -72,12 +72,12 @@ Treat a directive as a rule only when its `status` is `accepted`. A generated fi
 
 A node file still shows each proposal, with its `status`. That is the reason for the second sentence.
 
-After you [accept something](human-interface.md#accept-what-you-approve), run `uv run ka runtime` and stage the result in the same commit.
+After you [accept something](human-interface.md#accept-what-you-approve), run `uv run densho runtime` and stage the result in the same commit.
 
 ## See what acceptance would change
 
 ```sh
-uv run ka runtime --proposals
+uv run densho runtime --proposals
 ```
 
 This writes a review copy to `build/runtime-proposals/`, which git ignores, and it leaves the committed files alone. The copy holds what the files would hold if a person accepted every proposal. Each file opens with a notice that starts `NOT IN FORCE`, and each directive and exception that isn't `accepted` carries its status:
@@ -129,11 +129,11 @@ A generated file holds one marker line: the first line, or the first line after 
 
 No generated file sits in `knowledge/`. A Markdown file there must be `node.md`, so the parser fails any other one with `file-name`, with the marker or without it.
 
-If a `CLAUDE.md`, `.claude/CLAUDE.md`, or `CLAUDE.local.md` sits in the repo root, Claude Code reads it and skips `AGENTS.md`. The command prints a note that names the import line to add to that file, and the note stops once a file imports the root. In a project, [`ka adopt`](template-packaging.md#your-own-files) adds the line for you.
+If a `CLAUDE.md`, `.claude/CLAUDE.md`, or `CLAUDE.local.md` sits in the repo root, Claude Code reads it and skips `AGENTS.md`. The command prints a note that names the import line to add to that file, and the note stops once a file imports the root. In a project, [`densho adopt`](template-packaging.md#your-own-files) adds the line for you.
 
 ## The git hook
 
-The hook runs `uv run ka runtime --verify` on every commit, including a commit that only touches a generated file or only deletes a node.
+The hook runs `uv run densho runtime --verify` on every commit, including a commit that only touches a generated file or only deletes a node.
 
 - A file that differs from a fresh generation is rewritten and fails with `changed`, so a hand edit is gone and you stage the result.
 - A file no node generates any more is removed and fails with `changed`.
@@ -176,9 +176,9 @@ from pathlib import Path
 from engine.runtime import generate_runtime
 
 report = generate_runtime(Path(), proposals=False, verify=False)
-report.problems  # the same problems that ka runtime prints
-report.written   # the files this run changed
-report.removed   # the stale files this run removed
+report.problems  # the same problems that densho runtime prints
+report.written  # the files this run changed
+report.removed  # the stale files this run removed
 ```
 
 `build_view` in `runtime/view.py` holds the graph logic and names no file of any tool. `runtime/claude_code.py` and `runtime/templates/claude_code/` hold the Claude Code target, so another tool needs a new target and no change to the graph.

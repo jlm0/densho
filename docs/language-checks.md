@@ -11,7 +11,7 @@ The checks judge form only. A rule can pass every check and still be a bad rule,
 ## Run the checks
 
 ```sh
-uv run ka language
+uv run densho language
 ```
 
 The command reads `knowledge/` in the current folder, or in a folder you name after `language`. It also lints each rule in `knowledge/governance/language/grammar.yaml` as a directive. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. A node that fails to parse stops the checks, as it does for the [graph checks](graph-checks.md).

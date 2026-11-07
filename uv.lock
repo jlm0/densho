@@ -395,6 +395,67 @@ wheels = [
 ]
 
 [[package]]
+name = "densho"
+version = "0.0.0"
+source = { editable = "." }
+dependencies = [
+    { name = "en-core-web-sm" },
+    { name = "jinja2" },
+    { name = "linkml-runtime" },
+    { name = "markdown-it-py" },
+    { name = "networkx" },
+    { name = "pydantic" },
+    { name = "pyshacl" },
+    { name = "rdflib" },
+    { name = "ruamel-yaml" },
+    { name = "spacy" },
+    { name = "typer" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "copier" },
+    { name = "linkml" },
+    { name = "mdformat" },
+    { name = "mdformat-frontmatter" },
+    { name = "mdformat-gfm" },
+    { name = "mdformat-tables" },
+    { name = "pre-commit" },
+    { name = "pyright" },
+    { name = "pytest" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "en-core-web-sm", url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" },
+    { name = "jinja2", specifier = ">=3.1.6" },
+    { name = "linkml-runtime", specifier = ">=1.12.1" },
+    { name = "markdown-it-py", specifier = ">=3" },
+    { name = "networkx", specifier = ">=3.7" },
+    { name = "pydantic", specifier = ">=2" },
+    { name = "pyshacl", specifier = ">=0.40.2" },
+    { name = "rdflib", specifier = ">=7.6.0" },
+    { name = "ruamel-yaml", specifier = ">=0.18" },
+    { name = "spacy", specifier = ">=3.8.18" },
+    { name = "typer", specifier = ">=0.27.3" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "copier", specifier = ">=9.19.1" },
+    { name = "linkml", specifier = ">=1.12.1" },
+    { name = "mdformat", specifier = ">=0.7.22" },
+    { name = "mdformat-frontmatter", specifier = ">=2.1.2" },
+    { name = "mdformat-gfm", specifier = ">=1.0.0" },
+    { name = "mdformat-tables", specifier = ">=1.0.0" },
+    { name = "pre-commit", specifier = ">=4.7.0" },
+    { name = "pyright", specifier = ">=1.1.414" },
+    { name = "pytest", specifier = ">=9.2.0" },
+    { name = "ruff", specifier = ">=0.17.3" },
+]
+
+[[package]]
 name = "deprecated"
 version = "3.0.1"
 source = { registry = "https://pypi.org/simple" }
@@ -721,67 +782,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/19/74/a633ee74eb36c44aa6d1095e7cc5569bebf04342ee146178e2d36600708b/jsonschema_specifications-2025.9.1.tar.gz", hash = "sha256:b540987f239e745613c7a9176f3edb72b832a4ac465cf02712288397832b5e8d", size = 32855, upload-time = "2025-09-08T01:34:59.186Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/41/45/1a4ed80516f02155c51f51e8cedb3c1902296743db0bbc66608a0db2814f/jsonschema_specifications-2025.9.1-py3-none-any.whl", hash = "sha256:98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe", size = 18437, upload-time = "2025-09-08T01:34:57.871Z" },
-]
-
-[[package]]
-name = "knowledge-architecture"
-version = "0.0.0"
-source = { editable = "." }
-dependencies = [
-    { name = "en-core-web-sm" },
-    { name = "jinja2" },
-    { name = "linkml-runtime" },
-    { name = "markdown-it-py" },
-    { name = "networkx" },
-    { name = "pydantic" },
-    { name = "pyshacl" },
-    { name = "rdflib" },
-    { name = "ruamel-yaml" },
-    { name = "spacy" },
-    { name = "typer" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "copier" },
-    { name = "linkml" },
-    { name = "mdformat" },
-    { name = "mdformat-frontmatter" },
-    { name = "mdformat-gfm" },
-    { name = "mdformat-tables" },
-    { name = "pre-commit" },
-    { name = "pyright" },
-    { name = "pytest" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "en-core-web-sm", url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" },
-    { name = "jinja2", specifier = ">=3.1.6" },
-    { name = "linkml-runtime", specifier = ">=1.12.1" },
-    { name = "markdown-it-py", specifier = ">=3" },
-    { name = "networkx", specifier = ">=3.7" },
-    { name = "pydantic", specifier = ">=2" },
-    { name = "pyshacl", specifier = ">=0.40.2" },
-    { name = "rdflib", specifier = ">=7.6.0" },
-    { name = "ruamel-yaml", specifier = ">=0.18" },
-    { name = "spacy", specifier = ">=3.8.18" },
-    { name = "typer", specifier = ">=0.27.3" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "copier", specifier = ">=9.19.1" },
-    { name = "linkml", specifier = ">=1.12.1" },
-    { name = "mdformat", specifier = ">=0.7.22" },
-    { name = "mdformat-frontmatter", specifier = ">=2.1.2" },
-    { name = "mdformat-gfm", specifier = ">=1.0.0" },
-    { name = "mdformat-tables", specifier = ">=1.0.0" },
-    { name = "pre-commit", specifier = ">=4.7.0" },
-    { name = "pyright", specifier = ">=1.1.414" },
-    { name = "pytest", specifier = ">=9.2.0" },
-    { name = "ruff", specifier = ">=0.17.3" },
 ]
 
 [[package]]

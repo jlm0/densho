@@ -1,6 +1,6 @@
 ---
 id: write-brand-guidelines
-kind: ka:Skill
+kind: densho:Skill
 title: Write brand guidelines
 status: proposed
 origin: template
@@ -24,40 +24,40 @@ applies:
   - contrast-large-text
   - contrast-ui-components
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-strategy
     trigger: You write the strategy section of the guidelines.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-identity-prism
     trigger: You describe the identity of the brand in the guidelines.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-positioning-statement
     trigger: You write the positioning statement of the brand.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: visual-identity
     trigger: You list the colors, the typefaces, and the logo variants that the brand allows.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-logo
     trigger: You write the logo section of the guidelines.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: color-roles
     trigger: You write the color section of the guidelines.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: type-scale
     trigger: You write the typography section of the guidelines.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-voice
     trigger: You write the voice and tone section of the guidelines.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-systems
     trigger: You store the brand values as design tokens.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-guidelines
     trigger: You structure or publish the guidelines.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-architecture
     trigger: The company has more than one brand, product name, or sub-brand.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: accessibility
     trigger: You check the contrast of a pair of brand colors.
 ---

@@ -1,6 +1,6 @@
 ---
 id: postmortem
-kind: ka:Concept
+kind: densho:Concept
 title: Postmortem
 status: proposed
 origin: template

@@ -103,7 +103,7 @@ def _pull_promotion(old: Entity, new: Entity) -> Problem | None:
         return None
     message = (
         f"This commit pulls a template change and accepts {new.label}. "
-        "A pull cannot accept an entity. Run ka adopt, commit the pull, "
+        "A pull cannot accept an entity. Run densho adopt, commit the pull, "
         "and accept it in a later commit."
     )
     return _report(new, "pull-promotion", message)

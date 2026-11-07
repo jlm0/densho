@@ -1,6 +1,6 @@
 ---
 id: material-design
-kind: ka:Concept
+kind: densho:Concept
 title: Material Design
 status: proposed
 origin: template

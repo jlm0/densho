@@ -1,6 +1,6 @@
 ---
 id: change-rules
-kind: ka:Concept
+kind: densho:Concept
 title: Change rules
 status: proposed
 origin: template

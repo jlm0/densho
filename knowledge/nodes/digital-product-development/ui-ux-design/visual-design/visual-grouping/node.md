@@ -1,6 +1,6 @@
 ---
 id: visual-grouping
-kind: ka:Concept
+kind: densho:Concept
 title: Visual grouping
 status: proposed
 origin: template

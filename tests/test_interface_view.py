@@ -89,19 +89,19 @@ SKILL_DESCRIPTION = "Review a sample. Use when a sample needs a review."
 
 def node(
     node_id: str,
-    kind: str = "ka:Domain",
+    kind: str = "densho:Domain",
     *,
     front: str = "",
     rules: str = "",
     body: str = "",
     **fields: str,
 ) -> str:
-    extra = "knowledge_type: domain\n" if kind != "ka:Root" else ""
+    extra = "knowledge_type: domain\n" if kind != "densho:Root" else ""
     title = fields.get("title", node_id.title())
     status = fields.get("status", "proposed")
     text = f"---\nid: {node_id}\nkind: {kind}\ntitle: {title}\n"
     text += f"status: {status}\norigin: template\n{extra}{front}---\n"
-    if kind not in {"ka:Root", "ka:Skill"}:
+    if kind not in {"densho:Root", "densho:Skill"}:
         text += f"\n## Definition\n\nThe meaning of {node_id}.\n"
     if rules:
         text += f"\n## Directives\n\n{rules}"
@@ -123,7 +123,7 @@ def rule(
 
 
 def text_pointer(target: str) -> str:
-    return f"  - kind: ka:TextPointer\n    target: {target}\n    trigger: You need {target}.\n"
+    return f"  - kind: densho:TextPointer\n    target: {target}\n    trigger: You need {target}.\n"
 
 
 def pointers(*targets: str) -> str:
@@ -133,7 +133,7 @@ def pointers(*targets: str) -> str:
 SAMPLE = {
     "knowledge/node.md": node(
         "root",
-        "ka:Root",
+        "densho:Root",
         title="The root",
         front=pointers("alpha", "gamma"),
         body="## Architecture\n\nA fact about the root.\n",
@@ -145,7 +145,7 @@ SAMPLE = {
     ),
     "knowledge/nodes/alpha/beta/node.md": node(
         "beta",
-        "ka:Concept",
+        "densho:Concept",
         front=(
             "broader: [alpha]\nexceptions:\n"
             "  - directive: keep\n    reason: A reason for beta.\n    status: proposed\n"
@@ -155,7 +155,7 @@ SAMPLE = {
     "knowledge/nodes/gamma/node.md": node("gamma"),
     "knowledge/skills/review/node.md": node(
         "review",
-        "ka:Skill",
+        "densho:Skill",
         front=(
             "description: Review a sample. Use when a sample needs a review.\n"
             "invocation: agent\nuses: [beta]\n" + pointers("beta")
@@ -301,18 +301,18 @@ def hostile_tree(payload: str) -> dict[str, str]:
     return {
         "knowledge/node.md": node(
             "root",
-            "ka:Root",
+            "densho:Root",
             title=quoted,
             front=(
-                "pointers:\n  - kind: ka:TextPointer\n    target: alpha\n"
+                "pointers:\n  - kind: densho:TextPointer\n    target: alpha\n"
                 f"    trigger: {quoted}\n"
-                "  - kind: ka:PathPointer\n    target: review\n"
+                "  - kind: densho:PathPointer\n    target: review\n"
                 f"    trigger: {quoted}\n    paths:\n      - {quoted}\n"
             ),
             body=f"Intro {payload} outro.\n",
         ),
         "knowledge/nodes/alpha/node.md": (
-            f"---\nid: alpha\nkind: ka:Domain\ntitle: {quoted}\nstatus: proposed\n"
+            f"---\nid: alpha\nkind: densho:Domain\ntitle: {quoted}\nstatus: proposed\n"
             f"origin: template\nknowledge_type: domain\nsources:\n  - {quoted}\n---\n\n"
             f"## Definition\n\nIntro {payload} outro.\n\n## Directives\n\n"
             + rule(
@@ -324,7 +324,7 @@ def hostile_tree(payload: str) -> dict[str, str]:
         ),
         "knowledge/nodes/alpha/beta/node.md": node(
             "beta",
-            "ka:Concept",
+            "densho:Concept",
             title=quoted,
             front=(
                 "broader: [alpha]\nexceptions:\n  - directive: hostile-rule\n"
@@ -333,7 +333,7 @@ def hostile_tree(payload: str) -> dict[str, str]:
         ),
         "knowledge/skills/review/node.md": node(
             "review",
-            "ka:Skill",
+            "densho:Skill",
             title=quoted,
             front=f"description: {quoted}\ninvocation: agent\nuses: [beta]\n",
             body=f"Intro {payload} outro.\n",
@@ -365,9 +365,9 @@ def test_a_hostile_value_appears_as_text() -> None:
 def test_a_hostile_value_that_passes_each_check_stays_safe(tmp_path: Path) -> None:
     image = f"<img src=x onerror={PWNED}>"
     sources = {
-        "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha")),
+        "knowledge/node.md": node("root", "densho:Root", front=pointers("alpha")),
         "knowledge/nodes/alpha/node.md": (
-            f"---\nid: alpha\nkind: ka:Domain\ntitle: {json.dumps(image)}\nstatus: proposed\n"
+            f"---\nid: alpha\nkind: densho:Domain\ntitle: {json.dumps(image)}\nstatus: proposed\n"
             "origin: template\nknowledge_type: domain\n---\n\n"
             f"## Definition\n\nA {image} value.\n\n"
             f"## Notes\n\nA [link](javascript:{PWNED}) and {image} here.\n"
@@ -611,10 +611,10 @@ def test_the_tree_opens_the_top_levels_only() -> None:
     sources = {
         **SAMPLE,
         "knowledge/nodes/alpha/beta/deep/node.md": node(
-            "deep", "ka:Concept", front="broader: [beta]\n"
+            "deep", "densho:Concept", front="broader: [beta]\n"
         ),
         "knowledge/nodes/alpha/beta/node.md": node(
-            "beta", "ka:Concept", front="broader: [alpha]\n" + pointers("deep")
+            "beta", "densho:Concept", front="broader: [alpha]\n" + pointers("deep")
         ),
     }
     page = site_of(sources)["index.html"]
@@ -626,12 +626,12 @@ def test_a_node_with_two_parents_says_that_it_is_listed_above() -> None:
     sources = {
         **SAMPLE,
         "knowledge/nodes/alpha/beta/node.md": node(
-            "beta", "ka:Concept", front="broader: [alpha, gamma]\n"
+            "beta", "densho:Concept", front="broader: [alpha, gamma]\n"
         ),
     }
     sources["knowledge/skills/review/node.md"] = node(
         "review",
-        "ka:Skill",
+        "densho:Skill",
         front=f"description: {SKILL_DESCRIPTION}\ninvocation: agent\nuses: [beta]\n",
     )
     page = site_of(sources)["index.html"]
@@ -648,7 +648,7 @@ def test_the_first_page_states_what_is_in_force() -> None:
 
 def test_the_counts_use_each_singular() -> None:
     sources = {
-        "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha")),
+        "knowledge/node.md": node("root", "densho:Root", front=pointers("alpha")),
         "knowledge/nodes/alpha/node.md": node("alpha", status="accepted"),
     }
     page = site_of(sources)["index.html"]
@@ -657,7 +657,9 @@ def test_the_counts_use_each_singular() -> None:
 
 def test_no_proposal_shows_an_empty_queue() -> None:
     sources = {
-        "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha"), status="accepted"),
+        "knowledge/node.md": node(
+            "root", "densho:Root", front=pointers("alpha"), status="accepted"
+        ),
         "knowledge/nodes/alpha/node.md": node("alpha", status="accepted"),
     }
     site = site_of(sources)
@@ -696,7 +698,7 @@ def test_the_trail_runs_from_the_root_to_the_parent() -> None:
 
 
 ACCEPTED_SAMPLE = {
-    "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha")),
+    "knowledge/node.md": node("root", "densho:Root", front=pointers("alpha")),
     "knowledge/nodes/alpha/node.md": node(
         "alpha",
         front=pointers("beta"),
@@ -706,7 +708,7 @@ ACCEPTED_SAMPLE = {
     ),
     "knowledge/nodes/alpha/beta/node.md": node(
         "beta",
-        "ka:Concept",
+        "densho:Concept",
         front=(
             "broader: [alpha]\nexceptions:\n"
             "  - directive: firm\n    reason: A reason for firm.\n    status: proposed\n"
@@ -773,7 +775,7 @@ def test_an_exception_on_a_deprecated_directive_still_renders() -> None:
         **ACCEPTED_SAMPLE,
         "knowledge/nodes/alpha/beta/node.md": node(
             "beta",
-            "ka:Concept",
+            "densho:Concept",
             front=(
                 "broader: [alpha]\nexceptions:\n"
                 "  - directive: faded\n    reason: A reason for faded.\n    status: proposed\n"
@@ -788,7 +790,7 @@ def test_an_exception_on_a_deprecated_directive_still_renders() -> None:
 
 def test_each_edge_of_a_directive_and_a_node_links_to_its_target() -> None:
     sources = {
-        "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha", "gamma")),
+        "knowledge/node.md": node("root", "densho:Root", front=pointers("alpha", "gamma")),
         "knowledge/nodes/alpha/node.md": node(
             "alpha",
             front="related: [gamma]\n",
@@ -802,7 +804,7 @@ def test_each_edge_of_a_directive_and_a_node_links_to_its_target() -> None:
         "knowledge/nodes/gamma/node.md": node("gamma"),
         "knowledge/skills/review/node.md": node(
             "review",
-            "ka:Skill",
+            "densho:Skill",
             front=(
                 "description: Review a sample. Use when a sample needs a review.\n"
                 "invocation: agent\n"
@@ -826,9 +828,9 @@ def test_a_path_pointer_shows_its_patterns() -> None:
     sources = {
         "knowledge/node.md": node(
             "root",
-            "ka:Root",
+            "densho:Root",
             front=(
-                "pointers:\n  - kind: ka:PathPointer\n    target: alpha\n"
+                "pointers:\n  - kind: densho:PathPointer\n    target: alpha\n"
                 '    trigger: You need alpha.\n    paths:\n      - "src/**/*"\n'
             ),
         ),
@@ -843,16 +845,16 @@ def test_the_generated_file_of_a_rule_and_a_skill_are_named() -> None:
     sources = {
         "knowledge/node.md": node(
             "root",
-            "ka:Root",
+            "densho:Root",
             front=(
-                "pointers:\n  - kind: ka:AlwaysPointer\n    target: alpha\n"
+                "pointers:\n  - kind: densho:AlwaysPointer\n    target: alpha\n"
                 "    trigger: You need alpha.\n"
             ),
         ),
         "knowledge/nodes/alpha/node.md": node("alpha"),
         "knowledge/skills/review/node.md": node(
             "review",
-            "ka:Skill",
+            "densho:Skill",
             front=f"description: {SKILL_DESCRIPTION}\ninvocation: agent\nuses: [alpha]\n",
         ),
     }
@@ -884,18 +886,18 @@ def test_the_queue_keeps_a_branch_together() -> None:
 def test_the_queue_names_the_command_for_each_group() -> None:
     page = site_of(SAMPLE)["review.html"]
     alpha = page.split('id="node-alpha"')[1].split("</section>")[0]
-    assert "uv run ka accept alpha keep wait</code>" in alpha
-    assert "uv run ka accept --subtree alpha</code>" in alpha
+    assert "uv run densho accept alpha keep wait</code>" in alpha
+    assert "uv run densho accept --subtree alpha</code>" in alpha
     assert "with 6 waiting" in alpha
     beta = page.split('id="node-beta"')[1].split("</section>")[0]
-    assert "uv run ka accept beta bound beta:keep</code>" in beta
+    assert "uv run densho accept beta bound beta:keep</code>" in beta
     assert "--subtree beta" not in beta
-    assert "<code>uv run ka runtime</code>" in page
+    assert "<code>uv run densho runtime</code>" in page
 
 
 def test_the_queue_has_a_row_for_each_branch() -> None:
     page = site_of(SAMPLE)["review.html"]
-    assert "uv run ka accept --subtree root</code>" in page
+    assert "uv run densho accept --subtree root</code>" in page
     branches = page.split("<h2>Branches</h2>")[1].split("<h2>By node</h2>")[0]
     assert "the whole graph, 9 waiting" in branches
     assert "--subtree alpha" in branches
@@ -918,7 +920,7 @@ def test_the_queue_leaves_out_an_accepted_exception() -> None:
         **ACCEPTED_SAMPLE,
         "knowledge/nodes/alpha/beta/node.md": node(
             "beta",
-            "ka:Concept",
+            "densho:Concept",
             front=(
                 "broader: [alpha]\nexceptions:\n"
                 "  - directive: firm\n    reason: A reason for firm.\n    status: accepted\n"
@@ -937,12 +939,12 @@ def test_the_queue_shows_a_node_with_two_parents_once() -> None:
     sources = {
         **SAMPLE,
         "knowledge/nodes/alpha/beta/node.md": node(
-            "beta", "ka:Concept", front="broader: [alpha, gamma]\n"
+            "beta", "densho:Concept", front="broader: [alpha, gamma]\n"
         ),
     }
     sources["knowledge/skills/review/node.md"] = node(
         "review",
-        "ka:Skill",
+        "densho:Skill",
         front=f"description: {SKILL_DESCRIPTION}\ninvocation: agent\nuses: [beta]\n",
     )
     page = site_of(sources)["review.html"]
@@ -951,7 +953,7 @@ def test_the_queue_shows_a_node_with_two_parents_once() -> None:
 
 def test_the_queue_leaves_out_a_node_with_nothing_proposed() -> None:
     sources = {
-        "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha")),
+        "knowledge/node.md": node("root", "densho:Root", front=pointers("alpha")),
         "knowledge/nodes/alpha/node.md": node("alpha", status="accepted"),
     }
     page = site_of(sources)["review.html"]
@@ -961,11 +963,13 @@ def test_the_queue_leaves_out_a_node_with_nothing_proposed() -> None:
 
 def test_a_proposed_directive_on_an_accepted_node_is_named_without_the_node() -> None:
     sources = {
-        "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha"), status="accepted"),
+        "knowledge/node.md": node(
+            "root", "densho:Root", front=pointers("alpha"), status="accepted"
+        ),
         "knowledge/nodes/alpha/node.md": node("alpha", status="accepted", rules=rule("wait")),
     }
     page = site_of(sources)["review.html"]
-    assert "uv run ka accept wait</code>" in page
+    assert "uv run densho accept wait</code>" in page
     assert "The status of this node covers" not in page
 
 
@@ -1007,12 +1011,12 @@ def test_the_queue_limits_the_list_of_what_a_directive_reaches() -> None:
     extra_count = REACH_LISTED + 4
     names = [f"leaf{chr(ord('a') + index)}" for index in range(extra_count)]
     sources = {
-        "knowledge/node.md": node("root", "ka:Root", front=pointers("alpha")),
+        "knowledge/node.md": node("root", "densho:Root", front=pointers("alpha")),
         "knowledge/nodes/alpha/node.md": node("alpha", front=pointers(*names), rules=rule("wide")),
     }
     for name in names:
         sources[f"knowledge/nodes/alpha/{name}/node.md"] = node(
-            name, "ka:Concept", front="broader: [alpha]\n"
+            name, "densho:Concept", front="broader: [alpha]\n"
         )
     page = site_of(sources)["review.html"]
     entry = page.split("<code>wide</code>")[1].split("</li>")[0]
@@ -1044,14 +1048,14 @@ def test_the_queue_says_that_a_person_runs_the_command() -> None:
 
 def test_a_project_page_names_the_project_command(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    (tmp_path / "knowledge/.ka").mkdir(parents=True, exist_ok=True)
-    (tmp_path / "knowledge/.ka/ka").write_text("#!/bin/sh\n", encoding="utf-8")
+    (tmp_path / "knowledge/.densho").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "knowledge/.densho/densho").write_text("#!/bin/sh\n", encoding="utf-8")
     report = write_view(tmp_path)
     assert report.problems == []
     page = (tmp_path / VIEW_FOLDER / "review.html").read_text(encoding="utf-8")
-    assert "knowledge/.ka/ka accept --subtree alpha</code>" in page
-    assert "<code>knowledge/.ka/ka runtime</code>" in page
-    assert "uv run ka" not in page
+    assert "knowledge/.densho/densho accept --subtree alpha</code>" in page
+    assert "<code>knowledge/.densho/densho runtime</code>" in page
+    assert "uv run densho" not in page
 
 
 def test_each_page_carries_the_marker_and_the_policy() -> None:
@@ -1291,14 +1295,14 @@ def test_a_deep_chain_renders() -> None:
     sources = {
         "knowledge/node.md": node(
             "root",
-            "ka:Root",
+            "densho:Root",
             front=pointers(*(f"n{index}" for index in range(depth))),
         ),
         "knowledge/nodes/n0/node.md": node("n0"),
     }
     for index in range(1, depth):
         sources[f"knowledge/nodes/n{index}/node.md"] = node(
-            f"n{index}", "ka:Concept", front=f"broader: [n{index - 1}]\n"
+            f"n{index}", "densho:Concept", front=f"broader: [n{index - 1}]\n"
         )
     files = render_site(parsed(sources), Path())
     assert len(files) == depth + 3
@@ -1314,7 +1318,7 @@ def test_a_rejected_entity_stays_out_of_the_site() -> None:
         **SAMPLE,
         "knowledge/nodes/alpha/old/node.md": node(
             "old",
-            "ka:Concept",
+            "densho:Concept",
             title="Thrown out",
             status="rejected",
             front="broader: [alpha]\nrejection_reason: No need.\n",

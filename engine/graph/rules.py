@@ -57,7 +57,7 @@ def _placement_problem(item: ParsedNode, root_file: Path, repository: Path) -> P
     if isinstance(item.node, Root):
         message = None if item.path == root_file else f"Move the root node to {root_file}."
     elif item.path == root_file:
-        message = "Only the root node can use this file. Set kind to ka:Root or move this node."
+        message = "Only the root node can use this file. Set kind to densho:Root or move this node."
     elif isinstance(item.node, Skill):
         message = None if item.path.is_relative_to(skills) else f"Move this skill to {skills}."
     elif item.path.is_relative_to(skills):

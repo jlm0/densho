@@ -1,6 +1,6 @@
 ---
 id: design-systems
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Design systems
 status: proposed
 origin: template
@@ -13,10 +13,10 @@ broader:
 informs:
   - software-engineering
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: design-tokens
     trigger: You name, store, or reference a color, a size, a space, or a type style.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: atomic-design
     trigger: You build, combine, or test the components of a design system.
 ---

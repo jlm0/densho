@@ -1,6 +1,6 @@
 ---
 id: fitts-law
-kind: ka:Concept
+kind: densho:Concept
 title: Fitts's law
 status: proposed
 origin: template

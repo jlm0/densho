@@ -77,16 +77,16 @@ def rule(directive_id: str, status: str = "accepted", scope: str = "subtree") ->
 
 def node(
     node_id: str,
-    kind: str = "ka:Domain",
+    kind: str = "densho:Domain",
     *,
     front: str = "",
     rules: Iterable[str] = (),
     body: str = "",
 ) -> str:
-    extra = "knowledge_type: domain\n" if kind != "ka:Root" else ""
+    extra = "knowledge_type: domain\n" if kind != "densho:Root" else ""
     text = f"---\nid: {node_id}\nkind: {kind}\ntitle: {node_id}\nstatus: proposed\n"
     text += f"origin: template\n{extra}{front}---\n"
-    if kind not in {"ka:Root", "ka:Skill"}:
+    if kind not in {"densho:Root", "densho:Skill"}:
         text += f"\n## Definition\n\nThe meaning of {node_id}.\n"
     joined = "".join(rules)
     if joined:
@@ -95,7 +95,7 @@ def node(
 
 
 def pointer(kind: str, target_id: str, *patterns: str) -> str:
-    text = f"  - kind: ka:{kind}\n    target: {target_id}\n    trigger: You need {target_id}.\n"
+    text = f"  - kind: densho:{kind}\n    target: {target_id}\n    trigger: You need {target_id}.\n"
     if patterns:
         text += "    paths:\n" + "".join(f'      - "{pattern}"\n' for pattern in patterns)
     return text
@@ -112,7 +112,7 @@ SKILL_FRONT = (
 SAMPLE = {
     "knowledge/node.md": node(
         "root",
-        "ka:Root",
+        "densho:Root",
         front=pointers(
             pointer("TextPointer", "alpha"),
             pointer("PathPointer", "gamma", "src/**/*"),
@@ -128,7 +128,7 @@ SAMPLE = {
     ),
     "knowledge/nodes/alpha/beta/node.md": node(
         "beta",
-        "ka:Concept",
+        "densho:Concept",
         front=(
             "broader: [alpha]\nexceptions:\n"
             "  - directive: wait\n    reason: A reason for wait.\n    status: proposed\n"
@@ -147,11 +147,11 @@ SAMPLE = {
         front="governs: [policies, lifecycle]\n" + pointers(pointer("TextPointer", "lifecycle")),
     ),
     "knowledge/governance/policies/lifecycle/node.md": node(
-        "lifecycle", "ka:Concept", front="broader: [policies]\ngoverns: [lifecycle]\n"
+        "lifecycle", "densho:Concept", front="broader: [policies]\ngoverns: [lifecycle]\n"
     ),
     "knowledge/skills/review/node.md": node(
         "review",
-        "ka:Skill",
+        "densho:Skill",
         front=SKILL_FRONT + pointers(pointer("TextPointer", "gamma")),
         rules=[rule("own-rule", scope="node")],
         body=SKILL_BODY,
@@ -310,7 +310,10 @@ def test_a_reference_page_holds_the_definition_and_the_body() -> None:
     sources = {
         **SAMPLE,
         "knowledge/nodes/alpha/beta/node.md": node(
-            "beta", "ka:Concept", front="broader: [alpha]\n", body="## Notes\n\nThe body of beta.\n"
+            "beta",
+            "densho:Concept",
+            front="broader: [alpha]\n",
+            body="## Notes\n\nThe body of beta.\n",
         ),
     }
     text = rendered(sources)[".claude/references/beta.md"].text
@@ -356,7 +359,7 @@ def test_the_root_lists_a_domain_that_it_has_no_pointer_to() -> None:
     sources = {
         **SAMPLE,
         "knowledge/node.md": node(
-            "root", "ka:Root", front=pointers(pointer("TextPointer", "policies"))
+            "root", "densho:Root", front=pointers(pointer("TextPointer", "policies"))
         ),
     }
     text = rendered(sources)["AGENTS.md"].text
@@ -372,7 +375,7 @@ def test_the_root_names_each_skill_with_its_description() -> None:
 def test_the_root_leaves_out_an_empty_section() -> None:
     sources = {
         "knowledge/node.md": node(
-            "root", "ka:Root", front=pointers(pointer("TextPointer", "lone"))
+            "root", "densho:Root", front=pointers(pointer("TextPointer", "lone"))
         ),
         "knowledge/nodes/lone/node.md": node("lone"),
     }
@@ -389,7 +392,7 @@ def test_the_root_holds_a_pointer_to_a_node_that_is_not_a_domain() -> None:
         **SAMPLE,
         "knowledge/node.md": node(
             "root",
-            "ka:Root",
+            "densho:Root",
             front=pointers(pointer("TextPointer", "alpha"), pointer("TextPointer", "beta")),
         ),
     }
@@ -435,7 +438,7 @@ def test_the_root_counts_what_is_in_force_in_each_result() -> None:
 def test_the_root_lists_a_directive_that_it_holds() -> None:
     root = node(
         "root",
-        "ka:Root",
+        "densho:Root",
         front=pointers(pointer("TextPointer", "alpha")),
         rules=[rule("root-rule", scope="node")],
     )
@@ -531,7 +534,7 @@ def test_a_pointer_line_follows_its_mechanism() -> None:
             **SAMPLE,
             "knowledge/node.md": node(
                 "root",
-                "ka:Root",
+                "densho:Root",
                 front=pointers(
                     pointer("TextPointer", "alpha"),
                     pointer("PathPointer", "beta", "src/**/*"),
@@ -587,7 +590,7 @@ def test_a_skill_links_each_node_that_it_uses() -> None:
         **SAMPLE,
         "knowledge/skills/review/node.md": node(
             "review",
-            "ka:Skill",
+            "densho:Skill",
             front=front + pointers(pointer("TextPointer", "gamma")),
             body=SKILL_BODY,
         ),
@@ -662,7 +665,10 @@ def test_a_template_expression_in_a_node_stays_literal() -> None:
 def test_a_description_that_breaks_plain_yaml_stays_one_string() -> None:
     description = "'Review: \"a\" sample, #1. Use when\n  a sample: needs a review.'"
     front = f"description: {description}\ninvocation: agent\nuses: [gamma]\n"
-    sources = {**SAMPLE, "knowledge/skills/review/node.md": node("review", "ka:Skill", front=front)}
+    sources = {
+        **SAMPLE,
+        "knowledge/skills/review/node.md": node("review", "densho:Skill", front=front),
+    }
     text = rendered(sources)[".claude/skills/review/SKILL.md"].text
     assert (
         front_matter(text)["description"]
@@ -675,7 +681,10 @@ def test_a_description_keeps_each_character_that_is_not_ascii() -> None:
         "description: Review a café sample. Use when a sample needs a review.\n"
         "invocation: agent\nuses: [gamma]\n"
     )
-    sources = {**SAMPLE, "knowledge/skills/review/node.md": node("review", "ka:Skill", front=front)}
+    sources = {
+        **SAMPLE,
+        "knowledge/skills/review/node.md": node("review", "densho:Skill", front=front),
+    }
     assert (
         "café" in rendered(sources)[".claude/skills/review/SKILL.md"].text.partition("\n---\n")[0]
     )
@@ -838,7 +847,7 @@ def test_too_many_directives_at_a_skill_give_a_size_problem(tmp_path: Path) -> N
     sources = {
         **SAMPLE,
         "knowledge/skills/review/node.md": node(
-            "review", "ka:Skill", front=SKILL_FRONT, rules=long_rules, body=SKILL_BODY
+            "review", "densho:Skill", front=SKILL_FRONT, rules=long_rules, body=SKILL_BODY
         ),
     }
     entries = rendered(sources)
@@ -853,7 +862,9 @@ def skill_with_body_lines(count: int) -> dict[str, str]:
     body = SKILL_BODY + "\n## Notes\n\n" + "".join(f"- Note {n}.\n" for n in range(count))
     return {
         **SAMPLE,
-        "knowledge/skills/review/node.md": node("review", "ka:Skill", front=SKILL_FRONT, body=body),
+        "knowledge/skills/review/node.md": node(
+            "review", "densho:Skill", front=SKILL_FRONT, body=body
+        ),
     }
 
 
@@ -905,7 +916,7 @@ def test_a_line_separator_in_a_skill_body_does_not_end_a_line(tmp_path: Path) ->
         {
             **SAMPLE,
             "knowledge/skills/review/node.md": node(
-                "review", "ka:Skill", front=SKILL_FRONT, body=body
+                "review", "densho:Skill", front=SKILL_FRONT, body=body
             ),
         }
     )
@@ -925,7 +936,9 @@ def test_a_long_procedure_gives_no_size_problem(tmp_path: Path) -> None:
     body = SKILL_BODY + "\n## Notes\n\n" + "A long note. " * 2_000 + "\n"
     sources = {
         **SAMPLE,
-        "knowledge/skills/review/node.md": node("review", "ka:Skill", front=SKILL_FRONT, body=body),
+        "knowledge/skills/review/node.md": node(
+            "review", "densho:Skill", front=SKILL_FRONT, body=body
+        ),
     }
     entry = rendered(sources)[".claude/skills/review/SKILL.md"]
     assert len(entry.text) > SKILL_KEPT_CHARACTERS
@@ -991,12 +1004,12 @@ def test_a_run_removes_its_own_stale_files_and_only_its_own(tmp_path: Path) -> N
         "alpha", front=pointers(pointer("TextPointer", "beta")), rules=[rule("keep")]
     )
     without_review["knowledge/nodes/alpha/beta/node.md"] = node(
-        "beta", "ka:Concept", front="broader: [alpha]\n"
+        "beta", "densho:Concept", front="broader: [alpha]\n"
     )
     del without_review["knowledge/nodes/delta/node.md"]
     without_review["knowledge/node.md"] = node(
         "root",
-        "ka:Root",
+        "densho:Root",
         front=pointers(
             pointer("TextPointer", "alpha"),
             pointer("TextPointer", "gamma"),
@@ -1503,7 +1516,7 @@ def test_the_other_hooks_exclude_each_generated_file_and_no_other_file() -> None
 def test_the_hook_runs_on_each_commit_and_verifies() -> None:
     local = next(repo for repo in hook_config()["repos"] if repo["repo"] == "local")
     hook = next(entry for entry in local["hooks"] if entry["id"] == "runtime-files")
-    assert hook["entry"] == "uv run --frozen ka runtime --verify"
+    assert hook["entry"] == "uv run --frozen densho runtime --verify"
     assert hook["always_run"] is True
     assert hook["pass_filenames"] is False
     assert hook["verbose"] is True
@@ -1527,7 +1540,7 @@ def test_the_real_root_names_the_domains_the_governance_and_each_skill() -> None
 
 def test_the_real_root_holds_no_setup_and_no_command() -> None:
     text = (REPO / "AGENTS.md").read_text(encoding="utf-8")
-    for word in ("uv run", "uv sync", "pre-commit", "pyproject", "ka build", "pytest"):
+    for word in ("uv run", "uv sync", "pre-commit", "pyproject", "densho build", "pytest"):
         assert word not in text
 
 
@@ -1721,12 +1734,12 @@ def test_a_removed_scripts_folder_removes_each_copy_and_the_folder(tmp_path: Pat
 
 
 def test_a_removed_skill_removes_its_copied_scripts(tmp_path: Path) -> None:
-    tool = node("tool", "ka:Skill", front=SKILL_FRONT, rules=[rule("tool-rule", scope="node")])
+    tool = node("tool", "densho:Skill", front=SKILL_FRONT, rules=[rule("tool-rule", scope="node")])
     with_tool = {
         **SAMPLE,
         "knowledge/node.md": node(
             "root",
-            "ka:Root",
+            "densho:Root",
             front=pointers(
                 pointer("TextPointer", "alpha"),
                 pointer("PathPointer", "gamma", "src/**/*"),
@@ -1908,14 +1921,14 @@ def test_the_command_prints_the_pending_count(tmp_path: Path) -> None:
     result = RUNNER.invoke(app, ["runtime", str(tmp_path)])
     assert result.exit_code == 0
     assert (
-        f"{count} entities wait for review. Run uv run ka governance --pending to list them.\n"
+        f"{count} entities wait for review. Run uv run densho governance --pending to list them.\n"
         in result.output
     )
-    launcher = tmp_path / "knowledge/.ka/ka"
+    launcher = tmp_path / "knowledge/.densho/densho"
     launcher.parent.mkdir(parents=True)
     launcher.write_text("#!/bin/sh\n", encoding="utf-8")
     result = RUNNER.invoke(app, ["runtime", str(tmp_path)])
-    assert "Run knowledge/.ka/ka governance --pending" in result.output
+    assert "Run knowledge/.densho/densho governance --pending" in result.output
 
 
 def test_the_command_prints_no_count_after_a_failed_compile(tmp_path: Path) -> None:

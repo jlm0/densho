@@ -1,6 +1,6 @@
 ---
 id: ui-ux-design
-kind: ka:Discipline
+kind: densho:Discipline
 title: UI/UX design
 status: proposed
 origin: template
@@ -10,37 +10,37 @@ broader:
 informs:
   - software-engineering
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: information-architecture
     trigger: You organize or name the content of a product.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: interaction-design
     trigger: You decide how an interface responds to a person.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: visual-design
     trigger: You decide how a screen looks.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: accessibility
     trigger: You build a control, a form, a text style, a color choice, or media.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: responsive-design
     trigger: You fit a layout to a screen size.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: platform-conventions
     trigger: You design for a specific operating system or with its components.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: design-systems
     trigger: You build or use the tokens and the components of a design system.
-  - kind: ka:SkillPointer
+  - kind: densho:SkillPointer
     target: design-settings-interface
     trigger: You design or change a settings screen.
-  - kind: ka:SkillPointer
+  - kind: densho:SkillPointer
     target: review-screen-hierarchy
     trigger: A screen design is ready for review.
-  - kind: ka:SkillPointer
+  - kind: densho:SkillPointer
     target: review-usability
     trigger: A flow is ready for a usability review.
-  - kind: ka:SkillPointer
+  - kind: densho:SkillPointer
     target: audit-accessibility
     trigger: A screen, a component, or a flow needs an accessibility check.
 ---

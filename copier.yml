@@ -19,11 +19,11 @@ _skip_if_exists:
   - "/.gitignore"
   - "{% if started_from == _copier_conf.vcs_ref_hash %}/.pre-commit-config.yaml{% endif %}"
 _tasks:
-  - command: ["knowledge/.ka/ka", "select"]
+  - command: ["knowledge/.densho/densho", "select"]
     when: "{{ _copier_operation == 'update' }}"
-  - command: ["knowledge/.ka/ka", "adopt", "--keep-accepted"]
+  - command: ["knowledge/.densho/densho", "adopt", "--keep-accepted"]
     when: "{{ _copier_operation == 'copy' and keep_template_status }}"
-  - command: ["knowledge/.ka/ka", "adopt"]
+  - command: ["knowledge/.densho/densho", "adopt"]
     when: "{{ _copier_operation == 'copy' and not keep_template_status }}"
 _message_after_copy: |
   The project now owns this copy. To run the checks on each commit:
@@ -40,15 +40,15 @@ _message_after_copy: |
   Each entity starts as a proposal, so nothing is in force yet. To read and accept them:
   {%- endif %}
 
-    knowledge/.ka/ka view
-    knowledge/.ka/ka accept --subtree <node-id>
+    knowledge/.densho/densho view
+    knowledge/.densho/densho accept --subtree <node-id>
 
   The first command writes a site to build/view/. A person runs the second one, reads git diff,
-  runs knowledge/.ka/ka runtime, and commits the result.
+  runs knowledge/.densho/densho runtime, and commits the result.
 _message_after_update: |
   Resolve each conflict, and remove each conflict marker. Then run:
 
-    knowledge/.ka/ka adopt
+    knowledge/.densho/densho adopt
 
   Then read the result, stage the files, and commit them.
 

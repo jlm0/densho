@@ -1,6 +1,6 @@
 ---
 id: software-reliability
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Reliability
 status: proposed
 origin: template
@@ -10,13 +10,13 @@ sources:
 broader:
   - software-engineering
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: service-level-objective
     trigger: You set a reliability target for a service.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: error-budget
     trigger: You plan a release of a service that has an SLO.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: postmortem
     trigger: You write the record of an incident.
 ---

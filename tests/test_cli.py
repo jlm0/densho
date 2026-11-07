@@ -19,7 +19,7 @@ GRAMMAR = PROFILE.grammar
 RUNNER = CliRunner()
 NODE = """---
 id: sample
-kind: ka:Domain
+kind: densho:Domain
 title: Sample
 status: accepted
 origin: template
@@ -32,12 +32,12 @@ A sample.
 """
 ROOT = """---
 id: root
-kind: ka:Root
+kind: densho:Root
 title: Root
 status: accepted
 origin: template
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: sample
     trigger: You need the sample.
 ---
@@ -181,7 +181,7 @@ DIRECTIVE_NODE = (
 )
 CHILD = """---
 id: child
-kind: ka:Concept
+kind: densho:Concept
 title: Child
 status: accepted
 origin: template
@@ -200,7 +200,7 @@ A child.
 ROOT_WITH_CHILD = ROOT.replace(
     "    trigger: You need the sample.\n",
     "    trigger: You need the sample.\n"
-    "  - kind: ka:TextPointer\n    target: child\n    trigger: You need the child.\n",
+    "  - kind: densho:TextPointer\n    target: child\n    trigger: You need the child.\n",
 )
 
 
@@ -229,7 +229,7 @@ def test_directives_fails_and_prints_each_location(tmp_path: Path) -> None:
     other = NODE.replace("id: sample", "id: other")
     write_node(tmp_path / "knowledge/nodes/other", other)
     root = (tmp_path / "knowledge/node.md").read_text(encoding="utf-8")
-    pointer = "  - kind: ka:TextPointer\n    target: other\n    trigger: You need the other.\n"
+    pointer = "  - kind: densho:TextPointer\n    target: other\n    trigger: You need the other.\n"
     (tmp_path / "knowledge/node.md").write_text(
         root.replace("pointers:\n", f"pointers:\n{pointer}"), encoding="utf-8"
     )

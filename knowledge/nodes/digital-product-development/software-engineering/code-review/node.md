@@ -1,6 +1,6 @@
 ---
 id: code-review
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Code review
 status: proposed
 origin: template

@@ -1,6 +1,6 @@
 ---
 id: brand-identity-prism
-kind: ka:Concept
+kind: densho:Concept
 title: Brand identity prism
 status: proposed
 origin: template

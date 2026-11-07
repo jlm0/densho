@@ -94,7 +94,7 @@ def _discipline_problems(
 ) -> list[Problem]:
     known = {item.node.id for item in items if isinstance(item.node, Discipline)}
     if folder.name not in known:
-        message = f"{folder.name} is not the ID of a ka:Discipline node."
+        message = f"{folder.name} is not the ID of a densho:Discipline node."
         return [Problem(folder, 1, TASK_CODE, message)]
     canaries = [task for task in tasks if task.discipline == folder.name and task.canary]
     if len(canaries) != 1:

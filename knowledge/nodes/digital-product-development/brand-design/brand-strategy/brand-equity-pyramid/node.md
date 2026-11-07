@@ -1,6 +1,6 @@
 ---
 id: brand-equity-pyramid
-kind: ka:Concept
+kind: densho:Concept
 title: Brand equity pyramid
 status: proposed
 origin: template

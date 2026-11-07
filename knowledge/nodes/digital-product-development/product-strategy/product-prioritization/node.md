@@ -1,6 +1,6 @@
 ---
 id: product-prioritization
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Prioritization
 status: proposed
 origin: template
@@ -11,16 +11,16 @@ sources:
 broader:
   - product-strategy
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: rice-scoring
     trigger: You compare a long list of items for one goal.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: cost-of-delay
     trigger: You weigh the urgency of items against their value and their duration.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: kano-model
     trigger: You judge how a feature affects the satisfaction of customers.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: moscow-prioritization
     trigger: You set the scope of a timebox or a release with a fixed date.
 ---

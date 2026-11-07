@@ -15,31 +15,31 @@ ANSWERS = ".copier-answers.yml"
 NODES = {
     "knowledge/node.md": """---
 id: root
-kind: ka:Root
+kind: densho:Root
 title: Root
 status: proposed
 origin: template
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: domain
     trigger: You need the domain.
 ---
 """,
     "knowledge/nodes/domain/node.md": """---
 id: domain
-kind: ka:Domain
+kind: densho:Domain
 title: Domain
 status: proposed
 origin: template
 knowledge_type: domain
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: alpha
     trigger: You need alpha.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: beta
     trigger: You need beta.
-  - kind: ka:PathPointer
+  - kind: densho:PathPointer
     target: gamma
     trigger: You change a gamma file.
     paths:
@@ -52,7 +52,7 @@ The meaning of the domain.
 """,
     "knowledge/nodes/domain/alpha/node.md": """---
 id: alpha
-kind: ka:Discipline
+kind: densho:Discipline
 title: Alpha
 status: proposed
 origin: template
@@ -62,13 +62,13 @@ broader:
 informs:
   - beta
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: alpha-concept
     trigger: You need the alpha concept.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: alpha-other
     trigger: You need the other alpha concept.
-  - kind: ka:SkillPointer
+  - kind: densho:SkillPointer
     target: use-both
     trigger: You review alpha and beta.
 ---
@@ -79,7 +79,7 @@ The meaning of alpha.
 """,
     "knowledge/nodes/domain/alpha/concept/node.md": """---
 id: alpha-concept
-kind: ka:Concept
+kind: densho:Concept
 title: Alpha concept
 status: proposed
 origin: template
@@ -107,7 +107,7 @@ The meaning of the alpha concept.
 """,
     "knowledge/nodes/domain/alpha/other/node.md": """---
 id: alpha-other
-kind: ka:Concept
+kind: densho:Concept
 title: Alpha other
 status: proposed
 origin: template
@@ -122,7 +122,7 @@ The meaning of the other alpha concept.
 """,
     "knowledge/nodes/domain/beta/node.md": """---
 id: beta
-kind: ka:Discipline
+kind: densho:Discipline
 title: Beta
 status: proposed
 origin: template
@@ -130,7 +130,7 @@ knowledge_type: domain
 broader:
   - domain
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: beta-concept
     trigger: You need the beta concept.
 ---
@@ -141,7 +141,7 @@ The meaning of beta.
 """,
     "knowledge/nodes/domain/beta/concept/node.md": """---
 id: beta-concept
-kind: ka:Concept
+kind: densho:Concept
 title: Beta concept
 status: proposed
 origin: template
@@ -164,7 +164,7 @@ The meaning of the beta concept.
 """,
     "knowledge/nodes/domain/gamma/node.md": """---
 id: gamma
-kind: ka:Discipline
+kind: densho:Discipline
 title: Gamma
 status: proposed
 origin: template
@@ -181,7 +181,7 @@ The meaning of gamma.
 """,
     "knowledge/skills/use-alpha/node.md": """---
 id: use-alpha
-kind: ka:Skill
+kind: densho:Skill
 title: Use alpha
 status: proposed
 origin: template
@@ -194,7 +194,7 @@ uses:
 """,
     "knowledge/skills/use-both/node.md": """---
 id: use-both
-kind: ka:Skill
+kind: densho:Skill
 title: Use both
 status: proposed
 origin: template
@@ -208,7 +208,7 @@ uses:
 """,
     "knowledge/skills/apply-beta/node.md": """---
 id: apply-beta
-kind: ka:Skill
+kind: densho:Skill
 title: Apply beta
 status: proposed
 origin: template
@@ -221,7 +221,7 @@ applies:
 """,
     "knowledge/skills/use-domain/node.md": """---
 id: use-domain
-kind: ka:Skill
+kind: densho:Skill
 title: Use the domain
 status: proposed
 origin: template
@@ -528,7 +528,7 @@ def test_a_dash_on_its_own_line_stops_the_selection(tmp_path: Path) -> None:
     write_tree(tmp_path, "disciplines: [alpha, gamma]\n")
     relative = "knowledge/nodes/domain/node.md"
     text = text_of(tmp_path, relative).replace(
-        "  - kind: ka:PathPointer", "  -\n    kind: ka:PathPointer"
+        "  - kind: densho:PathPointer", "  -\n    kind: densho:PathPointer"
     )
     (tmp_path / relative).write_text(text, encoding="utf-8")
     before = snapshot(tmp_path)

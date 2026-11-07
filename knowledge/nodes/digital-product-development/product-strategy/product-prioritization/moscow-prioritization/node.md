@@ -1,6 +1,6 @@
 ---
 id: moscow-prioritization
-kind: ka:Concept
+kind: densho:Concept
 title: MoSCoW prioritization
 status: proposed
 origin: template

@@ -1,6 +1,6 @@
 ---
 id: progressive-disclosure
-kind: ka:Concept
+kind: densho:Concept
 title: Progressive disclosure
 status: proposed
 origin: template

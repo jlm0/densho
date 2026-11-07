@@ -1,6 +1,6 @@
 ---
 id: error-budget
-kind: ka:Concept
+kind: densho:Concept
 title: Error budget
 status: proposed
 origin: template

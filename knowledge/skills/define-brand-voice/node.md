@@ -1,6 +1,6 @@
 ---
 id: define-brand-voice
-kind: ka:Skill
+kind: densho:Skill
 title: Define the voice of a brand
 status: proposed
 origin: template
@@ -12,13 +12,13 @@ uses:
   - tone-of-voice-dimensions
   - brand-personality
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-voice
     trigger: You name the voice traits or write the tone guidance for a type of message.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: tone-of-voice-dimensions
     trigger: You place the tone on the four dimensions or test it with users.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-personality
     trigger: You describe the personality that the voice expresses.
 ---

@@ -1,6 +1,6 @@
 ---
 id: type-scale
-kind: ka:Concept
+kind: densho:Concept
 title: Type scale
 status: proposed
 origin: template

@@ -1,6 +1,6 @@
 ---
 id: product-risks
-kind: ka:Concept
+kind: densho:Concept
 title: Four product risks
 status: proposed
 origin: template

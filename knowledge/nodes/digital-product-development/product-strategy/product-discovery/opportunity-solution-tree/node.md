@@ -1,6 +1,6 @@
 ---
 id: opportunity-solution-tree
-kind: ka:Concept
+kind: densho:Concept
 title: Opportunity solution tree
 status: proposed
 origin: template

@@ -1,6 +1,6 @@
 ---
 id: responsive-design
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Responsive design
 status: proposed
 origin: template

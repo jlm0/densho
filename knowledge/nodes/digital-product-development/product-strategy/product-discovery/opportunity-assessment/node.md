@@ -1,6 +1,6 @@
 ---
 id: opportunity-assessment
-kind: ka:Concept
+kind: densho:Concept
 title: Product opportunity assessment
 status: proposed
 origin: template

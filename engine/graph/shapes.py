@@ -23,8 +23,8 @@ if TYPE_CHECKING:
     from engine.parser.result import FieldPath, ParsedNode, Problem
 
 GENERATED = Path(__file__).resolve().parents[1] / "generated"
-KA = Namespace("https://github.com/jlm0/knowledge-architecture/schema/")
-NODE_NAMESPACE = "https://github.com/jlm0/knowledge-architecture/node/"
+DENSHO = Namespace("https://github.com/jlm0/densho/schema/")
+NODE_NAMESPACE = "https://github.com/jlm0/densho/node/"
 
 
 @dataclass(frozen=True, slots=True)
@@ -51,7 +51,7 @@ def _entities(items: Sequence[ParsedNode]) -> dict[str, _Entity]:
         entities[item.node.id] = _Entity(item, item.node, (), item.node.kind)
         for position, directive in enumerate(item.node.directives or []):
             field_path = ("directives", position)
-            entities[directive.id] = _Entity(item, directive, field_path, "ka:Directive")
+            entities[directive.id] = _Entity(item, directive, field_path, "densho:Directive")
     return entities
 
 
@@ -122,13 +122,13 @@ def _focus_entity(
 ) -> _Entity | None:
     if not isinstance(focus, BNode):
         return entities.get(_local_id(focus))
-    excepting = entities.get(_local_id(data.value(predicate=KA.exceptions, object=focus)))
+    excepting = entities.get(_local_id(data.value(predicate=DENSHO.exceptions, object=focus)))
     if excepting is not None:
         return _exception_entity(excepting, value)
-    holder = entities.get(_local_id(data.value(predicate=KA.pointers, object=focus)))
+    holder = entities.get(_local_id(data.value(predicate=DENSHO.pointers, object=focus)))
     if holder is None:
         return None
-    kind = str(data.value(focus, RDF.type)).replace(str(KA), "ka:")
+    kind = str(data.value(focus, RDF.type)).replace(str(DENSHO), "densho:")
     for index, pointer in enumerate(holder.item.node.pointers or []):
         if pointer.target == _local_id(value) and pointer.kind == kind:
             return _Entity(holder.item, pointer, ("pointers", index), kind)
@@ -138,7 +138,9 @@ def _focus_entity(
 def _exception_entity(holder: _Entity, value: RdfTerm | None) -> _Entity | None:
     for index, exception in enumerate(exceptions_of(holder.item)):
         if exception.directive == _local_id(value):
-            return _Entity(holder.item, exception, ("exceptions", index), "ka:DirectiveException")
+            return _Entity(
+                holder.item, exception, ("exceptions", index), "densho:DirectiveException"
+            )
     return None
 
 

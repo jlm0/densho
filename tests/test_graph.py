@@ -9,7 +9,7 @@ from rdflib import RDF, SH, BNode, Graph, Literal, URIRef
 
 from engine.graph import check_graph, check_tree
 from engine.graph.references import EDGE_FIELDS, references_of
-from engine.graph.shapes import KA, NODE_NAMESPACE, check_shapes, report_problems
+from engine.graph.shapes import DENSHO, NODE_NAMESPACE, check_shapes, report_problems
 from engine.graph.structure import MAX_POINTER_HOPS
 from engine.parser import ParsedNode, parse_tree
 
@@ -28,11 +28,11 @@ DEPTH_LIMIT = 6
 
 
 def text_pointer(target: str) -> Fields:
-    return {"kind": "ka:TextPointer", "target": target, "trigger": "You need it."}
+    return {"kind": "densho:TextPointer", "target": target, "trigger": "You need it."}
 
 
 def skill_pointer(target: str) -> Fields:
-    return {"kind": "ka:SkillPointer", "target": target, "trigger": "You need it."}
+    return {"kind": "densho:SkillPointer", "target": target, "trigger": "You need it."}
 
 
 def directive(directive_id: str, **fields: object) -> Fields:
@@ -42,13 +42,13 @@ def directive(directive_id: str, **fields: object) -> Fields:
 SAMPLE: dict[str, Fields] = {
     "root": {
         "file": "knowledge/node.md",
-        "kind": "ka:Root",
+        "kind": "densho:Root",
         **GOVERNED,
         "pointers": [text_pointer("design"), skill_pointer("review")],
     },
     "design": {
         "file": "knowledge/nodes/design/node.md",
-        "kind": "ka:Domain",
+        "kind": "densho:Domain",
         **KNOWLEDGE,
         "pointers": [text_pointer("ui"), text_pointer("research")],
         "governs": ["root", "design"],
@@ -56,7 +56,7 @@ SAMPLE: dict[str, Fields] = {
     },
     "ui": {
         "file": "knowledge/nodes/design/ui/node.md",
-        "kind": "ka:Discipline",
+        "kind": "densho:Discipline",
         **KNOWLEDGE,
         "broader": ["design"],
         "pointers": [text_pointer("visual"), text_pointer("motion")],
@@ -65,7 +65,7 @@ SAMPLE: dict[str, Fields] = {
     },
     "research": {
         "file": "knowledge/nodes/design/research/node.md",
-        "kind": "ka:Discipline",
+        "kind": "densho:Discipline",
         **KNOWLEDGE,
         "broader": ["design"],
         "pointers": [text_pointer("ui")],
@@ -74,21 +74,21 @@ SAMPLE: dict[str, Fields] = {
     },
     "visual": {
         "file": "knowledge/nodes/design/ui/visual/node.md",
-        "kind": "ka:PracticeArea",
+        "kind": "densho:PracticeArea",
         **KNOWLEDGE,
         "broader": ["ui", "design"],
         "pointers": [text_pointer("hierarchy")],
     },
     "motion": {
         "file": "knowledge/nodes/design/ui/motion/node.md",
-        "kind": "ka:Concept",
+        "kind": "densho:Concept",
         **KNOWLEDGE,
         "broader": ["ui"],
         "depends_on": ["hierarchy"],
     },
     "hierarchy": {
         "file": "knowledge/nodes/design/ui/visual/hierarchy/node.md",
-        "kind": "ka:Concept",
+        "kind": "densho:Concept",
         **KNOWLEDGE,
         "broader": ["visual"],
         "related": ["motion"],
@@ -96,7 +96,7 @@ SAMPLE: dict[str, Fields] = {
     },
     "settings": {
         "file": "knowledge/nodes/settings/node.md",
-        "kind": "ka:Concept",
+        "kind": "densho:Concept",
         **GOVERNED,
         "knowledge_type": "workspace",
         "broader": ["hierarchy"],
@@ -104,7 +104,7 @@ SAMPLE: dict[str, Fields] = {
     },
     "review": {
         "file": "knowledge/skills/review/node.md",
-        "kind": "ka:Skill",
+        "kind": "densho:Skill",
         **KNOWLEDGE,
         "description": "Use this skill for a review.",
         "invocation": "agent",
@@ -143,7 +143,7 @@ def render(node_id: str, fields: Fields) -> str:
     for key, value in front.items():
         lines += block(key, value) if isinstance(value, list) else [f"{key}: {value}"]
     lines += ["---", ""]
-    if fields["kind"] not in {"ka:Root", "ka:Skill"}:
+    if fields["kind"] not in {"densho:Root", "densho:Skill"}:
         lines += ["## Definition", "", f"The meaning of {node_id}.", ""]
     if directives:
         lines += ["## Directives", ""]
@@ -296,7 +296,7 @@ def test_a_graph_needs_a_root(tree: Tree) -> None:
 def second_root(tree: Tree, target: str) -> None:
     tree.nodes["extra"] = {
         "file": "knowledge/nodes/extra/node.md",
-        "kind": "ka:Root",
+        "kind": "densho:Root",
         **GOVERNED,
         "pointers": [text_pointer(target)],
     }
@@ -304,7 +304,7 @@ def second_root(tree: Tree, target: str) -> None:
 
 def test_a_second_root_fails_the_folder_check(tree: Tree) -> None:
     second_root(tree, "design")
-    assert tree.problems() == [tree.expect("extra", "kind: ka:Root", "placement", ROOT_MOVE)]
+    assert tree.problems() == [tree.expect("extra", "kind: densho:Root", "placement", ROOT_MOVE)]
 
 
 def test_a_second_root_stops_shapes_and_reachability(tree: Tree) -> None:
@@ -328,46 +328,48 @@ def test_a_missing_root_does_not_stop_references(tree: Tree) -> None:
 
 def test_the_root_must_be_at_the_root_file(tree: Tree) -> None:
     tree.change("root", file="knowledge/nodes/top/node.md")
-    assert tree.problems() == [tree.expect("root", "kind: ka:Root", "placement", ROOT_MOVE)]
+    assert tree.problems() == [tree.expect("root", "kind: densho:Root", "placement", ROOT_MOVE)]
 
 
 def test_the_root_cannot_be_under_skills(tree: Tree) -> None:
     tree.change("root", file="knowledge/skills/root/node.md")
-    assert tree.problems() == [tree.expect("root", "kind: ka:Root", "placement", ROOT_MOVE)]
+    assert tree.problems() == [tree.expect("root", "kind: densho:Root", "placement", ROOT_MOVE)]
 
 
 def test_only_the_root_can_use_the_root_file(tree: Tree) -> None:
     tree.change("root", file="knowledge/nodes/top/node.md")
     tree.change("design", file="knowledge/node.md")
-    only_root = "Only the root node can use this file. Set kind to ka:Root or move this node."
+    only_root = "Only the root node can use this file. Set kind to densho:Root or move this node."
     assert tree.problems() == [
-        tree.expect("design", "kind: ka:Domain", "placement", only_root),
-        tree.expect("root", "kind: ka:Root", "placement", ROOT_MOVE),
+        tree.expect("design", "kind: densho:Domain", "placement", only_root),
+        tree.expect("root", "kind: densho:Root", "placement", ROOT_MOVE),
     ]
 
 
 def test_a_skill_must_be_under_skills(tree: Tree) -> None:
     tree.change("review", file="knowledge/nodes/review/node.md")
-    assert tree.problems() == [tree.expect("review", "kind: ka:Skill", "placement", SKILL_MOVE)]
+    assert tree.problems() == [tree.expect("review", "kind: densho:Skill", "placement", SKILL_MOVE)]
 
 
 def test_a_knowledge_node_cannot_be_under_skills(tree: Tree) -> None:
     tree.change("motion", file="knowledge/skills/motion/node.md")
     assert tree.problems() == [
         tree.expect(
-            "motion", "kind: ka:Concept", "placement", "Move this node out of knowledge/skills."
+            "motion", "kind: densho:Concept", "placement", "Move this node out of knowledge/skills."
         )
     ]
 
 
 @pytest.mark.parametrize(
     "file",
-    ["knowledge/motion/node.md", "knowledge/.ka/motion/node.md", "knowledge/x/nodes/node.md"],
+    ["knowledge/motion/node.md", "knowledge/.densho/motion/node.md", "knowledge/x/nodes/node.md"],
 )
 def test_a_knowledge_node_must_be_under_nodes(tree: Tree, file: str) -> None:
     tree.change("motion", file=file)
     assert tree.problems() == [
-        tree.expect("motion", "kind: ka:Concept", "placement", "Move this node to knowledge/nodes.")
+        tree.expect(
+            "motion", "kind: densho:Concept", "placement", "Move this node to knowledge/nodes."
+        )
     ]
 
 
@@ -382,7 +384,7 @@ def test_a_node_in_another_governance_folder_fails(tree: Tree) -> None:
     assert tree.problems() == [
         tree.expect(
             "motion",
-            "kind: ka:Concept",
+            "kind: densho:Concept",
             "placement",
             "Move this node to knowledge/governance/policies.",
         )
@@ -396,7 +398,7 @@ def test_a_node_beside_the_policy_folder_fails(tree: Tree) -> None:
 
 def test_a_skill_cannot_be_a_policy(tree: Tree) -> None:
     tree.change("review", file="knowledge/governance/policies/review/node.md")
-    assert tree.problems() == [tree.expect("review", "kind: ka:Skill", "placement", SKILL_MOVE)]
+    assert tree.problems() == [tree.expect("review", "kind: densho:Skill", "placement", SKILL_MOVE)]
 
 
 def test_the_root_cannot_be_a_policy(tree: Tree) -> None:
@@ -466,7 +468,7 @@ def test_a_directive_attachment_must_resolve(tree: Tree) -> None:
 
 @pytest.mark.parametrize(
     "value",
-    ["foo:bar", "ka:Concept", "a b", "<x>", "Motion", "motion ", "http://example.com/x"],
+    ["foo:bar", "densho:Concept", "a b", "<x>", "Motion", "motion ", "http://example.com/x"],
 )
 def test_a_hostile_reference_is_a_problem_and_does_not_crash(tree: Tree, value: str) -> None:
     tree.change("motion", related=[f'"{value}"'])
@@ -518,18 +520,18 @@ def test_each_schema_edge_is_listed() -> None:
 @pytest.mark.parametrize(
     ("node_id", "field", "target", "target_kind"),
     [
-        ("ui", "broader", "settings", "ka:Concept"),
-        ("research", "broader", "visual", "ka:PracticeArea"),
-        ("visual", "broader", "settings", "ka:Concept"),
-        ("visual", "broader", "root", "ka:Root"),
-        ("motion", "broader", "review", "ka:Skill"),
-        ("motion", "broader", "use-a-verb", "ka:Directive"),
-        ("motion", "related", "review", "ka:Skill"),
-        ("motion", "informs", "root", "ka:Root"),
-        ("motion", "depends_on", "use-a-verb", "ka:Directive"),
-        ("motion", "governs", "use-a-verb", "ka:Directive"),
-        ("review", "uses", "review", "ka:Skill"),
-        ("review", "applies", "hierarchy", "ka:Concept"),
+        ("ui", "broader", "settings", "densho:Concept"),
+        ("research", "broader", "visual", "densho:PracticeArea"),
+        ("visual", "broader", "settings", "densho:Concept"),
+        ("visual", "broader", "root", "densho:Root"),
+        ("motion", "broader", "review", "densho:Skill"),
+        ("motion", "broader", "use-a-verb", "densho:Directive"),
+        ("motion", "related", "review", "densho:Skill"),
+        ("motion", "informs", "root", "densho:Root"),
+        ("motion", "depends_on", "use-a-verb", "densho:Directive"),
+        ("motion", "governs", "use-a-verb", "densho:Directive"),
+        ("review", "uses", "review", "densho:Skill"),
+        ("review", "applies", "hierarchy", "densho:Concept"),
     ],
 )
 def test_each_edge_range_comes_from_the_schema(
@@ -560,14 +562,14 @@ def test_broader_accepts_each_allowed_rank(tree: Tree, node_id: str, target: str
 
 def test_implements_has_a_taxonomy_range(tree: Tree) -> None:
     tree.change("settings", implements=["hierarchy", "review"])
-    message = "implements cannot name review, which has kind ka:Skill."
+    message = "implements cannot name review, which has kind densho:Skill."
     assert tree.problems() == [tree.expect("settings", "  - review", "type", message)]
 
 
 def test_a_type_problem_names_the_right_list_item(tree: Tree) -> None:
     tree.change("visual", broader=["ui", "motion", "design"])
     tree.remove("hierarchy", "related")
-    message = "broader cannot name motion, which has kind ka:Concept."
+    message = "broader cannot name motion, which has kind densho:Concept."
     assert tree.problems() == [tree.expect("visual", "  - motion", "type", message)]
 
 
@@ -578,7 +580,7 @@ def test_a_skill_pointer_must_target_a_skill(tree: Tree) -> None:
     )
     second = tree.lines("visual", "target: hierarchy")[1]
     assert tree.problems() == [
-        f"{second}: type: target cannot name hierarchy, which has kind ka:Concept."
+        f"{second}: type: target cannot name hierarchy, which has kind densho:Concept."
     ]
 
 
@@ -589,7 +591,7 @@ def test_a_skill_pointer_can_target_a_skill(tree: Tree) -> None:
 
 def test_a_text_pointer_cannot_target_a_directive(tree: Tree) -> None:
     tree.change("visual", pointers=[text_pointer("hierarchy"), text_pointer("use-a-verb")])
-    message = "target cannot name use-a-verb, which has kind ka:Directive."
+    message = "target cannot name use-a-verb, which has kind densho:Directive."
     assert tree.problems() == [tree.expect("visual", "target: use-a-verb", "type", message)]
 
 
@@ -598,7 +600,7 @@ def test_a_directive_cannot_attach_to_a_directive(tree: Tree) -> None:
         "hierarchy",
         directives=[directive("show-order", also_attached_to=["motion", "use-a-verb"])],
     )
-    message = "also_attached_to cannot name use-a-verb, which has kind ka:Directive."
+    message = "also_attached_to cannot name use-a-verb, which has kind densho:Directive."
     assert tree.problems() == [
         tree.expect("hierarchy", "also_attached_to: use-a-verb", "type", message)
     ]
@@ -828,7 +830,7 @@ def chain_tree(tree: Tree, hops: int) -> None:
         node_id = f"hop-{index}"
         tree.nodes[node_id] = {
             "file": f"knowledge/nodes/chain/{index}/node.md",
-            "kind": "ka:Domain",
+            "kind": "densho:Domain",
             **KNOWLEDGE,
         }
         tree.nodes[previous].setdefault("pointers", []).append(text_pointer(node_id))
@@ -885,7 +887,7 @@ def test_problems_come_in_path_and_line_order(tree: Tree) -> None:
 
 def test_two_equal_results_give_one_problem(tree: Tree) -> None:
     tree.change("motion", related=["review", "review"])
-    message = "related cannot name review, which has kind ka:Skill."
+    message = "related cannot name review, which has kind densho:Skill."
     first = tree.lines("motion", "  - review")[0]
     assert tree.problems() == [f"{first}: type: {message}"]
 
@@ -893,7 +895,7 @@ def test_two_equal_results_give_one_problem(tree: Tree) -> None:
 @pytest.mark.parametrize("field", ["title", "description"])
 @pytest.mark.parametrize(
     "value",
-    ['"ka:Concept"', '"<x> \\"q\\" é"', '"[a](b)"', '"http://x y"', '"{a}"', '"a @en"'],
+    ['"densho:Concept"', '"<x> \\"q\\" é"', '"[a](b)"', '"http://x y"', '"{a}"', '"a @en"'],
 )
 def test_a_hostile_text_value_does_not_crash(tree: Tree, field: str, value: str) -> None:
     tree.nodes["review"][field] = value
@@ -907,10 +909,10 @@ def test_a_hostile_source_does_not_crash(tree: Tree) -> None:
 
 def test_a_hostile_trigger_and_path_do_not_crash(tree: Tree) -> None:
     pointer = {
-        "kind": "ka:PathPointer",
+        "kind": "densho:PathPointer",
         "target": "settings",
         "trigger": '"foo:bar <x>"',
-        "paths": '["ka:y <z>"]',
+        "paths": '["densho:y <z>"]',
     }
     tree.change("review", pointers=[pointer])
     assert tree.problems() == []
@@ -964,7 +966,7 @@ MOTION = URIRef(f"{NODE_NAMESPACE}motion")
         (URIRef(f"{NODE_NAMESPACE}unknown"), BROADER, MOTION),
         (URIRef(f"{NODE_NAMESPACE}ui"), BROADER, URIRef(f"{NODE_NAMESPACE}unknown")),
         (URIRef(f"{NODE_NAMESPACE}ui"), None, MOTION),
-        (BNode(), KA.target, MOTION),
+        (BNode(), DENSHO.target, MOTION),
         (None, None, None),
     ],
 )
@@ -983,9 +985,9 @@ def test_a_result_that_has_no_location_is_still_a_problem(
 def test_a_pointer_with_another_kind_has_no_location(parsed: list[ParsedNode]) -> None:
     focus = BNode()
     data = Graph()
-    data.add((URIRef(f"{NODE_NAMESPACE}root"), KA.pointers, focus))
-    data.add((focus, RDF.type, KA.PathPointer))
-    report = report_with(focus, KA.target, URIRef(f"{NODE_NAMESPACE}design"))
+    data.add((URIRef(f"{NODE_NAMESPACE}root"), DENSHO.pointers, focus))
+    data.add((focus, RDF.type, DENSHO.PathPointer))
+    report = report_with(focus, DENSHO.target, URIRef(f"{NODE_NAMESPACE}design"))
     problems = report_problems(report, data, parsed, root_of(parsed))
     assert [problem.code for problem in problems] == ["shape"]
 
@@ -1016,7 +1018,7 @@ REJECTED = {"status": "rejected", "rejection_reason": "No need."}
 def test_a_rejected_node_needs_no_route(tree: Tree) -> None:
     tree.nodes["old"] = {
         "file": "knowledge/nodes/design/old/node.md",
-        "kind": "ka:Concept",
+        "kind": "densho:Concept",
         **KNOWLEDGE,
         **REJECTED,
         "broader": ["design"],

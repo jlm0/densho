@@ -1,6 +1,6 @@
 ---
 id: lifecycle
-kind: ka:Concept
+kind: densho:Concept
 title: Lifecycle
 status: proposed
 origin: template

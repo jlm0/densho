@@ -1,6 +1,6 @@
 ---
 id: distinctive-brand-assets
-kind: ka:Concept
+kind: densho:Concept
 title: Distinctive brand assets
 status: proposed
 origin: template

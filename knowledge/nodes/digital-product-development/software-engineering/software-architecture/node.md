@@ -1,6 +1,6 @@
 ---
 id: software-architecture
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Architecture
 status: proposed
 origin: template
@@ -8,13 +8,13 @@ knowledge_type: domain
 broader:
   - software-engineering
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: c4-model
     trigger: You draw or update a diagram of the structure of a system.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: architecture-decision-record
     trigger: You make or change a decision about the structure of a system.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: twelve-factor-app
     trigger: You configure, deploy, or run a service.
 ---

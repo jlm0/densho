@@ -1,6 +1,6 @@
 ---
 id: software-engineering
-kind: ka:Discipline
+kind: densho:Discipline
 title: Software engineering
 status: proposed
 origin: template
@@ -8,28 +8,28 @@ knowledge_type: domain
 broader:
   - digital-product-development
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: software-security
     trigger: You write code that handles input, a user account, or a secret.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: software-testing
     trigger: You write a test or fix a bug.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: software-delivery
     trigger: You make a commit, a branch, or a release.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: software-architecture
     trigger: You design the structure of a system or change it.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: software-reliability
     trigger: You define, monitor, or alert on the reliability of a service.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: code-review
     trigger: You review a change or prepare a change for review.
-  - kind: ka:SkillPointer
+  - kind: densho:SkillPointer
     target: write-decision-record
     trigger: You make or change a decision about the structure of a system.
-  - kind: ka:SkillPointer
+  - kind: densho:SkillPointer
     target: review-code-change
     trigger: A change is ready for review.
 ---

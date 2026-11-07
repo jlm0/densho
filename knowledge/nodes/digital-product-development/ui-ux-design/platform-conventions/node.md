@@ -1,6 +1,6 @@
 ---
 id: platform-conventions
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Platform conventions
 status: proposed
 origin: template
@@ -12,10 +12,10 @@ broader:
 related:
   - usability-heuristics
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: apple-human-interface-guidelines
     trigger: You design an app for an Apple device.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: material-design
     trigger: You design for Android or with Material components.
 ---

@@ -50,7 +50,7 @@ MARKDOWN_FIELDS = {
 
 
 def _by_kind[ModelT: BaseModel](classes: Sequence[type[ModelT]]) -> dict[str, type[ModelT]]:
-    return {f"ka:{model.__name__}": model for model in classes}
+    return {f"densho:{model.__name__}": model for model in classes}
 
 
 NODES_BY_KIND = _by_kind(NODE_CLASSES)

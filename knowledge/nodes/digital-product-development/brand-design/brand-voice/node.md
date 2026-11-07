@@ -1,6 +1,6 @@
 ---
 id: brand-voice
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Voice and tone
 status: proposed
 origin: template
@@ -12,7 +12,7 @@ sources:
 broader:
   - brand-design
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: tone-of-voice-dimensions
     trigger: You set, describe, or test the tone of the content of a brand.
 ---

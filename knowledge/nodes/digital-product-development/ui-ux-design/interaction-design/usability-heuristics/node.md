@@ -1,6 +1,6 @@
 ---
 id: usability-heuristics
-kind: ka:Concept
+kind: densho:Concept
 title: Usability heuristics
 status: proposed
 origin: template

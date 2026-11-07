@@ -1,14 +1,14 @@
 ---
 id: root
-kind: ka:Root
-title: Knowledge architecture
+kind: densho:Root
+title: Densho
 status: proposed
 origin: template
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: digital-product-development
     trigger: You plan, design, or build a digital product.
-  - kind: ka:PathPointer
+  - kind: densho:PathPointer
     target: governance
     trigger: You change a node file.
     paths:

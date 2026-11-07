@@ -1,6 +1,6 @@
 ---
 id: visual-communication
-kind: ka:Concept
+kind: densho:Concept
 title: Visual communication
 status: proposed
 origin: template

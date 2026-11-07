@@ -1,6 +1,6 @@
 ---
 id: service-level-objective
-kind: ka:Concept
+kind: densho:Concept
 title: Service level objective
 status: proposed
 origin: template

@@ -23,25 +23,25 @@ RUNNER = CliRunner()
 GIT = shutil.which("git") or "git"
 ROOT_NODE = """---
 id: root
-kind: ka:Root
+kind: densho:Root
 title: Root
 status: proposed
 origin: template
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: domain
     trigger: You need the domain.
 ---
 """
 DOMAIN_NODE = """---
 id: domain
-kind: ka:Domain
+kind: densho:Domain
 title: Domain
 status: accepted
 origin: template
 knowledge_type: domain
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: child
     trigger: You need the child.
 ---
@@ -65,7 +65,7 @@ The meaning of the domain.
 """
 CHILD_NODE = """---
 id: child
-kind: ka:Concept
+kind: densho:Concept
 title: Child
 status: proposed
 origin: template
@@ -416,7 +416,7 @@ def test_the_status_word_in_a_reason_on_the_status_line_needs_a_person(tmp_path:
 
 SKILL_NODE = """---
 id: review
-kind: ka:Skill
+kind: densho:Skill
 title: Review
 status: accepted
 origin: template
@@ -436,7 +436,7 @@ uses:
 def test_a_skill_with_scripts_changes_its_status(tmp_path: Path) -> None:
     pointer = "    trigger: You need the child.\n"
     skill_pointer = (
-        "  - kind: ka:SkillPointer\n    target: review\n    trigger: You need a review.\n"
+        "  - kind: densho:SkillPointer\n    target: review\n    trigger: You need a review.\n"
     )
     write_tree(tmp_path, DOMAIN_NODE.replace(pointer, pointer + skill_pointer))
     skill = tmp_path / "knowledge/skills/review"
@@ -593,13 +593,13 @@ def test_each_entity_in_one_file_changes(tmp_path: Path) -> None:
     (tmp_path / "knowledge/nodes/second").mkdir(parents=True)
     text = DOMAIN_NODE.replace("id: domain", "id: second").replace("run-it", "run-two")
     text = text.replace("run-other", "run-three").replace("Run the", "Start the")
-    text = text.replace("pointers:\n  - kind: ka:TextPointer\n    target: child\n", "")
+    text = text.replace("pointers:\n  - kind: densho:TextPointer\n    target: child\n", "")
     text = text.replace("    trigger: You need the child.\n", "")
     (tmp_path / second).write_text(text, encoding="utf-8")
     set_text(
         tmp_path,
         "trigger: You need the domain.\n",
-        "trigger: You need the domain.\n  - kind: ka:TextPointer\n"
+        "trigger: You need the domain.\n  - kind: densho:TextPointer\n"
         "    target: second\n    trigger: You need the second.\n",
         "knowledge/node.md",
     )

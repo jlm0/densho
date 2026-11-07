@@ -36,7 +36,8 @@ FENCE = "```"
 SKILL_NAME_FORM = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 MAX_NAME_CHARACTERS = 64
 COMMAND = re.compile(
-    r"(?:knowledge/\.ka/ka|uv run ka) (?P<name>[a-z]+)(?P<option> --[a-z]+(?:-[a-z]+)*)?"
+    r"(?:knowledge/\.densho/densho|uv run densho) (?P<name>[a-z]+)"
+    r"(?P<option> --[a-z]+(?:-[a-z]+)*)?"
 )
 HEADING_NAME = re.compile(r"`(?P<heading>### [^`]+)`")
 SKELETON = re.compile(r"```markdown\n(?P<source>.+?)\n```", re.DOTALL)
@@ -44,7 +45,7 @@ PROBLEM_CODES = re.compile(r"### Problem codes\n(?P<table>.+?)\n### ", re.DOTALL
 TABLE_CODE = re.compile(r"^\| `(?P<code>[a-z-]+)` +\|", re.MULTILINE)
 SEARCH = re.compile(r"^(?P<command>git grep .+)$", re.MULTILINE)
 DOWNLOAD = re.compile(r"^curl .+$", re.MULTILINE)
-PUBLIC_URL = "https://github.com/jlm0/knowledge-architecture"
+PUBLIC_URL = "https://github.com/jlm0/densho"
 REFERENCES = "\n## References\n"
 SYNTHETIC_NODE_CODES = {"vocabulary-branch"}
 PROMOTION_RULE = "Do not change a `status` to `accepted`."
@@ -158,7 +159,7 @@ def skill_source(text: str, skill: GlobalSkill) -> tuple[str, dict[int, int]]:
     lines = [
         "---",
         f"id: {front['name']}",
-        "kind: ka:Skill",
+        "kind: densho:Skill",
         "title: Skill",
         "status: proposed",
         "origin: template",
@@ -351,11 +352,7 @@ def download_problems(text: str) -> list[str]:
     commands = DOWNLOAD.findall(text)
     if not commands:
         return ["none"]
-    return [
-        command
-        for command in commands
-        if f"-A 'knowledge-architecture (+{PUBLIC_URL})'" not in command
-    ]
+    return [command for command in commands if f"-A 'densho (+{PUBLIC_URL})'" not in command]
 
 
 def pull_problems(text: str) -> list[str]:
@@ -508,7 +505,7 @@ def test_the_skill_holds_each_required_rule(text: str, skill: GlobalSkill) -> No
 def test_a_removed_rule_fails(skill_name: str, name: str) -> None:
     skill = next(item for item in SKILLS if item.name == skill_name)
     text = skill.path.read_text(encoding="utf-8")
-    changed = text.replace(f"{skill.required[name]}\n", "Run `ka runtime`.\n", 1)
+    changed = text.replace(f"{skill.required[name]}\n", "Run `densho runtime`.\n", 1)
     assert missing_rules(changed, skill) == [name]
 
 
@@ -526,11 +523,11 @@ def test_each_command_exists(text: str) -> None:
 @pytest.mark.parametrize(
     "bad",
     [
-        "`knowledge/.ka/ka promote`",
-        "`knowledge/.ka/ka runtime --force`",
-        "`knowledge/.ka/ka history --missing`",
-        "`uv run ka promote`",
-        "`uv run ka directives --near`",
+        "`knowledge/.densho/densho promote`",
+        "`knowledge/.densho/densho runtime --force`",
+        "`knowledge/.densho/densho history --missing`",
+        "`uv run densho promote`",
+        "`uv run densho directives --near`",
     ],
 )
 def test_an_unknown_command_fails(text: str, bad: str) -> None:

@@ -11,7 +11,7 @@ A local check has limits here. It can compare a change with the last commit, but
 ## Run the checks
 
 ```sh
-uv run ka governance
+uv run densho governance
 ```
 
 The command reads `knowledge/` in the current folder, or in a folder you name after `governance`. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. An empty tree passes.
@@ -21,7 +21,7 @@ The git hook runs the same command on each commit, including a commit that only 
 To list what waits for review:
 
 ```sh
-uv run ka governance --pending
+uv run densho governance --pending
 ```
 
 ```text
@@ -54,7 +54,7 @@ An unreviewed sentence should not be able to bind an agent or switch off a rule,
 - A `rejected` entity applies nowhere. The compiled graph, the runtime files, and the site leave it out, and so do its directives and exceptions.
 - Apart from `rejected`, the `status` of a node does not change what applies. It covers the node's own definition and place in the tree. Otherwise a small edit to a definition would switch off every rule on that node.
 
-`uv run ka directives --at <node-id>` shows what is in force at a node, and it labels what a review would change:
+`uv run densho directives --at <node-id>` shows what is in force at a node, and it labels what a review would change:
 
 ```text
 run-tests (subtree) from sample -> child: Run `pytest` before you commit.
@@ -63,7 +63,7 @@ proposed: an exception stops run-tests here
 1 directives apply at child, 1 proposed, 0 problems
 ```
 
-[`uv run ka build`](compiled-outputs.md) follows the same rule: its default output holds only what is in force.
+[`uv run densho build`](compiled-outputs.md) follows the same rule: its default output holds only what is in force.
 
 A proposal is not exempt from the checks. The [directive checks](directive-semantics.md) run twice, once on what is in force and once as if every proposal were accepted, so a conflict shows up before the review and not after it.
 
@@ -71,7 +71,7 @@ There is one cost. When you reopen an accepted rule to change it, the rule is ou
 
 ## Who does what
 
-An agent can propose a concept, a directive, or an exception by adding it with `status: proposed`. A person approves it and runs [`ka accept`](human-interface.md#accept-what-you-approve), or [rejects it](#reject-something).
+An agent can propose a concept, a directive, or an exception by adding it with `status: proposed`. A person approves it and runs [`densho accept`](human-interface.md#accept-what-you-approve), or [rejects it](#reject-something).
 
 The [`approval` policy](#the-policies) states this as directives. No check can enforce it, for the reasons [below](#what-a-check-can-and-cannot-prove). A project decides who its reviewers are, and a node never records a name or an email. Git history already holds the author of each commit.
 
@@ -86,9 +86,9 @@ Add the node, directive, or exception with `status: proposed`. Anything new with
 Promotion takes two commits, so a reviewer approves exactly the text that the last commit holds:
 
 1. An author commits the entity as `proposed`.
-2. A reviewer runs `uv run ka view` and reads the entity, its reasons, and what applies in `build/view/review.html`. In a terminal, `uv run ka governance --pending` and `uv run ka directives --at <node-id>` give the same facts.
-3. A later commit changes `status` to `accepted` and changes nothing else that needs review. [`uv run ka accept`](human-interface.md#accept-what-you-approve) makes that change in the working tree.
-4. That commit also holds the [runtime files](runtime-files.md) that `uv run ka runtime` writes, because the accepted directive now reaches them.
+2. A reviewer runs `uv run densho view` and reads the entity, its reasons, and what applies in `build/view/review.html`. In a terminal, `uv run densho governance --pending` and `uv run densho directives --at <node-id>` give the same facts.
+3. A later commit changes `status` to `accepted` and changes nothing else that needs review. [`uv run densho accept`](human-interface.md#accept-what-you-approve) makes that change in the working tree.
+4. That commit also holds the [runtime files](runtime-files.md) that `uv run densho runtime` writes, because the accepted directive now reaches them.
 
 One commit can promote any number of entities, so a person can accept a whole batch at once.
 
@@ -101,7 +101,7 @@ status: rejected
 rejection_reason: The project keeps one style guide, and this rule repeats it.
 ```
 
-In a directive or an exception the field sits next to `status`, in the same form. There is no `ka reject`, so you edit the line by hand, or let the `review-proposals` skill write your reason for you, as the [improvement loop](improvement-loop.md#review-the-queue) explains. The reason needs no review, so you can reword it later.
+In a directive or an exception the field sits next to `status`, in the same form. There is no `densho reject`, so you edit the line by hand, or let the `review-proposals` skill write your reason for you, as the [improvement loop](improvement-loop.md#review-the-queue) explains. The reason needs no review, so you can reword it later.
 
 The entity stays in the file as a record that someone weighed it, so the same idea doesn't come back unread. `--pending` stops listing it, and no generated file holds it. To look at it again, set it back to `proposed`. It can't go straight to `accepted`, which fails `status-jump`, so a reviewer reads it again first. When nobody needs the record any more, delete the entity. Git history keeps it.
 
@@ -149,9 +149,9 @@ A project owns its copy, so it can change or delete anything it received, and no
 
 Everything from the template counts as new, in a new repo and in one with history. It arrives as `proposed`, and a person accepts it. [The install](template-packaging.md#which-status-knowledge-arrives-with) sets those statuses for you, and a later pull follows the same rule.
 
-The install can also keep what the template already accepted. Then `new-status` lets an `accepted` entity through when the template's `knowledge/.ka/history.jsonl` holds its last line as `accepted`, with the same digest for each field. This narrow pass holds only while the last commit has no `knowledge/.ka/history.jsonl` and no node file, so it covers the install commit and never a pull. A history file that doesn't parse or replay gives no pass.
+The install can also keep what the template already accepted. Then `new-status` lets an `accepted` entity through when the template's `knowledge/.densho/history.jsonl` holds its last line as `accepted`, with the same digest for each field. This narrow pass holds only while the last commit has no `knowledge/.densho/history.jsonl` and no node file, so it covers the install commit and never a pull. A history file that doesn't parse or replay gives no pass.
 
-A pull can't accept anything either. A commit counts as a pull when its `knowledge/.ka/history.jsonl` differs from the last commit, or only one of them has the file, and the folder has no `copier.yml`, which only the template has. In that commit, an entity that goes from `proposed` to `accepted` fails `pull-promotion`, and `ka accept` refuses to run until you commit the pull.
+A pull can't accept anything either. A commit counts as a pull when its `knowledge/.densho/history.jsonl` differs from the last commit, or only one of them has the file, and the folder has no `copier.yml`, which only the template has. In that commit, an entity that goes from `proposed` to `accepted` fails `pull-promotion`, and `densho accept` refuses to run until you commit the pull.
 
 ## What fails
 
@@ -200,7 +200,7 @@ The checks also have gaps that a person can use, on purpose or by accident:
 - A commit with `--no-verify`, or a clone with no hook installed, skips every check.
 - `git commit --amend` compares with the commit it replaces, so proposing in one commit and promoting in an amend looks like a plain promotion.
 - A rebase or a fast-forward merge runs no hook, and nothing reads old commits later.
-- Anyone can run `ka accept`, or write `status: accepted`, in a second commit and call it approved.
+- Anyone can run `densho accept`, or write `status: accepted`, in a second commit and call it approved.
 
 So `accepted` is a claim that the project's history supports, not a proof. A reviewer who wants to check it reads `git log -p` for the commit that changed the `status`.
 
@@ -230,7 +230,7 @@ This layer sits on top of the [graph checks](graph-checks.md) and the [directive
 ## What it does not check yet
 
 - Who approved a change. Nothing local can. See the table above.
-- Where `knowledge/.ka/history.jsonl` came from. The narrow pass reads the working copy, so an edited file in the install commit can let an `accepted` entity through.
+- Where `knowledge/.densho/history.jsonl` came from. The narrow pass reads the working copy, so an edited file in the install commit can let an `accepted` entity through.
 - Old commits. The comparison covers one step, from the last commit to the working tree.
 - Whether a change to `body`, `title`, or a pointer's trigger changes what an agent does. These count as routine, so a reviewer has to catch it.
 - A `broader` edge on a `proposed` node. It carries directives as soon as it exists, so moving a node can drop a rule before anyone reviews the move. The `status` change and the diff show it.

@@ -7,7 +7,7 @@ description: Add a discipline or a practice area to the template from establishe
 
 This skill adds domain knowledge to a clone of the template: a discipline, or a practice area of a discipline. Each rule comes from a framework that a published source states, and you open each source before you cite it. If compaction removes this skill, invoke it again.
 
-An agent proposes each entity, and a person accepts it. Run the steps in the template repo, where the engine runs as `uv run ka`.
+An agent proposes each entity, and a person accepts it. Run the steps in the template repo, where the engine runs as `uv run densho`.
 
 ## Directives
 
@@ -31,7 +31,7 @@ An agent proposes each entity, and a person accepts it. Run the steps in the tem
 ### Plan the work
 
 1. Ask a person for the outline: the discipline, its practice areas, its frameworks, and its candidate skills.
-2. Record the commit, the count of nodes and directives, and the count from `uv run ka governance --pending`.
+2. Record the commit, the count of nodes and directives, and the count from `uv run densho governance --pending`.
 3. Read the reference page of each node that a new node links.
 4. Do not repeat a rule of a linked node.
 5. Make a new source folder and a source log file outside `knowledge/`.
@@ -51,23 +51,23 @@ An agent proposes each entity, and a person accepts it. Run the steps in the tem
 ### Write the nodes
 
 01. Put each finding in one form from `### Outputs`.
-02. Add each `ka:PracticeArea` node under its discipline, and each `ka:Concept` node under its practice area.
-03. Add a `ka:TextPointer` from the parent to each new node, with a trigger in the present tense.
+02. Add each `densho:PracticeArea` node under its discipline, and each `densho:Concept` node under its practice area.
+03. Add a `densho:TextPointer` from the parent to each new node, with a trigger in the present tense.
 04. Write each directive in the form of `### Node skeleton`.
 05. Set `sources` of each directive to the URL of each opened page that states it.
 06. Link each related node with `related`, `informs`, or `depends_on`.
-07. Before you add a directive to a node that a skill uses, run `uv run ka directives --at <skill-id>`.
+07. Before you add a directive to a node that a skill uses, run `uv run densho directives --at <skill-id>`.
 08. Add a skill only for an ordered procedure that no skill holds.
 09. Keep each procedure of a skill to `9` steps.
-10. If you add a `ka:Discipline` node, add its ID to `choices` and `default` of `disciplines` in `copier.yml`.
+10. If you add a `densho:Discipline` node, add its ID to `choices` and `default` of `disciplines` in `copier.yml`.
 11. Add each new opening verb to `knowledge/governance/language/branches/<discipline-id>.yaml`.
 
 ### Check the work
 
-01. Run `uv run ka language`.
+01. Run `uv run densho language`.
 02. Correct each problem from the first line down.
-03. Run `uv run ka runtime`.
-04. Run `uv run ka runtime --proposals` to read the size of each changed skill.
+03. Run `uv run densho runtime`.
+04. Run `uv run densho runtime --proposals` to read the size of each changed skill.
 05. Run the URL search from `### Commands`.
 06. Find each URL of the search in the source log.
 07. Run `git add -A` for the result.
@@ -89,11 +89,11 @@ An agent proposes each entity, and a person accepts it. Run the steps in the tem
 
 ### Outputs
 
-| Finding                        | Output                                |
-| ------------------------------ | ------------------------------------- |
-| A rule that an agent can check | A directive                           |
-| A meaning                      | A `ka:Concept` node with a definition |
-| An ordered procedure           | A `ka:Skill` node                     |
+| Finding                        | Output                                    |
+| ------------------------------ | ----------------------------------------- |
+| A rule that an agent can check | A directive                               |
+| A meaning                      | A `densho:Concept` node with a definition |
+| An ordered procedure           | A `densho:Skill` node                     |
 
 - Security, testing, and accessibility give mostly directives. Strategy and brand give mostly concepts and skills.
 - A domain skill gets `invocation: agent`, unless its job changes something outside the repo.
@@ -122,10 +122,10 @@ An agent proposes each entity, and a person accepts it. Run the steps in the tem
 
 ### Entity table
 
-| Entity                      | Kind         | Node             | `basis`        | Change |
-| --------------------------- | ------------ | ---------------- | -------------- | ------ |
-| `error-messages`            | `ka:Concept` | `error-messages` | -              | new    |
-| `error-cause-and-next-step` | directive    | `error-messages` | `practitioner` | new    |
+| Entity                      | Kind             | Node             | `basis`        | Change |
+| --------------------------- | ---------------- | ---------------- | -------------- | ------ |
+| `error-messages`            | `densho:Concept` | `error-messages` | -              | new    |
+| `error-cause-and-next-step` | directive        | `error-messages` | `practitioner` | new    |
 
 ### Review points
 
@@ -140,7 +140,7 @@ An agent proposes each entity, and a person accepts it. Run the steps in the tem
 ```markdown
 ---
 id: error-messages
-kind: ka:Concept
+kind: densho:Concept
 title: Error messages
 status: proposed
 origin: template
@@ -171,7 +171,7 @@ The text that tells a user what went wrong and how to continue.
 ### Commands
 
 ```sh
-curl -sS -L -A 'knowledge-architecture (+https://github.com/jlm0/knowledge-architecture)' -o <folder>/<name>.html <url>
+curl -sS -L -A 'densho (+https://github.com/jlm0/densho)' -o <folder>/<name>.html <url>
 git grep -h -o -E 'https?://[^ )>`]+' -- knowledge/nodes/ knowledge/skills/ | sort -u
 ```
 
@@ -182,7 +182,7 @@ git grep -h -o -E 'https?://[^ )>`]+' -- knowledge/nodes/ knowledge/skills/ | so
 
 `mdformat` can change a table or a numbered list in a node file during the first run of the hooks. The runtime files and the change history then differ from the node. Do these steps:
 
-1. Run `uv run ka runtime`.
-2. Run `git checkout HEAD -- knowledge/.ka/history.jsonl`.
-3. Run `uv run ka history`.
+1. Run `uv run densho runtime`.
+2. Run `git checkout HEAD -- knowledge/.densho/history.jsonl`.
+3. Run `uv run densho history`.
 4. Run `git add -A`.

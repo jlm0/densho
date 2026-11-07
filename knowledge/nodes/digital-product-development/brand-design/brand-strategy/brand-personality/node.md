@@ -1,6 +1,6 @@
 ---
 id: brand-personality
-kind: ka:Concept
+kind: densho:Concept
 title: Brand personality
 status: proposed
 origin: template

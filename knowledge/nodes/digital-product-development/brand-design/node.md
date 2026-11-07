@@ -1,6 +1,6 @@
 ---
 id: brand-design
-kind: ka:Discipline
+kind: densho:Discipline
 title: Brand design
 status: proposed
 origin: template
@@ -10,25 +10,25 @@ broader:
 informs:
   - visual-design
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-strategy
     trigger: You decide what a brand stands for, which associations it builds, or how it differs from other brands.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-voice
     trigger: You define the voice of a brand or set the tone of a message.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: visual-identity
     trigger: You design or apply a logo, a brand color, or a type style.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-systems
     trigger: You write brand guidelines, store brand values as tokens, or relate the brands of a company.
-  - kind: ka:SkillPointer
+  - kind: densho:SkillPointer
     target: define-brand-voice
     trigger: You define or change the voice of a brand.
-  - kind: ka:SkillPointer
+  - kind: densho:SkillPointer
     target: write-brand-guidelines
     trigger: You write or update the brand guidelines of a product or a company.
-  - kind: ka:SkillPointer
+  - kind: densho:SkillPointer
     target: audit-brand-consistency
     trigger: You review the touchpoints of a brand for consistency.
 ---

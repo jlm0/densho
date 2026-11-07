@@ -9,7 +9,7 @@ The parser checks each file on its own, so `broader: [does-not-exist]` passes it
 ## Run the checks
 
 ```sh
-uv run ka graph
+uv run densho graph
 ```
 
 The command reads `knowledge/` in the current folder, or in a folder you name after `graph`. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. The git hook runs the same command on each commit.
@@ -21,7 +21,7 @@ An empty tree passes, so a project can remove what it received and still start c
 | Check        | Code           | What fails                                                                                                                                           |
 | ------------ | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Identity     | `duplicate-id` | Two nodes or directives share an ID                                                                                                                  |
-| Root         | `root`         | Nodes exist, but none of them is a `ka:Root`                                                                                                         |
+| Root         | `root`         | Nodes exist, but none of them is a `densho:Root`                                                                                                     |
 | Placement    | `placement`    | A node's kind does not match its folder, including a second root                                                                                     |
 | References   | `reference`    | An edge, a pointer, an exception, or a directive field such as `also_attached_to` names an ID that does not exist                                    |
 | Types        | `type`         | A reference names a kind the [schema](schema.md) does not allow, such as a `broader` target of the wrong rank, or a non-skill behind a skill pointer |

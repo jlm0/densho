@@ -1,6 +1,6 @@
 ---
 id: review-code-change
-kind: ka:Skill
+kind: densho:Skill
 title: Review a code change
 status: proposed
 origin: template
@@ -14,19 +14,19 @@ uses:
   - access-control
   - injection
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: code-review
     trigger: You judge whether the change is ready to merge.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: software-testing
     trigger: You judge the tests of the change.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: software-security
     trigger: The change handles a password, a session, an error, or a connection.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: access-control
     trigger: The change reads or changes data for a user.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: injection
     trigger: The change passes input to a query, a command, or an output.
 ---

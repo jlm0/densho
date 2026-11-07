@@ -1,5 +1,5 @@
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
-# Knowledge architecture
+# Densho
 
 A build generates this file from the node files. Change a node file, not this file.
 

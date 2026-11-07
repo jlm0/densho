@@ -5,7 +5,7 @@ description: Convert the rules and the docs of an existing project into proposed
 
 # Migrate a project
 
-This skill converts the knowledge of an existing project into proposed workspace nodes of the knowledge architecture. Later template pulls use the `sync-template` skill of the project. If compaction removes this skill, invoke it again.
+This skill converts the knowledge of an existing project into proposed workspace nodes of Densho. Later template pulls use the `sync-template` skill of the project. If compaction removes this skill, invoke it again.
 
 A project owns its copy of the template, and the project decides what it takes. An agent proposes an entity, and a person accepts it.
 
@@ -21,7 +21,7 @@ A project owns its copy of the template, and the project decides what it takes. 
 - Keep each item that you do not convert in `knowledge-migration/ledger.md`.
 - Do not remove a source file.
 - Do not use `--no-verify`.
-- Do not edit `knowledge/.ka/history.jsonl` in a project.
+- Do not edit `knowledge/.densho/history.jsonl` in a project.
 - If a person does not answer a question, stop the job.
 
 ## Migration
@@ -40,13 +40,13 @@ A project owns its copy of the template, and the project decides what it takes. 
 01. Move a hand-written `AGENTS.md` to `knowledge-migration/source/root-agents.md`.
 02. Move each `.claude/skills/<id>/SKILL.md` that you convert to `knowledge-migration/source/skills/<id>.md`.
 03. Move a `knowledge/` or `.claude/references/` folder of the project to `knowledge-migration/source/`.
-04. If `knowledge/.ka/ka` does not exist, ask a person which disciplines the project takes.
+04. If `knowledge/.densho/densho` does not exist, ask a person which disciplines the project takes.
 05. Run the install command from `### Commands` with the disciplines of the answer.
 06. If the project keeps its own `.pre-commit-config.yaml`, add the `4` local hooks from `### Commands`.
 07. If you moved a hand-written `AGENTS.md`, ask a person whether the old root stays in force during the review.
 08. Tell a person that you recommend that the old root stays.
 09. If the old root stays, add the line `@knowledge-migration/source/root-agents.md` to `CLAUDE.md`.
-10. Run `knowledge/.ka/ka adopt`.
+10. Run `knowledge/.densho/densho adopt`.
 11. If `pre-commit` does not exist, run `uv tool install pre-commit`.
 12. Run `pre-commit install`.
 13. Commit the install before you add a node.
@@ -61,15 +61,15 @@ A project owns its copy of the template, and the project decides what it takes. 
 
 ### Write the nodes
 
-01. Add one `ka:Domain` node for the project at `knowledge/nodes/<project-id>/node.md`, in the form of `### Node skeleton`.
-02. Add a `ka:TextPointer` from `knowledge/node.md` to that domain.
-03. Add one `ka:PracticeArea` node for each source document.
+01. Add one `densho:Domain` node for the project at `knowledge/nodes/<project-id>/node.md`, in the form of `### Node skeleton`.
+02. Add a `densho:TextPointer` from `knowledge/node.md` to that domain.
+03. Add one `densho:PracticeArea` node for each source document.
 04. Set `broader` of each node to its parent.
 05. Set `knowledge_type: workspace` and `origin: project` on each node that you add.
 06. If a node gives project values for a template node, name the template node in `implements`.
 07. Write the `## Definition` of each node in `1` or `2` sentences from the source.
 08. Convert each row of a trigger table into one pointer on the parent node.
-09. If a trigger names a code location, use a `ka:PathPointer` with `paths` in the form `src/**/*`.
+09. If a trigger names a code location, use a `densho:PathPointer` with `paths` in the form `src/**/*`.
 10. If a trigger holds a second condition, split it into `2` pointers.
 11. Put each rule in the `## Directives` section of the node for its source document.
 12. Add the path and the line of the source of each directive to `## Signals` at the end of the body.
@@ -85,20 +85,20 @@ A project owns its copy of the template, and the project decides what it takes. 
 22. Copy each table, list, and example under `## References` in the node body.
 23. Copy each rationale document under `## Rationale` in the body of its node.
 24. List each heading of a rule group under `## Rule groups` in the node body, with the IDs of its rules.
-25. If a skill in the source has its own trigger, add a `ka:Skill` node under `knowledge/skills/<id>/node.md`.
+25. If a skill in the source has its own trigger, add a `densho:Skill` node under `knowledge/skills/<id>/node.md`.
 26. Set `invocation: person` on a skill whose source sets `disable-model-invocation: true`, and `invocation: agent` on each other skill.
 27. Leave a copy of a skill for another agent tool at its path.
 28. If an item stays out of the graph, add it to the `## Not converted` table of the ledger.
 
 ### Check the result
 
-01. Run `knowledge/.ka/ka runtime`.
+01. Run `knowledge/.densho/densho runtime`.
 02. Correct each problem from the first line down, with `### Problem codes`.
 03. Do not remove a term from `prohibited` in a vocabulary file.
 04. Add the source text and the new text of each edited rule to the `## Edited rules` table.
 05. If `2` edits of a rule fail, copy the rule under `## Not converted` in the node body.
 06. If an edit changes the meaning of a rule, copy the source rule under `## Not converted` in the node body.
-07. Run `knowledge/.ka/ka runtime --proposals` to check the size of each file after acceptance.
+07. Run `knowledge/.densho/densho runtime --proposals` to check the size of each file after acceptance.
 08. Run the search from `### Secret search` on `knowledge/` and the ledger.
 09. Check that each item of each source file has a row in the ledger.
 10. Run `git add -A` for the result.
@@ -141,7 +141,7 @@ An item is a list item, a numbered step, a table row, a paragraph line, or a cod
 | `rationale`     | a text that explains a rule                                                       | `## Rationale` in the node body                       |
 | `definition`    | a text that says what a document covers                                           | `## Definition`                                       |
 | `pointer`       | a row of a trigger table                                                          | a pointer on the parent node                          |
-| `skill`         | a capability with its own trigger                                                 | a `ka:Skill` node                                     |
+| `skill`         | a capability with its own trigger                                                 | a `densho:Skill` node                                 |
 | `code`          | a script, a test, or a config file                                                | stays at its path                                     |
 | `superseded`    | a rule or a document about the old rule system, such as its grammar or its linter | stays at its path, with the replacement in the ledger |
 | `not-converted` | any other item                                                                    | stays at its path, with the reason in the ledger      |
@@ -168,7 +168,7 @@ Each Markdown file in `knowledge/` other than `node.md` fails `file-name`, so ke
 ```markdown
 ---
 id: coding
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Coding
 status: proposed
 origin: project
@@ -176,7 +176,7 @@ knowledge_type: workspace
 broader:
   - my-project
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: testing
     trigger: You write a test.
 ---
@@ -259,7 +259,7 @@ Secret material also covers each credential, session header, one-time code, and 
 ### Commands
 
 ```sh
-uvx --python 3.14 copier copy --trust --defaults --vcs-ref=HEAD --data 'disciplines=[<id>, <id>]' https://github.com/jlm0/knowledge-architecture.git .
+uvx --python 3.14 copier copy --trust --defaults --vcs-ref=HEAD --data 'disciplines=[<id>, <id>]' https://github.com/jlm0/densho.git .
 ```
 
 Replace each `<id>` with a discipline from the answer of the person. `copier.yml` of the template lists the choices under `disciplines`. Leave out `--data` to take each discipline.

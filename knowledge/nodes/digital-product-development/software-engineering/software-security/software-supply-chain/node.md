@@ -1,6 +1,6 @@
 ---
 id: software-supply-chain
-kind: ka:Concept
+kind: densho:Concept
 title: Software supply chain
 status: proposed
 origin: template

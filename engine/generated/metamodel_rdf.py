@@ -1,4 +1,4 @@
-# id: https://github.com/jlm0/knowledge-architecture/schema/metamodel
+# id: https://github.com/jlm0/densho/schema/metamodel
 # description: This schema defines what can exist in the knowledge graph.
 # license: https://creativecommons.org/publicdomain/zero/1.0/
 
@@ -60,11 +60,11 @@ version = "0.1.0"
 
 # Namespaces
 DCTERMS = CurieNamespace('dcterms', 'http://purl.org/dc/terms/')
-KA = CurieNamespace('ka', 'https://github.com/jlm0/knowledge-architecture/schema/')
+DENSHO = CurieNamespace('densho', 'https://github.com/jlm0/densho/schema/')
 LINKML = CurieNamespace('linkml', 'https://w3id.org/linkml/')
 RDF = CurieNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 SKOS = CurieNamespace('skos', 'http://www.w3.org/2004/02/skos/core#')
-DEFAULT_ = KA
+DEFAULT_ = DENSHO
 
 
 # Types
@@ -121,10 +121,10 @@ class KnowledgeGraph(YAMLRoot):
     """
     _inherited_slots: ClassVar[list[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = KA["KnowledgeGraph"]
-    class_class_curie: ClassVar[str] = "ka:KnowledgeGraph"
+    class_class_uri: ClassVar[URIRef] = DENSHO["KnowledgeGraph"]
+    class_class_curie: ClassVar[str] = "densho:KnowledgeGraph"
     class_name: ClassVar[str] = "KnowledgeGraph"
-    class_model_uri: ClassVar[URIRef] = KA.KnowledgeGraph
+    class_model_uri: ClassVar[URIRef] = DENSHO.KnowledgeGraph
 
     root: Union[dict, "Root"] = None
     nodes: Union[dict[Union[str, KnowledgeNodeId], Union[dict, "KnowledgeNode"]], list[Union[dict, "KnowledgeNode"]]] = empty_dict()
@@ -153,10 +153,10 @@ class GovernedEntity(YAMLRoot):
     """
     _inherited_slots: ClassVar[list[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = KA["GovernedEntity"]
-    class_class_curie: ClassVar[str] = "ka:GovernedEntity"
+    class_class_uri: ClassVar[URIRef] = DENSHO["GovernedEntity"]
+    class_class_curie: ClassVar[str] = "densho:GovernedEntity"
     class_name: ClassVar[str] = "GovernedEntity"
-    class_model_uri: ClassVar[URIRef] = KA.GovernedEntity
+    class_model_uri: ClassVar[URIRef] = DENSHO.GovernedEntity
 
     id: Union[str, GovernedEntityId] = None
     status: Union[str, "Status"] = None
@@ -197,10 +197,10 @@ class Node(GovernedEntity):
     """
     _inherited_slots: ClassVar[list[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = KA["Node"]
-    class_class_curie: ClassVar[str] = "ka:Node"
+    class_class_uri: ClassVar[URIRef] = DENSHO["Node"]
+    class_class_curie: ClassVar[str] = "densho:Node"
     class_name: ClassVar[str] = "Node"
-    class_model_uri: ClassVar[URIRef] = KA.Node
+    class_model_uri: ClassVar[URIRef] = DENSHO.Node
 
     id: Union[str, NodeId] = None
     status: Union[str, "Status"] = None
@@ -263,10 +263,10 @@ class Root(Node):
     """
     _inherited_slots: ClassVar[list[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = KA["Root"]
-    class_class_curie: ClassVar[str] = "ka:Root"
+    class_class_uri: ClassVar[URIRef] = DENSHO["Root"]
+    class_class_curie: ClassVar[str] = "densho:Root"
     class_name: ClassVar[str] = "Root"
-    class_model_uri: ClassVar[URIRef] = KA.Root
+    class_model_uri: ClassVar[URIRef] = DENSHO.Root
 
     id: Union[str, RootId] = None
     status: Union[str, "Status"] = None
@@ -298,10 +298,10 @@ class KnowledgeNode(Node):
     """
     _inherited_slots: ClassVar[list[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = KA["KnowledgeNode"]
-    class_class_curie: ClassVar[str] = "ka:KnowledgeNode"
+    class_class_uri: ClassVar[URIRef] = DENSHO["KnowledgeNode"]
+    class_class_curie: ClassVar[str] = "densho:KnowledgeNode"
     class_name: ClassVar[str] = "KnowledgeNode"
-    class_model_uri: ClassVar[URIRef] = KA.KnowledgeNode
+    class_model_uri: ClassVar[URIRef] = DENSHO.KnowledgeNode
 
     id: Union[str, KnowledgeNodeId] = None
     status: Union[str, "Status"] = None
@@ -335,7 +335,7 @@ class TaxonomyNode(KnowledgeNode):
     class_class_uri: ClassVar[URIRef] = SKOS["Concept"]
     class_class_curie: ClassVar[str] = "skos:Concept"
     class_name: ClassVar[str] = "TaxonomyNode"
-    class_model_uri: ClassVar[URIRef] = KA.TaxonomyNode
+    class_model_uri: ClassVar[URIRef] = DENSHO.TaxonomyNode
 
     id: Union[str, TaxonomyNodeId] = None
     status: Union[str, "Status"] = None
@@ -389,10 +389,10 @@ class Domain(TaxonomyNode):
     """
     _inherited_slots: ClassVar[list[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = KA["Domain"]
-    class_class_curie: ClassVar[str] = "ka:Domain"
+    class_class_uri: ClassVar[URIRef] = DENSHO["Domain"]
+    class_class_curie: ClassVar[str] = "densho:Domain"
     class_name: ClassVar[str] = "Domain"
-    class_model_uri: ClassVar[URIRef] = KA.Domain
+    class_model_uri: ClassVar[URIRef] = DENSHO.Domain
 
     id: Union[str, DomainId] = None
     status: Union[str, "Status"] = None
@@ -421,10 +421,10 @@ class Discipline(TaxonomyNode):
     """
     _inherited_slots: ClassVar[list[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = KA["Discipline"]
-    class_class_curie: ClassVar[str] = "ka:Discipline"
+    class_class_uri: ClassVar[URIRef] = DENSHO["Discipline"]
+    class_class_curie: ClassVar[str] = "densho:Discipline"
     class_name: ClassVar[str] = "Discipline"
-    class_model_uri: ClassVar[URIRef] = KA.Discipline
+    class_model_uri: ClassVar[URIRef] = DENSHO.Discipline
 
     id: Union[str, DisciplineId] = None
     status: Union[str, "Status"] = None
@@ -460,10 +460,10 @@ class PracticeArea(TaxonomyNode):
     """
     _inherited_slots: ClassVar[list[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = KA["PracticeArea"]
-    class_class_curie: ClassVar[str] = "ka:PracticeArea"
+    class_class_uri: ClassVar[URIRef] = DENSHO["PracticeArea"]
+    class_class_curie: ClassVar[str] = "densho:PracticeArea"
     class_name: ClassVar[str] = "PracticeArea"
-    class_model_uri: ClassVar[URIRef] = KA.PracticeArea
+    class_model_uri: ClassVar[URIRef] = DENSHO.PracticeArea
 
     id: Union[str, PracticeAreaId] = None
     status: Union[str, "Status"] = None
@@ -499,10 +499,10 @@ class Concept(TaxonomyNode):
     """
     _inherited_slots: ClassVar[list[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = KA["Concept"]
-    class_class_curie: ClassVar[str] = "ka:Concept"
+    class_class_uri: ClassVar[URIRef] = DENSHO["Concept"]
+    class_class_curie: ClassVar[str] = "densho:Concept"
     class_name: ClassVar[str] = "Concept"
-    class_model_uri: ClassVar[URIRef] = KA.Concept
+    class_model_uri: ClassVar[URIRef] = DENSHO.Concept
 
     id: Union[str, ConceptId] = None
     status: Union[str, "Status"] = None
@@ -538,10 +538,10 @@ class Skill(KnowledgeNode):
     """
     _inherited_slots: ClassVar[list[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = KA["Skill"]
-    class_class_curie: ClassVar[str] = "ka:Skill"
+    class_class_uri: ClassVar[URIRef] = DENSHO["Skill"]
+    class_class_curie: ClassVar[str] = "densho:Skill"
     class_name: ClassVar[str] = "Skill"
-    class_model_uri: ClassVar[URIRef] = KA.Skill
+    class_model_uri: ClassVar[URIRef] = DENSHO.Skill
 
     id: Union[str, SkillId] = None
     status: Union[str, "Status"] = None
@@ -591,10 +591,10 @@ class Directive(GovernedEntity):
     """
     _inherited_slots: ClassVar[list[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = KA["Directive"]
-    class_class_curie: ClassVar[str] = "ka:Directive"
+    class_class_uri: ClassVar[URIRef] = DENSHO["Directive"]
+    class_class_curie: ClassVar[str] = "densho:Directive"
     class_name: ClassVar[str] = "Directive"
-    class_model_uri: ClassVar[URIRef] = KA.Directive
+    class_model_uri: ClassVar[URIRef] = DENSHO.Directive
 
     id: Union[str, DirectiveId] = None
     status: Union[str, "Status"] = None
@@ -650,10 +650,10 @@ class DirectiveException(YAMLRoot):
     """
     _inherited_slots: ClassVar[list[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = KA["DirectiveException"]
-    class_class_curie: ClassVar[str] = "ka:DirectiveException"
+    class_class_uri: ClassVar[URIRef] = DENSHO["DirectiveException"]
+    class_class_curie: ClassVar[str] = "densho:DirectiveException"
     class_name: ClassVar[str] = "DirectiveException"
-    class_model_uri: ClassVar[URIRef] = KA.DirectiveException
+    class_model_uri: ClassVar[URIRef] = DENSHO.DirectiveException
 
     directive: Union[str, DirectiveId] = None
     reason: str = None
@@ -689,10 +689,10 @@ class Pointer(YAMLRoot):
     """
     _inherited_slots: ClassVar[list[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = KA["Pointer"]
-    class_class_curie: ClassVar[str] = "ka:Pointer"
+    class_class_uri: ClassVar[URIRef] = DENSHO["Pointer"]
+    class_class_curie: ClassVar[str] = "densho:Pointer"
     class_name: ClassVar[str] = "Pointer"
-    class_model_uri: ClassVar[URIRef] = KA.Pointer
+    class_model_uri: ClassVar[URIRef] = DENSHO.Pointer
 
     kind: Union[str, URIorCURIE] = None
     target: Union[str, NodeId] = None
@@ -748,10 +748,10 @@ class AlwaysPointer(Pointer):
     """
     _inherited_slots: ClassVar[list[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = KA["AlwaysPointer"]
-    class_class_curie: ClassVar[str] = "ka:AlwaysPointer"
+    class_class_uri: ClassVar[URIRef] = DENSHO["AlwaysPointer"]
+    class_class_curie: ClassVar[str] = "densho:AlwaysPointer"
     class_name: ClassVar[str] = "AlwaysPointer"
-    class_model_uri: ClassVar[URIRef] = KA.AlwaysPointer
+    class_model_uri: ClassVar[URIRef] = DENSHO.AlwaysPointer
 
     kind: Union[str, URIorCURIE] = None
     target: Union[str, NodeId] = None
@@ -772,10 +772,10 @@ class PathPointer(Pointer):
     """
     _inherited_slots: ClassVar[list[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = KA["PathPointer"]
-    class_class_curie: ClassVar[str] = "ka:PathPointer"
+    class_class_uri: ClassVar[URIRef] = DENSHO["PathPointer"]
+    class_class_curie: ClassVar[str] = "densho:PathPointer"
     class_name: ClassVar[str] = "PathPointer"
-    class_model_uri: ClassVar[URIRef] = KA.PathPointer
+    class_model_uri: ClassVar[URIRef] = DENSHO.PathPointer
 
     kind: Union[str, URIorCURIE] = None
     target: Union[str, NodeId] = None
@@ -802,10 +802,10 @@ class SkillPointer(Pointer):
     """
     _inherited_slots: ClassVar[list[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = KA["SkillPointer"]
-    class_class_curie: ClassVar[str] = "ka:SkillPointer"
+    class_class_uri: ClassVar[URIRef] = DENSHO["SkillPointer"]
+    class_class_curie: ClassVar[str] = "densho:SkillPointer"
     class_name: ClassVar[str] = "SkillPointer"
-    class_model_uri: ClassVar[URIRef] = KA.SkillPointer
+    class_model_uri: ClassVar[URIRef] = DENSHO.SkillPointer
 
     kind: Union[str, URIorCURIE] = None
     trigger: str = None
@@ -830,10 +830,10 @@ class TextPointer(Pointer):
     """
     _inherited_slots: ClassVar[list[str]] = []
 
-    class_class_uri: ClassVar[URIRef] = KA["TextPointer"]
-    class_class_curie: ClassVar[str] = "ka:TextPointer"
+    class_class_uri: ClassVar[URIRef] = DENSHO["TextPointer"]
+    class_class_curie: ClassVar[str] = "densho:TextPointer"
     class_name: ClassVar[str] = "TextPointer"
-    class_model_uri: ClassVar[URIRef] = KA.TextPointer
+    class_model_uri: ClassVar[URIRef] = DENSHO.TextPointer
 
     kind: Union[str, URIorCURIE] = None
     target: Union[str, NodeId] = None
@@ -976,143 +976,143 @@ class DirectiveScope(EnumDefinitionImpl):
 class slots:
     pass
 
-slots.root = Slot(uri=KA.root, name="root", curie=KA.curie('root'),
-                   model_uri=KA.root, domain=None, range=Union[dict, Root])
+slots.root = Slot(uri=DENSHO.root, name="root", curie=DENSHO.curie('root'),
+                   model_uri=DENSHO.root, domain=None, range=Union[dict, Root])
 
-slots.nodes = Slot(uri=KA.nodes, name="nodes", curie=KA.curie('nodes'),
-                   model_uri=KA.nodes, domain=None, range=Union[dict[Union[str, KnowledgeNodeId], Union[dict, KnowledgeNode]], list[Union[dict, KnowledgeNode]]])
+slots.nodes = Slot(uri=DENSHO.nodes, name="nodes", curie=DENSHO.curie('nodes'),
+                   model_uri=DENSHO.nodes, domain=None, range=Union[dict[Union[str, KnowledgeNodeId], Union[dict, KnowledgeNode]], list[Union[dict, KnowledgeNode]]])
 
-slots.result = Slot(uri=KA.result, name="result", curie=KA.curie('result'),
-                   model_uri=KA.result, domain=None, range=Optional[Union[str, "CompiledResult"]])
+slots.result = Slot(uri=DENSHO.result, name="result", curie=DENSHO.curie('result'),
+                   model_uri=DENSHO.result, domain=None, range=Optional[Union[str, "CompiledResult"]])
 
-slots.id = Slot(uri=KA.id, name="id", curie=KA.curie('id'),
-                   model_uri=KA.id, domain=None, range=URIRef,
+slots.id = Slot(uri=DENSHO.id, name="id", curie=DENSHO.curie('id'),
+                   model_uri=DENSHO.id, domain=None, range=URIRef,
                    pattern=re.compile(r'^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\n)$'))
 
-slots.status = Slot(uri=KA.status, name="status", curie=KA.curie('status'),
-                   model_uri=KA.status, domain=None, range=Union[str, "Status"])
+slots.status = Slot(uri=DENSHO.status, name="status", curie=DENSHO.curie('status'),
+                   model_uri=DENSHO.status, domain=None, range=Union[str, "Status"])
 
-slots.origin = Slot(uri=KA.origin, name="origin", curie=KA.curie('origin'),
-                   model_uri=KA.origin, domain=None, range=Union[str, "Origin"])
+slots.origin = Slot(uri=DENSHO.origin, name="origin", curie=DENSHO.curie('origin'),
+                   model_uri=DENSHO.origin, domain=None, range=Union[str, "Origin"])
 
 slots.sources = Slot(uri=DCTERMS.source, name="sources", curie=DCTERMS.curie('source'),
-                   model_uri=KA.sources, domain=None, range=Optional[Union[str, list[str]]],
+                   model_uri=DENSHO.sources, domain=None, range=Optional[Union[str, list[str]]],
                    pattern=re.compile(r'^\S(?: *\S)*(?!\n)$'))
 
-slots.rejection_reason = Slot(uri=KA.rejection_reason, name="rejection_reason", curie=KA.curie('rejection_reason'),
-                   model_uri=KA.rejection_reason, domain=None, range=Optional[str],
+slots.rejection_reason = Slot(uri=DENSHO.rejection_reason, name="rejection_reason", curie=DENSHO.curie('rejection_reason'),
+                   model_uri=DENSHO.rejection_reason, domain=None, range=Optional[str],
                    pattern=re.compile(r'^\S(?: *\S)*(?!\n)$'))
 
 slots.kind = Slot(uri=RDF.type, name="kind", curie=RDF.curie('type'),
-                   model_uri=KA.kind, domain=None, range=Union[str, URIorCURIE])
+                   model_uri=DENSHO.kind, domain=None, range=Union[str, URIorCURIE])
 
 slots.title = Slot(uri=SKOS.prefLabel, name="title", curie=SKOS.curie('prefLabel'),
-                   model_uri=KA.title, domain=None, range=str,
+                   model_uri=DENSHO.title, domain=None, range=str,
                    pattern=re.compile(r'^\S(?: *\S)*(?!\n)$'))
 
-slots.pointers = Slot(uri=KA.pointers, name="pointers", curie=KA.curie('pointers'),
-                   model_uri=KA.pointers, domain=None, range=Optional[Union[Union[dict, Pointer], list[Union[dict, Pointer]]]])
+slots.pointers = Slot(uri=DENSHO.pointers, name="pointers", curie=DENSHO.curie('pointers'),
+                   model_uri=DENSHO.pointers, domain=None, range=Optional[Union[Union[dict, Pointer], list[Union[dict, Pointer]]]])
 
-slots.directives = Slot(uri=KA.directives, name="directives", curie=KA.curie('directives'),
-                   model_uri=KA.directives, domain=None, range=Optional[Union[dict[Union[str, DirectiveId], Union[dict, Directive]], list[Union[dict, Directive]]]])
+slots.directives = Slot(uri=DENSHO.directives, name="directives", curie=DENSHO.curie('directives'),
+                   model_uri=DENSHO.directives, domain=None, range=Optional[Union[dict[Union[str, DirectiveId], Union[dict, Directive]], list[Union[dict, Directive]]]])
 
-slots.body = Slot(uri=KA.body, name="body", curie=KA.curie('body'),
-                   model_uri=KA.body, domain=None, range=Optional[str],
+slots.body = Slot(uri=DENSHO.body, name="body", curie=DENSHO.curie('body'),
+                   model_uri=DENSHO.body, domain=None, range=Optional[str],
                    pattern=re.compile(r'\S'))
 
-slots.knowledge_type = Slot(uri=KA.knowledge_type, name="knowledge_type", curie=KA.curie('knowledge_type'),
-                   model_uri=KA.knowledge_type, domain=None, range=Union[str, "KnowledgeType"])
+slots.knowledge_type = Slot(uri=DENSHO.knowledge_type, name="knowledge_type", curie=DENSHO.curie('knowledge_type'),
+                   model_uri=DENSHO.knowledge_type, domain=None, range=Union[str, "KnowledgeType"])
 
-slots.exceptions = Slot(uri=KA.exceptions, name="exceptions", curie=KA.curie('exceptions'),
-                   model_uri=KA.exceptions, domain=None, range=Optional[Union[Union[dict, DirectiveException], list[Union[dict, DirectiveException]]]])
+slots.exceptions = Slot(uri=DENSHO.exceptions, name="exceptions", curie=DENSHO.curie('exceptions'),
+                   model_uri=DENSHO.exceptions, domain=None, range=Optional[Union[Union[dict, DirectiveException], list[Union[dict, DirectiveException]]]])
 
-slots.directive = Slot(uri=KA.directive, name="directive", curie=KA.curie('directive'),
-                   model_uri=KA.directive, domain=None, range=Union[str, DirectiveId])
+slots.directive = Slot(uri=DENSHO.directive, name="directive", curie=DENSHO.curie('directive'),
+                   model_uri=DENSHO.directive, domain=None, range=Union[str, DirectiveId])
 
-slots.reason = Slot(uri=KA.reason, name="reason", curie=KA.curie('reason'),
-                   model_uri=KA.reason, domain=None, range=str,
+slots.reason = Slot(uri=DENSHO.reason, name="reason", curie=DENSHO.curie('reason'),
+                   model_uri=DENSHO.reason, domain=None, range=str,
                    pattern=re.compile(r'^\S(?: *\S)*(?!\n)$'))
 
 slots.definition = Slot(uri=SKOS.definition, name="definition", curie=SKOS.curie('definition'),
-                   model_uri=KA.definition, domain=None, range=str,
+                   model_uri=DENSHO.definition, domain=None, range=str,
                    pattern=re.compile(r'\S'))
 
-slots.description = Slot(uri=KA.description, name="description", curie=KA.curie('description'),
-                   model_uri=KA.description, domain=None, range=str,
+slots.description = Slot(uri=DENSHO.description, name="description", curie=DENSHO.curie('description'),
+                   model_uri=DENSHO.description, domain=None, range=str,
                    pattern=re.compile(r'^\S(?: *\S)*(?!\n)$'))
 
-slots.invocation = Slot(uri=KA.invocation, name="invocation", curie=KA.curie('invocation'),
-                   model_uri=KA.invocation, domain=None, range=Union[str, "Invocation"])
+slots.invocation = Slot(uri=DENSHO.invocation, name="invocation", curie=DENSHO.curie('invocation'),
+                   model_uri=DENSHO.invocation, domain=None, range=Union[str, "Invocation"])
 
-slots.text = Slot(uri=KA.text, name="text", curie=KA.curie('text'),
-                   model_uri=KA.text, domain=None, range=str,
+slots.text = Slot(uri=DENSHO.text, name="text", curie=DENSHO.curie('text'),
+                   model_uri=DENSHO.text, domain=None, range=str,
                    pattern=re.compile(r'^\S(?: *\S)*(?!\n)$'))
 
-slots.scope = Slot(uri=KA.scope, name="scope", curie=KA.curie('scope'),
-                   model_uri=KA.scope, domain=None, range=Union[str, "DirectiveScope"])
+slots.scope = Slot(uri=DENSHO.scope, name="scope", curie=DENSHO.curie('scope'),
+                   model_uri=DENSHO.scope, domain=None, range=Union[str, "DirectiveScope"])
 
-slots.basis = Slot(uri=KA.basis, name="basis", curie=KA.curie('basis'),
-                   model_uri=KA.basis, domain=None, range=Union[str, "Basis"])
+slots.basis = Slot(uri=DENSHO.basis, name="basis", curie=DENSHO.curie('basis'),
+                   model_uri=DENSHO.basis, domain=None, range=Union[str, "Basis"])
 
-slots.also_attached_to = Slot(uri=KA.also_attached_to, name="also_attached_to", curie=KA.curie('also_attached_to'),
-                   model_uri=KA.also_attached_to, domain=None, range=Optional[Union[Union[str, NodeId], list[Union[str, NodeId]]]])
+slots.also_attached_to = Slot(uri=DENSHO.also_attached_to, name="also_attached_to", curie=DENSHO.curie('also_attached_to'),
+                   model_uri=DENSHO.also_attached_to, domain=None, range=Optional[Union[Union[str, NodeId], list[Union[str, NodeId]]]])
 
-slots.refines = Slot(uri=KA.refines, name="refines", curie=KA.curie('refines'),
-                   model_uri=KA.refines, domain=None, range=Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]])
+slots.refines = Slot(uri=DENSHO.refines, name="refines", curie=DENSHO.curie('refines'),
+                   model_uri=DENSHO.refines, domain=None, range=Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]])
 
-slots.conflicts_with = Slot(uri=KA.conflicts_with, name="conflicts_with", curie=KA.curie('conflicts_with'),
-                   model_uri=KA.conflicts_with, domain=None, range=Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]])
+slots.conflicts_with = Slot(uri=DENSHO.conflicts_with, name="conflicts_with", curie=DENSHO.curie('conflicts_with'),
+                   model_uri=DENSHO.conflicts_with, domain=None, range=Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]])
 
-slots.target = Slot(uri=KA.target, name="target", curie=KA.curie('target'),
-                   model_uri=KA.target, domain=None, range=Union[str, NodeId])
+slots.target = Slot(uri=DENSHO.target, name="target", curie=DENSHO.curie('target'),
+                   model_uri=DENSHO.target, domain=None, range=Union[str, NodeId])
 
-slots.trigger = Slot(uri=KA.trigger, name="trigger", curie=KA.curie('trigger'),
-                   model_uri=KA.trigger, domain=None, range=str,
+slots.trigger = Slot(uri=DENSHO.trigger, name="trigger", curie=DENSHO.curie('trigger'),
+                   model_uri=DENSHO.trigger, domain=None, range=str,
                    pattern=re.compile(r'^\S(?: *\S)*(?!\n)$'))
 
-slots.paths = Slot(uri=KA.paths, name="paths", curie=KA.curie('paths'),
-                   model_uri=KA.paths, domain=None, range=Union[str, list[str]],
+slots.paths = Slot(uri=DENSHO.paths, name="paths", curie=DENSHO.curie('paths'),
+                   model_uri=DENSHO.paths, domain=None, range=Union[str, list[str]],
                    pattern=re.compile(r'^\S(?: *\S)*(?!\n)$'))
 
-slots.edge = Slot(uri=KA.edge, name="edge", curie=KA.curie('edge'),
-                   model_uri=KA.edge, domain=None, range=Optional[Union[str, GovernedEntityId]])
+slots.edge = Slot(uri=DENSHO.edge, name="edge", curie=DENSHO.curie('edge'),
+                   model_uri=DENSHO.edge, domain=None, range=Optional[Union[str, GovernedEntityId]])
 
 slots.broader = Slot(uri=SKOS.broader, name="broader", curie=SKOS.curie('broader'),
-                   model_uri=KA.broader, domain=None, range=Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]])
+                   model_uri=DENSHO.broader, domain=None, range=Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]])
 
 slots.related = Slot(uri=SKOS.related, name="related", curie=SKOS.curie('related'),
-                   model_uri=KA.related, domain=None, range=Optional[Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]]])
+                   model_uri=DENSHO.related, domain=None, range=Optional[Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]]])
 
-slots.informs = Slot(uri=KA.informs, name="informs", curie=KA.curie('informs'),
-                   model_uri=KA.informs, domain=None, range=Optional[Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]]])
+slots.informs = Slot(uri=DENSHO.informs, name="informs", curie=DENSHO.curie('informs'),
+                   model_uri=DENSHO.informs, domain=None, range=Optional[Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]]])
 
-slots.depends_on = Slot(uri=KA.depends_on, name="depends_on", curie=KA.curie('depends_on'),
-                   model_uri=KA.depends_on, domain=None, range=Optional[Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]]])
+slots.depends_on = Slot(uri=DENSHO.depends_on, name="depends_on", curie=DENSHO.curie('depends_on'),
+                   model_uri=DENSHO.depends_on, domain=None, range=Optional[Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]]])
 
-slots.governs = Slot(uri=KA.governs, name="governs", curie=KA.curie('governs'),
-                   model_uri=KA.governs, domain=None, range=Optional[Union[Union[str, NodeId], list[Union[str, NodeId]]]])
+slots.governs = Slot(uri=DENSHO.governs, name="governs", curie=DENSHO.curie('governs'),
+                   model_uri=DENSHO.governs, domain=None, range=Optional[Union[Union[str, NodeId], list[Union[str, NodeId]]]])
 
-slots.implements = Slot(uri=KA.implements, name="implements", curie=KA.curie('implements'),
-                   model_uri=KA.implements, domain=None, range=Optional[Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]]])
+slots.implements = Slot(uri=DENSHO.implements, name="implements", curie=DENSHO.curie('implements'),
+                   model_uri=DENSHO.implements, domain=None, range=Optional[Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]]])
 
-slots.uses = Slot(uri=KA.uses, name="uses", curie=KA.curie('uses'),
-                   model_uri=KA.uses, domain=None, range=Optional[Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]]])
+slots.uses = Slot(uri=DENSHO.uses, name="uses", curie=DENSHO.curie('uses'),
+                   model_uri=DENSHO.uses, domain=None, range=Optional[Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]]])
 
-slots.applies = Slot(uri=KA.applies, name="applies", curie=KA.curie('applies'),
-                   model_uri=KA.applies, domain=None, range=Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]])
+slots.applies = Slot(uri=DENSHO.applies, name="applies", curie=DENSHO.curie('applies'),
+                   model_uri=DENSHO.applies, domain=None, range=Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]])
 
-slots.Root_pointers = Slot(uri=KA.pointers, name="Root_pointers", curie=KA.curie('pointers'),
-                   model_uri=KA.Root_pointers, domain=Root, range=Union[Union[dict, "Pointer"], list[Union[dict, "Pointer"]]])
+slots.Root_pointers = Slot(uri=DENSHO.pointers, name="Root_pointers", curie=DENSHO.curie('pointers'),
+                   model_uri=DENSHO.Root_pointers, domain=Root, range=Union[Union[dict, "Pointer"], list[Union[dict, "Pointer"]]])
 
 slots.Discipline_broader = Slot(uri=SKOS.broader, name="Discipline_broader", curie=SKOS.curie('broader'),
-                   model_uri=KA.Discipline_broader, domain=Discipline, range=Union[Union[str, DomainId], list[Union[str, DomainId]]])
+                   model_uri=DENSHO.Discipline_broader, domain=Discipline, range=Union[Union[str, DomainId], list[Union[str, DomainId]]])
 
 slots.PracticeArea_broader = Slot(uri=SKOS.broader, name="PracticeArea_broader", curie=SKOS.curie('broader'),
-                   model_uri=KA.PracticeArea_broader, domain=PracticeArea, range=Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]])
+                   model_uri=DENSHO.PracticeArea_broader, domain=PracticeArea, range=Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]])
 
 slots.Concept_broader = Slot(uri=SKOS.broader, name="Concept_broader", curie=SKOS.curie('broader'),
-                   model_uri=KA.Concept_broader, domain=Concept, range=Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]])
+                   model_uri=DENSHO.Concept_broader, domain=Concept, range=Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]])
 
-slots.SkillPointer_target = Slot(uri=KA.target, name="SkillPointer_target", curie=KA.curie('target'),
-                   model_uri=KA.SkillPointer_target, domain=SkillPointer, range=Union[str, SkillId])
+slots.SkillPointer_target = Slot(uri=DENSHO.target, name="SkillPointer_target", curie=DENSHO.curie('target'),
+                   model_uri=DENSHO.SkillPointer_target, domain=SkillPointer, range=Union[str, SkillId])
 

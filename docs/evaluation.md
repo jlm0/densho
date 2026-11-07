@@ -51,7 +51,7 @@ The template ships four tasks for each discipline: the canary and three tasks wh
 ## Check the tasks
 
 ```sh
-uv run ka eval --check
+uv run densho eval --check
 ```
 
 It loads each task, checks that each target names a `proposed` or `accepted` directive under the discipline, and grades `good/` and `bad/`. Each target must pass on the good output and fail on the bad one, so a grader that passes everything, or nothing, fails the check. It makes no model call. The `eval-tasks` hook runs it on each commit, in the template and in each project.
@@ -61,8 +61,8 @@ It loads each task, checks that each target names a `proposed` or `accepted` dir
 An eval spends money, so only a person starts one. In a project, run `/evaluate-knowledge`. The skill asks for the discipline, the runs, and your budget, runs the dry run first, and reports the result. By hand:
 
 ```sh
-uv run ka eval --discipline software-engineering --dry-run
-uv run ka eval --discipline software-engineering --runs 3 --budget 5
+uv run densho eval --discipline software-engineering --dry-run
+uv run densho eval --discipline software-engineering --runs 3 --budget 5
 ```
 
 | Option         | What it sets                                                         | Default              |
@@ -80,7 +80,7 @@ The command needs the `claude` command on your `PATH`, signed in.
 
 ### The two conditions
 
-The command copies `knowledge/`, without the tasks, twice into the work folder. In the "with" copy it accepts the subtree of the discipline, as `ka accept --subtree` would. In the "without" copy it sets each accepted directive of the discipline to `proposed`. Nothing else differs, and a skill's own directives keep their status in both. It never accepts or changes anything in your own tree, and it refuses a work folder inside `knowledge/`.
+The command copies `knowledge/`, without the tasks, twice into the work folder. In the "with" copy it accepts the subtree of the discipline, as `densho accept --subtree` would. In the "without" copy it sets each accepted directive of the discipline to `proposed`. Nothing else differs, and a skill's own directives keep their status in both. It never accepts or changes anything in your own tree, and it refuses a work folder inside `knowledge/`.
 
 Each run gets a fresh folder with the generated files of its condition and the fixture of its task, committed as its own git repo. The folder holds no `knowledge/`, because a node file names each directive with its status, and the "without" agent could read it there.
 

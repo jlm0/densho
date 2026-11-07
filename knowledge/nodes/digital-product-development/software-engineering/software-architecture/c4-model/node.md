@@ -1,6 +1,6 @@
 ---
 id: c4-model
-kind: ka:Concept
+kind: densho:Concept
 title: C4 model
 status: proposed
 origin: template

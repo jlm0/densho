@@ -25,14 +25,14 @@ The parser also skips `knowledge/evals/`, which holds the [eval tasks](evaluatio
 ```markdown
 ---
 id: test-driven-development
-kind: ka:Concept
+kind: densho:Concept
 title: Test-driven development
 status: accepted
 origin: template
 knowledge_type: domain
 broader: [software-testing]
 pointers:
-  - kind: ka:PathPointer
+  - kind: densho:PathPointer
     target: pytest-usage
     trigger: You edit a test file.
     paths: ["tests/**"]
@@ -89,7 +89,7 @@ A value is plain text, so put one that holds Markdown syntax in backticks:
 ## Check your nodes
 
 ```sh
-uv run ka parse knowledge
+uv run densho parse knowledge
 ```
 
 Each problem prints as `path:line: code: message`. The git hook runs the same command on each commit.

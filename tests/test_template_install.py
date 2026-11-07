@@ -49,8 +49,8 @@ ALLOWED = (
     ".gitignore",
     ".pre-commit-config.yaml",
     "knowledge/node.md",
-    "knowledge/.ka/ka",
-    "knowledge/.ka/engine-constraints.txt",
+    "knowledge/.densho/densho",
+    "knowledge/.densho/engine-constraints.txt",
     HISTORY_FILE.as_posix(),
     "knowledge/governance/schema/metamodel.yaml",
 )
@@ -229,10 +229,10 @@ def test_the_answers_record_the_template_base(source: Path, installed: Path) -> 
 
 def test_the_wrapper_pins_the_engine_to_the_commit(source: Path, installed: Path) -> None:
     head = git(source, "rev-parse", "HEAD").strip()
-    wrapper = installed / "knowledge/.ka/ka"
+    wrapper = installed / "knowledge/.densho/densho"
     assert os.access(wrapper, os.X_OK)
     text = wrapper.read_text(encoding="utf-8")
-    assert f'--from "git+file://{source.as_posix()}@{head}" ka "$@"' in text
+    assert f'--from "git+file://{source.as_posix()}@{head}" densho "$@"' in text
     assert '--constraints "$(dirname "$0")/engine-constraints.txt"' in text
     assert "--python 3.14" in text
     assert text.startswith("#!/bin/sh\nif ! command -v uvx")
@@ -245,9 +245,9 @@ def test_the_hooks_need_no_python_in_the_project(installed: Path) -> None:
     assert [repo["repo"] for repo in config["repos"]] == ["local"]
     hooks = {hook["id"]: hook for hook in config["repos"][0]["hooks"]}
     assert set(hooks) == {"conflict-markers", "rejected-hunks", "knowledge-checks", "eval-tasks"}
-    assert hooks["eval-tasks"]["entry"] == "knowledge/.ka/ka eval --check"
+    assert hooks["eval-tasks"]["entry"] == "knowledge/.densho/densho eval --check"
     assert hooks["eval-tasks"]["pass_filenames"] is False
-    assert hooks["knowledge-checks"]["entry"] == "knowledge/.ka/ka runtime --verify"
+    assert hooks["knowledge-checks"]["entry"] == "knowledge/.densho/densho runtime --verify"
     assert hooks["knowledge-checks"]["always_run"] is True
     assert hooks["knowledge-checks"]["verbose"] is True
     assert hooks["knowledge-checks"]["pass_filenames"] is False
@@ -408,12 +408,12 @@ def test_a_project_gets_a_view_that_git_ignores(project: Path) -> None:
 
 
 def test_a_project_page_names_the_command_of_the_project(project: Path) -> None:
-    assert command_prefix(project) == "knowledge/.ka/ka"
+    assert command_prefix(project) == "knowledge/.densho/densho"
     assert write_view(project).problems == []
     page = (project / VIEW_FOLDER / "review.html").read_text(encoding="utf-8")
-    assert "knowledge/.ka/ka accept --subtree digital-product-development</code>" in page
-    assert "uv run ka accept" not in page
-    assert "uv run ka runtime" not in page
+    assert "knowledge/.densho/densho accept --subtree digital-product-development</code>" in page
+    assert "uv run densho accept" not in page
+    assert "uv run densho runtime" not in page
 
 
 def test_a_project_accepts_a_proposal_and_writes_no_commit(project: Path) -> None:
@@ -435,8 +435,8 @@ def test_a_project_accepts_a_proposal_and_writes_no_commit(project: Path) -> Non
 def test_a_project_is_told_of_the_commands() -> None:
     settings = YAML(typ="safe").load((REPO / "copier.yml").read_text(encoding="utf-8"))
     message = settings["_message_after_copy"]
-    assert "knowledge/.ka/ka view" in message
-    assert "knowledge/.ka/ka accept" in message
+    assert "knowledge/.densho/densho view" in message
+    assert "knowledge/.densho/densho accept" in message
     assert "A person" in message
 
 
@@ -446,13 +446,16 @@ def settings() -> dict[str, Any]:
 
 def test_the_tasks_select_on_an_update_and_adopt_on_a_copy() -> None:
     assert settings()["_tasks"] == [
-        {"command": ["knowledge/.ka/ka", "select"], "when": "{{ _copier_operation == 'update' }}"},
         {
-            "command": ["knowledge/.ka/ka", "adopt", "--keep-accepted"],
+            "command": ["knowledge/.densho/densho", "select"],
+            "when": "{{ _copier_operation == 'update' }}",
+        },
+        {
+            "command": ["knowledge/.densho/densho", "adopt", "--keep-accepted"],
             "when": "{{ _copier_operation == 'copy' and keep_template_status }}",
         },
         {
-            "command": ["knowledge/.ka/ka", "adopt"],
+            "command": ["knowledge/.densho/densho", "adopt"],
             "when": "{{ _copier_operation == 'copy' and not keep_template_status }}",
         },
     ]
@@ -461,10 +464,10 @@ def test_the_tasks_select_on_an_update_and_adopt_on_a_copy() -> None:
 @pytest.mark.parametrize(
     ("keep", "operation", "commands"),
     [
-        (True, "copy", [["knowledge/.ka/ka", "adopt", "--keep-accepted"]]),
-        (False, "copy", [["knowledge/.ka/ka", "adopt"]]),
-        (True, "update", [["knowledge/.ka/ka", "select"]]),
-        (False, "update", [["knowledge/.ka/ka", "select"]]),
+        (True, "copy", [["knowledge/.densho/densho", "adopt", "--keep-accepted"]]),
+        (False, "copy", [["knowledge/.densho/densho", "adopt"]]),
+        (True, "update", [["knowledge/.densho/densho", "select"]]),
+        (False, "update", [["knowledge/.densho/densho", "select"]]),
     ],
 )
 def test_one_task_runs_for_each_operation(
@@ -521,7 +524,7 @@ def test_the_message_follows_the_answer(text: str, *, keep: bool) -> None:
     )
     rendered = message.render(keep_template_status=keep)
     assert text in rendered
-    assert "\n\n  knowledge/.ka/ka view\n" in rendered
+    assert "\n\n  knowledge/.densho/densho view\n" in rendered
 
 
 @pytest.mark.parametrize(
@@ -570,7 +573,7 @@ def test_the_template_ships_no_instruction_file(source: Path, installed: Path) -
 
 @pytest.fixture
 def wrapper_template() -> str:
-    return (REPO / "knowledge/.ka/ka.jinja").read_text(encoding="utf-8")
+    return (REPO / "knowledge/.densho/densho.jinja").read_text(encoding="utf-8")
 
 
 @pytest.mark.parametrize(
@@ -592,7 +595,7 @@ def test_the_wrapper_reads_each_source_form(
     rendered = text.render(
         _copier_answers={"_src_path": source_path}, _copier_conf={"vcs_ref_hash": SHA}
     )
-    assert f'--from "git+{url}@{SHA}" ka "$@"\n' in rendered
+    assert f'--from "git+{url}@{SHA}" densho "$@"\n' in rendered
 
 
 def test_the_constraints_match_the_lock() -> None:
@@ -613,11 +616,13 @@ def test_the_constraints_match_the_lock() -> None:
         check=True,
         text=True,
     ).stdout
-    assert (REPO / "knowledge/.ka/engine-constraints.txt").read_text(encoding="utf-8") == exported
+    assert (REPO / "knowledge/.densho/engine-constraints.txt").read_text(
+        encoding="utf-8"
+    ) == exported
 
 
 def test_the_constraints_hold_the_language_model_and_no_dev_tool() -> None:
-    text = (REPO / "knowledge/.ka/engine-constraints.txt").read_text(encoding="utf-8")
+    text = (REPO / "knowledge/.densho/engine-constraints.txt").read_text(encoding="utf-8")
     assert "en-core-web-sm @ https://" in text
     assert "spacy==" in text
     assert not re.search(r"^(copier|pyright|ruff|linkml)==", text, re.MULTILINE)

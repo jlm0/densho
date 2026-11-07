@@ -1,6 +1,6 @@
 ---
 id: twelve-factor-app
-kind: ka:Concept
+kind: densho:Concept
 title: Twelve-factor app
 status: proposed
 origin: template

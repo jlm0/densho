@@ -1,6 +1,6 @@
 ---
 id: positioning-components
-kind: ka:Concept
+kind: densho:Concept
 title: Components of positioning
 status: proposed
 origin: template

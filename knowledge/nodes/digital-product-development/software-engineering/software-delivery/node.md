@@ -1,6 +1,6 @@
 ---
 id: software-delivery
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Delivery
 status: proposed
 origin: template
@@ -10,16 +10,16 @@ sources:
 broader:
   - software-engineering
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: trunk-based-development
     trigger: You create, merge, or release a branch.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: conventional-commits
     trigger: You write a commit message.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: semantic-versioning
     trigger: You choose the version number of a release.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: software-delivery-metrics
     trigger: You measure how a team delivers software.
 ---

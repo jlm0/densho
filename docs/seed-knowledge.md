@@ -119,20 +119,20 @@ The hierarchy is not the only structure. `informs`, `depends_on`, and `related` 
 `design-settings-interface` takes a subset of Accessibility. The whole node holds 61 rules and would bring the skill close to its [size limit](runtime-files.md#why-a-skill-holds-a-copy), while rules such as captions, flashing content, and sign-in have nothing to check on a settings screen. A skill source names knowledge and does not copy it. Its body holds only the inputs, the procedure, the output, and how to validate the result. The [generated skill file](runtime-files.md#why-a-skill-holds-a-copy) holds the directives in force. To see every rule a skill carries, with each proposal labeled:
 
 ```sh
-uv run ka directives --at design-settings-interface
+uv run densho directives --at design-settings-interface
 ```
 
 `design-settings-interface` also steps out of one inherited rule, because a settings screen has no single primary action. That [exception](directive-semantics.md#stepping-out) is a proposal too, so a reviewer decides whether it stands.
 
 ## Accept what you received
 
-Every node, directive, and exception here is `proposed`, so the seed is checked but not in force. `ka directives --at` labels each one as a proposal, and code that asks what is in force gets nothing back until a person reviews it:
+Every node, directive, and exception here is `proposed`, so the seed is checked but not in force. `densho directives --at` labels each one as a proposal, and code that asks what is in force gets nothing back until a person reviews it:
 
 ```sh
-uv run ka governance --pending
+uv run densho governance --pending
 ```
 
-Or run `uv run ka view` and read `build/view/review.html`, which groups the list by node. Then run `uv run ka accept` on what you want, and commit a change that holds only `status` and the generated files. You can do that in one batch. The [human interface](human-interface.md#accept-what-you-approve) has the steps.
+Or run `uv run densho view` and read `build/view/review.html`, which groups the list by node. Then run `uv run densho accept` on what you want, and commit a change that holds only `status` and the generated files. You can do that in one batch. The [human interface](human-interface.md#accept-what-you-approve) has the steps.
 
 ## Make it your own
 
@@ -194,7 +194,7 @@ The Design Tokens format counts as `standard` even though it is a W3C Community 
 
 ## How it fits
 
-This is the first real content for the [schema](schema.md), the [format](node-format.md), and the checks. The [compiled outputs](compiled-outputs.md), the [runtime files](runtime-files.md), and the [human interface](human-interface.md) read it. While a seed directive is `proposed`, only `uv run ka build --proposals`, `uv run ka runtime --proposals`, and the site hold it, and each marks it as not in force.
+This is the first real content for the [schema](schema.md), the [format](node-format.md), and the checks. The [compiled outputs](compiled-outputs.md), the [runtime files](runtime-files.md), and the [human interface](human-interface.md) read it. While a seed directive is `proposed`, only `uv run densho build --proposals`, `uv run densho runtime --proposals`, and the site hold it, and each marks it as not in force.
 
 ## What it does not check yet
 

@@ -1,6 +1,6 @@
 ---
 id: rice-scoring
-kind: ka:Concept
+kind: densho:Concept
 title: RICE scoring
 status: proposed
 origin: template

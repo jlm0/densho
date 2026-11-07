@@ -85,14 +85,14 @@ REPO = Path(__file__).resolve().parents[1]
 RUNNER = CliRunner()
 USAGE_ERROR = 2
 DISCIPLINE = "software-engineering"
-LIVE = os.environ.get("KA_EVAL_LIVE") == "1"
+LIVE = os.environ.get("DENSHO_EVAL_LIVE") == "1"
 TASKS_PER_DISCIPLINE = 3
 CANARY_RUNS = 2
 SMOKE_RUNS = 6
 STUB_TURNS = 2
 ALPHA = """---
 id: alpha
-kind: ka:Discipline
+kind: densho:Discipline
 title: Alpha
 status: proposed
 origin: template
@@ -121,7 +121,7 @@ The meaning of alpha.
 """
 BETA = """---
 id: beta
-kind: ka:Discipline
+kind: densho:Discipline
 title: Beta
 status: proposed
 origin: template
@@ -144,7 +144,7 @@ The meaning of beta.
 """
 DOMAIN = """---
 id: domain
-kind: ka:Domain
+kind: densho:Domain
 title: Domain
 status: proposed
 origin: template
@@ -347,7 +347,7 @@ def test_a_discipline_needs_one_canary(small: Path) -> None:
 def test_a_folder_that_is_not_a_discipline_fails(small: Path) -> None:
     write_task(small, "canary", CANARY, discipline="gamma", good={"reply.md": "say-yes"})
     _, problems = check_tasks(small)
-    assert "eval-task: gamma is not the ID of a ka:Discipline node." in problem_texts(problems)
+    assert "eval-task: gamma is not the ID of a densho:Discipline node." in problem_texts(problems)
 
 
 def test_a_broken_node_stops_the_check(small: Path) -> None:
@@ -1513,7 +1513,7 @@ def live_probe(folder: Path, git_config: Path, arguments: list[str]) -> Probe | 
     return read_probe(done.stdout)
 
 
-@pytest.mark.skipif(not LIVE, reason="KA_EVAL_LIVE=1 runs the free probe of the real claude")
+@pytest.mark.skipif(not LIVE, reason="DENSHO_EVAL_LIVE=1 runs the free probe of the real claude")
 def test_the_live_probe_loads_only_the_run_folder(tmp_path: Path) -> None:
     folder, git_config = live_run_folder(tmp_path)
     flags = RunFlags(shutil.which("claude") or "claude", "sonnet", 0.01, ("Read",))
@@ -1523,7 +1523,7 @@ def test_the_live_probe_loads_only_the_run_folder(tmp_path: Path) -> None:
     assert identity_problems(folder, git_config) == []
 
 
-@pytest.mark.skipif(not LIVE, reason="KA_EVAL_LIVE=1 runs the free probe of the real claude")
+@pytest.mark.skipif(not LIVE, reason="DENSHO_EVAL_LIVE=1 runs the free probe of the real claude")
 def test_the_live_probe_without_the_isolation_flags_finds_the_leaks(tmp_path: Path) -> None:
     folder, git_config = live_run_folder(tmp_path)
     flags = RunFlags(shutil.which("claude") or "claude", "sonnet", 0.01, ("Read",))
@@ -1554,7 +1554,9 @@ def live_login(folder: Path, environment: Mapping[str, str]) -> int:
     return done.returncode
 
 
-@pytest.mark.skipif(not LIVE, reason="KA_EVAL_LIVE=1 runs the free login check of the real claude")
+@pytest.mark.skipif(
+    not LIVE, reason="DENSHO_EVAL_LIVE=1 runs the free login check of the real claude"
+)
 def test_the_live_login_check_needs_the_account_name(tmp_path: Path) -> None:
     git_config = tmp_path / "gitconfig"
     git_config.write_text("", encoding="utf-8")

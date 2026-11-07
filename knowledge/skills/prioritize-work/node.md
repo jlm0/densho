@@ -1,6 +1,6 @@
 ---
 id: prioritize-work
-kind: ka:Skill
+kind: densho:Skill
 title: Prioritize the work of a team
 status: proposed
 origin: template
@@ -14,19 +14,19 @@ uses:
   - kano-model
   - moscow-prioritization
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: product-prioritization
     trigger: You choose a method for the order of the work.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: rice-scoring
     trigger: You score items by reach, impact, confidence, and effort.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: cost-of-delay
     trigger: You weigh the urgency of the items.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: kano-model
     trigger: You use survey data on the satisfaction of customers.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: moscow-prioritization
     trigger: The work has a fixed deadline and a fixed team.
 ---

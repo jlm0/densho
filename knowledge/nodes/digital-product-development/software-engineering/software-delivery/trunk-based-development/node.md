@@ -1,6 +1,6 @@
 ---
 id: trunk-based-development
-kind: ka:Concept
+kind: densho:Concept
 title: Trunk-based development
 status: proposed
 origin: template

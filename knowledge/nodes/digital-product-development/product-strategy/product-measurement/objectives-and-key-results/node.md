@@ -1,6 +1,6 @@
 ---
 id: objectives-and-key-results
-kind: ka:Concept
+kind: densho:Concept
 title: Objectives and key results
 status: proposed
 origin: template

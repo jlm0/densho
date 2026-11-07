@@ -21,31 +21,31 @@ USAGE_ERROR = 2
 GROUP_READABLE = 0o640
 ROOT = """---
 id: root
-kind: ka:Root
+kind: densho:Root
 title: Root
 status: proposed
 origin: template
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: alpha
     trigger: You need alpha.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: gamma
     trigger: You need gamma.
 ---
 """
 ALPHA = """---
 id: alpha
-kind: ka:Domain
+kind: densho:Domain
 title: Alpha
 status: proposed
 origin: template
 knowledge_type: domain
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: beta
     trigger: You need beta.
-  - kind: ka:SkillPointer
+  - kind: densho:SkillPointer
     target: review
     trigger: You need review.
 ---
@@ -69,7 +69,7 @@ The meaning of alpha.
 """
 BETA = """---
 id: beta
-kind: ka:Concept
+kind: densho:Concept
 title: Beta
 status: proposed
 origin: template
@@ -96,7 +96,7 @@ The meaning of beta.
 """
 GAMMA = """---
 id: gamma
-kind: ka:Domain
+kind: densho:Domain
 title: Gamma
 status: proposed
 origin: template
@@ -109,7 +109,7 @@ The meaning of gamma.
 """
 SKILL = """---
 id: review
-kind: ka:Skill
+kind: densho:Skill
 title: Review
 status: proposed
 origin: template
@@ -458,12 +458,12 @@ def test_an_entity_that_head_does_not_hold_fails(repository: Path) -> None:
     report = accept_entities(repository, ["brand-new"])
     assert codes(list(report.problems)) == ["uncommitted"]
     assert "HEAD does not hold directive brand-new" in report.problems[0].message
-    assert "uv run ka accept" in report.problems[0].message
+    assert "uv run densho accept" in report.problems[0].message
     assert source_bytes(repository) == before
 
 
 def test_an_uncommitted_template_pull_stops_the_run(repository: Path) -> None:
-    history = repository / "knowledge/.ka/history.jsonl"
+    history = repository / "knowledge/.densho/history.jsonl"
     history.parent.mkdir(parents=True, exist_ok=True)
     history.write_text("", encoding="utf-8")
     commit(repository, "the install")
@@ -710,7 +710,7 @@ def test_a_decoy_in_a_reason_writes_nothing(tmp_path: Path) -> None:
 
 def test_a_decoy_in_a_flow_title_writes_nothing(tmp_path: Path) -> None:
     source = (
-        '---\n{id: gamma, kind: "ka:Domain", title: "status: proposed", status: proposed, '
+        '---\n{id: gamma, kind: "densho:Domain", title: "status: proposed", status: proposed, '
         "origin: template, knowledge_type: domain}\n---\n\n## Definition\n\nThe meaning.\n"
     )
     make_repository(tmp_path, {**TREE, "knowledge/nodes/gamma/node.md": source})
@@ -827,16 +827,16 @@ def test_an_unreadable_file_reports_a_problem(
 
 
 def test_the_command_prefix_follows_the_wrapper(tmp_path: Path) -> None:
-    assert command_prefix(tmp_path) == "uv run ka"
-    (tmp_path / "knowledge/.ka").mkdir(parents=True, exist_ok=True)
-    assert command_prefix(tmp_path) == "uv run ka"
-    (tmp_path / "knowledge/.ka/ka").write_text("#!/bin/sh\n", encoding="utf-8")
-    assert command_prefix(tmp_path) == "knowledge/.ka/ka"
+    assert command_prefix(tmp_path) == "uv run densho"
+    (tmp_path / "knowledge/.densho").mkdir(parents=True, exist_ok=True)
+    assert command_prefix(tmp_path) == "uv run densho"
+    (tmp_path / "knowledge/.densho/densho").write_text("#!/bin/sh\n", encoding="utf-8")
+    assert command_prefix(tmp_path) == "knowledge/.densho/densho"
 
 
 def test_a_project_message_names_the_project_command(repository: Path) -> None:
-    (repository / "knowledge/.ka").mkdir(parents=True, exist_ok=True)
-    (repository / "knowledge/.ka/ka").write_text("#!/bin/sh\n", encoding="utf-8")
+    (repository / "knowledge/.densho").mkdir(parents=True, exist_ok=True)
+    (repository / "knowledge/.densho/densho").write_text("#!/bin/sh\n", encoding="utf-8")
     path = repository / "knowledge/nodes/alpha/node.md"
     path.write_text(
         path.read_text(encoding="utf-8") + "- Run the new check. ^brand-new\n  - scope: node\n"
@@ -845,7 +845,7 @@ def test_a_project_message_names_the_project_command(repository: Path) -> None:
         encoding="utf-8",
     )
     report = accept_entities(repository, ["brand-new"])
-    assert "knowledge/.ka/ka accept" in report.problems[0].message
+    assert "knowledge/.densho/densho accept" in report.problems[0].message
 
 
 def test_the_cli_names_each_step_after_a_write(repository: Path) -> None:
@@ -854,7 +854,7 @@ def test_the_cli_names_each_step_after_a_write(repository: Path) -> None:
     assert "directive keep is now accepted" in result.output
     assert "knowledge/nodes/alpha/node.md:" in result.output
     assert "This command wrote no commit." in result.output
-    assert "uv run ka runtime" in result.output
+    assert "uv run densho runtime" in result.output
     assert "1 entities accepted, 0 not proposed, 0 problems" in result.output
 
 

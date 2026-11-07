@@ -1,6 +1,6 @@
 ---
 id: write-strategy
-kind: ka:Skill
+kind: densho:Skill
 title: Write a strategy
 status: proposed
 origin: template
@@ -11,10 +11,10 @@ uses:
   - strategy-formulation
   - strategy-kernel
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: strategy-formulation
     trigger: You decide what the strategy sets aside or remove fluff from it.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: strategy-kernel
     trigger: You write the diagnosis, the guiding policy, or the actions.
 ---

@@ -1,6 +1,6 @@
 ---
 id: injection
-kind: ka:Concept
+kind: densho:Concept
 title: Injection
 status: proposed
 origin: template

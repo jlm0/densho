@@ -1,6 +1,6 @@
 ---
 id: north-star-metric
-kind: ka:Concept
+kind: densho:Concept
 title: North star metric
 status: proposed
 origin: template

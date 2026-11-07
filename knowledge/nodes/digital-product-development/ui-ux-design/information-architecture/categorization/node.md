@@ -1,6 +1,6 @@
 ---
 id: categorization
-kind: ka:Concept
+kind: densho:Concept
 title: Categorization
 status: proposed
 origin: template

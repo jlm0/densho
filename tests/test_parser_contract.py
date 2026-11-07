@@ -32,7 +32,7 @@ def test_parser_handles_each_concrete_pointer_class() -> None:
 
 @pytest.mark.parametrize("model", [*NODE_CLASSES, *POINTER_CLASSES])
 def test_the_curie_of_each_class_is_a_valid_kind(model: type[BaseModel]) -> None:
-    assert f"ka:{model.__name__}" in get_args(model.model_fields["kind"].annotation)
+    assert f"densho:{model.__name__}" in get_args(model.model_fields["kind"].annotation)
 
 
 def test_markdown_fields_are_schema_slots() -> None:

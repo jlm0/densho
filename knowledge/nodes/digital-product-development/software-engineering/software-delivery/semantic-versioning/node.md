@@ -1,6 +1,6 @@
 ---
 id: semantic-versioning
-kind: ka:Concept
+kind: densho:Concept
 title: Semantic versioning
 status: proposed
 origin: template

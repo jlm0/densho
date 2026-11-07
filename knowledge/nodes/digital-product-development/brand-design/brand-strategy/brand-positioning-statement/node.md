@@ -1,6 +1,6 @@
 ---
 id: brand-positioning-statement
-kind: ka:Concept
+kind: densho:Concept
 title: Brand positioning statement
 status: proposed
 origin: template

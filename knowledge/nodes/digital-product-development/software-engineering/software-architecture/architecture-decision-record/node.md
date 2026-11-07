@@ -1,6 +1,6 @@
 ---
 id: architecture-decision-record
-kind: ka:Concept
+kind: densho:Concept
 title: Architecture decision record
 status: proposed
 origin: template

@@ -11,7 +11,7 @@ The checks read structure and declarations. They cannot tell whether two sentenc
 ## Run the checks
 
 ```sh
-uv run ka directives
+uv run densho directives
 ```
 
 The command reads `knowledge/` in the current folder, or in a folder you name after `directives`. Each problem prints as `path:line: code: message`, and any problem makes the command exit with status 1. An empty tree passes.
@@ -23,7 +23,7 @@ The git hook runs the same command when a commit touches `knowledge/`, `engine/`
 To see what applies at one node, and how each directive gets there:
 
 ```sh
-uv run ka directives --at unit-tests
+uv run densho directives --at unit-tests
 ```
 
 ```text
@@ -70,7 +70,7 @@ A node can step out of a directive it would otherwise inherit. List the directiv
 ```markdown
 ---
 id: prototypes
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Prototypes
 status: accepted
 origin: project
@@ -173,7 +173,7 @@ A check can read the graph and the declarations. It cannot read meaning.
 | Should this node step out?               | An exception that stops nothing                    | Whether the reason is sound, before it is accepted |
 | Is `scope` right for this directive?     | Nothing                                            | All of it                                          |
 
-`uv run ka directives --at <node-id>` gives a reviewer the list to read.
+`uv run densho directives --at <node-id>` gives a reviewer the list to read.
 
 ## Use it from code
 

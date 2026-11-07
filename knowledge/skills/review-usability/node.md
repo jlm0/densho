@@ -1,6 +1,6 @@
 ---
 id: review-usability
-kind: ka:Skill
+kind: densho:Skill
 title: Review the usability of a flow
 status: proposed
 origin: template
@@ -14,19 +14,19 @@ uses:
   - navigation
   - platform-conventions
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: usability-heuristics
     trigger: You judge the feedback, the exits, the confirmations, the error messages, or the help of the flow.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: fitts-law
     trigger: You judge the size or the position of a target.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: hicks-law
     trigger: You judge the number of choices in a menu or a step.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: navigation
     trigger: You judge how people move between the screens of the flow.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: platform-conventions
     trigger: The flow runs on a platform with its own conventions.
 ---

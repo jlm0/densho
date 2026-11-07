@@ -1,6 +1,6 @@
 ---
 id: hicks-law
-kind: ka:Concept
+kind: densho:Concept
 title: Hick's law
 status: proposed
 origin: template

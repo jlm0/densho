@@ -10,7 +10,7 @@ from rdflib.compare import to_canonical_graph
 
 from engine.compiler.graph import normal_form
 from engine.generated.metamodel import CompiledResult
-from engine.graph.shapes import KA, NODE_NAMESPACE, rdf_graph
+from engine.graph.shapes import DENSHO, NODE_NAMESPACE, rdf_graph
 from engine.parser.result import Problem
 
 if TYPE_CHECKING:
@@ -111,7 +111,7 @@ def canonical_graph(graph: Graph) -> Graph:
 
 def render_turtle(compiled: CompiledGraph) -> bytes:
     output = Graph()
-    output.bind("ka", KA)
+    output.bind("densho", DENSHO)
     output.bind("node", NODE_NAMESPACE)
     for triple in canonical_graph(rdf_graph(compiled.graph)):
         output.add(triple)

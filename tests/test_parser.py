@@ -31,7 +31,7 @@ KNOWLEDGE = f"{GOVERNED}knowledge_type: domain\n"
 
 CONCEPT = """---
 id: test-driven-development
-kind: ka:Concept
+kind: densho:Concept
 title: Test-driven development
 status: accepted
 origin: template
@@ -39,13 +39,13 @@ knowledge_type: domain
 sources: ["https://example.com/tdd"]
 broader: [software-testing, quality]
 pointers:
-  - kind: ka:PathPointer
+  - kind: densho:PathPointer
     target: pytest-usage
     trigger: You edit a test file.
     paths:
       - tests/**
       - src/*_test.py
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: mutation-testing
     trigger: You need stronger tests.
 ---
@@ -86,7 +86,7 @@ META = "  - scope: node\n  - basis: judgment\n  - status: accepted\n  - origin: 
 
 
 def with_directives(section: str) -> str:
-    front = f"---\nid: sample\nkind: ka:Domain\ntitle: Sample\n{KNOWLEDGE}---\n"
+    front = f"---\nid: sample\nkind: densho:Domain\ntitle: Sample\n{KNOWLEDGE}---\n"
     return f"{front}\n## Definition\n\nA sample.\n\n## Directives\n\n{section}\n"
 
 
@@ -120,7 +120,7 @@ def test_parses_every_part_of_a_node() -> None:
     assert isinstance(node, Concept)
     assert node.model_dump(exclude_none=True) == {
         "id": "test-driven-development",
-        "kind": "ka:Concept",
+        "kind": "densho:Concept",
         "title": "Test-driven development",
         "status": "accepted",
         "origin": "template",
@@ -129,13 +129,13 @@ def test_parses_every_part_of_a_node() -> None:
         "broader": ["software-testing", "quality"],
         "pointers": [
             {
-                "kind": "ka:PathPointer",
+                "kind": "densho:PathPointer",
                 "target": "pytest-usage",
                 "trigger": "You edit a test file.",
                 "paths": ["tests/**", "src/*_test.py"],
             },
             {
-                "kind": "ka:TextPointer",
+                "kind": "densho:TextPointer",
                 "target": "mutation-testing",
                 "trigger": "You need stronger tests.",
             },
@@ -178,30 +178,30 @@ def test_kind_selects_each_pointer_class() -> None:
     ("text", "model"),
     [
         pytest.param(
-            f"---\nid: top\nkind: ka:Root\ntitle: Top\n{GOVERNED}pointers:\n"
-            "  - kind: ka:AlwaysPointer\n    target: a\n    trigger: Each session.\n---\n",
+            f"---\nid: top\nkind: densho:Root\ntitle: Top\n{GOVERNED}pointers:\n"
+            "  - kind: densho:AlwaysPointer\n    target: a\n    trigger: Each session.\n---\n",
             Root,
             id="root",
         ),
         pytest.param(
-            f"---\nid: a\nkind: ka:Domain\ntitle: A\n{KNOWLEDGE}---\n\n## Definition\n\nA.\n",
+            f"---\nid: a\nkind: densho:Domain\ntitle: A\n{KNOWLEDGE}---\n\n## Definition\n\nA.\n",
             Domain,
             id="domain",
         ),
         pytest.param(
-            f"---\nid: a\nkind: ka:Discipline\ntitle: A\n{KNOWLEDGE}broader: [b]\n---\n\n"
+            f"---\nid: a\nkind: densho:Discipline\ntitle: A\n{KNOWLEDGE}broader: [b]\n---\n\n"
             "## Definition\n\nA.\n",
             Discipline,
             id="discipline",
         ),
         pytest.param(
-            f"---\nid: a\nkind: ka:PracticeArea\ntitle: A\n{KNOWLEDGE}broader: [b]\n---\n\n"
+            f"---\nid: a\nkind: densho:PracticeArea\ntitle: A\n{KNOWLEDGE}broader: [b]\n---\n\n"
             "## Definition\n\nA.\n",
             PracticeArea,
             id="practice-area",
         ),
         pytest.param(
-            f"---\nid: a\nkind: ka:Skill\ntitle: A\n{KNOWLEDGE}description: Use it.\n"
+            f"---\nid: a\nkind: densho:Skill\ntitle: A\n{KNOWLEDGE}description: Use it.\n"
             "invocation: agent\nuses: [b]\n---\n\n## Directives\n\n- Do it. ^do-it\n"
             f"{META}\n\n## Procedure\n\nStep one.\n",
             Skill,
@@ -218,7 +218,7 @@ def test_kind_selects_each_node_class(text: str, model: type) -> None:
     [
         pytest.param(("status",), "status: accepted", id="front-matter-key"),
         pytest.param(("broader", 1), "broader:", id="flow-list-item"),
-        pytest.param(("pointers", 1), "kind: ka:TextPointer", id="pointer"),
+        pytest.param(("pointers", 1), "kind: densho:TextPointer", id="pointer"),
         pytest.param(("pointers", 0, "trigger"), "You edit a test file", id="pointer-field"),
         pytest.param(("pointers", 0, "paths", 1), "src/*_test.py", id="block-list-item"),
         pytest.param(("definition",), "## Definition", id="definition"),
@@ -243,26 +243,42 @@ def test_reports_the_source_line_of_a_field(field_path: tuple[str | int, ...], m
     [
         pytest.param("---\nid:", "id:", "front-matter", "id:", id="no-opening"),
         pytest.param("---\n\n## Def", "\n## Def", "front-matter", "---", id="no-closing"),
-        pytest.param("kind: ka:Concept\n", "", "kind", "---", id="kind-missing"),
-        pytest.param("ka:Concept", "ka:Thing", "kind", "ka:Thing", id="kind-unknown"),
-        pytest.param("ka:Concept", "ka:Node", "kind", "ka:Node", id="kind-abstract-node"),
+        pytest.param("kind: densho:Concept\n", "", "kind", "---", id="kind-missing"),
+        pytest.param("densho:Concept", "densho:Thing", "kind", "densho:Thing", id="kind-unknown"),
         pytest.param(
-            "ka:Concept", "ka:KnowledgeNode", "kind", "ka:KnowledgeNode", id="kind-abstract"
+            "densho:Concept", "densho:Node", "kind", "densho:Node", id="kind-abstract-node"
         ),
         pytest.param(
-            "ka:Concept", "ka:TaxonomyNode", "kind", "ka:TaxonomyNode", id="kind-abstract-taxonomy"
+            "densho:Concept",
+            "densho:KnowledgeNode",
+            "kind",
+            "densho:KnowledgeNode",
+            id="kind-abstract",
         ),
-        pytest.param("ka:Concept", "skos:Concept", "kind", "skos:Concept", id="kind-class-uri"),
-        pytest.param("ka:Concept", "ka:Directive", "kind", "ka:Directive", id="kind-directive"),
         pytest.param(
-            "ka:Concept",
-            "https://github.com/jlm0/knowledge-architecture/schema/Concept",
+            "densho:Concept",
+            "densho:TaxonomyNode",
+            "kind",
+            "densho:TaxonomyNode",
+            id="kind-abstract-taxonomy",
+        ),
+        pytest.param("densho:Concept", "skos:Concept", "kind", "skos:Concept", id="kind-class-uri"),
+        pytest.param(
+            "densho:Concept", "densho:Directive", "kind", "densho:Directive", id="kind-directive"
+        ),
+        pytest.param(
+            "densho:Concept",
+            "https://github.com/jlm0/densho/schema/Concept",
             "kind",
             "schema/Concept",
             id="kind-full-iri",
         ),
-        pytest.param("ka:Concept", "[ka:Concept]", "kind", "[ka:Concept]", id="kind-list"),
-        pytest.param("ka:Concept", "ka:Domain", "schema", "broader:", id="domain-with-broader"),
+        pytest.param(
+            "densho:Concept", "[densho:Concept]", "kind", "[densho:Concept]", id="kind-list"
+        ),
+        pytest.param(
+            "densho:Concept", "densho:Domain", "schema", "broader:", id="domain-with-broader"
+        ),
         pytest.param("status: accepted", "status: ok", "schema", "status: ok", id="bad-status"),
         pytest.param("origin: template", "origin: x", "schema", "origin: x", id="bad-origin"),
         pytest.param(
@@ -331,17 +347,25 @@ def test_reports_the_source_line_of_a_field(field_path: tuple[str | int, ...], m
             "    target: pytest-usage\n",
             "",
             "schema",
-            "kind: ka:PathPointer",
+            "kind: densho:PathPointer",
             id="pointer-no-target",
         ),
         pytest.param(
-            "kind: ka:PathPointer", "kind: ka:Nope", "kind", "ka:Nope", id="pointer-kind-unknown"
+            "kind: densho:PathPointer",
+            "kind: densho:Nope",
+            "kind",
+            "densho:Nope",
+            id="pointer-kind-unknown",
         ),
         pytest.param(
-            "kind: ka:PathPointer", "kind: ka:Pointer", "kind", "ka:Pointer", id="pointer-abstract"
+            "kind: densho:PathPointer",
+            "kind: densho:Pointer",
+            "kind",
+            "densho:Pointer",
+            id="pointer-abstract",
         ),
         pytest.param(
-            "- kind: ka:PathPointer\n    target:",
+            "- kind: densho:PathPointer\n    target:",
             "- target:",
             "kind",
             "- target:",
@@ -351,7 +375,7 @@ def test_reports_the_source_line_of_a_field(field_path: tuple[str | int, ...], m
             "    paths:\n      - tests/**\n      - src/*_test.py\n",
             "",
             "schema",
-            "kind: ka:PathPointer",
+            "kind: densho:PathPointer",
             id="path-pointer-no-paths",
         ),
         pytest.param(
@@ -362,10 +386,14 @@ def test_reports_the_source_line_of_a_field(field_path: tuple[str | int, ...], m
             id="path-pointer-empty-paths",
         ),
         pytest.param(
-            "kind: ka:PathPointer", "kind: ka:TextPointer", "schema", "paths:", id="text-with-paths"
+            "kind: densho:PathPointer",
+            "kind: densho:TextPointer",
+            "schema",
+            "paths:",
+            id="text-with-paths",
         ),
         pytest.param(
-            "  - kind: ka:TextPointer\n    target: mutation-testing\n"
+            "  - kind: densho:TextPointer\n    target: mutation-testing\n"
             "    trigger: You need stronger tests.\n",
             "  - plain-text\n",
             "kind",
@@ -373,9 +401,9 @@ def test_reports_the_source_line_of_a_field(field_path: tuple[str | int, ...], m
             id="pointer-not-mapping",
         ),
         pytest.param(
-            "pointers:\n  - kind: ka:PathPointer\n    target: pytest-usage\n"
+            "pointers:\n  - kind: densho:PathPointer\n    target: pytest-usage\n"
             "    trigger: You edit a test file.\n    paths:\n      - tests/**\n"
-            "      - src/*_test.py\n  - kind: ka:TextPointer\n    target: mutation-testing\n"
+            "      - src/*_test.py\n  - kind: densho:TextPointer\n    target: mutation-testing\n"
             "    trigger: You need stronger tests.\n",
             "pointers: nothing\n",
             "schema",
@@ -598,7 +626,10 @@ def test_rejects_unreadable_front_matter(text: str, code: str, line: int) -> Non
             f"- Text ^a\n{META}\n  - author: me", "schema", "author: me", id="unknown-key"
         ),
         pytest.param(
-            f"- Text ^a\n{META}\n  - kind: ka:Directive", "schema", "ka:Directive", id="kind-key"
+            f"- Text ^a\n{META}\n  - kind: densho:Directive",
+            "schema",
+            "densho:Directive",
+            id="kind-key",
         ),
         pytest.param(
             f"- Text ^a\n\n  Extra.\n{META}", "directive", "Extra.", id="second-paragraph"
@@ -673,12 +704,15 @@ def test_a_directive_without_metadata_reports_each_field_at_the_bullet() -> None
 
 
 def test_a_bad_pointer_does_not_add_an_error_for_the_required_list() -> None:
-    text = f"---\nid: top\nkind: ka:Root\ntitle: Top\n{GOVERNED}pointers:\n  - kind: ka:Nope\n---\n"
-    assert problems_of(text) == [("kind", line_with(text, "ka:Nope"))]
+    text = (
+        f"---\nid: top\nkind: densho:Root\ntitle: Top\n{GOVERNED}pointers:\n"
+        "  - kind: densho:Nope\n---\n"
+    )
+    assert problems_of(text) == [("kind", line_with(text, "densho:Nope"))]
 
 
 def test_a_root_needs_a_pointer() -> None:
-    text = f"---\nid: top\nkind: ka:Root\ntitle: Top\n{GOVERNED}pointers: []\n---\n"
+    text = f"---\nid: top\nkind: densho:Root\ntitle: Top\n{GOVERNED}pointers: []\n---\n"
     assert problems_of(text) == [("schema", line_with(text, "pointers:"))]
 
 
@@ -698,10 +732,12 @@ def test_reports_each_line_with_a_control_character() -> None:
 
 
 def test_an_unknown_kind_stops_the_field_checks_and_keeps_format_problems() -> None:
-    text = CONCEPT.replace("ka:Concept", "ka:Thing").replace("status: accepted", "status: ok", 1)
+    text = CONCEPT.replace("densho:Concept", "densho:Thing").replace(
+        "status: accepted", "status: ok", 1
+    )
     text = text.replace("^one-behavior", "no-id")
     assert problems_of(text) == [
-        ("kind", line_with(text, "ka:Thing")),
+        ("kind", line_with(text, "densho:Thing")),
         ("directive", line_with(text, "no-id")),
     ]
 
@@ -717,12 +753,12 @@ def test_a_problem_names_the_file_line_code_and_field() -> None:
     ("kind", "extra"),
     [
         pytest.param(
-            "ka:Root",
-            "pointers:\n  - kind: ka:TextPointer\n    target: a\n    trigger: B.\n",
+            "densho:Root",
+            "pointers:\n  - kind: densho:TextPointer\n    target: a\n    trigger: B.\n",
             id="root",
         ),
         pytest.param(
-            "ka:Skill",
+            "densho:Skill",
             "knowledge_type: domain\ndescription: Use it.\ninvocation: agent\n",
             id="skill",
         ),
@@ -766,14 +802,15 @@ def test_a_quoted_merge_key_is_plain_text() -> None:
 def test_directives_before_the_definition_are_reported() -> None:
     definition = "## Definition\n\nA sample.\n\n"
     directives = f"## Directives\n\n- Do. ^do\n{META}\n\n"
-    text = f"---\nid: a\nkind: ka:Domain\ntitle: A\n{KNOWLEDGE}---\n\n{directives}{definition}"
+    text = f"---\nid: a\nkind: densho:Domain\ntitle: A\n{KNOWLEDGE}---\n\n{directives}{definition}"
     assert problems_of(text) == [("section", line_with(text, "## Definition"))]
 
 
 def test_other_text_without_sections_is_the_body() -> None:
     text = (
-        f"---\nid: top\nkind: ka:Root\ntitle: Top\n{GOVERNED}pointers:\n"
-        "  - kind: ka:TextPointer\n    target: a\n    trigger: B.\n---\n\n\nPlain prose.\n\nMore.\n"
+        f"---\nid: top\nkind: densho:Root\ntitle: Top\n{GOVERNED}pointers:\n"
+        "  - kind: densho:TextPointer\n    target: a\n    trigger: B.\n---\n"
+        "\n\nPlain prose.\n\nMore.\n"
     )
     result = parsed(text)
     assert result.node.body == "Plain prose.\n\nMore."
@@ -848,7 +885,7 @@ def test_a_fence_that_hides_the_directives_section_is_reported() -> None:
 
 def test_a_fence_that_hides_the_definition_section_is_reported() -> None:
     text = (
-        f"---\nid: a\nkind: ka:Skill\ntitle: A\n{KNOWLEDGE}description: B.\n"
+        f"---\nid: a\nkind: densho:Skill\ntitle: A\n{KNOWLEDGE}description: B.\n"
         "invocation: agent\nuses: [c]\n---\n\n"
     )
     text += "```\n## Definition\n\nHidden.\n```\n"
@@ -861,7 +898,7 @@ def test_a_fence_in_a_quote_is_not_checked_for_section_names() -> None:
 
 def test_a_quoted_fence_can_show_a_section_the_file_does_not_have() -> None:
     text = (
-        f"---\nid: a\nkind: ka:Skill\ntitle: A\n{KNOWLEDGE}description: B.\n"
+        f"---\nid: a\nkind: densho:Skill\ntitle: A\n{KNOWLEDGE}description: B.\n"
         "invocation: agent\nuses: [c]\n---\n\n"
     )
     parsed(f"{text}> ```\n> ## Definition\n> ```\n")
@@ -1165,7 +1202,7 @@ def test_parse_tree_reports_a_missing_folder(tmp_path: Path) -> None:
 
 
 SKILL = (
-    f"---\nid: review\nkind: ka:Skill\ntitle: Review\n{KNOWLEDGE}description: Use it.\n"
+    f"---\nid: review\nkind: densho:Skill\ntitle: Review\n{KNOWLEDGE}description: Use it.\n"
     f"invocation: agent\nuses: [b]\n---\n\n## Directives\n\n- Do it. ^do-it\n{META}\n"
 )
 

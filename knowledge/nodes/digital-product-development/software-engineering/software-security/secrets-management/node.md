@@ -1,6 +1,6 @@
 ---
 id: secrets-management
-kind: ka:Concept
+kind: densho:Concept
 title: Secrets management
 status: proposed
 origin: template

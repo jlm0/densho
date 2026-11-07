@@ -12,14 +12,14 @@ repos:
         files: \.rej$
       - id: knowledge-checks
         name: check the knowledge and generate the runtime files
-        entry: knowledge/.ka/ka runtime --verify
+        entry: knowledge/.densho/densho runtime --verify
         language: system
         pass_filenames: false
         always_run: true
         verbose: true
       - id: eval-tasks
         name: grade the known outputs of the eval tasks
-        entry: knowledge/.ka/ka eval --check
+        entry: knowledge/.densho/densho eval --check
         language: system
         pass_filenames: false
         files: ^knowledge/

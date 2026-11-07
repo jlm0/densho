@@ -32,19 +32,19 @@ GIT = shutil.which("git") or "git"
 USAGE_ERROR = 2
 ROOT_NODE = """---
 id: root
-kind: ka:Root
+kind: densho:Root
 title: Root
 status: proposed
 origin: template
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: domain
     trigger: You need the domain.
 ---
 """
 DOMAIN_NODE = """---
 id: domain
-kind: ka:Domain
+kind: densho:Domain
 title: Domain
 status: proposed
 origin: template
@@ -279,13 +279,13 @@ def test_the_order_of_pointers_adds_no_line(tmp_path: Path) -> None:
     write_tree(tmp_path)
     pointers = (
         "pointers:\n"
-        "  - kind: ka:TextPointer\n    target: domain\n    trigger: You need it.\n"
-        "  - kind: ka:TextPointer\n    target: root\n    trigger: You need that.\n"
+        "  - kind: densho:TextPointer\n    target: domain\n    trigger: You need it.\n"
+        "  - kind: densho:TextPointer\n    target: root\n    trigger: You need that.\n"
     )
     swapped = (
         "pointers:\n"
-        "  - kind: ka:TextPointer\n    target: root\n    trigger: You need that.\n"
-        "  - kind: ka:TextPointer\n    target: domain\n    trigger: You need it.\n"
+        "  - kind: densho:TextPointer\n    target: root\n    trigger: You need that.\n"
+        "  - kind: densho:TextPointer\n    target: domain\n    trigger: You need it.\n"
     )
     root = tmp_path / "knowledge/node.md"
     front = ROOT_NODE.split("pointers:", maxsplit=1)[0]
@@ -427,10 +427,10 @@ def taxonomy_node(node_id: str, kind: str, broader: str, directive: str = "") ->
 def write_disciplines(folder: Path) -> None:
     nodes = folder / "knowledge/nodes/domain"
     files = {
-        "kept/node.md": taxonomy_node("kept", "ka:Discipline", "domain"),
-        "kept/near/node.md": taxonomy_node("near", "ka:Concept", "kept"),
-        "dropped/node.md": taxonomy_node("dropped", "ka:Discipline", "domain", "check-dropped"),
-        "dropped/far/node.md": taxonomy_node("far", "ka:Concept", "dropped"),
+        "kept/node.md": taxonomy_node("kept", "densho:Discipline", "domain"),
+        "kept/near/node.md": taxonomy_node("near", "densho:Concept", "kept"),
+        "dropped/node.md": taxonomy_node("dropped", "densho:Discipline", "domain", "check-dropped"),
+        "dropped/far/node.md": taxonomy_node("far", "densho:Concept", "dropped"),
     }
     for name, text in files.items():
         (nodes / name).parent.mkdir(parents=True, exist_ok=True)
@@ -515,10 +515,10 @@ def test_drift_counts_a_nested_discipline_apart(tmp_path: Path) -> None:
     nodes = tmp_path / "knowledge/nodes/domain/dropped"
     (nodes / "inner/leaf").mkdir(parents=True)
     (nodes / "inner/node.md").write_text(
-        taxonomy_node("inner", "ka:Discipline", "dropped"), encoding="utf-8"
+        taxonomy_node("inner", "densho:Discipline", "dropped"), encoding="utf-8"
     )
     (nodes / "inner/leaf/node.md").write_text(
-        taxonomy_node("leaf", "ka:Concept", "inner"), encoding="utf-8"
+        taxonomy_node("leaf", "densho:Concept", "inner"), encoding="utf-8"
     )
     assert not record_history(tmp_path).problems
     select_kept(tmp_path)
@@ -752,7 +752,7 @@ def test_read_head_file_reads_from_a_subfolder(tmp_path: Path) -> None:
 )
 def test_a_bad_line_is_a_problem(tmp_path: Path, text: str, line: int) -> None:
     write_tree(tmp_path)
-    (tmp_path / "knowledge/.ka").mkdir()
+    (tmp_path / "knowledge/.densho").mkdir()
     (tmp_path / HISTORY_FILE).write_text(text, encoding="utf-8")
     for report in (record_history(tmp_path), history_drift(tmp_path)):
         assert [(problem.code, problem.line) for problem in report.problems] == [("history", line)]
@@ -787,14 +787,14 @@ def entry_line(**fields: object) -> str:
 )
 def test_the_entry_shape_is_strict(tmp_path: Path, line: str) -> None:
     write_tree(tmp_path)
-    (tmp_path / "knowledge/.ka").mkdir()
+    (tmp_path / "knowledge/.densho").mkdir()
     (tmp_path / HISTORY_FILE).write_text(line, encoding="utf-8")
     assert codes(history_drift(tmp_path).problems) == ["history"]
 
 
 def test_the_problem_names_the_field(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    (tmp_path / "knowledge/.ka").mkdir()
+    (tmp_path / "knowledge/.densho").mkdir()
     (tmp_path / HISTORY_FILE).write_text(entry_line(kind="other"), encoding="utf-8")
     assert history_drift(tmp_path).problems[0].message.startswith("kind: ")
 
@@ -814,7 +814,7 @@ def test_a_replay_that_does_not_fit_is_a_problem(
     tmp_path: Path, lines: list[str], line: int
 ) -> None:
     write_tree(tmp_path)
-    (tmp_path / "knowledge/.ka").mkdir()
+    (tmp_path / "knowledge/.densho").mkdir()
     (tmp_path / HISTORY_FILE).write_text("".join(lines), encoding="utf-8")
     report = history_drift(tmp_path)
     assert (report.problems[0].code, report.problems[0].line) == ("history", line)
@@ -823,7 +823,7 @@ def test_a_replay_that_does_not_fit_is_a_problem(
 
 def test_a_lower_number_does_not_follow(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    (tmp_path / "knowledge/.ka").mkdir()
+    (tmp_path / "knowledge/.densho").mkdir()
     lines = [entry_line(), entry_line(id="b", change=2), entry_line(id="c", change=1)]
     (tmp_path / HISTORY_FILE).write_text("".join(lines), encoding="utf-8")
     report = history_drift(tmp_path)
@@ -833,14 +833,14 @@ def test_a_lower_number_does_not_follow(tmp_path: Path) -> None:
 
 def test_a_line_that_is_not_json_has_a_clean_message(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    (tmp_path / "knowledge/.ka").mkdir()
+    (tmp_path / "knowledge/.densho").mkdir()
     (tmp_path / HISTORY_FILE).write_text("not json\n", encoding="utf-8")
     assert history_drift(tmp_path).problems[0].message.startswith("Invalid JSON")
 
 
 def test_a_last_line_with_no_end_is_a_problem(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    (tmp_path / "knowledge/.ka").mkdir()
+    (tmp_path / "knowledge/.densho").mkdir()
     text = entry_line() + entry_line(id="b").strip()
     (tmp_path / HISTORY_FILE).write_text(text, encoding="utf-8")
     report = record_history(tmp_path)
@@ -849,20 +849,20 @@ def test_a_last_line_with_no_end_is_a_problem(tmp_path: Path) -> None:
 
 def test_a_file_at_the_folder_path_is_a_problem(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    (tmp_path / "knowledge/.ka").write_text("a file", encoding="utf-8")
+    (tmp_path / "knowledge/.densho").write_text("a file", encoding="utf-8")
     report = record_history(tmp_path)
     assert codes(report.problems) == ["history"]
-    assert (tmp_path / "knowledge/.ka").read_text(encoding="utf-8") == "a file"
+    assert (tmp_path / "knowledge/.densho").read_text(encoding="utf-8") == "a file"
 
 
 def test_a_read_only_folder_is_a_write_problem(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    (tmp_path / "knowledge/.ka").mkdir()
-    (tmp_path / "knowledge/.ka").chmod(0o555)
+    (tmp_path / "knowledge/.densho").mkdir()
+    (tmp_path / "knowledge/.densho").chmod(0o555)
     try:
         report = record_history(tmp_path)
     finally:
-        (tmp_path / "knowledge/.ka").chmod(0o755)
+        (tmp_path / "knowledge/.densho").chmod(0o755)
     assert codes(report.problems) == ["write"]
 
 
@@ -957,7 +957,7 @@ def test_the_repo_history_names_each_directive_by_id() -> None:
 
 SKILL_NODE = """---
 id: review
-kind: ka:Skill
+kind: densho:Skill
 title: Review
 status: proposed
 origin: template

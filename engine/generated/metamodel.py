@@ -246,7 +246,7 @@ class Node(GovernedEntity):
     """
     One file in the graph. A node holds its knowledge, its directives, and its pointers.
     """
-    kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/Node","ka:Node"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
+    kind: Literal["https://github.com/jlm0/densho/schema/Node","densho:Node"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example densho:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")
     pointers: Optional[list[Union[AlwaysPointer,PathPointer,SkillPointer,TextPointer]]] = Field(default=None, description="""The routes from this node to other nodes.""")
     directives: Optional[list[Directive]] = Field(default=None, description="""The directives that live in this file.""")
@@ -327,7 +327,7 @@ class Root(Node):
     """
     The top node of the graph. Agents load the root first.
     """
-    kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/Root","ka:Root"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
+    kind: Literal["https://github.com/jlm0/densho/schema/Root","densho:Root"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example densho:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")
     pointers: list[Union[AlwaysPointer,PathPointer,SkillPointer,TextPointer]] = Field(default=..., description="""The routes from this node to other nodes.""", min_length=1)
     directives: Optional[list[Directive]] = Field(default=None, description="""The directives that live in this file.""")
@@ -410,7 +410,7 @@ class KnowledgeNode(Node):
     """
     knowledge_type: KnowledgeType = Field(default=..., description="""The kind of knowledge in the node.""")
     exceptions: Optional[list[DirectiveException]] = Field(default=None, description="""The inherited directives that stop at this node.""")
-    kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/KnowledgeNode","ka:KnowledgeNode"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
+    kind: Literal["https://github.com/jlm0/densho/schema/KnowledgeNode","densho:KnowledgeNode"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example densho:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")
     pointers: Optional[list[Union[AlwaysPointer,PathPointer,SkillPointer,TextPointer]]] = Field(default=None, description="""The routes from this node to other nodes.""")
     directives: Optional[list[Directive]] = Field(default=None, description="""The directives that live in this file.""")
@@ -499,7 +499,7 @@ class TaxonomyNode(KnowledgeNode):
     implements: Optional[list[str]] = Field(default=None, description="""The domain nodes that this workspace node gives project values for.""")
     knowledge_type: KnowledgeType = Field(default=..., description="""The kind of knowledge in the node.""")
     exceptions: Optional[list[DirectiveException]] = Field(default=None, description="""The inherited directives that stop at this node.""")
-    kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/TaxonomyNode","http://www.w3.org/2004/02/skos/core#Concept","ka:TaxonomyNode","skos:Concept"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
+    kind: Literal["https://github.com/jlm0/densho/schema/TaxonomyNode","http://www.w3.org/2004/02/skos/core#Concept","densho:TaxonomyNode","skos:Concept"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example densho:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")
     pointers: Optional[list[Union[AlwaysPointer,PathPointer,SkillPointer,TextPointer]]] = Field(default=None, description="""The routes from this node to other nodes.""")
     directives: Optional[list[Directive]] = Field(default=None, description="""The directives that live in this file.""")
@@ -601,7 +601,7 @@ class Domain(TaxonomyNode):
     implements: Optional[list[str]] = Field(default=None, description="""The domain nodes that this workspace node gives project values for.""")
     knowledge_type: KnowledgeType = Field(default=..., description="""The kind of knowledge in the node.""")
     exceptions: Optional[list[DirectiveException]] = Field(default=None, description="""The inherited directives that stop at this node.""")
-    kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/Domain","ka:Domain"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
+    kind: Literal["https://github.com/jlm0/densho/schema/Domain","densho:Domain"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example densho:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")
     pointers: Optional[list[Union[AlwaysPointer,PathPointer,SkillPointer,TextPointer]]] = Field(default=None, description="""The routes from this node to other nodes.""")
     directives: Optional[list[Directive]] = Field(default=None, description="""The directives that live in this file.""")
@@ -704,7 +704,7 @@ class Discipline(TaxonomyNode):
     implements: Optional[list[str]] = Field(default=None, description="""The domain nodes that this workspace node gives project values for.""")
     knowledge_type: KnowledgeType = Field(default=..., description="""The kind of knowledge in the node.""")
     exceptions: Optional[list[DirectiveException]] = Field(default=None, description="""The inherited directives that stop at this node.""")
-    kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/Discipline","ka:Discipline"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
+    kind: Literal["https://github.com/jlm0/densho/schema/Discipline","densho:Discipline"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example densho:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")
     pointers: Optional[list[Union[AlwaysPointer,PathPointer,SkillPointer,TextPointer]]] = Field(default=None, description="""The routes from this node to other nodes.""")
     directives: Optional[list[Directive]] = Field(default=None, description="""The directives that live in this file.""")
@@ -807,7 +807,7 @@ class PracticeArea(TaxonomyNode):
     implements: Optional[list[str]] = Field(default=None, description="""The domain nodes that this workspace node gives project values for.""")
     knowledge_type: KnowledgeType = Field(default=..., description="""The kind of knowledge in the node.""")
     exceptions: Optional[list[DirectiveException]] = Field(default=None, description="""The inherited directives that stop at this node.""")
-    kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/PracticeArea","ka:PracticeArea"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
+    kind: Literal["https://github.com/jlm0/densho/schema/PracticeArea","densho:PracticeArea"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example densho:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")
     pointers: Optional[list[Union[AlwaysPointer,PathPointer,SkillPointer,TextPointer]]] = Field(default=None, description="""The routes from this node to other nodes.""")
     directives: Optional[list[Directive]] = Field(default=None, description="""The directives that live in this file.""")
@@ -910,7 +910,7 @@ class Concept(TaxonomyNode):
     implements: Optional[list[str]] = Field(default=None, description="""The domain nodes that this workspace node gives project values for.""")
     knowledge_type: KnowledgeType = Field(default=..., description="""The kind of knowledge in the node.""")
     exceptions: Optional[list[DirectiveException]] = Field(default=None, description="""The inherited directives that stop at this node.""")
-    kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/Concept","ka:Concept"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
+    kind: Literal["https://github.com/jlm0/densho/schema/Concept","densho:Concept"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example densho:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")
     pointers: Optional[list[Union[AlwaysPointer,PathPointer,SkillPointer,TextPointer]]] = Field(default=None, description="""The routes from this node to other nodes.""")
     directives: Optional[list[Directive]] = Field(default=None, description="""The directives that live in this file.""")
@@ -1010,7 +1010,7 @@ class Skill(KnowledgeNode):
     applies: Optional[list[str]] = Field(default=None, description="""The directives that the skill applies.""")
     knowledge_type: KnowledgeType = Field(default=..., description="""The kind of knowledge in the node.""")
     exceptions: Optional[list[DirectiveException]] = Field(default=None, description="""The inherited directives that stop at this node.""")
-    kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/Skill","ka:Skill"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
+    kind: Literal["https://github.com/jlm0/densho/schema/Skill","densho:Skill"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example densho:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")
     pointers: Optional[list[Union[AlwaysPointer,PathPointer,SkillPointer,TextPointer]]] = Field(default=None, description="""The routes from this node to other nodes.""")
     directives: Optional[list[Directive]] = Field(default=None, description="""The directives that live in this file.""")
@@ -1209,7 +1209,7 @@ class Pointer(ConfiguredBaseModel):
     """
     A route that tells an agent when and how to load a node.
     """
-    kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/Pointer","ka:Pointer"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
+    kind: Literal["https://github.com/jlm0/densho/schema/Pointer","densho:Pointer"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example densho:Concept.""")
     target: str = Field(default=..., description="""The node that the pointer routes to.""")
     trigger: str = Field(default=..., description="""The condition that tells an agent to follow the pointer.""")
 
@@ -1231,7 +1231,7 @@ class AlwaysPointer(Pointer):
     """
     A pointer to a node that the harness loads at session start.
     """
-    kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/AlwaysPointer","ka:AlwaysPointer"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
+    kind: Literal["https://github.com/jlm0/densho/schema/AlwaysPointer","densho:AlwaysPointer"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example densho:Concept.""")
     target: str = Field(default=..., description="""The node that the pointer routes to.""")
     trigger: str = Field(default=..., description="""The condition that tells an agent to follow the pointer.""")
 
@@ -1254,7 +1254,7 @@ class PathPointer(Pointer):
     A pointer to a node that the harness loads when the agent opens a matching file.
     """
     paths: list[str] = Field(default=..., description="""The file patterns that load the target.""", min_length=1)
-    kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/PathPointer","ka:PathPointer"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
+    kind: Literal["https://github.com/jlm0/densho/schema/PathPointer","densho:PathPointer"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example densho:Concept.""")
     target: str = Field(default=..., description="""The node that the pointer routes to.""")
     trigger: str = Field(default=..., description="""The condition that tells an agent to follow the pointer.""")
 
@@ -1289,7 +1289,7 @@ class SkillPointer(Pointer):
     """
     A pointer to a skill that the agent selects from the skill listing.
     """
-    kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/SkillPointer","ka:SkillPointer"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
+    kind: Literal["https://github.com/jlm0/densho/schema/SkillPointer","densho:SkillPointer"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example densho:Concept.""")
     target: str = Field(default=..., description="""The node that the pointer routes to.""")
     trigger: str = Field(default=..., description="""The condition that tells an agent to follow the pointer.""")
 
@@ -1311,7 +1311,7 @@ class TextPointer(Pointer):
     """
     A pointer to a node that the agent opens when it reads the pointer text.
     """
-    kind: Literal["https://github.com/jlm0/knowledge-architecture/schema/TextPointer","ka:TextPointer"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example ka:Concept.""")
+    kind: Literal["https://github.com/jlm0/densho/schema/TextPointer","densho:TextPointer"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example densho:Concept.""")
     target: str = Field(default=..., description="""The node that the pointer routes to.""")
     trigger: str = Field(default=..., description="""The condition that tells an agent to follow the pointer.""")
 

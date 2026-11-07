@@ -17,7 +17,7 @@ No directive is in force at this node.
 - The auto memory folder of the project, as `### Auto memory` describes it
 - The node files under `knowledge/`
 
-In a project, run the engine as `knowledge/.ka/ka`. In the template repo, use `uv run ka` in its place.
+In a project, run the engine as `knowledge/.densho/densho`. In the template repo, use `uv run densho` in its place.
 
 ## Procedure
 
@@ -38,14 +38,14 @@ In a project, run the engine as `knowledge/.ka/ka`. In the template repo, use `u
 3. If the class is `preference`, stop. Auto memory keeps the note.
 4. Run the search from `### Rejected entities`. Read the text and the `rejection_reason` of each hit.
 5. If a `rejected` entity states the same change, stop. Tell the person its ID and its `rejection_reason`.
-6. Run `knowledge/.ka/ka governance --pending`. If a proposal states the same change, add this signal to its line in `## Signals`, and stop.
+6. Run `knowledge/.densho/densho governance --pending`. If a proposal states the same change, add this signal to its line in `## Signals`, and stop.
 7. If an `accepted` directive states the same change, stop. Tell the person its ID.
 
 ### Find the place
 
 1. Find the workspace node whose definition covers the subject of the signal.
 2. For a rule that covers each task in the project, use the root `knowledge/node.md` with `scope: node`.
-3. If no workspace node covers the subject, add one `ka:PracticeArea` node under the domain of the project.
+3. If no workspace node covers the subject, add one `densho:PracticeArea` node under the domain of the project.
 4. If the project has no domain node, add one in the form of `### Domain node`, with a pointer from the root.
 5. Set `knowledge_type: workspace` and `origin: project` on each node that you add.
 
@@ -61,7 +61,7 @@ In a project, run the engine as `knowledge/.ka/ka`. In the template repo, use `u
 
 ### Check the proposal
 
-1. Run `knowledge/.ka/ka runtime`. It runs each check.
+1. Run `knowledge/.densho/densho runtime`. It runs each check.
 2. Correct each problem from the first line down. Keep the meaning of the signal.
 3. If a directive fails with `opening`, add its verb to `knowledge/governance/language/branches/<node-id>.yaml`.
 4. If `2` edits of a directive fail, remove the proposal. Tell the person the problem.
@@ -74,7 +74,7 @@ In a project, run the engine as `knowledge/.ka/ka`. In the template repo, use `u
 3. If you reopened an `accepted` entity, tell the person that it is out of force until a person accepts it again.
 4. If the change is a body edit or a step in a skill, tell the person that the commit puts it in force with no review.
 5. Report each verb that you added to a vocabulary file. No `status` covers that file.
-6. Ask the person whether to commit the proposal now. `knowledge/.ka/ka accept` reads the proposal from the last commit.
+6. Ask the person whether to commit the proposal now. `knowledge/.densho/densho accept` reads the proposal from the last commit.
 7. Tell the person to read the queue with the `review-proposals` skill.
 
 ## Output
@@ -93,7 +93,7 @@ The diff holds only the lines of one proposal and its citation. A rewrite of a w
 | ------------ | ----------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | `preference` | a choice for one task, or a habit of one person             | No change. Auto memory keeps the note.                                       |
 | `fact`       | a statement about the project that stays true               | An edit of the definition, or a line under `## References` in the body       |
-| `procedure`  | the same ordered steps a second time                        | A step in a skill, or a new `ka:Skill` node                                  |
+| `procedure`  | the same ordered steps a second time                        | A step in a skill, or a new `densho:Skill` node                              |
 | `rule`       | an "always" or a "never", or the same mistake a second time | A directive                                                                  |
 | `exception`  | a "not here" for a directive that applies at a node         | An entry in `exceptions` of the node, with the reason that the person states |
 
@@ -143,7 +143,7 @@ Add `knowledge/nodes/<project-id>/node.md` with this front matter. Then add `## 
 
 ```yaml
 id: my-project
-kind: ka:Domain
+kind: densho:Domain
 title: My project
 status: proposed
 origin: project
@@ -153,7 +153,7 @@ knowledge_type: workspace
 Add this pointer to `pointers` in `knowledge/node.md`:
 
 ```yaml
-- kind: ka:TextPointer
+- kind: densho:TextPointer
   target: my-project
   trigger: You change the code of this project.
 ```

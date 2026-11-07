@@ -19,13 +19,13 @@ The sources sit in `knowledge/skills/`, so they are nodes like any other: propos
 1. You correct the agent, a review finds a problem, or the same mistake happens twice.
 2. Claude Code's auto memory writes a note right away, so the next session has it.
 3. `propose-knowledge` turns the correction or the note into one proposal in a node file.
-4. You read the queue with `/review-proposals`, and you accept with `knowledge/.ka/ka accept`.
-5. `knowledge/.ka/ka runtime` writes the generated files, and the hook checks them.
+4. You read the queue with `/review-proposals`, and you accept with `knowledge/.densho/densho accept`.
+5. `knowledge/.densho/densho runtime` writes the generated files, and the hook checks them.
 6. `/sync-template` offers a rule that would hold in any project to the template.
 
 Nothing in the loop accepts anything for you. Every proposal arrives as `proposed`, and only you move it on.
 
-In the template repo itself, the skills say to use `uv run ka` wherever they name `knowledge/.ka/ka`.
+In the template repo itself, the skills say to use `uv run densho` wherever they name `knowledge/.densho/densho`.
 
 ## The root trigger
 
@@ -38,7 +38,7 @@ When a person corrects your work, propose the change with `propose-knowledge`.
 It has `scope: node`, so it sits in `AGENTS.md` and isn't copied into every skill and reference page. Like everything the template ships, it starts as `proposed`, so it doesn't bind the agent until you accept it:
 
 ```sh
-knowledge/.ka/ka accept propose-corrections
+knowledge/.densho/densho accept propose-corrections
 ```
 
 Until then, start the skill yourself after a correction, with `/propose-knowledge`.
@@ -81,7 +81,7 @@ Each run of the skill starts by tidying up. A note whose proposals you have all 
 
 ## Review the queue
 
-Commit the proposals first, because `ka accept` reads them from the last commit. Then run `/review-proposals`. It lists each branch with its count of nodes, directives, and exceptions, and asks where to start. A branch is the discipline that a node's `broader` chain reaches, or the project's own domain for workspace knowledge. The governance, the skills, and the root each form a branch of their own.
+Commit the proposals first, because `densho accept` reads them from the last commit. Then run `/review-proposals`. It lists each branch with its count of nodes, directives, and exceptions, and asks where to start. A branch is the discipline that a node's `broader` chain reaches, or the project's own domain for workspace knowledge. The governance, the skills, and the root each form a branch of their own.
 
 For each proposal it tells you:
 
@@ -95,13 +95,13 @@ An accepted directive with an `eval` line in `## Signals` joins the queue as a p
 
 Then it records your decision:
 
-| Decision | What happens                                                                                                                        |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| Accept   | It writes the `knowledge/.ka/ka accept` command with the names you approved, and you run it. The agent doesn't run it for you.      |
-| Reject   | It asks for your reason, then writes `status: rejected` and `rejection_reason` in your words, since there's no `ka reject` command. |
-| Later    | Nothing changes. The proposal stays `proposed`.                                                                                     |
+| Decision | What happens                                                                                                                            |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Accept   | It writes the `knowledge/.densho/densho accept` command with the names you approved, and you run it. The agent doesn't run it for you.  |
+| Reject   | It asks for your reason, then writes `status: rejected` and `rejection_reason` in your words, since there's no `densho reject` command. |
+| Later    | Nothing changes. The proposal stays `proposed`.                                                                                         |
 
-It then runs `knowledge/.ka/ka runtime`, fixes what the checks report, shows you `git diff`, and asks before it commits. The commit records who decided, and the next run of `propose-knowledge` tidies up the notes and citations of what you decided.
+It then runs `knowledge/.densho/densho runtime`, fixes what the checks report, shows you `git diff`, and asks before it commits. The commit records who decided, and the next run of `propose-knowledge` tidies up the notes and citations of what you decided.
 
 ## Send a rule to the template
 

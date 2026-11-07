@@ -1,6 +1,6 @@
 ---
 id: language-rules
-kind: ka:Concept
+kind: densho:Concept
 title: Language rules
 status: proposed
 origin: template

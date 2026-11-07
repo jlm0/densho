@@ -1,6 +1,6 @@
 ---
 id: access-control
-kind: ka:Concept
+kind: densho:Concept
 title: Access control
 status: proposed
 origin: template

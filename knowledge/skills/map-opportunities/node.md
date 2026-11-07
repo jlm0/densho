@@ -1,6 +1,6 @@
 ---
 id: map-opportunities
-kind: ka:Skill
+kind: densho:Skill
 title: Map the opportunities of an outcome
 status: proposed
 origin: template
@@ -13,16 +13,16 @@ uses:
   - assumption-testing
   - product-risks
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: opportunity-solution-tree
     trigger: You place the outcome, an opportunity, or a solution in the tree.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: jobs-to-be-done
     trigger: You read interview notes for the needs and the jobs of customers.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: assumption-testing
     trigger: You list the assumptions of a solution or plan a test.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: product-risks
     trigger: You sort the assumptions of a solution by the risk that they carry.
 ---

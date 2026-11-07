@@ -1,6 +1,6 @@
 ---
 id: information-architecture
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Information architecture
 status: proposed
 origin: template
@@ -12,7 +12,7 @@ broader:
 informs:
   - navigation
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: categorization
     trigger: You sort content or functions into groups.
 ---

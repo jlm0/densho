@@ -1,6 +1,6 @@
 ---
 id: governance
-kind: ka:Domain
+kind: densho:Domain
 title: Governance
 status: proposed
 origin: template
@@ -14,19 +14,19 @@ governs:
   - language-rules
   - schema-rules
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: lifecycle
     trigger: You set the `status` of an entity.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: approval
     trigger: You accept a change.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: change-rules
     trigger: You change an accepted entity.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: language-rules
     trigger: You write a directive, a trigger, or a skill description.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: schema-rules
     trigger: You change a node kind, a field, or an edge.
 ---

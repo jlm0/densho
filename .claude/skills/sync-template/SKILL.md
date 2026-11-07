@@ -15,10 +15,10 @@ No directive is in force at this node.
 ## Inputs
 
 - `.copier-answers.yml`, with `_src_path`, `_commit`, and `disciplines`
-- `knowledge/.ka/history.jsonl` of the project, and the same file in a clone of the template
+- `knowledge/.densho/history.jsonl` of the project, and the same file in a clone of the template
 - The choice of the person: a pull, an upstream proposal, or both
 
-This skill has two jobs: a pull and an upstream proposal. Do one job at a time. In the template repo, use `uv run ka` in place of `knowledge/.ka/ka`.
+This skill has two jobs: a pull and an upstream proposal. Do one job at a time. In the template repo, use `uv run densho` in place of `knowledge/.densho/densho`.
 
 ## Procedure
 
@@ -27,8 +27,8 @@ This skill has two jobs: a pull and an upstream proposal. Do one job at a time. 
 1. If `git status --short` prints a line, ask the person to commit the work first.
 2. If `.copier-answers.yml` does not exist, report that the project has no template record, and stop.
 3. Run `git clone --quiet <_src_path> <clone>` with a new folder outside the project as `<clone>`.
-4. Save the output of `knowledge/.ka/ka history --drift` to a file outside the project.
-5. List each line of `<clone>/knowledge/.ka/history.jsonl` with a higher `change` than the last line of `knowledge/.ka/history.jsonl`.
+4. Save the output of `knowledge/.densho/densho history --drift` to a file outside the project.
+5. List each line of `<clone>/knowledge/.densho/history.jsonl` with a higher `change` than the last line of `knowledge/.densho/history.jsonl`.
 6. Match each listed line to a drift line by `kind` and `id`, and put it in one class from `### Pull classes`.
 7. Mark each match with a drift `status` of `accepted`. It leaves force if a reviewed field changes.
 8. Report the template commits from `git -C <clone> log --oneline <_commit>..HEAD`, the classes, and the marks.
@@ -56,17 +56,17 @@ This skill has two jobs: a pull and an upstream proposal. Do one job at a time. 
 
 ### Finish the pull
 
-1. Run `knowledge/.ka/ka adopt` after you resolve each entity.
+1. Run `knowledge/.densho/densho adopt` after you resolve each entity.
 2. Read each entity that the command sets to `proposed`. Tell the person that each one is out of force until a person accepts it.
 3. For each new template directive that states the rule of a project directive, ask the person whether to deprecate the project directive.
-4. Run `knowledge/.ka/ka history --drift` again.
+4. Run `knowledge/.densho/densho history --drift` again.
 5. Report each new drift line with the `action` `changed` or `removed`, outside the classes of the selection.
 6. Remove `<clone>`.
 7. Run `git add -A` for the pull, then commit it.
 
 ### Find rules for the template
 
-1. Run `knowledge/.ka/ka build`. It writes `build/compiled/graph.json`, which holds only the directives in force.
+1. Run `knowledge/.densho/densho build`. It writes `build/compiled/graph.json`, which holds only the directives in force.
 2. List each directive in that file with `"origin": "project"`.
 3. Keep each directive that passes each test of `### Rules for each project`.
 4. Show the person the list, with a reason for each directive. Ask which directives to copy to the template.
@@ -80,9 +80,9 @@ This skill has two jobs: a pull and an upstream proposal. Do one job at a time. 
 1. Find the template node whose definition covers the subject of the rule.
 2. Write the rule in general words, with no path, command, name, or value of the project.
 3. Add the rule to that node as a directive, in the form of `### Upstream directive`.
-4. If no node covers the subject, add one `ka:Concept` node under the practice area that covers it, with a pointer from that practice area.
+4. If no node covers the subject, add one `densho:Concept` node under the practice area that covers it, with a pointer from that practice area.
 5. If no practice area covers the subject, tell the person to add one with `author-domain`. Do not write the rule.
-6. Run `uv run --directory <upstream> ka runtime`. Correct each problem from the first line down.
+6. Run `uv run --directory <upstream> densho runtime`. Correct each problem from the first line down.
 7. Run `git -C <upstream> status --short` and `git -C <upstream> diff`, and show the person the result.
 8. Tell the person the path of `<upstream>`. The change waits there with no commit, for the person to commit and send.
 
@@ -92,15 +92,15 @@ A pull: one commit that passes the hook, with each conflict resolved by the pers
 
 ## Validation
 
-After a pull, `knowledge/.ka/ka runtime --verify` passes, and the report names each entity that left force. After an upstream proposal, `git -C <upstream> status --short` lists only the changed node files, the runtime files, and a vocabulary file if a verb was new.
+After a pull, `knowledge/.densho/densho runtime --verify` passes, and the report names each entity that left force. After an upstream proposal, `git -C <upstream> status --short` lists only the changed node files, the runtime files, and a vocabulary file if a verb was new.
 
 ## References
 
 ### Pull classes
 
-Leave `status` out when you compare `fields`. A template `status` does not carry over, because `knowledge/.ka/ka adopt` sets it back.
+Leave `status` out when you compare `fields`. A template `status` does not carry over, because `knowledge/.densho/densho adopt` sets it back.
 
-The last line of `knowledge/.ka/ka history --drift` is a count. A line that starts with `note:` gives the count of entities in a discipline that `disciplines` leaves out. Each other line is a JSON object.
+The last line of `knowledge/.densho/densho history --drift` is a count. A line that starts with `note:` gives the count of entities in a discipline that `disciplines` leaves out. Each other line is a JSON object.
 
 | Class               | Template line | Drift line                             | What the update does                           | What you do             |
 | ------------------- | ------------- | -------------------------------------- | ---------------------------------------------- | ----------------------- |
@@ -116,10 +116,10 @@ The last line of `knowledge/.ka/ka history --drift` is a count. A line that star
 | `vocabulary`        | `file`        | any                                    | merges the file                                | read the words          |
 
 - Sort each line into the first class that fits, from the top of the table.
-- `outside selection`: the template `path` sits under the folder of a `ka:Discipline` node that `disciplines` in `.copier-answers.yml` does not name. `knowledge/.ka/ka select` keeps that discipline out on each pull.
+- `outside selection`: the template `path` sits under the folder of a `densho:Discipline` node that `disciplines` in `.copier-answers.yml` does not name. `knowledge/.densho/densho select` keeps that discipline out on each pull.
 - The drift line and the template line each hold a digest for each field in `content`.
 - A pointer conflict in front matter can split one pointer. Keep each pointer whole, with its `kind`, `target`, and `trigger`.
-- The update can bring back the generated file of a removed node in `.claude/`. `knowledge/.ka/ka adopt` removes it.
+- The update can bring back the generated file of a removed node in `.claude/`. `knowledge/.densho/densho adopt` removes it.
 - A rename fails `removed-accepted` when the entity is `accepted`. Set it to `deprecated` in one commit, and remove it in a later commit.
 
 ### Rules for each project
@@ -151,7 +151,7 @@ A directive goes to the template only when each of these holds:
 uvx --python 3.14 copier update --trust --defaults --vcs-ref=HEAD
 ```
 
-- `--trust` lets the update run `knowledge/.ka/ka select`, so the choice of disciplines stays.
+- `--trust` lets the update run `knowledge/.densho/densho select`, so the choice of disciplines stays.
 - `--data 'disciplines=[<id>, <id>]'` changes the choice of disciplines.
 
 ## References

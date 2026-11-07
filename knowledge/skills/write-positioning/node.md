@@ -1,6 +1,6 @@
 ---
 id: write-positioning
-kind: ka:Skill
+kind: densho:Skill
 title: Write the positioning of a product
 status: proposed
 origin: template
@@ -11,10 +11,10 @@ uses:
   - product-positioning
   - positioning-components
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: product-positioning
     trigger: You separate the positioning from the messaging or the brand story.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: positioning-components
     trigger: You define the alternatives, the attributes, the value, the customers, or the market category.
 ---

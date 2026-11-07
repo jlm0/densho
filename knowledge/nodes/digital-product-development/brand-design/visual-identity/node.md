@@ -1,6 +1,6 @@
 ---
 id: visual-identity
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Visual identity
 status: proposed
 origin: template
@@ -13,13 +13,13 @@ broader:
 related:
   - visual-design
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-logo
     trigger: You design, place, or specify a logo or a lockup.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: color-roles
     trigger: You define the colors of a brand or assign them to roles.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: type-scale
     trigger: You choose the typefaces, the text sizes, or the text styles of a brand.
 ---

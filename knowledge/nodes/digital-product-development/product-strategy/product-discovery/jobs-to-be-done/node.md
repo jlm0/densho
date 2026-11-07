@@ -1,6 +1,6 @@
 ---
 id: jobs-to-be-done
-kind: ka:Concept
+kind: densho:Concept
 title: Jobs to be done
 status: proposed
 origin: template

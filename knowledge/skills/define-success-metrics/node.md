@@ -1,6 +1,6 @@
 ---
 id: define-success-metrics
-kind: ka:Skill
+kind: densho:Skill
 title: Define success metrics
 status: proposed
 origin: template
@@ -13,16 +13,16 @@ uses:
   - north-star-metric
   - objectives-and-key-results
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: product-measurement
     trigger: You link a metric to its goal or choose its unit.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: heart-framework
     trigger: You choose the categories, the goals, the signals, or the metrics.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: north-star-metric
     trigger: You measure a whole product, not one feature.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: objectives-and-key-results
     trigger: The team sets its targets as objectives and key results.
 ---

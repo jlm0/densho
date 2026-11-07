@@ -1,6 +1,6 @@
 ---
 id: atomic-design
-kind: ka:Concept
+kind: densho:Concept
 title: Atomic design
 status: proposed
 origin: template

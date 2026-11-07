@@ -1,6 +1,6 @@
 ---
 id: write-decision-record
-kind: ka:Skill
+kind: densho:Skill
 title: Write a decision record
 status: proposed
 origin: template
@@ -10,7 +10,7 @@ invocation: agent
 uses:
   - architecture-decision-record
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: architecture-decision-record
     trigger: You choose the sections, the number, or the status of the record.
 ---

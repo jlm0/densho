@@ -1,6 +1,6 @@
 ---
 id: conventional-commits
-kind: ka:Concept
+kind: densho:Concept
 title: Conventional Commits
 status: proposed
 origin: template

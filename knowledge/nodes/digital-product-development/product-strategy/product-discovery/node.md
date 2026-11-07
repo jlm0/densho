@@ -1,6 +1,6 @@
 ---
 id: product-discovery
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Discovery
 status: proposed
 origin: template
@@ -11,19 +11,19 @@ sources:
 broader:
   - product-strategy
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: jobs-to-be-done
     trigger: You describe the progress that customers seek from a product.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: opportunity-solution-tree
     trigger: You map customer needs and solutions under a product outcome.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: product-risks
     trigger: You judge the risks of an idea that a team plans to build.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: assumption-testing
     trigger: You plan or read a test of a product idea.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: opportunity-assessment
     trigger: You decide whether a company starts work on a new product.
 ---

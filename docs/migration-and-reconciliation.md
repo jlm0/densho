@@ -6,7 +6,7 @@
 
 This layer is two skills. `migrate-project` converts the knowledge of an existing project into nodes that pass the checks. `sync-template` pulls template changes into a project that has drifted. An agent does the work and proposes the result, and you decide what stands.
 
-Migration runs before a project has a graph, so its skill lives outside every project, in `global-skills/migrate-project/SKILL.md`. A pull runs inside a project, so its skill is a preset that every install receives, generated from `knowledge/skills/sync-template/node.md`. Neither adds a check or a command. They use the ones a project already has: the [hooks](template-packaging.md), `knowledge/.ka/ka adopt`, `knowledge/.ka/ka history --drift`, and the change history in `knowledge/.ka/history.jsonl`.
+Migration runs before a project has a graph, so its skill lives outside every project, in `global-skills/migrate-project/SKILL.md`. A pull runs inside a project, so its skill is a preset that every install receives, generated from `knowledge/skills/sync-template/node.md`. Neither adds a check or a command. They use the ones a project already has: the [hooks](template-packaging.md), `knowledge/.densho/densho adopt`, `knowledge/.densho/densho history --drift`, and the change history in `knowledge/.densho/history.jsonl`.
 
 ## Install the migration skill
 
@@ -50,7 +50,7 @@ Project knowledge becomes workspace knowledge, with `knowledge_type: workspace` 
 
 ### What you get
 
-Everything arrives as `proposed`, so no migrated rule binds an agent until you accept it. The skill never changes a `status` to `accepted`. To go through what waits, run `/review-proposals` in the project, as the [improvement loop](improvement-loop.md#review-the-queue) explains. You can also run `knowledge/.ka/ka view`, or `knowledge/.ka/ka governance --pending` in a terminal, and the [human interface](human-interface.md#in-a-project) has the steps from there.
+Everything arrives as `proposed`, so no migrated rule binds an agent until you accept it. The skill never changes a `status` to `accepted`. To go through what waits, run `/review-proposals` in the project, as the [improvement loop](improvement-loop.md#review-the-queue) explains. You can also run `knowledge/.densho/densho view`, or `knowledge/.densho/densho governance --pending` in a terminal, and the [human interface](human-interface.md#in-a-project) has the steps from there.
 
 Your old rules can stay in force in the meantime. A hand-written root `AGENTS.md` has to leave its path, because the generator owns it, so the agent moves it to `knowledge-migration/source/root-agents.md` and asks whether to keep it loading with this line in `CLAUDE.md`:
 
@@ -80,14 +80,14 @@ A real rule set opens with verbs the vocabulary doesn't approve. The agent adds 
 Nothing forces a pull. A project can stay where it is, and the agent pulls only when you ask. Commit your work first, then run `/sync-template`. The agent:
 
 1. Clones the template into a folder outside the project, from `_src_path` in `.copier-answers.yml`.
-2. Reads each new line of the template's `knowledge/.ka/history.jsonl`, and matches it by `kind` and `id` to the output of `knowledge/.ka/ka history --drift`.
+2. Reads each new line of the template's `knowledge/.densho/history.jsonl`, and matches it by `kind` and `id` to the output of `knowledge/.densho/densho history --drift`.
 3. Reports what each change will do, and asks whether to pull.
-4. Runs `copier update`, resolves each entity with you, and runs `knowledge/.ka/ka adopt`.
+4. Runs `copier update`, resolves each entity with you, and runs `knowledge/.densho/densho adopt`.
 5. Reports what left force and what still differs, then commits through the hooks.
 
 The same skill can also send one of your own rules to the template. The [improvement loop](improvement-loop.md#send-a-rule-to-the-template) explains that half.
 
-A pull doesn't promote anything. `knowledge/.ka/ka adopt` sets a changed entity to `proposed`, even if the template accepted it. If you accepted an entity and the pull changes a reviewed field, it leaves force until you accept it again, and the agent tells you so before it pulls.
+A pull doesn't promote anything. `knowledge/.densho/densho adopt` sets a changed entity to `proposed`, even if the template accepted it. If you accepted an entity and the pull changes a reviewed field, it leaves force until you accept it again, and the agent tells you so before it pulls.
 
 ### How each change sorts
 
@@ -145,7 +145,7 @@ The project hooks read the result on each commit. These broken outputs each fail
 | A conflict marker stays                     | the `conflict-markers` hook |
 | A rejected hunk stays                       | the `rejected-hunks` hook   |
 
-A test holds `migrate-project` to the [language checks](language-checks.md): the description and each rule and step pass the same rules as a skill in the graph. The same test checks that each command, problem code, and named section in the text exists, that the node example in the text parses, that the steps fit in what compaction keeps, that the file stays within 500 lines, and that the skill tells you to remove the old text from `CLAUDE.md`. `sync-template` is a node, so `ka language` reads its description and directives on each commit, and a test checks each command and named section in it.
+A test holds `migrate-project` to the [language checks](language-checks.md): the description and each rule and step pass the same rules as a skill in the graph. The same test checks that each command, problem code, and named section in the text exists, that the node example in the text parses, that the steps fit in what compaction keeps, that the file stays within 500 lines, and that the skill tells you to remove the old text from `CLAUDE.md`. `sync-template` is a node, so `densho language` reads its description and directives on each commit, and a test checks each command and named section in it.
 
 ## What it has run against
 

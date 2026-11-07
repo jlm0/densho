@@ -1,6 +1,6 @@
 ---
 id: evaluate-knowledge
-kind: ka:Skill
+kind: densho:Skill
 title: Evaluate knowledge
 status: proposed
 origin: template
@@ -41,20 +41,20 @@ uses:
 - The count of runs of each task in each condition, and the budget of the person in USD
 - The `claude` command on the `PATH`, with a login
 
-In a project, run the engine as `knowledge/.ka/ka`. In the template repo, use `uv run ka` in its place.
+In a project, run the engine as `knowledge/.densho/densho`. In the template repo, use `uv run densho` in its place.
 
 ## Procedure
 
 ### Check the tasks
 
-1. Run `knowledge/.ka/ka eval --check`. It grades the known good output and the known bad output of each task, with no model call.
+1. Run `knowledge/.densho/densho eval --check`. It grades the known good output and the known bad output of each task, with no model call.
 2. If it reports a problem, stop. Tell the person each problem.
 3. Ask the person for the discipline, the count of runs, and the budget.
 4. Tell the person the count of runs: `2` canary runs, then each task once in each condition for each repeat.
 
 ### Prove the isolation
 
-1. Run `knowledge/.ka/ka eval --discipline <id> --dry-run`. It checks the login, builds the two conditions, and probes each run folder. The check and the probes cost `0` USD.
+1. Run `knowledge/.densho/densho eval --discipline <id> --dry-run`. It checks the login, builds the two conditions, and probes each run folder. The check and the probes cost `0` USD.
 2. If the dry run reports the code `login`, stop. Tell the person that the `claude` command has no login in the run environment.
 3. If the dry run reports another problem, stop. Tell the person each problem, with its code from `### Isolation`.
 
@@ -77,7 +77,7 @@ In a project, run the engine as `knowledge/.ka/ka`. In the template repo, use `u
 2. For each line, find the node that holds the directive. The search in `### Directive search` finds it.
 3. Copy the line to `## Signals` at the end of the body of that node. Add the heading if the node has none.
 4. Do not change the `status` of the directive. The line is a body edit, so it needs no review.
-5. Run `knowledge/.ka/ka runtime`. Correct each problem from the first line down.
+5. Run `knowledge/.densho/densho runtime`. Correct each problem from the first line down.
 6. Show the person `git diff`, and ask whether to commit the lines now.
 7. Tell the person to read the proposals with the `review-proposals` skill.
 
@@ -127,10 +127,10 @@ The diff holds only `## Signals` lines with the class `eval`. No `status` change
 ### Commands
 
 ```sh
-knowledge/.ka/ka eval --check
-knowledge/.ka/ka eval --discipline <id> --dry-run
-knowledge/.ka/ka eval --discipline <id> --runs <n> --budget <usd>
-knowledge/.ka/ka eval --discipline <id> --task <task-id> --runs <n> --budget <usd>
+knowledge/.densho/densho eval --check
+knowledge/.densho/densho eval --discipline <id> --dry-run
+knowledge/.densho/densho eval --discipline <id> --runs <n> --budget <usd>
+knowledge/.densho/densho eval --discipline <id> --task <task-id> --runs <n> --budget <usd>
 ```
 
 - `--run-budget` sets `--max-budget-usd` of each run. The default is `0.5` USD.

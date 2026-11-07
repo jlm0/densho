@@ -1,6 +1,6 @@
 ---
 id: design-settings-interface
-kind: ka:Skill
+kind: densho:Skill
 title: Design a settings interface
 status: proposed
 origin: template
@@ -36,22 +36,22 @@ exceptions:
     reason: A settings screen holds controls of equal rank.
     status: proposed
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: progressive-disclosure
     trigger: You choose which settings appear first.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: information-hierarchy
     trigger: You rank the settings on a screen.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: visual-grouping
     trigger: You group the settings on a screen.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: accessibility
     trigger: You choose a control for a setting.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-design
     trigger: You choose a color, a typeface, or the voice of a message.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: responsive-design
     trigger: You fit the settings to a narrow screen.
 ---

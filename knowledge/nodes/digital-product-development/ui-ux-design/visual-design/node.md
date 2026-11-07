@@ -1,6 +1,6 @@
 ---
 id: visual-design
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Visual design
 status: proposed
 origin: template
@@ -8,13 +8,13 @@ knowledge_type: domain
 broader:
   - ui-ux-design
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: information-hierarchy
     trigger: You rank the elements of a screen.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: visual-grouping
     trigger: You place, style, or frame related elements on a screen.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: visual-communication
     trigger: You choose between prose and a visual form.
 ---

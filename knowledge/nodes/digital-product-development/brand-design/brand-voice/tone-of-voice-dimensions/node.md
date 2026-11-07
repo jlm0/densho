@@ -1,6 +1,6 @@
 ---
 id: tone-of-voice-dimensions
-kind: ka:Concept
+kind: densho:Concept
 title: Tone of voice dimensions
 status: proposed
 origin: template

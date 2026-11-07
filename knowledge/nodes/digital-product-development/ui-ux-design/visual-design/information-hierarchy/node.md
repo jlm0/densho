@@ -1,6 +1,6 @@
 ---
 id: information-hierarchy
-kind: ka:Concept
+kind: densho:Concept
 title: Information hierarchy
 status: proposed
 origin: template

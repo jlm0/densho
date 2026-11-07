@@ -4,14 +4,14 @@
 
 **Status:** Built.
 
-This layer gives a person two commands. `ka view` writes a site that shows the tree, what applies at each node, and everything that waits for review. `ka accept` changes `status` to `accepted` on what the person approves. The code is in `engine/interface/`.
+This layer gives a person two commands. `densho view` writes a site that shows the tree, what applies at each node, and everything that waits for review. `densho accept` changes `status` to `accepted` on what the person approves. The code is in `engine/interface/`.
 
 Nothing here is a new source of knowledge. The site reads the same compiled graph as the [runtime files](runtime-files.md), so a person and an agent see one version of each node. A node is still a Markdown file that any editor can open and Git can review.
 
 ## Read the knowledge
 
 ```sh
-uv run ka view
+uv run densho view
 ```
 
 ```text
@@ -37,21 +37,21 @@ The site leaves out each `rejected` entity, the same as the runtime files. A nod
 
 The site only reads. To accept something, run a command in a terminal:
 
-1. Run `uv run ka view`, then read `build/view/review.html`.
-2. Run `uv run ka accept` with the names you approve. Each group in the queue prints the command.
+1. Run `uv run densho view`, then read `build/view/review.html`.
+2. Run `uv run densho accept` with the names you approve. Each group in the queue prints the command.
 3. Read `git diff`. It changes one word on each status line.
-4. Run `uv run ka runtime`, because an accepted directive now reaches the generated files.
+4. Run `uv run densho runtime`, because an accepted directive now reaches the generated files.
 5. Stage the files and commit them. The command writes no commit.
 
 ```sh
-uv run ka accept visual-grouping group-related-fields
-uv run ka accept --subtree visual-design --dry-run
+uv run densho accept visual-grouping group-related-fields
+uv run densho accept --subtree visual-design --dry-run
 ```
 
 ```text
 knowledge/nodes/.../visual-grouping/node.md:5: node visual-grouping is now accepted
 knowledge/nodes/.../visual-grouping/node.md:32: directive group-related-fields is now accepted
-This command wrote no commit. Read git diff, run uv run ka runtime, stage the files, and commit them.
+This command wrote no commit. Read git diff, run uv run densho runtime, stage the files, and commit them.
 2 entities accepted, 0 not proposed, 0 problems
 ```
 
@@ -86,15 +86,15 @@ There is no button in the site, on purpose. A page that writes would need a serv
 
 ## In a project
 
-A project runs the same commands through `knowledge/.ka/ka`, and needs no Python:
+A project runs the same commands through `knowledge/.densho/densho`, and needs no Python:
 
 ```sh
-knowledge/.ka/ka view
-knowledge/.ka/ka accept --subtree visual-design
-knowledge/.ka/ka runtime
+knowledge/.densho/densho view
+knowledge/.densho/densho accept --subtree visual-design
+knowledge/.densho/densho runtime
 ```
 
-The review queue and the next-step line name the command that fits the folder. They use `knowledge/.ka/ka` if the file exists, and `uv run ka` if it doesn't.
+The review queue and the next-step line name the command that fits the folder. They use `knowledge/.densho/densho` if the file exists, and `uv run densho` if it doesn't.
 
 A project gets these commands at install, or at its next [template pull](template-packaging.md#pull-a-template-change) if it installed earlier. A `.gitignore` of your own needs `build/`, or the site shows up as untracked files.
 
@@ -110,17 +110,17 @@ A node can arrive from a pull or from an agent, so the site treats each value as
 
 ## Codes
 
-| Code            | What it reports                                                                                                                       |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `unknown-id`    | `ka accept`: no entity has this name, or no node has this ID in `--subtree`                                                           |
-| `not-proposed`  | `ka accept`: you named a `deprecated` or `rejected` entity, or the last commit holds it that way                                      |
-| `uncommitted`   | `ka accept`: the last commit doesn't hold the entity, a field that needs review differs from it, or a template pull has no commit yet |
-| `no-history`    | `ka accept`: there is no last commit to compare with, or a merge is in progress                                                       |
-| `status-line`   | `ka accept`: the command can't change this status alone, for example on a line that holds a similar word                              |
-| `not-generated` | `ka view`: a path under `build/view/` holds a file without the marker, a folder, or a symbolic link                                   |
-| `write`         | Either command: a file or a permission blocks a write. `ka accept` reports only what it did write                                     |
+| Code            | What it reports                                                                                                                           |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `unknown-id`    | `densho accept`: no entity has this name, or no node has this ID in `--subtree`                                                           |
+| `not-proposed`  | `densho accept`: you named a `deprecated` or `rejected` entity, or the last commit holds it that way                                      |
+| `uncommitted`   | `densho accept`: the last commit doesn't hold the entity, a field that needs review differs from it, or a template pull has no commit yet |
+| `no-history`    | `densho accept`: there is no last commit to compare with, or a merge is in progress                                                       |
+| `status-line`   | `densho accept`: the command can't change this status alone, for example on a line that holds a similar word                              |
+| `not-generated` | `densho view`: a path under `build/view/` holds a file without the marker, a folder, or a symbolic link                                   |
+| `write`         | Either command: a file or a permission blocks a write. `densho accept` reports only what it did write                                     |
 
-`ka view` also reports every code from the checks it runs, and so does `ka accept`. Exit status 1 means a problem, and exit status 2 means that `ka accept` got no name.
+`densho view` also reports every code from the checks it runs, and so does `densho accept`. Exit status 1 means a problem, and exit status 2 means that `densho accept` got no name.
 
 ## Use it from code
 
@@ -137,6 +137,6 @@ accept_entities(Path(), ["group-related-fields"], ["visual-design"], dry_run=Tru
 
 ## What it does not check yet
 
-- Whether the site you read is current. A page holds what the node files held when `ka view` last ran. `ka accept` reads the tree, not the page, so a command you copy from an old page can accept text you haven't read.
-- That a person read anything before running `ka accept`.
+- Whether the site you read is current. A page holds what the node files held when `densho view` last ran. `densho accept` reads the tree, not the page, so a command you copy from an old page can accept text you haven't read.
+- That a person read anything before running `densho accept`.
 - A failure partway through a write. The command changes each file in turn, so a disk or permission failure can leave some files changed. It stops at the first failure and lists what changed, and `git diff` shows the same.

@@ -1,6 +1,6 @@
 ---
 id: software-testing
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Testing
 status: proposed
 origin: template
@@ -11,7 +11,7 @@ sources:
 broader:
   - software-engineering
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: test-pyramid
     trigger: You choose the level of a new test.
 ---

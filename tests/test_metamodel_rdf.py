@@ -12,7 +12,7 @@ from rdflib import RDF, SKOS, Graph, Namespace, URIRef
 from engine.generated.metamodel import KnowledgeGraph
 
 SCHEMA = Path(__file__).resolve().parents[1] / "knowledge/governance/schema/metamodel.yaml"
-KA = Namespace("https://github.com/jlm0/knowledge-architecture/schema/")
+DENSHO = Namespace("https://github.com/jlm0/densho/schema/")
 BASE = Namespace("https://example.org/node/")
 DCTERMS = Namespace("http://purl.org/dc/terms/")
 
@@ -25,19 +25,31 @@ SAMPLE_GRAPH = {
     "root": {
         **GOVERNED,
         "id": "root",
-        "kind": "ka:Root",
+        "kind": "densho:Root",
         "title": "Root",
         "pointers": [
-            {"kind": "ka:AlwaysPointer", "target": "governance", "trigger": "At session start."},
-            {"kind": "ka:TextPointer", "target": "design", "trigger": "When the task is design."},
-            {"kind": "ka:SkillPointer", "target": "review", "trigger": "When X needs a review."},
+            {
+                "kind": "densho:AlwaysPointer",
+                "target": "governance",
+                "trigger": "At session start.",
+            },
+            {
+                "kind": "densho:TextPointer",
+                "target": "design",
+                "trigger": "When the task is design.",
+            },
+            {
+                "kind": "densho:SkillPointer",
+                "target": "review",
+                "trigger": "When X needs a review.",
+            },
         ],
     },
     "nodes": [
         {
             **TAXONOMY,
             "id": "governance",
-            "kind": "ka:Domain",
+            "kind": "densho:Domain",
             "governs": ["root", "governance"],
             "sources": ["knowledge/governance/schema/metamodel.yaml"],
             "directives": [
@@ -50,21 +62,21 @@ SAMPLE_GRAPH = {
                 },
             ],
         },
-        {**TAXONOMY, "id": "design", "kind": "ka:Domain", "informs": ["governance"]},
-        {**TAXONOMY, "id": "ui", "kind": "ka:Discipline", "broader": ["design"]},
-        {**TAXONOMY, "id": "visual", "kind": "ka:PracticeArea", "broader": ["ui", "design"]},
-        {**TAXONOMY, "id": "motion", "kind": "ka:Concept", "broader": ["ui"]},
+        {**TAXONOMY, "id": "design", "kind": "densho:Domain", "informs": ["governance"]},
+        {**TAXONOMY, "id": "ui", "kind": "densho:Discipline", "broader": ["design"]},
+        {**TAXONOMY, "id": "visual", "kind": "densho:PracticeArea", "broader": ["ui", "design"]},
+        {**TAXONOMY, "id": "motion", "kind": "densho:Concept", "broader": ["ui"]},
         {
             **TAXONOMY,
             "id": "hierarchy",
-            "kind": "ka:Concept",
+            "kind": "densho:Concept",
             "broader": ["visual"],
             "related": ["motion"],
         },
         {
             **TAXONOMY,
             "id": "settings",
-            "kind": "ka:Concept",
+            "kind": "densho:Concept",
             "origin": "project",
             "knowledge_type": "workspace",
             "broader": ["hierarchy"],
@@ -72,7 +84,7 @@ SAMPLE_GRAPH = {
             "depends_on": ["motion"],
             "pointers": [
                 {
-                    "kind": "ka:PathPointer",
+                    "kind": "densho:PathPointer",
                     "target": "hierarchy",
                     "trigger": "When the task edits settings.",
                     "paths": ["src/settings/**"],
@@ -82,7 +94,7 @@ SAMPLE_GRAPH = {
         {
             **GOVERNED,
             "id": "review",
-            "kind": "ka:Skill",
+            "kind": "densho:Skill",
             "title": "Review",
             "knowledge_type": "domain",
             "description": "Use this skill for a review.",
@@ -111,13 +123,13 @@ def test_sample_graph_round_trips() -> None:
 @pytest.mark.parametrize(
     ("node", "rdf_class"),
     [
-        ("root", KA.Root),
-        ("governance", KA.Domain),
-        ("ui", KA.Discipline),
-        ("visual", KA.PracticeArea),
-        ("hierarchy", KA.Concept),
-        ("review", KA.Skill),
-        ("use-a-verb", KA.Directive),
+        ("root", DENSHO.Root),
+        ("governance", DENSHO.Domain),
+        ("ui", DENSHO.Discipline),
+        ("visual", DENSHO.PracticeArea),
+        ("hierarchy", DENSHO.Concept),
+        ("review", DENSHO.Skill),
+        ("use-a-verb", DENSHO.Directive),
     ],
 )
 def test_rdf_types_each_entity(rdf: Graph, node: str, rdf_class: URIRef) -> None:
@@ -127,16 +139,16 @@ def test_rdf_types_each_entity(rdf: Graph, node: str, rdf_class: URIRef) -> None
 @pytest.mark.parametrize(
     ("pointer_class", "target"),
     [
-        (KA.AlwaysPointer, "governance"),
-        (KA.TextPointer, "design"),
-        (KA.SkillPointer, "review"),
-        (KA.PathPointer, "hierarchy"),
+        (DENSHO.AlwaysPointer, "governance"),
+        (DENSHO.TextPointer, "design"),
+        (DENSHO.SkillPointer, "review"),
+        (DENSHO.PathPointer, "hierarchy"),
     ],
 )
 def test_rdf_types_each_pointer(rdf: Graph, pointer_class: URIRef, target: str) -> None:
     assert (None, RDF.type, pointer_class) in rdf
     pointers = list(rdf.subjects(RDF.type, pointer_class))
-    assert [rdf.value(pointer, KA.target) for pointer in pointers] == [BASE[target]]
+    assert [rdf.value(pointer, DENSHO.target) for pointer in pointers] == [BASE[target]]
 
 
 @pytest.mark.parametrize(
@@ -145,13 +157,13 @@ def test_rdf_types_each_pointer(rdf: Graph, pointer_class: URIRef, target: str) 
         ("visual", SKOS.broader, "ui"),
         ("visual", SKOS.broader, "design"),
         ("hierarchy", SKOS.related, "motion"),
-        ("design", KA.informs, "governance"),
-        ("settings", KA.depends_on, "motion"),
-        ("settings", KA.implements, "hierarchy"),
-        ("governance", KA.governs, "root"),
-        ("governance", KA.governs, "governance"),
-        ("review", KA.uses, "hierarchy"),
-        ("review", KA.applies, "use-a-verb"),
+        ("design", DENSHO.informs, "governance"),
+        ("settings", DENSHO.depends_on, "motion"),
+        ("settings", DENSHO.implements, "hierarchy"),
+        ("governance", DENSHO.governs, "root"),
+        ("governance", DENSHO.governs, "governance"),
+        ("review", DENSHO.uses, "hierarchy"),
+        ("review", DENSHO.applies, "use-a-verb"),
     ],
 )
 def test_rdf_edge_uses_predicate(rdf: Graph, subject: str, predicate: URIRef, target: str) -> None:

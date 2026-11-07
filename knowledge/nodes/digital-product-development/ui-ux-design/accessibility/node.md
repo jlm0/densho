@@ -1,6 +1,6 @@
 ---
 id: accessibility
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Accessibility
 status: proposed
 origin: template

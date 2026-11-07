@@ -1,6 +1,6 @@
 ---
 id: product-measurement
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Measurement
 status: proposed
 origin: template
@@ -11,13 +11,13 @@ sources:
 broader:
   - product-strategy
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: north-star-metric
     trigger: You choose the one metric that a product team works to move.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: heart-framework
     trigger: You measure the user experience of a product or a feature.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: objectives-and-key-results
     trigger: You write objectives and key results for a team or a company.
 ---

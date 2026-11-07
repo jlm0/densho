@@ -1,6 +1,6 @@
 ---
 id: apple-human-interface-guidelines
-kind: ka:Concept
+kind: densho:Concept
 title: Apple Human Interface Guidelines
 status: proposed
 origin: template

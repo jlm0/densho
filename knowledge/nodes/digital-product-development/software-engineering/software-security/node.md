@@ -1,6 +1,6 @@
 ---
 id: software-security
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Security
 status: proposed
 origin: template
@@ -12,16 +12,16 @@ sources:
 broader:
   - software-engineering
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: access-control
     trigger: You set which users read or change a resource.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: injection
     trigger: Input from outside the code reaches a query, a command, or an output.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: secrets-management
     trigger: You store, pass, or log a secret.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: software-supply-chain
     trigger: You add, update, or remove a dependency.
 ---

@@ -1,6 +1,6 @@
 ---
 id: strategy-kernel
-kind: ka:Concept
+kind: densho:Concept
 title: Kernel of a strategy
 status: proposed
 origin: template

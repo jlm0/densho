@@ -1,6 +1,6 @@
 ---
 id: audit-brand-consistency
-kind: ka:Skill
+kind: densho:Skill
 title: Audit brand consistency
 status: proposed
 origin: template
@@ -16,25 +16,25 @@ uses:
   - brand-voice
   - brand-guidelines
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: visual-identity
     trigger: You find a color, a typeface, or a logo variant that the guidelines do not list.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-logo
     trigger: You check the logo on a touchpoint.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: color-roles
     trigger: You check the colors on a touchpoint.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: type-scale
     trigger: You check the text styles on a touchpoint.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: distinctive-brand-assets
     trigger: You check where the distinctive assets of the brand appear.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-voice
     trigger: You check the voice and the tone of the copy on a touchpoint.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-guidelines
     trigger: You find a rule that the guidelines lack or state in two ways.
 ---

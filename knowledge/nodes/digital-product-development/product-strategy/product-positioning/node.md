@@ -1,6 +1,6 @@
 ---
 id: product-positioning
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Positioning
 status: proposed
 origin: template
@@ -12,7 +12,7 @@ broader:
 informs:
   - brand-design
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: positioning-components
     trigger: You define the alternatives, the attributes, the value, the customers, or the market category of a product.
 ---

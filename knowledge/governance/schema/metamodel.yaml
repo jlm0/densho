@@ -1,15 +1,15 @@
-id: https://github.com/jlm0/knowledge-architecture/schema/metamodel
+id: https://github.com/jlm0/densho/schema/metamodel
 name: metamodel
-title: Knowledge architecture metamodel
+title: Densho metamodel
 description: This schema defines what can exist in the knowledge graph.
 version: 0.1.0
 prefixes:
-  ka: https://github.com/jlm0/knowledge-architecture/schema/
+  densho: https://github.com/jlm0/densho/schema/
   linkml: https://w3id.org/linkml/
   rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
   skos: http://www.w3.org/2004/02/skos/core#
   dcterms: http://purl.org/dc/terms/
-default_prefix: ka
+default_prefix: densho
 default_range: string
 imports:
   - linkml:types
@@ -205,7 +205,7 @@ slots:
     description: The reason that a person rejected the entity.
     pattern: *single-line
   kind:
-    description: The class of the entity. The value is the class CURIE, for example ka:Concept.
+    description: The class of the entity. The value is the class CURIE, for example densho:Concept.
     slot_uri: rdf:type
     range: uriorcurie
     designates_type: true

@@ -5,8 +5,8 @@
 {%- elif source.startswith("git@") %}{% set source = "ssh://" ~ (source | replace(":", "/", 1)) %}
 {%- endif %}
 if ! command -v uvx >/dev/null 2>&1; then
-  echo "This project runs the knowledge engine with uv. Install uv: https://docs.astral.sh/uv/" >&2
+  echo "This project runs Densho with uv. Install uv: https://docs.astral.sh/uv/" >&2
   exit 127
 fi
 exec uvx --python 3.14 --constraints "$(dirname "$0")/engine-constraints.txt" \
-  --from "git+{{ source }}@{{ _copier_conf.vcs_ref_hash }}" ka "$@"
+  --from "git+{{ source }}@{{ _copier_conf.vcs_ref_hash }}" densho "$@"

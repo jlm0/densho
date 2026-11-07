@@ -1,6 +1,6 @@
 ---
 id: test-pyramid
-kind: ka:Concept
+kind: densho:Concept
 title: Test pyramid
 status: proposed
 origin: template

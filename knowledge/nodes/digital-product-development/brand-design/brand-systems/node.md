@@ -1,6 +1,6 @@
 ---
 id: brand-systems
-kind: ka:PracticeArea
+kind: densho:PracticeArea
 title: Brand systems
 status: proposed
 origin: template
@@ -13,10 +13,10 @@ broader:
 related:
   - design-systems
 pointers:
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-guidelines
     trigger: You write, structure, or publish the brand guidelines.
-  - kind: ka:TextPointer
+  - kind: densho:TextPointer
     target: brand-architecture
     trigger: You name a new product, a sub-brand, or an acquired company.
 ---

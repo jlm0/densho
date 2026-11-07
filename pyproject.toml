@@ -1,5 +1,5 @@
 [project]
-name = "knowledge-architecture"
+name = "densho"
 version = "0.0.0"
 description = "Governed knowledge architecture for human and agent workspaces."
 readme = "README.md"
@@ -19,7 +19,7 @@ dependencies = [
 ]
 
 [project.scripts]
-ka = "engine.cli:app"
+densho = "engine.cli:app"
 
 [build-system]
 requires = ["uv_build>=0.8.4,<0.9"]

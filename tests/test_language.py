@@ -54,7 +54,13 @@ def node_source(
     description: str | None = None,
     broader: tuple[str, ...] = (),
 ) -> str:
-    kind = "ka:Skill" if description is not None else "ka:Concept" if broader else "ka:Domain"
+    kind = (
+        "densho:Skill"
+        if description is not None
+        else "densho:Concept"
+        if broader
+        else "densho:Domain"
+    )
     lines = [
         "---",
         f"id: {node_id}",
@@ -71,7 +77,7 @@ def node_source(
     if triggers:
         lines.append("pointers:")
     for trigger in triggers:
-        lines += ["  - kind: ka:TextPointer", "    target: other"]
+        lines += ["  - kind: densho:TextPointer", "    target: other"]
         lines.append(f"    trigger: {json.dumps(trigger)}")
     lines.append("---")
     if description is None:

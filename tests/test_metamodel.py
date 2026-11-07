@@ -25,20 +25,24 @@ GOVERNED: Sample = {"id": "sample", "status": "accepted", "origin": "template"}
 NODE: Sample = {**GOVERNED, "title": "Sample"}
 TAXONOMY: Sample = {**NODE, "knowledge_type": "domain", "definition": "A sample node."}
 
-TEXT_POINTER: Sample = {"kind": "ka:TextPointer", "target": "other", "trigger": "When X happens."}
-PATH_POINTER: Sample = {**TEXT_POINTER, "kind": "ka:PathPointer", "paths": ["src/**"]}
-ALWAYS_POINTER: Sample = {**TEXT_POINTER, "kind": "ka:AlwaysPointer"}
-SKILL_POINTER: Sample = {**TEXT_POINTER, "kind": "ka:SkillPointer"}
+TEXT_POINTER: Sample = {
+    "kind": "densho:TextPointer",
+    "target": "other",
+    "trigger": "When X happens.",
+}
+PATH_POINTER: Sample = {**TEXT_POINTER, "kind": "densho:PathPointer", "paths": ["src/**"]}
+ALWAYS_POINTER: Sample = {**TEXT_POINTER, "kind": "densho:AlwaysPointer"}
+SKILL_POINTER: Sample = {**TEXT_POINTER, "kind": "densho:SkillPointer"}
 DIRECTIVE: Sample = {**GOVERNED, "text": "Use X.", "scope": "node", "basis": "judgment"}
 
-ROOT: Sample = {**NODE, "kind": "ka:Root", "pointers": [TEXT_POINTER]}
-DOMAIN: Sample = {**TAXONOMY, "kind": "ka:Domain"}
-DISCIPLINE: Sample = {**TAXONOMY, "kind": "ka:Discipline", "broader": ["other"]}
-PRACTICE_AREA: Sample = {**TAXONOMY, "kind": "ka:PracticeArea", "broader": ["other"]}
-CONCEPT: Sample = {**TAXONOMY, "kind": "ka:Concept", "broader": ["other"]}
+ROOT: Sample = {**NODE, "kind": "densho:Root", "pointers": [TEXT_POINTER]}
+DOMAIN: Sample = {**TAXONOMY, "kind": "densho:Domain"}
+DISCIPLINE: Sample = {**TAXONOMY, "kind": "densho:Discipline", "broader": ["other"]}
+PRACTICE_AREA: Sample = {**TAXONOMY, "kind": "densho:PracticeArea", "broader": ["other"]}
+CONCEPT: Sample = {**TAXONOMY, "kind": "densho:Concept", "broader": ["other"]}
 SKILL: Sample = {
     **NODE,
-    "kind": "ka:Skill",
+    "kind": "densho:Skill",
     "knowledge_type": "domain",
     "description": "Use this skill for X.",
     "invocation": "agent",
@@ -280,11 +284,11 @@ def test_kind_must_match_class(model: type[BaseModel], sample: Sample) -> None:
 @pytest.mark.parametrize(
     "node",
     [
-        {**DOMAIN, "kind": "ka:Unknown"},
+        {**DOMAIN, "kind": "densho:Unknown"},
         {**DOMAIN, "kind": "Domain"},
-        {**NODE, "kind": "ka:Node"},
-        {**NODE, "kind": "ka:KnowledgeNode", "knowledge_type": "domain"},
-        {**TAXONOMY, "kind": "ka:TaxonomyNode"},
+        {**NODE, "kind": "densho:Node"},
+        {**NODE, "kind": "densho:KnowledgeNode", "knowledge_type": "domain"},
+        {**TAXONOMY, "kind": "densho:TaxonomyNode"},
         {**TAXONOMY, "kind": "skos:Concept"},
     ],
     ids=lambda node: node["kind"],
@@ -299,7 +303,7 @@ def test_graph_rejects_node_without_kind() -> None:
     assert ("kind", "missing") in errors_of(KnowledgeGraph, graph_of(without(DOMAIN, "kind")))
 
 
-@pytest.mark.parametrize("kind", ["ka:Unknown", "TextPointer", "ka:Pointer"])
+@pytest.mark.parametrize("kind", ["densho:Unknown", "TextPointer", "densho:Pointer"])
 def test_node_rejects_pointer_kind_without_concrete_class(kind: str) -> None:
     pointer = {**TEXT_POINTER, "kind": kind}
     assert ("kind", "literal_error") in errors_of(Root, {**ROOT, "pointers": [pointer]})

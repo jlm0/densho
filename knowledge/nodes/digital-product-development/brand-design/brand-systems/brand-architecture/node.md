@@ -1,6 +1,6 @@
 ---
 id: brand-architecture
-kind: ka:Concept
+kind: densho:Concept
 title: Brand architecture
 status: proposed
 origin: template

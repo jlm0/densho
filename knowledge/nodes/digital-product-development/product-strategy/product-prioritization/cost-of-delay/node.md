@@ -1,6 +1,6 @@
 ---
 id: cost-of-delay
-kind: ka:Concept
+kind: densho:Concept
 title: Cost of delay
 status: proposed
 origin: template

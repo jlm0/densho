@@ -27,7 +27,7 @@ if TYPE_CHECKING:
     from engine.governance.history_lines import EntryKey
 
 PARENT = "HEAD~1"
-DISCIPLINE_KIND = "ka:Discipline"
+DISCIPLINE_KIND = "densho:Discipline"
 BRANCHES_FOLDER = LANGUAGE_FOLDER / "branches"
 FILE = "file"
 FILE_FIELD = "bytes"

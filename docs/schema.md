@@ -36,16 +36,16 @@ Pointer                   kind, target, trigger
 
 ## Nodes
 
-A node's `kind` selects its class. The value is the class name with the `ka:` prefix, such as `ka:Concept`.
+A node's `kind` selects its class. The value is the class name with the `densho:` prefix, such as `densho:Concept`.
 
-| Kind              | What it is                                                  | `broader` can name                              |
-| ----------------- | ----------------------------------------------------------- | ----------------------------------------------- |
-| `ka:Root`         | The top node. Agents load it first. It needs a pointer.     | Has no `broader`                                |
-| `ka:Domain`       | The top level of the taxonomy                               | Has no `broader`                                |
-| `ka:Discipline`   | A field of work in a domain                                 | A domain                                        |
-| `ka:PracticeArea` | A narrower area of work                                     | A domain, discipline, or practice area          |
-| `ka:Concept`      | A principle, a technique, or a body of knowledge            | A domain, discipline, practice area, or concept |
-| `ka:Skill`        | A reusable capability that composes knowledge from anywhere | Has no `broader`                                |
+| Kind                  | What it is                                                  | `broader` can name                              |
+| --------------------- | ----------------------------------------------------------- | ----------------------------------------------- |
+| `densho:Root`         | The top node. Agents load it first. It needs a pointer.     | Has no `broader`                                |
+| `densho:Domain`       | The top level of the taxonomy                               | Has no `broader`                                |
+| `densho:Discipline`   | A field of work in a domain                                 | A domain                                        |
+| `densho:PracticeArea` | A narrower area of work                                     | A domain, discipline, or practice area          |
+| `densho:Concept`      | A principle, a technique, or a body of knowledge            | A domain, discipline, practice area, or concept |
+| `densho:Skill`        | A reusable capability that composes knowledge from anywhere | Has no `broader`                                |
 
 `broader` is required where the table allows it, and it can name more than one node, so the taxonomy is not limited to a strict tree.
 
@@ -84,12 +84,12 @@ An edge states a relationship. Each edge is a field on the node that holds it, a
 
 A pointer is a route to a node: it names a `target`, the `trigger` that tells an agent to follow it, and through its kind, how the node gets loaded.
 
-| Kind               | How the target loads                                                   |
-| ------------------ | ---------------------------------------------------------------------- |
-| `ka:AlwaysPointer` | The agent tool loads it at session start                               |
-| `ka:PathPointer`   | The agent tool loads it when the agent opens a file in `paths`         |
-| `ka:SkillPointer`  | The agent picks it from the skill listing. The target must be a skill. |
-| `ka:TextPointer`   | The agent opens it after it reads the pointer text                     |
+| Kind                   | How the target loads                                                   |
+| ---------------------- | ---------------------------------------------------------------------- |
+| `densho:AlwaysPointer` | The agent tool loads it at session start                               |
+| `densho:PathPointer`   | The agent tool loads it when the agent opens a file in `paths`         |
+| `densho:SkillPointer`  | The agent picks it from the skill listing. The target must be a skill. |
+| `densho:TextPointer`   | The agent opens it after it reads the pointer text                     |
 
 ## Directives
 

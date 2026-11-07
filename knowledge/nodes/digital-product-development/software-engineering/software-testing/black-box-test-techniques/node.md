@@ -32,7 +32,7 @@ Techniques that select test cases from the specified behavior of the test object
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=39
   - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=126
-- Define the partitions from the specification, not from evenly spaced points of a value range. ^partitions-from-the-specification
+- Prefer partitions from the specification over partitions from evenly spaced points of a value range. ^partitions-from-the-specification
   - scope: subtree
   - basis: research
   - status: proposed
@@ -49,14 +49,14 @@ Techniques that select test cases from the specified behavior of the test object
   - basis: standard
   - status: proposed
   - origin: template
-  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=39
+  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=40
   - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=127
 - If a test object has more than `1` input, test each partition of each input in at least `1` test. ^each-choice-coverage
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
-  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=39
+  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=40
 - Use boundary value analysis only for ordered partitions. ^boundaries-of-ordered-partitions
   - scope: subtree
   - basis: standard
@@ -77,7 +77,7 @@ Techniques that select test cases from the specified behavior of the test object
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=40
   - sources: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-142.pdf#page=26
-- Include values outside the input domain in the boundary tests. ^test-outside-the-domain
+- When you test the robustness of a program, include values outside its input domain in the boundary tests. ^test-outside-the-domain
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -102,7 +102,7 @@ Techniques that select test cases from the specified behavior of the test object
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=41
-- Delete each column of the decision table that holds an infeasible combination of conditions. ^delete-infeasible-columns
+- When you simplify a decision table, delete each column that holds an infeasible combination of conditions. ^delete-infeasible-columns
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -114,7 +114,7 @@ Techniques that select test cases from the specified behavior of the test object
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=41
-- If a decision table holds more columns than the test budget allows, choose the columns by product risk. ^choose-columns-by-risk
+- If the test budget covers only part of a decision table, use a minimized table or risk-based choice of columns. ^choose-columns-by-risk
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -151,7 +151,7 @@ Techniques that select test cases from the specified behavior of the test object
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=42
-- If the set of value combinations is too large to test, test each pair of values with a covering array. ^pairwise-covering-array
+- If an exhaustive test is too costly, test at least each pair of values with a covering array. ^pairwise-covering-array
   - scope: subtree
   - basis: research
   - status: proposed
@@ -177,18 +177,18 @@ Techniques that select test cases from the specified behavior of the test object
   - status: proposed
   - origin: template
   - sources: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-142.pdf#page=22
-- Do not delete a test that holds an invalid combination from a covering array. ^keep-covering-array-tests
+- Do not delete a test with an invalid combination from a covering array, unless other tests cover its valid combinations. ^keep-covering-array-tests
   - scope: subtree
   - basis: research
   - status: proposed
   - origin: template
   - sources: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-142.pdf#page=22
-- Record the coverage of each technique as the percent of its coverage items that the tests exercise. ^record-technique-coverage
+- Measure the coverage of each technique as the percent of its coverage items that the tests exercise. ^record-technique-coverage
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
-  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=39
+  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=40
 - Keep each black-box test when the implementation changes and the required behavior stays the same. ^keep-tests-across-implementations
   - scope: subtree
   - basis: standard
@@ -209,8 +209,8 @@ Each technique has its own coverage items:
 | State transition testing  | All states, the valid transitions, or all transitions with invalid ones     |
 | Combinatorial testing     | Each combination of `t` parameter values, such as each pair when `t` is `2` |
 
-The ISTQB syllabus ranks the state transition criteria. Valid transitions coverage is the most widely used, and it implies all states coverage. All transitions coverage implies both, and the syllabus sets it as the minimum for mission-critical and safety-critical software. 3-value boundary analysis finds defects that 2-value analysis misses, such as `x = 10` in place of `x <= 10`.
+The ISTQB syllabus ranks the state transition criteria. Valid transitions coverage is the most widely used, and it implies all states coverage. All transitions coverage implies both, and the syllabus sets it as the minimum for mission-critical and safety-critical software. 3-value boundary analysis can find defects that 2-value analysis misses, such as `x = 10` in place of `x <= 10`.
 
 NIST SP 800-142 states the interaction rule from fault studies: most failures come from 1 parameter or the interaction of 2, and fewer come from 3 or more. In the studies, tests of all 4-way to 6-way combinations found each fault. Pairwise testing can miss `10%` to `40%` or more of the faults of a system. A covering array holds each `t`-way combination in few tests. A constraint keeps an invalid combination out of the array, and the tool then adds tests for each combination that a deletion would lose.
 
-Black-box tests do not depend on the code, so they stay useful when the implementation changes. White-box tests check the structure, and code coverage holds their rules. The 2 kinds find different defects. Property-based testing generates the input values at random, and model-based testing generates the tests from a model, such as a state machine.
+Black-box tests do not depend on the code, so they stay useful when the implementation changes and the required behavior stays the same. White-box tests check the structure, and code coverage holds their rules. The 2 kinds find different defects. Property-based testing generates the input values at random, and model-based testing generates the tests from a model, such as a state machine.

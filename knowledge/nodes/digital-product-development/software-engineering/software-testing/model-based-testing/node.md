@@ -30,13 +30,13 @@ A way to test that derives the test cases from a model of the system under test 
   - basis: standard
   - status: proposed
   - origin: template
-  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=23
+  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=24
 - Prefer `2` focused models over `1` model that covers each aspect of the system. ^focused-models
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
-  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=23
+  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=24
 - Link each model element to the requirements that it covers. ^link-model-to-requirements
   - scope: subtree
   - basis: standard
@@ -55,7 +55,7 @@ A way to test that derives the test cases from a model of the system under test 
   - status: proposed
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=25
-- Add model elements for unusual scenarios and error situations to the test model. ^model-error-situations
+- When you build a test model from a system design model, add elements for unusual scenarios and error situations. ^model-error-situations
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -68,26 +68,26 @@ A way to test that derives the test cases from a model of the system under test 
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=23
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=26
-- Combine test selection criteria, such as requirements coverage and model coverage, to fit the test objectives. ^combine-selection-criteria
+- If one selection criterion does not fit the test objectives, combine criteria, such as requirements coverage and model coverage. ^combine-selection-criteria
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
-  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=29
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=31
+  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=29
 - Record each test selection criterion and the reason for it. ^record-selection-criteria
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=31
-- If the number of generated tests exceeds the test budget, limit the test selection criteria. ^narrow-criteria-against-explosion
+- If the number of generated tests exceeds the test budget, change the test selection criteria. ^narrow-criteria-against-explosion
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
-  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=15
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=31
+  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=15
 - Change the model, not the generated tests. ^model-is-the-master
   - scope: subtree
   - basis: standard
@@ -106,7 +106,7 @@ A way to test that derives the test cases from a model of the system under test 
   - status: proposed
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=34
-- Set the precondition of each generated test script at the start of the script. ^set-script-preconditions
+- If generated test scripts run in a chain, set the precondition of each script before its execution. ^set-script-preconditions
   - scope: subtree
   - basis: standard
   - status: proposed

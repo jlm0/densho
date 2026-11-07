@@ -25,7 +25,7 @@ A way to test code by stating general properties that the code must hold, and by
   - basis: research
   - status: proposed
   - origin: template
-  - sources: https://research.chalmers.se/publication/517894/file/517894_Fulltext.pdf#page=1
+  - sources: https://research.chalmers.se/publication/517894/file/517894_Fulltext.pdf#page=2
   - sources: https://www.cs.tufts.edu/~nr/cs257/archive/john-hughes/quick.pdf#page=1
 - Do not copy the implementation into a property to compute the expected result. ^no-reimplementation-in-properties
   - scope: subtree
@@ -39,7 +39,7 @@ A way to test code by stating general properties that the code must hold, and by
   - status: proposed
   - origin: template
   - sources: https://research.chalmers.se/publication/517894/file/517894_Fulltext.pdf#page=9
-- Write a postcondition that relates the result of each call to its arguments. ^postcondition-properties
+- In a postcondition, check the result of a single call against its arguments. ^postcondition-properties
   - scope: subtree
   - basis: research
   - status: proposed
@@ -51,8 +51,8 @@ A way to test code by stating general properties that the code must hold, and by
   - status: proposed
   - origin: template
   - sources: https://research.chalmers.se/publication/517894/file/517894_Fulltext.pdf#page=11
-  - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=130
-- If time is limited, write model-based properties and validity properties first. ^model-based-properties-first
+  - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=131
+- If time is limited, prefer model-based properties, together with validity properties, over the other kinds of property. ^model-based-properties-first
   - scope: subtree
   - basis: research
   - status: proposed
@@ -69,13 +69,13 @@ A way to test code by stating general properties that the code must hold, and by
   - basis: research
   - status: proposed
   - origin: template
-  - sources: https://research.chalmers.se/publication/517894/file/517894_Fulltext.pdf#page=22
+  - sources: https://research.chalmers.se/publication/517894/file/517894_Fulltext.pdf#page=23
 - Write the properties against the exported API, unless a property checks the invariant of the representation. ^properties-through-the-api
   - scope: subtree
   - basis: research
   - status: proposed
   - origin: template
-  - sources: https://research.chalmers.se/publication/517894/file/517894_Fulltext.pdf#page=22
+  - sources: https://research.chalmers.se/publication/517894/file/517894_Fulltext.pdf#page=23
 - Make each generator able to produce each valid test case. ^complete-generators
   - scope: subtree
   - basis: research
@@ -100,7 +100,7 @@ A way to test code by stating general properties that the code must hold, and by
   - status: proposed
   - origin: template
   - sources: https://www.cs.tufts.edu/~nr/cs257/archive/john-hughes/quick.pdf#page=3
-- Check the distribution of the generated cases with labels after each run. ^measure-the-distribution
+- Measure the distribution of the generated cases with labels. ^measure-the-distribution
   - scope: subtree
   - basis: research
   - status: proposed
@@ -118,7 +118,7 @@ A way to test code by stating general properties that the code must hold, and by
   - basis: research
   - status: proposed
   - origin: template
-  - sources: https://research.chalmers.se/publication/517894/file/517894_Fulltext.pdf#page=17
+  - sources: https://research.chalmers.se/publication/517894/file/517894_Fulltext.pdf#page=18
 
 ## Notes
 

@@ -28,7 +28,7 @@ A fault-based technique that measures how well a test set detects faults. Jia an
   - status: proposed
   - origin: template
   - sources: https://web.eecs.umich.edu/~weimerw/2020-481F/readings/mutation-testing.pdf#page=3
-- Use a small set of mutation operators, such as AOR, LCR, ROR, SBR, and UOI. ^selective-mutation-operators
+- Use a small set of mutation operators, such as AOR, LCR, ROR, and UOI. ^selective-mutation-operators
   - scope: subtree
   - basis: research
   - status: proposed
@@ -71,8 +71,8 @@ A fault-based technique that measures how well a test set detects faults. Jia an
   - basis: research
   - status: proposed
   - origin: template
-  - sources: https://web.eecs.umich.edu/~weimerw/2020-481F/readings/mutation-testing.pdf#page=4
   - sources: https://arxiv.org/pdf/2102.11378#page=1
+  - sources: https://web.eecs.umich.edu/~weimerw/2020-481F/readings/mutation-testing.pdf#page=4
 - Do not add a test for an unproductive mutant, such as a changed initial capacity of a collection. ^skip-unproductive-mutants
   - scope: subtree
   - basis: research
@@ -91,7 +91,6 @@ A fault-based technique that measures how well a test set detects faults. Jia an
   - status: proposed
   - origin: template
   - sources: https://web.eecs.umich.edu/~weimerw/2020-481F/readings/mutation-testing.pdf#page=4
-  - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=134
 - Prefer the surviving mutants of each change over a mutation score of the whole code base. ^prefer-change-mutants
   - scope: subtree
   - basis: research

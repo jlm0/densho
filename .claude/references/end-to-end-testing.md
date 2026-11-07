@@ -7,7 +7,7 @@ No directive is in force at this node.
 
 ## Definition
 
-A test that checks the whole system, with each of its parts integrated, through the interface that its users use. The ISTQB Foundation Level syllabus calls this level system testing: it checks the overall behavior and capabilities of the whole system, often with functional tests of end-to-end tasks. Martin Fowler also calls it a broad stack test. Software Engineering at Google calls these tests large-scoped tests: they validate the interaction of distinct parts of the system, or emergent behavior that no single class or method shows.
+A test that checks the whole system, with each of its parts integrated, through the interface that its users use. The ISTQB Foundation Level syllabus calls this level system testing: it checks the overall behavior and capabilities of the whole system, often with functional tests of end-to-end tasks. The Practical Test Pyramid also calls it a broad stack test. Software Engineering at Google calls these tests large-scoped tests: they validate the interaction of distinct parts of the system, or emergent behavior that no single class or method shows.
 
 ## Notes
 

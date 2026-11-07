@@ -39,7 +39,7 @@ A model for the mix of automated tests in a suite, by the level of each test. Mi
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#End-to-endTests
-- Test user interface behavior with unit tests of the frontend code and a test double of the backend. ^unit-test-ui-behavior
+- In a single page application, test the user interface behavior with frontend unit tests and a backend test double. ^unit-test-ui-behavior
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -81,8 +81,8 @@ A model for the mix of automated tests in a suite, by the level of each test. Mi
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://martinfowler.com/articles/practical-test-pyramid.html#AvoidTestDuplication
   - sources: https://martinfowler.com/bliki/TestPyramid.html
+  - sources: https://martinfowler.com/articles/practical-test-pyramid.html#AvoidTestDuplication
 - If lower-level tests cover each condition of a higher-level test, delete the higher-level test. ^delete-duplicate-high-test
   - scope: subtree
   - basis: practitioner

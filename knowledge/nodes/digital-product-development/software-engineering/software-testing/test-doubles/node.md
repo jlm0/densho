@@ -22,28 +22,28 @@ An object that replaces a production object in a test. Gerard Meszaros named the
 
 ## Directives
 
-- Use a dummy only for an argument that the code under test never uses. ^dummy-for-unused-arguments
+- Use a dummy only for an argument or an attribute that the code under test never uses. ^dummy-for-unused-arguments
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: http://xunitpatterns.com/Dummy%20Object.html
   - sources: https://martinfowler.com/bliki/TestDouble.html
-- Use a stub to feed the indirect inputs that put the code under test into a needed state. ^stub-for-indirect-inputs
+- Use a stub only to feed the indirect inputs that put the code under test into a needed state. ^stub-for-indirect-inputs
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: http://xunitpatterns.com/Test%20Stub.html
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#when_is_stubbing_appropriatequestion_ma
-- Use a spy or a mock only to verify an indirect output that no state verification observes. ^spy-or-mock-for-indirect-outputs
+- If no state verification observes an indirect output, verify it with a spy or a mock. ^spy-or-mock-for-indirect-outputs
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: http://xunitpatterns.com/Mock%20Object.html
   - sources: http://xunitpatterns.com/Test%20Spy.html
-- Use a fake when a dependency is slow or unavailable and the test needs a sequence of its behavior. ^fake-for-slow-dependencies
+- Use a fake for a slow or unavailable dependency when a test needs behavior too complex for a stub. ^fake-for-slow-dependencies
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -116,7 +116,7 @@ An object that replaces a production object in a test. Gerard Meszaros named the
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#the_fidelity_of_fakes
-- Run the same contract tests against each fake and against its real implementation. ^test-each-fake
+- Give each fake its own tests, such as contract tests that also run against the real implementation. ^test-each-fake
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -128,7 +128,7 @@ An object that replaces a production object in a test. Gerard Meszaros named the
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#what_to_do_if_a_fake_is_not_available
-- If the API owners write no fake, wrap the API calls in one class and fake that class. ^wrap-and-fake
+- If the API owners write no fake, prefer a fake of `1` wrapper class over a fake of the API. ^wrap-and-fake
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -153,7 +153,7 @@ An object that replaces a production object in a test. Gerard Meszaros named the
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#when_is_interaction_testing_appropriate
-- Verify interactions only with functions that change state outside the code under test. ^verify-state-changing-calls
+- Prefer interaction checks of state-changing functions over interaction checks of functions without side effects. ^verify-state-changing-calls
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -165,7 +165,7 @@ An object that replaces a production object in a test. Gerard Meszaros named the
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#avoid_overspecification
-- If a unit test checks interactions, add a larger test that checks the state against a real implementation. ^back-interactions-with-state
+- If a unit test checks only interactions, add a larger test that checks the state against a real implementation. ^back-interactions-with-state
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -192,8 +192,8 @@ The 5 kinds differ by what the test does with the double:
 - A stub returns canned answers. It is a control point for the indirect inputs of the code under test.
 - A spy is a stub that also records how the code called it. The test checks the record after the action.
 - A mock holds the expected calls before the action, and fails when a call does not match. It is an observation point for the indirect outputs.
-- A fake has a working implementation with a shortcut that makes it unfit for production, such as an in-memory database.
+- A fake has a working implementation, usually with a shortcut that makes it unfit for production, such as an in-memory database.
 
-State verification checks the state or the return value after the action. Behavior verification, or interaction testing, checks the calls that the code made to its dependencies. Martin Fowler names 2 styles of test-driven development after this choice: the classical style uses real objects where it can, and the mockist style uses a mock for each object with interesting behavior. The default tree follows the classical style of Software Engineering at Google: a real implementation first, a fake next, and a stub or a mock last. A mock couples the test to the implementation, so a refactor breaks the test.
+State verification checks the state or the return value after the action. Behavior verification, or interaction testing, checks the calls that the code made to its dependencies. Martin Fowler names 2 styles of test-driven development after this choice: the classical style uses real objects where it can, and the mockist style uses a mock for each object with interesting behavior. The default tree follows the classical style of Software Engineering at Google: a real implementation first, a fake next, and a stub or a mock last. A mock couples the test to the implementation, so a refactor can break the test.
 
 The fidelity of a double is how closely it follows the real dependency. A double with low fidelity lets a test pass while the real code fails. Contract testing checks the fidelity of a double against the real service. The test pyramid sets where doubles go: each small test replaces the dependencies that leave its process.

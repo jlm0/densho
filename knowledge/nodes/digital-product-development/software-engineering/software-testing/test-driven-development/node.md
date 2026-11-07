@@ -107,7 +107,7 @@ A way to write code in which a test comes before the code that makes it pass. Ke
   - origin: template
   - sources: https://tidyfirst.substack.com/p/canon-tdd
   - sources: https://martinfowler.com/bliki/TestDrivenDevelopment.html
-- If a new case invalidates the earlier work, start over with a different order of tests. ^restart-in-a-new-order
+- If a new case invalidates the earlier work, prefer a restart with a different test order over a continuation. ^restart-in-a-new-order
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -125,7 +125,6 @@ A way to write code in which a test comes before the code that makes it pass. Ke
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/bliki/TestDrivenDevelopment.html
-  - sources: https://tidyfirst.substack.com/p/canon-tdd
 - Do not refactor beyond the needs of the current test list. ^limit-the-refactor
   - scope: subtree
   - basis: practitioner
@@ -151,7 +150,7 @@ A way to write code in which a test comes before the code that makes it pass. Ke
   - status: proposed
   - origin: template
   - sources: https://tidyfirst.substack.com/p/canon-tdd
-- Keep each test of the cycle as an automated regression test after the change is done. ^keep-tdd-tests
+- Prefer to keep each test of the cycle as an automated regression test. ^keep-tdd-tests
   - scope: subtree
   - basis: standard
   - status: proposed

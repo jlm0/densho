@@ -46,7 +46,7 @@ A test that checks one unit of the code in isolation from the rest of the system
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#WhatToTest
-- Test the response of a unit to each error that its dependencies return. ^unit-test-each-error
+- Test the response of a unit to the common errors that its dependencies return. ^unit-test-each-error
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -76,7 +76,7 @@ A test that checks one unit of the code in isolation from the rest of the system
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch12.html#shared_values
-- Use a setup method only to build the object under test and its collaborators with default values. ^setup-for-defaults
+- Use a setup method to build the object under test and its collaborators with default values. ^setup-for-defaults
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -131,6 +131,7 @@ A test that checks one unit of the code in isolation from the rest of the system
   - basis: practitioner
   - status: proposed
   - origin: template
+  - sources: https://martinfowler.com/articles/nonDeterminism.html#LackOfIsolation
   - sources: https://testdesiderata.com/
 - Treat shared test infrastructure as a separate product with its own tests. ^test-infrastructure-as-product
   - scope: subtree
@@ -138,7 +139,7 @@ A test that checks one unit of the code in isolation from the rest of the system
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch12.html#defining_test_infrastructure
-- Run the unit tests in the development environment while you write the code. ^run-in-development-environment
+- Run the unit tests in the development environment. ^run-in-development-environment
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -147,7 +148,7 @@ A test that checks one unit of the code in isolation from the rest of the system
 
 ## Notes
 
-Martin Fowler names 2 kinds of unit test. A solitary unit test replaces each collaborator of the unit with a test double. A sociable unit test keeps the real collaborators. The default tree prefers real collaborators, and the test doubles concept holds that rule.
+The Practical Test Pyramid names 2 kinds of unit test. A solitary unit test replaces each collaborator of the unit with a test double. A sociable unit test keeps the real collaborators. The default tree prefers real collaborators, and the test doubles concept holds that rule.
 
 Software Engineering at Google separates the size of a test from its scope. A small test runs in one process, and most unit tests are small. The rules for clear unit tests follow from one goal: a test that never changes unless the requirements change. A pure refactor, a new feature, and a bug fix leave the existing tests as they are. Only a change of the required behavior changes a test.
 

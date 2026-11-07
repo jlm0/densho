@@ -29,7 +29,7 @@ A test that checks whether parts that are developed separately work correctly wh
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#IntegrationTests
-- Test one integration point in each integration test, with a test double for each other service. ^one-integration-point-per-test
+- In a narrow integration test, test only the code that calls another service, against a test double of it. ^one-integration-point-per-test
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -42,7 +42,7 @@ A test that checks whether parts that are developed separately work correctly wh
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch11.html#testing_for_failure
-- Before the integration tests start, choose the integration strategy: top-down, bottom-up, sandwich, or big bang. ^choose-integration-strategy
+- Choose the integration strategy: top-down, bottom-up, sandwich, or big bang. ^choose-integration-strategy
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -55,7 +55,7 @@ A test that checks whether parts that are developed separately work correctly wh
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#IntegrationTests
-- In an integration test, run each external dependency locally, such as a local database or a fake service. ^local-integration-dependencies
+- In a narrow integration test, run each external dependency locally, such as a local database or a fake service. ^local-integration-dependencies
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -79,7 +79,7 @@ A test that checks whether parts that are developed separately work correctly wh
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/bliki/IntegrationTest.html
-- Run the system integration tests in an environment similar to the operational environment. ^system-integration-environment
+- Prefer an environment similar to the operational environment for the system integration tests. ^system-integration-environment
   - scope: subtree
   - basis: standard
   - status: proposed

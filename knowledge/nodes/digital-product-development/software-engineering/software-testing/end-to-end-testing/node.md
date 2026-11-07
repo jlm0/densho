@@ -17,7 +17,7 @@ broader:
 
 ## Definition
 
-A test that checks the whole system, with each of its parts integrated, through the interface that its users use. The ISTQB Foundation Level syllabus calls this level system testing: it checks the overall behavior and capabilities of the whole system, often with functional tests of end-to-end tasks. Martin Fowler also calls it a broad stack test. Software Engineering at Google calls these tests large-scoped tests: they validate the interaction of distinct parts of the system, or emergent behavior that no single class or method shows.
+A test that checks the whole system, with each of its parts integrated, through the interface that its users use. The ISTQB Foundation Level syllabus calls this level system testing: it checks the overall behavior and capabilities of the whole system, often with functional tests of end-to-end tasks. The Practical Test Pyramid also calls it a broad stack test. Software Engineering at Google calls these tests large-scoped tests: they validate the interaction of distinct parts of the system, or emergent behavior that no single class or method shows.
 
 ## Directives
 
@@ -45,7 +45,7 @@ A test that checks the whole system, with each of its parts integrated, through 
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch14.html#the_benefits_of_hermetic_suts
-- Run the system tests in a test environment that represents the production environment. ^representative-system-test-environment
+- For a non-functional characteristic such as usability, prefer a test of the complete system in a representative test environment. ^representative-system-test-environment
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -65,7 +65,7 @@ A test that checks the whole system, with each of its parts integrated, through 
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch14.html#speeding_up_tests
-- If a large test is slow, replace it with smaller tests that run in parallel. ^split-slow-large-tests
+- If a large test is slow, prefer a test with a smaller scope or smaller tests that run in parallel. ^split-slow-large-tests
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -77,7 +77,7 @@ A test that checks the whole system, with each of its parts integrated, through 
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch14.html#making_tests_understandable
-- Record a trace of each request across the processes of a large test. ^trace-large-test-requests
+- Make each large test produce an artifact that locates the cause of a failure, such as a request trace. ^trace-large-test-requests
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -89,7 +89,7 @@ A test that checks the whole system, with each of its parts integrated, through 
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch14.html#owning_large_tests
-- Run the large tests of a service before each deployment to production. ^large-tests-before-deploy
+- Before a deployment to production, run the large tests that address the risks of the system. ^large-tests-before-deploy
   - scope: subtree
   - basis: practitioner
   - status: proposed

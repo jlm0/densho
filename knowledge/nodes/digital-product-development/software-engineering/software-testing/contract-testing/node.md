@@ -23,7 +23,7 @@ A test that checks that a test double still behaves like the external service th
 
 ## Directives
 
-- Write each contract as a set of interactions, each with an expected request and a minimal expected response. ^contract-as-interactions
+- Write each HTTP contract as a set of interactions, each with an expected request and a minimal expected response. ^contract-as-interactions
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -122,7 +122,7 @@ A test that checks that a test double still behaves like the external service th
   - status: proposed
   - origin: template
   - sources: https://docs.pact.io/consumer#choose-the-right-type-of-matching-for-the-situation
-- Check the format of the data in a contract test, not the exact values. ^check-format-not-data
+- If a stub holds a snapshot of a response, make the contract test check its data format, not its values. ^check-format-not-data
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -134,7 +134,7 @@ A test that checks that a test double still behaves like the external service th
   - status: proposed
   - origin: template
   - sources: https://docs.pact.io/consumer#avoid-using-pact-for-tests-that-involve-the-ui
-- In each interaction that writes a resource, require the updated values of the resource in the response. ^expect-written-values-back
+- In a write interaction, prefer the updated resource in the response over a fixture shared with a read. ^expect-written-values-back
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -146,7 +146,7 @@ A test that checks that a test double still behaves like the external service th
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/bliki/ContractTest.html
-- Run the contract tests of an external service against its test instance, not its production instance. ^external-contract-test-instance
+- Prefer the test instance of an external service over its production instance for the contract tests. ^external-contract-test-instance
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -175,15 +175,15 @@ A test that checks that a test double still behaves like the external service th
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://docs.pact.io/faq/convinceme#but-our-company-develops-apis-before-consumers-eg-apidocument-driven-design
   - sources: https://martinfowler.com/articles/consumerDrivenContracts.html#Liabilities
+  - sources: https://docs.pact.io/faq/convinceme#but-our-company-develops-apis-before-consumers-eg-apidocument-driven-design
 - Do not treat a shared OpenAPI description as a contract test, unless a tool checks each side against it. ^openapi-is-not-a-contract-test
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://docs.pact.io/faq/convinceme#but-i-use-swaggeropenapi
-- Use the contract to stub the provider in the broader tests of the consumer. ^stub-from-the-contract
+- In the broader tests of the consumer, use the contract or shared fixtures as the stubs of the provider. ^stub-from-the-contract
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -202,6 +202,6 @@ Ian Robinson names 3 kinds of contract:
 
 Robinson states the limits of the pattern: it works inside one company or a closed group of known services, it does not remove coupling, and it shows the coupling that was hidden.
 
-Martin Fowler first used contract tests for an external service that another team owns. Those tests run on the schedule of the external service, and a failure starts a task, not a broken build. The Pact docs use the same name for tests between services in one system, and these run in the build of each side.
+Martin Fowler first used contract tests for an external service that another team owns. Those tests run on the schedule of the external service, and a failure starts a task and need not break the build. The Pact docs use the same name for tests between services in one system, and these run in the build of each side.
 
 The interface contract of software design describes the whole API, such as an OpenAPI description. A consumer contract checks the part that a consumer uses, by example. Test doubles are what a contract test keeps faithful. The test pyramid places contract tests next to the narrow integration tests that use those doubles.

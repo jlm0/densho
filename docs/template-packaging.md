@@ -111,7 +111,7 @@ Answer yes only if you accept that content for your project, because each accept
 
 A selection changes some entities: removing a link changes the node or directive that held it. Such an entity no longer matches the template's history, so it arrives as `proposed` with either answer. With only `ui-ux-design`, that's three nodes and one directive, if the template had accepted them.
 
-A pull follows the stricter rule, whatever you answered at the install. Anything new or changed in a reviewed field arrives as `proposed`. The template can't promote an entity in your project either: a status that becomes `accepted` in a pull goes back to `proposed`, even when nothing else changed. Once the last commit holds `knowledge/.ka/history.jsonl`, `--keep-accepted` keeps nothing and prints a note, and the hook stops a new `accepted` entity.
+A pull follows the stricter rule, whatever you answered at the install. Anything new or changed in a reviewed field arrives as `proposed`. The template can't promote an entity in your project either: a status that becomes `accepted` in a pull goes back to `proposed`, even when nothing else changed. Once the last commit holds `knowledge/.ka/history.jsonl` or a node file, `--keep-accepted` keeps nothing and prints a note. The hook stops a new `accepted` entity, and `pull-promotion` stops one that the pull moves to `accepted`.
 
 If an entity was `deprecated` or `rejected` in the template, it loses that mark when it arrives as `proposed`, with either answer. The command prints a note, so you can set it back. A rejected entity keeps its `rejection_reason`, so you can read why the template turned it down.
 

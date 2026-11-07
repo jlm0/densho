@@ -134,11 +134,11 @@ report.compiled  # None if a check failed
 
 These codes come from the build. Each other code comes from a check that the build runs.
 
-| Code         | What it reports                                                                    |
-| ------------ | ---------------------------------------------------------------------------------- |
-| `empty-tree` | The tree holds no node. The checks pass on an empty tree, but no graph exists yet. |
-| `path`       | The name of a node file isn't valid UTF-8, so the JSON can't hold it.              |
-| `write`      | The build can't change `build/compiled/`, because a file or a permission blocks it |
+| Code         | What it reports                                                                                      |
+| ------------ | ---------------------------------------------------------------------------------------------------- |
+| `empty-tree` | The tree holds no node. The checks pass on an empty tree, but no graph exists yet.                   |
+| `path`       | The name of a node file isn't valid UTF-8, so the JSON can't hold it.                                |
+| `write`      | The build can't change `build/compiled/`, because a file, a permission, or a symbolic link blocks it |
 
 ## What it does not check yet
 

@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping, Sequence
     from pathlib import Path
 
+    from engine.governance.base import Base
     from engine.governance.entities import EntityKey
     from engine.parser.result import ParsedNode
 
@@ -162,7 +163,9 @@ def accepted_in_template(items: Sequence[ParsedNode], repository: Path) -> froze
     )
 
 
-def install_matches(items: Sequence[ParsedNode], repository: Path) -> frozenset[EntityKey] | None:
-    if head_holds(repository, HISTORY_FILE) is not False:
+def install_matches(
+    items: Sequence[ParsedNode], repository: Path, base: Base
+) -> frozenset[EntityKey] | None:
+    if head_holds(repository, HISTORY_FILE) is not False or base.items or base.unreadable:
         return None
     return accepted_in_template(items, repository)

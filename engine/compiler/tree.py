@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from engine.compiler.graph import compile_items
 from engine.compiler.output import (
     OUTPUT_FOLDER,
+    link_problems,
     remove_output,
     render_output,
     write_output,
@@ -92,6 +93,9 @@ def compile_tree(repository: Path, *, proposals: bool = False) -> CompileReport:
 def build_tree(repository: Path, *, proposals: bool = False) -> BuildReport:
     folder = repository / OUTPUT_FOLDER
     report = compile_tree(repository, proposals=proposals)
+    linked = link_problems(repository, folder)
+    if linked:
+        return BuildReport(None, None, report.notes, [*report.problems, *linked])
     if report.compiled is None:
         problems = [*report.problems, *remove_output(folder)]
         return BuildReport(None, None, report.notes, problems)

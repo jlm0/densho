@@ -402,6 +402,64 @@ def test_a_word_in_another_key_does_not_change(tmp_path: Path) -> None:
     assert "reason: 'x-status: accepted', status: proposed}]" in text_of(tmp_path, CHILD_PATH)
 
 
+def test_the_status_word_in_a_reason_on_the_status_line_needs_a_person(tmp_path: Path) -> None:
+    block = "exceptions:\n  - directive: run-it\n    reason: A prototype.\n    status: accepted\n"
+    flow = "exceptions: [{directive: run-it, reason: 'Old status: accepted.', status: accepted}]\n"
+    write_tree(tmp_path, child=CHILD_NODE.replace(block, flow))
+    before = text_of(tmp_path, CHILD_PATH)
+    report = adopt_template(tmp_path)
+    assert [(problem.code, problem.line) for problem in report.problems] == [("adopt", 10)]
+    assert "exception child run-it" in report.problems[0].message
+    assert text_of(tmp_path, CHILD_PATH) == before
+    assert report.runtime is None
+
+
+SKILL_NODE = """---
+id: review
+kind: ka:Skill
+title: Review
+status: accepted
+origin: template
+knowledge_type: domain
+description: Review a sample. Use when a sample needs a review.
+invocation: agent
+uses:
+  - domain
+---
+
+## Procedure
+
+1. Read each directive.
+"""
+
+
+def test_a_skill_with_scripts_changes_its_status(tmp_path: Path) -> None:
+    pointer = "    trigger: You need the child.\n"
+    skill_pointer = (
+        "  - kind: ka:SkillPointer\n    target: review\n    trigger: You need a review.\n"
+    )
+    write_tree(tmp_path, DOMAIN_NODE.replace(pointer, pointer + skill_pointer))
+    skill = tmp_path / "knowledge/skills/review"
+    (skill / "scripts").mkdir(parents=True)
+    (skill / "scripts/run.sh").write_text("echo run\n", encoding="utf-8")
+    (skill / "node.md").write_text(SKILL_NODE, encoding="utf-8")
+    report = adopt_template(tmp_path)
+    assert codes(report.problems) == []
+    assert "node review" in {entity.label for entity in report.proposed}
+    assert "status: proposed" in (skill / "node.md").read_text(encoding="utf-8")
+
+
+def test_an_edit_that_does_not_parse_is_not_written(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    write_tree(tmp_path)
+    before = text_of(tmp_path)
+    monkeypatch.setattr(adopt_module, "set_status_lines", lambda *_: (b"not a node\n", []))
+    report = adopt_template(tmp_path)
+    assert set(codes(report.problems)) == {"adopt"}
+    assert text_of(tmp_path) == before
+
+
 def test_a_value_on_the_next_line_needs_a_person(tmp_path: Path) -> None:
     with_history(tmp_path)
     domain = DOMAIN_NODE.replace("status: accepted\norigin", "status:\n  accepted\norigin", 1)

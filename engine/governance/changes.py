@@ -17,6 +17,7 @@ CHANGE_CODES = (
     "status-jump",
     "origin-change",
     "removed-accepted",
+    "pull-promotion",
 )
 CLOSED_STATUSES = frozenset({Status.deprecated, Status.rejected})
 OUT_OF_PROPOSAL = frozenset({Status.accepted, Status.deprecated})
@@ -97,18 +98,34 @@ def _removed_message(old: Entity, discipline: str | None) -> str:
     )
 
 
-def check_changes(
+def _pull_promotion(old: Entity, new: Entity) -> Problem | None:
+    if old.status != Status.proposed or new.status != Status.accepted:
+        return None
+    message = (
+        f"This commit pulls a template change and accepts {new.label}. "
+        "A pull cannot accept an entity. Run ka adopt, commit the pull, "
+        "and accept it in a later commit."
+    )
+    return _report(new, "pull-promotion", message)
+
+
+def check_changes(  # noqa: PLR0913
     base: Mapping[EntityKey, Entity],
     current: Mapping[EntityKey, Entity],
     unreadable: Collection[Path] = (),
     template_accepted: Collection[EntityKey] | None = None,
     left_out: Mapping[EntityKey, str] | None = None,
+    *,
+    pulled: bool = False,
 ) -> list[Problem]:
     problems: list[Problem] = []
     for key, new in current.items():
         old = base.get(key)
         if old is not None:
             problems += _transition_problems(old, new)
+            promotion = _pull_promotion(old, new) if pulled else None
+            if promotion is not None:
+                problems.append(promotion)
         elif new.status != Status.proposed and new.path not in unreadable:
             message = _new_status_message(key, new, template_accepted)
             if message is not None:

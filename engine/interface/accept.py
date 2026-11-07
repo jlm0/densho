@@ -7,6 +7,7 @@ from engine.directives import check_items as check_directive_items
 from engine.generated.metamodel import Status
 from engine.governance.base import read_base
 from engine.governance.changes import CLOSED_STATUSES
+from engine.governance.checks import pulls_template
 from engine.governance.entities import (
     DIRECTIVE,
     EXCEPTION,
@@ -15,7 +16,7 @@ from engine.governance.entities import (
 )
 from engine.governance.status_line import set_status_lines
 from engine.interface.tree import children_by_broader, subtree_ids
-from engine.layout import LAUNCHER
+from engine.layout import HISTORY_FILE, LAUNCHER
 from engine.parser import ParsedNode, parse_source, universal_newlines
 from engine.parser.result import Problem
 from engine.runtime import build_view, render_files, rendered_problems
@@ -196,6 +197,12 @@ def _base_problems(repository: Path, targets: Iterable[Entity]) -> list[Problem]
             f"last commit to compare with. {' '.join(base.notes)}"
         )
         return [Problem(repository, 1, "no-history", message)]
+    if pulls_template(repository):
+        message = (
+            "This folder holds a template pull with no commit, and a pull cannot accept an "
+            "entity. Commit the pull, then run the command again."
+        )
+        return [Problem(repository / HISTORY_FILE, 1, "uncommitted", message)]
     return _head_problems(targets, governed_entities(base.items), command_prefix(repository))
 
 

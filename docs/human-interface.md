@@ -110,15 +110,15 @@ A node can arrive from a pull or from an agent, so the site treats each value as
 
 ## Codes
 
-| Code            | What it reports                                                                                          |
-| --------------- | -------------------------------------------------------------------------------------------------------- |
-| `unknown-id`    | `ka accept`: no entity has this name, or no node has this ID in `--subtree`                              |
-| `not-proposed`  | `ka accept`: you named a `deprecated` or `rejected` entity, or the last commit holds it that way         |
-| `uncommitted`   | `ka accept`: the last commit doesn't hold the entity, or a field that needs review differs from it       |
-| `no-history`    | `ka accept`: there is no last commit to compare with, or a merge is in progress                          |
-| `status-line`   | `ka accept`: the command can't change this status alone, for example on a line that holds a similar word |
-| `not-generated` | `ka view`: a path under `build/view/` holds a file without the marker, a folder, or a symbolic link      |
-| `write`         | Either command: a file or a permission blocks a write. `ka accept` reports only what it did write        |
+| Code            | What it reports                                                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `unknown-id`    | `ka accept`: no entity has this name, or no node has this ID in `--subtree`                                                           |
+| `not-proposed`  | `ka accept`: you named a `deprecated` or `rejected` entity, or the last commit holds it that way                                      |
+| `uncommitted`   | `ka accept`: the last commit doesn't hold the entity, a field that needs review differs from it, or a template pull has no commit yet |
+| `no-history`    | `ka accept`: there is no last commit to compare with, or a merge is in progress                                                       |
+| `status-line`   | `ka accept`: the command can't change this status alone, for example on a line that holds a similar word                              |
+| `not-generated` | `ka view`: a path under `build/view/` holds a file without the marker, a folder, or a symbolic link                                   |
+| `write`         | Either command: a file or a permission blocks a write. `ka accept` reports only what it did write                                     |
 
 `ka view` also reports every code from the checks it runs, and so does `ka accept`. Exit status 1 means a problem, and exit status 2 means that `ka accept` got no name.
 

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from engine.disciplines import memberships, read_answer
 from engine.generated.metamodel import Basis, KnowledgeType, Origin, Root, Status
-from engine.governance.base import read_base
+from engine.governance.base import read_base, read_head_file
 from engine.governance.changes import CHANGE_CODES, check_changes
 from engine.governance.entities import DIRECTIVE, governed_entities
 from engine.governance.exposure import CREDENTIAL_CODE, EMAIL_CODE, exposure_problems
@@ -16,7 +16,7 @@ from engine.graph.references import (
     problem_at,
     references_of,
 )
-from engine.layout import POLICY_FOLDER
+from engine.layout import HISTORY_FILE, POLICY_FOLDER, TEMPLATE_FILE
 from engine.parser.node import node_folders, parse_tree
 
 if TYPE_CHECKING:
@@ -273,6 +273,16 @@ def _left_out_disciplines(
     return left_out
 
 
+def pulls_template(repository: Path) -> bool:
+    if (repository / TEMPLATE_FILE).is_file():
+        return False
+    try:
+        current = (repository / HISTORY_FILE).read_bytes()
+    except OSError:
+        current = None
+    return read_head_file(repository, HISTORY_FILE) != current
+
+
 def check_governance(
     repository: Path, items: Sequence[ParsedNode] | None = None
 ) -> GovernanceReport:
@@ -284,10 +294,19 @@ def check_governance(
     base = read_base(repository)
     found = {*check_items(items, repository), *exposure_problems(repository), *base.problems}
     if base.readable:
-        template_accepted = install_matches(items, repository)
+        template_accepted = install_matches(items, repository, base)
         known = governed_entities(base.items)
         left_out = _left_out_disciplines(repository, base.items, known)
-        found.update(check_changes(known, current, base.unreadable, template_accepted, left_out))
+        found.update(
+            check_changes(
+                known,
+                current,
+                base.unreadable,
+                template_accepted,
+                left_out,
+                pulled=pulls_template(repository),
+            )
+        )
     return GovernanceReport(len(current), base.notes, sorted(found))
 
 

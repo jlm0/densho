@@ -945,6 +945,42 @@ def test_the_output_holds_no_absolute_path_and_no_time_stamp(tmp_path: Path) -> 
     assert all(not Path(value).is_absolute() for value in document["paths"].values())
 
 
+@pytest.mark.parametrize(
+    "link",
+    ["build", "build/compiled", "build/compiled/graph.json", "build/compiled/graph.proposals.json"],
+)
+def test_the_build_does_not_write_through_a_symbolic_link(tmp_path: Path, link: str) -> None:
+    project = tmp_path / "project"
+    write_tree(project)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "graph.json").write_text("keep\n", encoding="utf-8")
+    target = outside if link != "build" else tmp_path
+    if link == "build":
+        (tmp_path / "compiled").mkdir()
+        (tmp_path / "compiled/graph.json").write_text("keep\n", encoding="utf-8")
+    path = project / link
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.symlink_to(target / "graph.json" if link.endswith(".json") else target)
+    report = build_tree(project, proposals=link.endswith("proposals.json"))
+    assert [problem.code for problem in report.problems] == ["write"]
+    assert (outside / "graph.json").read_text(encoding="utf-8") == "keep\n"
+    if link == "build":
+        assert (tmp_path / "compiled/graph.json").read_text(encoding="utf-8") == "keep\n"
+
+
+def test_a_failed_build_does_not_remove_through_a_symbolic_link(tmp_path: Path) -> None:
+    project = tmp_path / "project"
+    write_tree(project)
+    (project / "knowledge/node.md").write_text("not a node\n", encoding="utf-8")
+    (tmp_path / "compiled").mkdir()
+    (tmp_path / "compiled/graph.json").write_text("keep\n", encoding="utf-8")
+    (project / "build").symlink_to(tmp_path)
+    report = build_tree(project)
+    assert "write" in [problem.code for problem in report.problems]
+    assert (tmp_path / "compiled/graph.json").read_text(encoding="utf-8") == "keep\n"
+
+
 def test_build_writes_the_default_result_and_prints_its_digests(tmp_path: Path) -> None:
     write_tree(tmp_path)
     result = RUNNER.invoke(app, ["build", str(tmp_path)])

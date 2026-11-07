@@ -462,6 +462,19 @@ def test_an_entity_that_head_does_not_hold_fails(repository: Path) -> None:
     assert source_bytes(repository) == before
 
 
+def test_an_uncommitted_template_pull_stops_the_run(repository: Path) -> None:
+    history = repository / "knowledge/.ka/history.jsonl"
+    history.parent.mkdir(parents=True, exist_ok=True)
+    history.write_text("", encoding="utf-8")
+    commit(repository, "the install")
+    history.write_text('{"a pull": 1}\n', encoding="utf-8")
+    before = source_bytes(repository)
+    report = accept_entities(repository, ["keep"])
+    assert codes(list(report.problems)) == ["uncommitted"]
+    assert "Commit the pull" in report.problems[0].message
+    assert source_bytes(repository) == before
+
+
 def test_a_new_entity_in_a_subtree_stops_the_whole_run(repository: Path) -> None:
     path = repository / "knowledge/nodes/alpha/node.md"
     path.write_text(

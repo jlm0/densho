@@ -16,7 +16,7 @@ from engine.governance.history_lines import (
     read_entries,
     replay,
 )
-from engine.layout import HISTORY_FILE, LANGUAGE_FOLDER
+from engine.layout import HISTORY_FILE, LANGUAGE_FOLDER, TEMPLATE_FILE
 from engine.parser.node import node_folders, parse_tree
 from engine.parser.result import Problem
 
@@ -26,7 +26,6 @@ if TYPE_CHECKING:
 
     from engine.governance.history_lines import EntryKey
 
-TEMPLATE_FILE = "copier.yml"
 PARENT = "HEAD~1"
 DISCIPLINE_KIND = "ka:Discipline"
 BRANCHES_FOLDER = LANGUAGE_FOLDER / "branches"

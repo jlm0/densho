@@ -19,14 +19,14 @@ CREDENTIAL_FORMS = {
     "stripe": r"\b[rs]k_live_[0-9A-Za-z]{16,}",
     "private": r"-----BEGIN [A-Z ]*PRIVATE KEY-----",
     "jwt": r"\beyJ[A-Za-z0-9_-]{8,}\.eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}",
-    "login": r"\b[a-z][a-z0-9+.-]*://[^\s/:@]+:[^\s/@]+@",
+    "login": r"\b[a-z][a-z0-9+.-]{0,31}://[^\s/:@]+:[^\s/@]+@",
     "assigned": (
-        r"(?i:\b(?:password|passwd|secret|token|api[_-]?key)[a-z_-]*"
+        r"(?i:\b(?:password|passwd|secret|token|api[_-]?key)[a-z_-]{0,64}"
         r"[ \t]*[:=][ \t]*['\"]?[^\s'\"`]{8,})"
     ),
 }
 CREDENTIAL = re.compile("|".join(f"(?:{form})" for form in CREDENTIAL_FORMS.values()))
-EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}")
+EMAIL = re.compile(r"[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}")
 CREDENTIAL_MESSAGE = (
     "This line holds what reads as secret material. Remove it, and revoke the secret if it is real."
 )

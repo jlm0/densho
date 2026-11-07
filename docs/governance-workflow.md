@@ -149,7 +149,9 @@ A project owns its copy, so it can change or delete anything it received, and no
 
 Everything from the template counts as new, in a new repo and in one with history. It arrives as `proposed`, and a person accepts it. [The install](template-packaging.md#which-status-knowledge-arrives-with) sets those statuses for you, and a later pull follows the same rule.
 
-The install can also keep what the template already accepted. Then `new-status` lets an `accepted` entity through when the template's `knowledge/.ka/history.jsonl` holds its last line as `accepted`, with the same digest for each field. This narrow pass holds only while the last commit has no `knowledge/.ka/history.jsonl`, so it covers the install commit and never a pull. A history file that doesn't parse or replay gives no pass.
+The install can also keep what the template already accepted. Then `new-status` lets an `accepted` entity through when the template's `knowledge/.ka/history.jsonl` holds its last line as `accepted`, with the same digest for each field. This narrow pass holds only while the last commit has no `knowledge/.ka/history.jsonl` and no node file, so it covers the install commit and never a pull. A history file that doesn't parse or replay gives no pass.
+
+A pull can't accept anything either. A commit counts as a pull when its `knowledge/.ka/history.jsonl` differs from the last commit, or only one of them has the file, and the folder has no `copier.yml`, which only the template has. In that commit, an entity that goes from `proposed` to `accepted` fails `pull-promotion`, and `ka accept` refuses to run until you commit the pull.
 
 ## What fails
 
@@ -159,6 +161,7 @@ The install can also keep what the template already accepted. Then `new-status` 
 | `promotion-change`     | One commit accepts an entity and also changes a field that needs review                                                                             |
 | `accepted-change`      | An entity stays `accepted`, and a field that needs review changes                                                                                   |
 | `status-jump`          | An entity goes from `deprecated` or `rejected` straight to `accepted`, or from `accepted` or `deprecated` to `rejected`                             |
+| `pull-promotion`       | A commit that pulls a template change also moves an entity from `proposed` to `accepted`                                                            |
 | `origin-change`        | The `origin` of a node or a directive changes                                                                                                       |
 | `removed-accepted`     | An `accepted` node or directive leaves the tree. When `disciplines` leaves out its discipline, the message says so                                  |
 | `template-workspace`   | `origin: template` on a workspace node, or on a directive in one                                                                                    |

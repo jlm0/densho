@@ -13,3 +13,4 @@ EVALS_FOLDER = KNOWLEDGE_FOLDER / "evals"
 LAUNCHER = ENGINE_FOLDER / "ka"
 HISTORY_FILE = ENGINE_FOLDER / "history.jsonl"
 ANSWERS_FILE = PurePosixPath(".copier-answers.yml")
+TEMPLATE_FILE = PurePosixPath("copier.yml")

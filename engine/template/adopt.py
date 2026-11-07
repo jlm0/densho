@@ -1,5 +1,5 @@
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 
 from engine.generated.metamodel import Status
@@ -8,8 +8,8 @@ from engine.governance.changes import CLOSED_STATUSES
 from engine.governance.entities import governed_entities
 from engine.governance.history_lines import install_matches
 from engine.governance.status_line import set_status_lines
-from engine.parser.node import node_folders, parse_tree
-from engine.parser.result import Problem
+from engine.parser.node import node_folders, parse_source, parse_tree, universal_newlines
+from engine.parser.result import ParsedNode, Problem
 from engine.runtime import generate_runtime
 from engine.runtime.claude_code import add_root_import
 from engine.template.select import select_disciplines
@@ -20,13 +20,12 @@ if TYPE_CHECKING:
 
     from engine.governance.base import Base
     from engine.governance.entities import Entity, EntityKey
-    from engine.parser.result import ParsedNode
     from engine.runtime import RuntimeReport
     from engine.template.select import SelectionReport
 
 ADOPT_CODES = ("adopt", "import")
 NOT_AN_INSTALL_NOTE = (
-    "The last commit holds the template history, so this run is not an install. "
+    "The last commit holds the template history or a node, so this run is not an install. "
     "The command keeps no template status, because a pull cannot accept an entity."
 )
 
@@ -61,27 +60,54 @@ def _arrivals(base: Base, items: Sequence[ParsedNode], kept: Collection[EntityKe
     ]
 
 
-def _rewrite_file(path: Path, entities: Iterable[Entity]) -> list[Problem]:
-    try:
-        data, missed = set_status_lines(path.read_bytes(), entities, Status.proposed)
-        path.write_bytes(data)
-    except OSError as error:
-        message = f"The command cannot change this file: {error.strerror!a}."
-        return [Problem(path, 1, "adopt", message)]
+def _by_hand(path: Path, entities: Iterable[Entity]) -> list[Problem]:
     return [
         Problem(
             path, entity.line, "adopt", f"Set the status of {entity.label} to proposed by hand."
         )
-        for entity in missed
+        for entity in entities
     ]
 
 
-def _set_proposed(entities: Iterable[Entity]) -> list[Problem]:
+def _only_status_changed(
+    item: ParsedNode, data: bytes, entities: Sequence[Entity], missed: Sequence[Entity]
+) -> bool:
+    parsed = parse_source(universal_newlines(data.decode("utf-8")), item.path)
+    if not isinstance(parsed, ParsedNode):
+        return False
+    expected = {
+        **governed_entities([item]),
+        **{
+            entity.key: replace(entity, status=Status.proposed)
+            for entity in entities
+            if entity not in missed
+        },
+    }
+    return governed_entities([replace(parsed, scripts=item.scripts)]) == expected
+
+
+def _rewrite_file(item: ParsedNode, entities: Sequence[Entity]) -> list[Problem]:
+    path = item.path
+    try:
+        data, missed = set_status_lines(path.read_bytes(), entities, Status.proposed)
+        if not _only_status_changed(item, data, entities, missed):
+            return _by_hand(path, entities)
+        path.write_bytes(data)
+    except OSError as error:
+        message = f"The command cannot change this file: {error.strerror!a}."
+        return [Problem(path, 1, "adopt", message)]
+    return _by_hand(path, missed)
+
+
+def _set_proposed(items: Sequence[ParsedNode], entities: Iterable[Entity]) -> list[Problem]:
+    by_path = {item.path: item for item in items}
     by_file: defaultdict[Path, list[Entity]] = defaultdict(list)
     for entity in entities:
         by_file[entity.path].append(entity)
     return [
-        problem for path, group in sorted(by_file.items()) for problem in _rewrite_file(path, group)
+        problem
+        for path, group in sorted(by_file.items())
+        for problem in _rewrite_file(by_path[path], group)
     ]
 
 
@@ -95,11 +121,11 @@ def _closed_notes(entities: Iterable[Entity]) -> list[str]:
 
 
 def _kept(
-    repository: Path, items: Sequence[ParsedNode], *, keep_accepted: bool
+    repository: Path, items: Sequence[ParsedNode], base: Base, *, keep_accepted: bool
 ) -> tuple[frozenset[EntityKey], list[str]]:
     if not keep_accepted:
         return frozenset(), []
-    matches = install_matches(items, repository)
+    matches = install_matches(items, repository, base)
     if matches is None:
         return frozenset(), [NOT_AN_INSTALL_NOTE]
     return matches, []
@@ -119,9 +145,9 @@ def adopt_template(repository: Path, *, keep_accepted: bool = False) -> AdoptRep
     if base.problems:
         problems = [*import_problems, *base.problems]
         return AdoptReport((), imported, None, [], problems, selection)
-    kept, kept_notes = _kept(repository, items, keep_accepted=keep_accepted)
+    kept, kept_notes = _kept(repository, items, base, keep_accepted=keep_accepted)
     arrivals = _arrivals(base, items, kept) if base.readable or base.empty else []
-    problems = [*import_problems, *_set_proposed(arrivals)]
+    problems = [*import_problems, *_set_proposed(items, arrivals)]
     notes = [*kept_notes, *_closed_notes(arrivals)]
     if problems:
         return AdoptReport(tuple(arrivals), imported, None, notes, problems, selection)

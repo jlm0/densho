@@ -138,6 +138,16 @@ def _write_problem(folder: Path, error: OSError) -> Problem:
     return Problem(folder, 1, "write", f"The build cannot change this folder: {error.strerror!a}.")
 
 
+def link_problems(repository: Path, folder: Path) -> list[Problem]:
+    resolved = repository.resolve()
+    paths = [folder / name for result in CompiledResult for name in file_names(result)]
+    return [
+        Problem(path, 1, "write", "The build does not write through a symbolic link. Remove it.")
+        for path in paths
+        if path.resolve() != resolved / path.relative_to(repository)
+    ][:1]
+
+
 def write_output(output: BuildOutput, folder: Path) -> list[Problem]:
     try:
         folder.mkdir(parents=True, exist_ok=True)

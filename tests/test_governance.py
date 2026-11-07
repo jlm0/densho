@@ -1,6 +1,7 @@
 import os
 import shutil
 import subprocess
+import time
 from dataclasses import replace as dataclass_replace
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -27,6 +28,7 @@ from engine.governance.base import (
 from engine.governance.changes import check_changes
 from engine.governance.entities import governed_entities
 from engine.governance.exposure import exposure_problems
+from engine.governance.history_lines import accepted_in_template
 from engine.governance.sources import source_problems
 from engine.graph import check_tree
 from engine.language import check_language
@@ -1331,7 +1333,7 @@ def test_each_must_fail_input_gives_its_code_through_the_whole_check(
 
 
 def test_each_code_has_a_must_fail_input() -> None:
-    assert set(GOVERNANCE_CODES) == {*MUST_FAIL, "base"}
+    assert set(GOVERNANCE_CODES) == {*MUST_FAIL, "base", "pull-promotion"}
 
 
 def test_a_tree_passes_the_whole_check_after_a_commit(repository: Path) -> None:
@@ -1525,6 +1527,105 @@ def test_a_pull_gets_no_narrow_pass(repository: Path) -> None:
         "new-status: HEAD does not have node a. Set its status to proposed.",
         "new-status: HEAD does not have directive b. Set its status to proposed.",
     ]
+
+
+def test_a_removed_history_gives_no_narrow_pass_to_a_later_commit(repository: Path) -> None:
+    write(repository, node("x"))
+    write_template_history(repository)
+    commit_all(repository, "the install")
+    (repository / HISTORY_FILE).unlink()
+    assert run_check(repository) == []
+    commit_all(repository, "remove the history")
+    write(repository, node("a", "accepted", rules=TEMPLATE_RULES))
+    write_template_history(repository)
+    assert run_check(repository) == ["new-status", "new-status"]
+
+
+def test_an_old_knowledge_folder_with_no_node_keeps_the_narrow_pass(repository: Path) -> None:
+    (repository / "knowledge/notes.md").write_text("Old notes.\n", encoding="utf-8")
+    commit_all(repository, "an old project")
+    (repository / "knowledge/notes.md").unlink()
+    write(repository, node("a", "accepted", rules=TEMPLATE_RULES))
+    write_template_history(repository)
+    assert run_check(repository) == []
+
+
+def test_a_pull_cannot_promote_an_entity(repository: Path) -> None:
+    write(repository, node("a", rules=[rule("b")]))
+    write_template_history(repository)
+    commit_all(repository, "the install")
+    write(repository, node("a", "accepted", rules=[rule("b", "accepted")]))
+    write_template_history(repository)
+    assert run_check(repository) == ["pull-promotion", "pull-promotion"]
+
+
+def test_a_pull_that_keeps_each_status_passes(repository: Path) -> None:
+    write(repository, node("a", rules=[rule("b")]))
+    write_template_history(repository)
+    commit_all(repository, "the install")
+    write(repository, node("a", rules=[rule("b")]), node("c"))
+    write_template_history(repository)
+    assert run_check(repository) == []
+
+
+def test_a_pull_that_keeps_an_accepted_entity_passes(repository: Path) -> None:
+    write(repository, node("a", "accepted", rules=[rule("b", "accepted")]))
+    write_template_history(repository)
+    commit_all(repository, "the install")
+    write(repository, node("a", "accepted", rules=[rule("b", "accepted")]), node("c"))
+    write_template_history(repository)
+    assert run_check(repository) == []
+
+
+def test_a_new_history_file_counts_as_a_pull(repository: Path) -> None:
+    write(repository, node("a", rules=[rule("b")]))
+    commit_all(repository, "nodes with no history")
+    write(repository, node("a", "accepted", rules=[rule("b", "accepted")]))
+    write_template_history(repository)
+    assert run_check(repository) == ["pull-promotion", "pull-promotion"]
+
+
+def test_a_removed_history_file_counts_as_a_pull(repository: Path) -> None:
+    write(repository, node("a", rules=[rule("b")]))
+    write_template_history(repository)
+    commit_all(repository, "the install")
+    (repository / HISTORY_FILE).unlink()
+    write(repository, node("a", "accepted", rules=[rule("b", "accepted")]))
+    assert run_check(repository) == ["pull-promotion", "pull-promotion"]
+
+
+def test_a_history_with_no_node_in_head_gives_no_narrow_pass(repository: Path) -> None:
+    write(repository, node("x"))
+    write_template_history(repository)
+    (repository / relative_file(node("x"))).unlink()
+    committed = (repository / HISTORY_FILE).read_text(encoding="utf-8")
+    commit_all(repository, "only the history")
+    write(repository, node("a", "accepted", rules=TEMPLATE_RULES))
+    write_template_history(repository)
+    added = (repository / HISTORY_FILE).read_text(encoding="utf-8")
+    (repository / HISTORY_FILE).write_text(committed + added, encoding="utf-8")
+    items, problems = parse_tree(node_folders(repository))
+    assert problems == []
+    assert accepted_in_template(items, repository) == {("node", "a"), ("directive", "b")}
+    assert run_check(repository) == ["new-status", "new-status"]
+
+
+def test_a_promotion_in_the_template_changes_the_history_and_passes(repository: Path) -> None:
+    (repository / "copier.yml").write_text("{}\n", encoding="utf-8")
+    write(repository, node("a", rules=[rule("b")]))
+    write_template_history(repository)
+    commit_all(repository, "the template")
+    write(repository, node("a", "accepted", rules=[rule("b", "accepted")]))
+    write_template_history(repository)
+    assert run_check(repository) == []
+
+
+def test_a_promotion_with_the_history_of_head_passes(repository: Path) -> None:
+    write(repository, node("a", rules=[rule("b")]))
+    write_template_history(repository)
+    commit_all(repository, "the install")
+    write(repository, node("a", "accepted", rules=[rule("b", "accepted")]))
+    assert run_check(repository) == []
 
 
 @pytest.mark.parametrize("text", ["not json\n", '{"change": 1}\n', "no line end"])
@@ -2244,6 +2345,30 @@ def test_planted_secret_material_in_knowledge_fails(tmp_path: Path, name: str) -
 def test_an_email_address_in_knowledge_fails(tmp_path: Path, value: str) -> None:
     plant(tmp_path, {"nodes/a/node.md": value})
     assert exposure_hits(tmp_path) == [("knowledge/nodes/a/node.md", 2, "email")]
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "a" * 70 + "@example.com",
+        "password_of_the_build_server_that_runs_each_nightly_job: " + "not-a-real-value",
+        "x" * 40 + "+db://name:" + "word" + "@localhost/a",
+    ],
+)
+def test_a_long_part_of_a_planted_value_still_fails(tmp_path: Path, value: str) -> None:
+    plant(tmp_path, {"nodes/a/node.md": value})
+    assert len(exposure_hits(tmp_path)) == 1
+
+
+LINE_SECONDS = 2
+
+
+@pytest.mark.parametrize("line", ["a" * 200_000, "a." * 100_000, "password-" * 22_000])
+def test_a_long_line_takes_linear_time(tmp_path: Path, line: str) -> None:
+    plant(tmp_path, {"skills/a/scripts/bundle.js": line})
+    start = time.monotonic()
+    assert exposure_hits(tmp_path) == []
+    assert time.monotonic() - start < LINE_SECONDS
 
 
 @pytest.mark.parametrize("value", CLEAN)

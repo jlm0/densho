@@ -18,6 +18,9 @@ pointers:
     target: visual-design
     trigger: You decide how a screen looks.
   - kind: densho:TextPointer
+    target: design-systems
+    trigger: You build or use the tokens and the components of a design system.
+  - kind: densho:TextPointer
     target: accessibility
     trigger: You build a control, a form, a text style, a color choice, or media.
   - kind: densho:TextPointer
@@ -26,9 +29,6 @@ pointers:
   - kind: densho:TextPointer
     target: platform-conventions
     trigger: You design for a specific operating system or with its components.
-  - kind: densho:TextPointer
-    target: design-systems
-    trigger: You build or use the tokens and the components of a design system.
   - kind: densho:SkillPointer
     target: design-settings-interface
     trigger: You design or change a settings screen.

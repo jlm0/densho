@@ -10,6 +10,8 @@ sources:
   - https://www.designtokens.org/glossary/
 broader:
   - design-systems
+informs:
+  - atomic-design
 ---
 
 ## Definition

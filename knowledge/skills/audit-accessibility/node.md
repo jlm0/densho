@@ -10,7 +10,6 @@ invocation: agent
 uses:
   - accessibility
 applies:
-  - reflow-at-narrow-width
   - keep-navigation-order
 pointers:
   - kind: densho:TextPointer

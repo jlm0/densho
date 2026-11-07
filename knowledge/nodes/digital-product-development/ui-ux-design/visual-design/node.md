@@ -7,6 +7,8 @@ origin: template
 knowledge_type: domain
 broader:
   - ui-ux-design
+informs:
+  - design-systems
 pointers:
   - kind: densho:TextPointer
     target: information-hierarchy

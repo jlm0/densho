@@ -1,19 +1,20 @@
 ---
 id: categorization
 kind: densho:Concept
-title: Categorization
+title: Organization
 status: proposed
 origin: template
 knowledge_type: domain
 sources:
   - https://www.nngroup.com/articles/card-sorting-definition/
+  - https://www.oreilly.com/library/view/information-architecture-4th/9781491913529/
 broader:
   - information-architecture
 ---
 
 ## Definition
 
-Sorting content and functions into groups that match how users think about them. Card sorting is a research method that shows how users group items.
+Sorting content and functions into groups that match how users think about them. Rosenfeld, Morville, and Arango call it the organization system. Its schemes group the items, for example by date or by topic, and its structures, such as a hierarchy, link the groups. Card sorting is a research method that shows how users group items.
 
 ## Directives
 

@@ -7,13 +7,12 @@ origin: template
 knowledge_type: domain
 broader:
   - ui-ux-design
+informs:
+  - visual-design
 pointers:
   - kind: densho:TextPointer
     target: progressive-disclosure
     trigger: You choose which options appear first.
-  - kind: densho:TextPointer
-    target: navigation
-    trigger: You design how people move between screens.
   - kind: densho:TextPointer
     target: usability-heuristics
     trigger: You design feedback, an exit, a confirmation, an error message, or help.

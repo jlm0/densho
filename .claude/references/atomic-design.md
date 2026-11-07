@@ -14,3 +14,9 @@ A method for building a design system in five stages that Brad Frost published i
 3. Organisms: complex components that form a section of an interface, such as a header.
 4. Templates: layouts that place components and show the structure of the content.
 5. Pages: templates with real, representative content, which test the system.
+
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Design tokens](design-tokens.md)

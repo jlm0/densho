@@ -8,9 +8,11 @@ knowledge_type: domain
 sources:
   - https://www.nngroup.com/articles/ia-vs-navigation/
 broader:
-  - interaction-design
+  - information-architecture
 depends_on:
   - categorization
+informs:
+  - search-system
 ---
 
 ## Definition

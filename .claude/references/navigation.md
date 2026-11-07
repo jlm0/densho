@@ -13,4 +13,10 @@ The interface components that let people move between the parts of a product. Na
 
 The output of each node in this list is an input of this node.
 
-- [Information architecture](information-architecture.md)
+- [Labeling](labeling.md)
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Search system](search-system.md)

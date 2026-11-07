@@ -12,3 +12,9 @@ A named design decision, such as a color, a size, or a duration, that design too
 ## Notes
 
 The format defines these types: `color`, `dimension`, `fontFamily`, `fontWeight`, `duration`, `cubicBezier`, and `number`, and the composite types `strokeStyle`, `border`, `transition`, `shadow`, `gradient`, and `typography`. A `dimension` uses `px` or `rem`, and a translation tool converts `px` to `dp` on Android and to `pt` on Apple platforms. A tool must not guess a type from a value. The format is a report of a community group, not a W3C standard.
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Atomic design](atomic-design.md)

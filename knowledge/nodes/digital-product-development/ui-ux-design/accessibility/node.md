@@ -22,12 +22,18 @@ Making a product usable by people with disabilities, including people with low v
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html
 - Give text of `18` points or more at least `3:1` contrast, unless a logo or inactive control holds it. ^contrast-large-text
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html
 - Do not use color as the only visual mark of information, an action, or a state. ^no-color-only
   - scope: subtree
@@ -36,97 +42,145 @@ Making a product usable by people with disabilities, including people with low v
   - origin: template
   - also_attached_to: visual-design
   - also_attached_to: brand-design
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html
 - Make each function operable through a keyboard, unless the function depends on the path of the pointer. ^keyboard-operable
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/keyboard.html
 - Keep the keyboard focus indicator visible on each control. ^keep-focus-visible
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/focus-visible.html
 - Give each pointer target a size of at least `24` by `24` CSS pixels, unless a sentence holds the target. ^minimum-target-size
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html
 - Give each meaningful image a text alternative. ^text-alternative
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html
 - Give each non-text control a name that describes its purpose. ^name-non-text-controls
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html
 - Hide each decorative image from assistive technology. ^hide-decoration
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html
 - Give each input field a label or an instruction. ^label-each-field
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions.html
 - Give each prerecorded audio-only clip a transcript, unless the clip is a labeled alternative for text. ^transcript-for-audio-only
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/audio-only-and-video-only-prerecorded.html
 - Give each prerecorded silent video a text alternative or an audio track, unless it is a labeled alternative for text. ^alternative-for-silent-video
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/audio-only-and-video-only-prerecorded.html
 - Give captions to each prerecorded video with sound, unless the video is a labeled alternative for text. ^caption-prerecorded-video
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/captions-prerecorded.html
 - Give each prerecorded video an audio description of the visual content that its soundtrack does not state. ^describe-prerecorded-video
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/audio-description-or-media-alternative-prerecorded.html
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/audio-description-prerecorded.html
 - Give captions to each live video with sound. ^caption-live-video
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/captions-live.html
 - Use the element or role that matches the visual structure of each heading, list, table, and form label. ^structure-in-code
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html
 - Keep the order of the content in the code the same as its visual reading order. ^reading-order-in-code
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/meaningful-sequence.html
 - Do not name a control only by its shape, color, size, position, or sound in an instruction. ^no-sensory-only-instructions
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/sensory-characteristics.html
 - Do not lock content to portrait or landscape, unless the task needs one orientation. ^no-orientation-lock
   - scope: subtree
@@ -134,18 +188,27 @@ Making a product usable by people with disabilities, including people with low v
   - status: proposed
   - origin: template
   - also_attached_to: responsive-design
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/orientation.html
 - Declare the purpose of each field that collects data about the user, such as with `autocomplete`. ^declare-input-purpose
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/identify-input-purpose.html
 - Give a pause control to each audio that plays automatically for more than `3` seconds. ^pause-autoplay-audio
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/audio-control.html
 - Keep the content and the controls usable at a text size of `200` percent. ^resize-text
   - scope: subtree
@@ -153,18 +216,27 @@ Making a product usable by people with disabilities, including people with low v
   - status: proposed
   - origin: template
   - also_attached_to: responsive-design
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/resize-text.html
 - Use text, not an image of text, to show words, unless the words are part of a logo. ^no-images-of-text
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/images-of-text.html
 - Give the visual parts that identify a control and its state at least `3:1` contrast, unless the control is inactive. ^contrast-ui-components
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html
 - Give each graphic part that carries meaning at least `3:1` contrast against the colors next to it. ^contrast-graphics
   - scope: subtree
@@ -172,66 +244,99 @@ Making a product usable by people with disabilities, including people with low v
   - status: proposed
   - origin: template
   - also_attached_to: visual-design
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html
 - Keep each text visible when a user raises its line, paragraph, letter, or word spacing. ^allow-text-spacing
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/text-spacing.html
 - Make content that appears on hover or focus dismissible without moving the pointer or the focus. ^dismissible-hover-content
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/content-on-hover-or-focus.html
 - Keep content that appears on hover visible while the pointer moves over that content. ^hoverable-content
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/content-on-hover-or-focus.html
 - Keep hover and focus content visible until the hover or the focus ends, or the user dismisses it. ^persistent-hover-content
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/content-on-hover-or-focus.html
 - Do not lock the keyboard focus in a component, unless the component states the key that exits it. ^no-keyboard-trap
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/no-keyboard-trap.html
 - Give each single-character keyboard shortcut a setting to disable it or change its key, unless it works only on focus. ^character-key-shortcuts
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/character-key-shortcuts.html
 - Give the user a way to disable, change, or extend each time limit, unless the limit exceeds `20` hours. ^adjustable-time-limits
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/timing-adjustable.html
 - Give a pause control to each moving or blinking content that starts automatically and lasts over `5` seconds. ^pause-moving-content
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html
 - Give a control to pause or hide each automatic update that runs in parallel with other content. ^pause-auto-updates
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html
 - Do not show content that flashes more than `3` times in any `1` second. ^no-flashing-content
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold.html
 - Give a way to bypass each block of content that repeats across pages. ^bypass-repeated-blocks
   - scope: subtree
@@ -239,24 +344,36 @@ Making a product usable by people with disabilities, including people with low v
   - status: proposed
   - origin: template
   - also_attached_to: navigation
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/bypass-blocks.html
 - Give each page a title that states its topic or purpose. ^descriptive-page-title
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/page-titled.html
 - Set a focus order that keeps the meaning and the operation of the content. ^logical-focus-order
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/focus-order.html
 - State the purpose of each link in its text or in the sentence that holds it. ^link-purpose
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/link-purpose-in-context.html
 - Give `2` or more ways to reach each page, unless the page is a step in a process. ^two-ways-to-each-page
   - scope: subtree
@@ -264,132 +381,198 @@ Making a product usable by people with disabilities, including people with low v
   - status: proposed
   - origin: template
   - also_attached_to: navigation
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/multiple-ways.html
 - Make each heading and label state the topic or the purpose of its content. ^descriptive-headings-and-labels
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels.html
 - Do not hide the focused control completely behind a sticky header, a banner, or another element. ^focus-not-obscured
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html
 - Give each action that a multipoint or path-based gesture does a single-pointer alternative, unless the gesture is essential. ^single-pointer-alternative
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/pointer-gestures.html
 - Run each single-pointer action on the up event, not on the down event. ^act-on-pointer-up
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/pointer-cancellation.html
 - Include the visible label text of each control in its accessible name. ^label-in-name
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/label-in-name.html
 - Give each action that a device motion starts an on-screen control and a setting that disables the motion. ^motion-alternative
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/motion-actuation.html
 - Give each drag action a single-pointer alternative that needs no drag, unless dragging is essential. ^drag-alternative
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/dragging-movements.html
 - Declare the main language of each page in the code. ^declare-page-language
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/language-of-page.html
 - Declare the language of each passage in another language, unless it is a name or a technical term. ^declare-passage-language
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/language-of-parts.html
 - Do not change the context when a control receives focus. ^no-change-on-focus
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/on-focus.html
 - Do not change the context when a user changes a setting, unless the control warns of it first. ^no-change-on-input
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/on-input.html
 - Give components with the same function the same label and the same glyph on each page. ^consistent-identification
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/consistent-identification.html
 - Keep each repeated help mechanism, such as contact details or a chat, in the same relative order on each page. ^consistent-help-order
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/consistent-help.html
 - When a check finds an input error, describe the error and its field in text. ^describe-input-error
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/error-identification.html
 - When a check finds an input error with a known fix, state the fix, unless it weakens security. ^suggest-error-fix
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html
 - Give a review step before each payment, each legal agreement, and each deletion of user data, unless it is reversible. ^review-before-commitment
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/error-prevention-legal-financial-data.html
 - Do not ask a user to type again a value that they entered earlier in the same process. ^no-redundant-entry
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/redundant-entry.html
 - Do not block paste or password autofill in a login field. ^allow-paste-in-login
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/accessible-authentication-minimum.html
 - Do not require a puzzle or a memory test for authentication, unless another method needs neither. ^no-puzzle-login
-  - scope: subtree
+  - scope: node
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/accessible-authentication-minimum.html
 - Expose the name, the role, and the state of each custom control to assistive technology. ^name-role-value
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html
 - Expose each status message to assistive technology without moving the focus to it. ^expose-status-messages
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: ui-ux-design
+  - also_attached_to: software-testing
+  - also_attached_to: frontend-engineering
   - sources: https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html
 
 ## Notes

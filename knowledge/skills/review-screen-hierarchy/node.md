@@ -11,9 +11,6 @@ uses:
   - information-hierarchy
   - visual-grouping
   - visual-communication
-applies:
-  - contrast-regular-text
-  - contrast-large-text
 pointers:
   - kind: densho:TextPointer
     target: information-hierarchy

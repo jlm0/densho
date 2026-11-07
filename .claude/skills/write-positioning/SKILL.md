@@ -39,4 +39,4 @@ Check the document against each directive from the first step of the procedure, 
 ## References
 
 - You define the alternatives, the attributes, the value, the customers, or the market category. Read [Components of positioning](../../references/positioning-components.md).
-- You separate the positioning from the messaging or the brand story. Read [Positioning](../../references/product-positioning.md).
+- You separate the positioning from the messaging or the brand story. Read [Product positioning](../../references/product-positioning.md).

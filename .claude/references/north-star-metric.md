@@ -12,3 +12,9 @@ The single metric that best captures the value that customers get from a product
 ## Notes
 
 Examples from Amplitude are "number of mobile orders delivered" for a retailer and "trial accounts with more than `3` users active in week `1`" for a self-serve SaaS product. Breadth, depth, frequency, and efficiency give a pattern for the inputs. A company with several divisions, each with its own customers and its own profit and loss, can have one north star for each division.
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Objectives and key results](objectives-and-key-results.md)

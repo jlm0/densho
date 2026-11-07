@@ -10,6 +10,9 @@ sources:
   - https://marketingscience.info/news-and-insights/brands-of-distinction
 broader:
   - brand-design
+informs:
+  - brand-systems
+  - design-systems
 related:
   - visual-design
 pointers:

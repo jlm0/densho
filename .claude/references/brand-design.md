@@ -13,19 +13,6 @@ The identity that a product presents: its name, voice, logo, color, typography, 
 
 A brand definition belongs to one project. A project states its values in a workspace node that names this node in `implements`.
 
-## Comes from
-
-The output of each node in this list is an input of this node.
-
-- [Positioning](product-positioning.md)
-- [Product strategy](product-strategy.md)
-
-## Goes to
-
-The output of this node is an input of each node in this list.
-
-- [Visual design](visual-design.md)
-
 ## References
 
 - You review the touchpoints of a brand for consistency. Use the skill `audit-brand-consistency`.
@@ -33,5 +20,5 @@ The output of this node is an input of each node in this list.
 - You write or update the brand guidelines of a product or a company. Use the skill `write-brand-guidelines`.
 - You decide what a brand stands for, which associations it builds, or how it differs from other brands. Read [Brand strategy](brand-strategy.md).
 - You write brand guidelines, store brand values as tokens, or relate the brands of a company. Read [Brand systems](brand-systems.md).
-- You define the voice of a brand or set the tone of a message. Read [Voice and tone](brand-voice.md).
+- You define the voice of a brand or set the tone of a message. Read [Brand voice](brand-voice.md).
 - You design or apply a logo, a brand color, or a type style. Read [Visual identity](visual-identity.md).

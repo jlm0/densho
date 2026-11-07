@@ -1,7 +1,7 @@
 ---
 id: product-measurement
 kind: densho:PracticeArea
-title: Measurement
+title: Product measurement
 status: proposed
 origin: template
 knowledge_type: domain
@@ -10,16 +10,18 @@ sources:
   - https://www.svpg.com/the-alternative-to-roadmaps/
 broader:
   - product-strategy
+informs:
+  - product-discovery
 pointers:
   - kind: densho:TextPointer
     target: north-star-metric
     trigger: You choose the one metric that a product team works to move.
   - kind: densho:TextPointer
-    target: heart-framework
-    trigger: You measure the user experience of a product or a feature.
-  - kind: densho:TextPointer
     target: objectives-and-key-results
     trigger: You write objectives and key results for a team or a company.
+  - kind: densho:TextPointer
+    target: heart-framework
+    trigger: You measure the user experience of a product or a feature.
 ---
 
 ## Definition

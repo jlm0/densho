@@ -11,7 +11,6 @@ uses:
   - opportunity-solution-tree
   - jobs-to-be-done
   - assumption-testing
-  - product-risks
 pointers:
   - kind: densho:TextPointer
     target: opportunity-solution-tree
@@ -22,9 +21,6 @@ pointers:
   - kind: densho:TextPointer
     target: assumption-testing
     trigger: You list the assumptions of a solution or plan a test.
-  - kind: densho:TextPointer
-    target: product-risks
-    trigger: You sort the assumptions of a solution by the risk that they carry.
 ---
 
 ## Inputs

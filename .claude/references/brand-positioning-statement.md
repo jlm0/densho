@@ -25,3 +25,15 @@ A brand must share the key features of a category to claim a place in it. These 
 Tybout gives two tests. People outside the company read the statement and say where they would use the brand, why it is better, and whether they believe it. If they cannot say, the statement lacks clarity. If they do not believe it, it lacks credibility. Then the team puts the name of a competitor in place of the brand name. If the statement still sounds right, it lacks distinctiveness.
 
 A reason to believe can weaken another claim. Tybout's example is a light beer: fewer calories support "less filling" but cast doubt on "great taste" if customers think the two go against each other.
+
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Components of positioning](positioning-components.md)
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Brand identity prism](brand-identity-prism.md)

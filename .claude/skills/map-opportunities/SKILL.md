@@ -43,4 +43,3 @@ Check the tree against each directive from the first step of the procedure, and 
 - You list the assumptions of a solution or plan a test. Read [Assumption testing](../../references/assumption-testing.md).
 - You read interview notes for the needs and the jobs of customers. Read [Jobs to be done](../../references/jobs-to-be-done.md).
 - You place the outcome, an opportunity, or a solution in the tree. Read [Opportunity solution tree](../../references/opportunity-solution-tree.md).
-- You sort the assumptions of a solution by the risk that they carry. Read [Four product risks](../../references/product-risks.md).

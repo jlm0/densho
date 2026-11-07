@@ -10,8 +10,6 @@ sources:
   - https://www.nngroup.com/articles/prioritization-methods/
 broader:
   - product-prioritization
-related:
-  - cost-of-delay
 ---
 
 ## Definition

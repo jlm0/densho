@@ -10,7 +10,7 @@ invocation: agent
 uses:
   - brand-voice
   - tone-of-voice-dimensions
-  - brand-personality
+  - brand-identity-prism
 pointers:
   - kind: densho:TextPointer
     target: brand-voice
@@ -19,7 +19,7 @@ pointers:
     target: tone-of-voice-dimensions
     trigger: You place the tone on the four dimensions or test it with users.
   - kind: densho:TextPointer
-    target: brand-personality
+    target: brand-identity-prism
     trigger: You describe the personality that the voice expresses.
 ---
 
@@ -32,7 +32,7 @@ pointers:
 ## Procedure
 
 1. Read each directive that this skill lists.
-2. Describe the personality of the brand in human traits. Use the five dimensions of Aaker as the vocabulary.
+2. Describe the personality facet of the identity prism in human traits. Use the five dimensions of Aaker as the vocabulary.
 3. Place the tone of the brand on each of the four tone dimensions. Mark the default point and the range on each scale. Then choose the tone words and the anti-tone words.
 4. Write the voice traits. Give each trait a one-sentence explanation and a trait to avoid.
 5. List the types of message that the brand sends, and the emotional state of the reader for each one.

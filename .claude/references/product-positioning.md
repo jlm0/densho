@@ -1,5 +1,5 @@
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
-# Positioning
+# Product positioning
 
 ## Directives
 
@@ -19,7 +19,7 @@ When a product is called a "CRM", buyers assume its competitor, its buyer, its f
 
 The output of this node is an input of each node in this list.
 
-- [Brand design](brand-design.md)
+- [Brand strategy](brand-strategy.md)
 
 ## References
 

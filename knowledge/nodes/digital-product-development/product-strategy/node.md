@@ -7,26 +7,22 @@ origin: template
 knowledge_type: domain
 broader:
   - digital-product-development
-informs:
-  - brand-design
-  - ui-ux-design
-  - software-engineering
 pointers:
   - kind: densho:TextPointer
     target: strategy-formulation
     trigger: You write or review the strategy of a product, a team, or a company.
   - kind: densho:TextPointer
+    target: product-measurement
+    trigger: You set a goal, a metric, or a target for a product or a feature.
+  - kind: densho:TextPointer
     target: product-discovery
     trigger: You study customer needs or test a product idea.
-  - kind: densho:TextPointer
-    target: product-positioning
-    trigger: You define the market, the competitors, or the target customers of a product.
   - kind: densho:TextPointer
     target: product-prioritization
     trigger: You set the order of the items in a backlog or a roadmap.
   - kind: densho:TextPointer
-    target: product-measurement
-    trigger: You set a goal, a metric, or a target for a product or a feature.
+    target: product-positioning
+    trigger: You define the market, the competitors, or the target customers of a product.
   - kind: densho:SkillPointer
     target: write-strategy
     trigger: You write the strategy of a product, a team, or a company.

@@ -8,10 +8,13 @@ knowledge_type: domain
 sources:
   - https://inzeko.ktu.lt/index.php/EE/article/view/11465
   - https://www.koganpage.com/marketing-communications/the-new-strategic-brand-management-9780749465155
+  - https://www.gsb.stanford.edu/faculty-research/publications/dimensions-brand-personality
 broader:
   - brand-strategy
+informs:
+  - distinctive-brand-assets
 related:
-  - brand-personality
+  - tone-of-voice-dimensions
 ---
 
 ## Definition
@@ -19,7 +22,7 @@ related:
 Jean-Noël Kapferer's model of brand identity as six facets:
 
 - Physique: what the brand is, what it does, and how it looks.
-- Personality: the character that its communication gives it, described as if the brand were a person.
+- Personality: the character that its communication gives it, described as if the brand were a person. Jennifer Aaker's five dimensions of brand personality describe it: sincerity, excitement, competence, sophistication, and ruggedness.
 - Culture: the values and the origins that the brand comes from.
 - Relationship: how the brand behaves toward its customers and what exchange it offers them.
 - Reflection: the picture of the user that the brand shows.
@@ -55,3 +58,5 @@ Kapferer separates identity from image. Identity is what the brand sends. Image 
 Reflection is the user as the brand portrays that user, which is often the person customers want to be, not the buyers that the marketing plan targets. A brand that keeps saying it was made for one group can weaken its image.
 
 The agent found no page by Kapferer that describes the prism. The definition follows a peer-reviewed article by Janonis, Dovalienė, and Virvilaitė (2007), which cites page 107 of the 2003 edition of *The New Strategic Brand Management*. The publisher page names the prism as a model of the book.
+
+Aaker found the five dimensions in a study published in 1997, and built a scale that measures each one. They give a team a shared vocabulary for the personality facet before it writes the voice. The voice of the brand expresses the personality in words, and the visual identity expresses it in form.

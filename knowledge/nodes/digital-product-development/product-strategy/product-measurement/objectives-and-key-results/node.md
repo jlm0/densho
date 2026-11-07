@@ -10,6 +10,8 @@ sources:
   - https://www.whatmatters.com/resources/google-okr-playbook
 broader:
   - product-measurement
+informs:
+  - heart-framework
 ---
 
 ## Definition

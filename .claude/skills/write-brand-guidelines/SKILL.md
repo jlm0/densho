@@ -49,7 +49,7 @@ Check the guidelines against each directive from the first step of the procedure
 - You write the positioning statement of the brand. Read [Brand positioning statement](../../references/brand-positioning-statement.md).
 - You write the strategy section of the guidelines. Read [Brand strategy](../../references/brand-strategy.md).
 - You store the brand values as design tokens. Read [Brand systems](../../references/brand-systems.md).
-- You write the voice and tone section of the guidelines. Read [Voice and tone](../../references/brand-voice.md).
+- You write the voice and tone section of the guidelines. Read [Brand voice](../../references/brand-voice.md).
 - You write the color section of the guidelines. Read [Color roles](../../references/color-roles.md).
 - You write the typography section of the guidelines. Read [Type scale](../../references/type-scale.md).
 - You list the colors, the typefaces, and the logo variants that the brand allows. Read [Visual identity](../../references/visual-identity.md).

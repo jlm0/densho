@@ -7,8 +7,6 @@ origin: template
 knowledge_type: domain
 broader:
   - digital-product-development
-informs:
-  - visual-design
 pointers:
   - kind: densho:TextPointer
     target: brand-strategy

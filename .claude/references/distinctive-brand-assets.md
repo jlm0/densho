@@ -21,3 +21,9 @@ A measure of fame and uniqueness asks what customers hold in memory, not what th
 A redesign can throw away an asset. When Tropicana replaced the orange with a straw on its packaging with a plain glass of juice, the brand became hard to recognize. The company brought the old design back within a month, at an estimated cost of `26.3` million dollars in sales.
 
 Inconsistent colors, typefaces, and logos work against asset building, because each exposure to a consistent element strengthens it. The visual identity practice area holds the rule that removes unlisted variants.
+
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Brand identity prism](brand-identity-prism.md)

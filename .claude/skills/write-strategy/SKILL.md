@@ -37,5 +37,5 @@ Check the document against each directive from the first step of the procedure, 
 
 ## References
 
-- You decide what the strategy sets aside or remove fluff from it. Read [Strategy](../../references/strategy-formulation.md).
+- You decide what the strategy sets aside or remove fluff from it. Read [Strategy formulation](../../references/strategy-formulation.md).
 - You write the diagnosis, the guiding policy, or the actions. Read [Kernel of a strategy](../../references/strategy-kernel.md).

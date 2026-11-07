@@ -13,7 +13,6 @@ The visual form of an interface: its layout, type, color, imagery, and spacing. 
 
 The output of each node in this list is an input of this node.
 
-- [Brand design](brand-design.md)
 - [Interaction design](interaction-design.md)
 
 ## Goes to

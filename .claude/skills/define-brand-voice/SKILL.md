@@ -20,7 +20,7 @@ No directive is in force at this node.
 ## Procedure
 
 1. Read each directive that this skill lists.
-2. Describe the personality of the brand in human traits. Use the five dimensions of Aaker as the vocabulary.
+2. Describe the personality facet of the identity prism in human traits. Use the five dimensions of Aaker as the vocabulary.
 3. Place the tone of the brand on each of the four tone dimensions. Mark the default point and the range on each scale. Then choose the tone words and the anti-tone words.
 4. Write the voice traits. Give each trait a one-sentence explanation and a trait to avoid.
 5. List the types of message that the brand sends, and the emotional state of the reader for each one.
@@ -39,6 +39,6 @@ Check the guide against each directive from the first step of the procedure, and
 
 ## References
 
-- You describe the personality that the voice expresses. Read [Brand personality](../../references/brand-personality.md).
-- You name the voice traits or write the tone guidance for a type of message. Read [Voice and tone](../../references/brand-voice.md).
+- You describe the personality that the voice expresses. Read [Brand identity prism](../../references/brand-identity-prism.md).
+- You name the voice traits or write the tone guidance for a type of message. Read [Brand voice](../../references/brand-voice.md).
 - You place the tone on the four dimensions or test it with users. Read [Tone of voice dimensions](../../references/tone-of-voice-dimensions.md).

@@ -1,7 +1,7 @@
 ---
 id: product-discovery
 kind: densho:PracticeArea
-title: Discovery
+title: Product discovery
 status: proposed
 origin: template
 knowledge_type: domain
@@ -10,6 +10,8 @@ sources:
   - https://www.producttalk.org/opportunity-solution-trees/
 broader:
   - product-strategy
+informs:
+  - product-prioritization
 pointers:
   - kind: densho:TextPointer
     target: jobs-to-be-done
@@ -18,14 +20,8 @@ pointers:
     target: opportunity-solution-tree
     trigger: You map customer needs and solutions under a product outcome.
   - kind: densho:TextPointer
-    target: product-risks
-    trigger: You judge the risks of an idea that a team plans to build.
-  - kind: densho:TextPointer
     target: assumption-testing
     trigger: You plan or read a test of a product idea.
-  - kind: densho:TextPointer
-    target: opportunity-assessment
-    trigger: You decide whether a company starts work on a new product.
 ---
 
 ## Definition

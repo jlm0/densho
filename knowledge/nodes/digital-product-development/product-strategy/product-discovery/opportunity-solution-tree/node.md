@@ -9,7 +9,7 @@ sources:
   - https://www.producttalk.org/opportunity-solution-trees/
 broader:
   - product-discovery
-related:
+informs:
   - assumption-testing
 ---
 

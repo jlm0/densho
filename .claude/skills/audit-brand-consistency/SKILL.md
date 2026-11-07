@@ -41,7 +41,7 @@ Check the findings against each directive from the first step of the procedure, 
 
 - You find a rule that the guidelines lack or state in two ways. Read [Brand guidelines](../../references/brand-guidelines.md).
 - You check the logo on a touchpoint. Read [Logo](../../references/brand-logo.md).
-- You check the voice and the tone of the copy on a touchpoint. Read [Voice and tone](../../references/brand-voice.md).
+- You check the voice and the tone of the copy on a touchpoint. Read [Brand voice](../../references/brand-voice.md).
 - You check the colors on a touchpoint. Read [Color roles](../../references/color-roles.md).
 - You check where the distinctive assets of the brand appear. Read [Distinctive brand assets](../../references/distinctive-brand-assets.md).
 - You check the text styles on a touchpoint. Read [Type scale](../../references/type-scale.md).

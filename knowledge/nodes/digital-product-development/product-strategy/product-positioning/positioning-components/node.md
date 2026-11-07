@@ -9,6 +9,8 @@ sources:
   - https://www.aprildunford.com/post/a-quickstart-guide-to-positioning
 broader:
   - product-positioning
+informs:
+  - brand-positioning-statement
 related:
   - jobs-to-be-done
 ---

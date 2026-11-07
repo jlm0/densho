@@ -12,6 +12,8 @@ sources:
   - https://brand.github.com/foundations/logo
 broader:
   - visual-identity
+informs:
+  - color-roles
 ---
 
 ## Definition

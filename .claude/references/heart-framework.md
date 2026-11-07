@@ -14,3 +14,9 @@ Five categories of user-centered metrics from Kerry Rodden, Hilary Hutchinson, a
 Not every category fits every product. Engagement can mean little in an enterprise tool that people must use for work, while it still matters for one feature. The goals of a feature can differ from the goals of the whole product. Logs and surveys are the usual sources of signals, and failure is sometimes easier to see than success, for example in abandoned tasks or "undo" events.
 
 Gmail measured engagement as the share of active users who visited on five or more days in the last week, and found that it predicted long-term retention.
+
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Objectives and key results](objectives-and-key-results.md)

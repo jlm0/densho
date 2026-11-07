@@ -23,7 +23,7 @@ The output of each node in this list is an input of this node.
 
 The output of this node is an input of each node in this list.
 
-- [Measurement](product-measurement.md)
+- [Product measurement](product-measurement.md)
 
 ## References
 

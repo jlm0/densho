@@ -14,3 +14,9 @@ The five parts of positioning in April Dunford's method. Competitive alternative
 Dunford took the starting point from Jobs to Be Done: what customers would do without the product decides what counts as unique. A spreadsheet, a manual process, or an intern can be the real alternative. In enterprise software, Dunford reports that about a quarter of deals end in no decision, so the status quo is a competitor.
 
 A phantom competitor is a company that could compete in theory but never shows up in deals. Positioning against it weakens the positioning. A new market category must first gain a meaning in the minds of customers before it gives any context, and the companies that create a category often lose it to later entrants.
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Brand positioning statement](brand-positioning-statement.md)

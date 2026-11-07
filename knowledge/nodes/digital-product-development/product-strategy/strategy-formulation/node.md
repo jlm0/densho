@@ -1,7 +1,7 @@
 ---
 id: strategy-formulation
 kind: densho:PracticeArea
-title: Strategy
+title: Strategy formulation
 status: proposed
 origin: template
 knowledge_type: domain
@@ -9,6 +9,8 @@ sources:
   - https://web.archive.org/web/20260613095848/https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/the-perils-of-bad-strategy
 broader:
   - product-strategy
+informs:
+  - product-measurement
 pointers:
   - kind: densho:TextPointer
     target: strategy-kernel

@@ -15,6 +15,12 @@ The design tokens node holds the rules for the token file and for each alias. Th
 
 Wheeler quotes Hampton Bridwell of Tenet Partners, who describes brand governance as the managed work of behavior, communication, design, legal compliance, process, and measurement that drives the performance of a brand across a company. In Wheeler's account, governance has moved from central approval at the last step to education, self-service, and a role early in the work.
 
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Visual identity](visual-identity.md)
+
 ## References
 
 - You name a new product, a sub-brand, or an acquired company. Read [Brand architecture](brand-architecture.md).

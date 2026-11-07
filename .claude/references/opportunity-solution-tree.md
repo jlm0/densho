@@ -16,3 +16,15 @@ A visual map, from Teresa Torres, of the paths that a team can take to reach a d
 Torres assesses an opportunity on four sets of factors: how many customers it affects and how often, its effect on the position of the product in the market, its fit with the strategy of the company, and its importance to customers against their satisfaction with current solutions. Effort belongs to the solutions, and an opportunity that looks hard can have a simple solution.
 
 A team starts a new tree when the direction of its outcome changes, not when only the target number changes. Torres revisits the opportunity space after each `3` to `4` interviews. The number `3` in the solution rule is her working number. She asks for more than one solution, and for a comparison when the solution carries risk.
+
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Jobs to be done](jobs-to-be-done.md)
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Assumption testing](assumption-testing.md)

@@ -1,5 +1,5 @@
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
-# Strategy
+# Strategy formulation
 
 ## Directives
 
@@ -12,6 +12,12 @@ A way through a difficulty: an approach that overcomes an obstacle or answers a 
 ## Notes
 
 Rumelt defines fluff as a restatement of the obvious with buzzwords that pose as expertise. His example is a bank whose stated strategy was "customer-centric intermediation", which meant only that it was a bank. Template-style planning fills in a vision, a mission, values, and goals, then calls the goals strategies. Choice is the hard part: a group that must reach consensus on conflicting options often settles on a statement that chooses nothing.
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Product measurement](product-measurement.md)
 
 ## References
 

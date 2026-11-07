@@ -14,3 +14,9 @@ The fixed set of text sizes and text styles that a brand uses. Tim Brown describ
 Brown chooses the body text size first, at the size where the text face looks crisp, and builds the scale from it. A second important number, such as the width of a media slot, can give a second strand of sizes. He records the base and the ratio in a comment at the top of the style sheet, so that other people can rebuild the scale and change it with care.
 
 The information hierarchy concept limits each screen to three text sizes. Those sizes come from the scale.
+
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Color roles](color-roles.md)

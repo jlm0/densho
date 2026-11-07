@@ -1,5 +1,5 @@
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
-# Voice and tone
+# Brand voice
 
 ## Directives
 
@@ -16,6 +16,18 @@ Mailchimp names four traits: plainspoken, genuine, translators, and dry humor. A
 Atlassian sets each trait against the state of the reader. A user who is confident gets more boldness. A user who is new, confused, or afraid gets less. The wink suits a success message or a social moment, and a user who is blocked by an error gets plain, practical help. Mailchimp puts clarity before entertainment and warns that forced humor is worse than none.
 
 A project states its own traits in its brand definition. The tone dimensions give the scales on which to place them.
+
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Brand strategy](brand-strategy.md)
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Visual identity](visual-identity.md)
 
 ## References
 

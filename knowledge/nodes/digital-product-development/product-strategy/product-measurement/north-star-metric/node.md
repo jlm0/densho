@@ -9,6 +9,8 @@ sources:
   - https://amplitude.com/blog/product-north-star-metric
 broader:
   - product-measurement
+informs:
+  - objectives-and-key-results
 ---
 
 ## Definition

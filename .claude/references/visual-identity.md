@@ -13,6 +13,19 @@ The visual signs by which people recognize a brand: its logo, its colors, its ty
 
 The visual design practice area of UI/UX design holds the rules for a screen, such as the size of the palette on one interface and the number of text sizes on one screen. This practice area defines the brand values that those screens take. The contrast rules of the accessibility practice area apply to each pair of brand colors in text and in controls.
 
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Brand voice](brand-voice.md)
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Brand systems](brand-systems.md)
+- [Design systems](design-systems.md)
+
 ## References
 
 - You design, place, or specify a logo or a lockup. Read [Logo](brand-logo.md).

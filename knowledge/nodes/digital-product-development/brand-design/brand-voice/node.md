@@ -1,7 +1,7 @@
 ---
 id: brand-voice
 kind: densho:PracticeArea
-title: Voice and tone
+title: Brand voice
 status: proposed
 origin: template
 knowledge_type: domain
@@ -11,6 +11,8 @@ sources:
   - https://learn.microsoft.com/en-us/style-guide/brand-voice-above-all-simple-human
 broader:
   - brand-design
+informs:
+  - visual-identity
 pointers:
   - kind: densho:TextPointer
     target: tone-of-voice-dimensions

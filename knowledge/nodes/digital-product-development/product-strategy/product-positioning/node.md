@@ -1,7 +1,7 @@
 ---
 id: product-positioning
 kind: densho:PracticeArea
-title: Positioning
+title: Product positioning
 status: proposed
 origin: template
 knowledge_type: domain
@@ -10,7 +10,7 @@ sources:
 broader:
   - product-strategy
 informs:
-  - brand-design
+  - brand-strategy
 pointers:
   - kind: densho:TextPointer
     target: positioning-components

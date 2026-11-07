@@ -5,7 +5,7 @@ A build generates this file from the node files. Change a node file, not this fi
 
 ## Directives
 
-No directive is in force. The graph holds 508 directives and 1 exception that are not in force.
+No directive is in force. The graph holds 485 directives and 1 exception that are not in force.
 
 Treat a directive as a rule only when its `status` is `accepted`. A generated file lists only the directives that apply at its own node.
 
@@ -41,7 +41,7 @@ If compaction removes a skill, invoke the skill again.
 - `design-settings-interface`: Design a settings interface from its options and its users. Use when you design or change a settings screen.
 - `evaluate-knowledge`: Run the eval tasks of a discipline with and without its directives, and propose deprecations. Use when a person asks whether the directives of a discipline help. Only a person can start this skill.
 - `map-opportunities`: Map the customer needs, the solutions, and the assumption tests under one product outcome. Use when a team chooses the next customer need that it works on.
-- `prioritize-work`: Order a backlog or a roadmap with RICE, cost of delay, MoSCoW, or the Kano model. Use when you set the order of the work of a team.
+- `prioritize-work`: Order a backlog or a roadmap by RICE score. Use when you set the order of the work of a team.
 - `propose-knowledge`: Convert a correction or a repeated note into one small knowledge proposal. Use when a person corrects your work.
 - `review-code-change`: Review a code change for its design, its behavior, its tests, and its security. Use when a change is ready for review.
 - `review-proposals`: Show the knowledge proposals branch by branch, with the effect and the conflicts of each one. Use when a person reviews the proposals. Only a person can start this skill.

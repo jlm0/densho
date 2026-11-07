@@ -41,4 +41,4 @@ Check the output against each directive from the first step of the procedure, an
 - You choose the categories, the goals, the signals, or the metrics. Read [HEART framework](../../references/heart-framework.md).
 - You measure a whole product, not one feature. Read [North star metric](../../references/north-star-metric.md).
 - The team sets its targets as objectives and key results. Read [Objectives and key results](../../references/objectives-and-key-results.md).
-- You link a metric to its goal or choose its unit. Read [Measurement](../../references/product-measurement.md).
+- You link a metric to its goal or choose its unit. Read [Product measurement](../../references/product-measurement.md).

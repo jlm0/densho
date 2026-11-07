@@ -11,6 +11,8 @@ sources:
   - https://www.designtokens.org/tr/2025.10/format/
 broader:
   - visual-identity
+informs:
+  - type-scale
 related:
   - design-tokens
   - accessibility

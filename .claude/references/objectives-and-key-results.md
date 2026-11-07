@@ -12,3 +12,15 @@ A goal-setting system from Andy Grove at Intel, which John Doerr brought to Goog
 ## Notes
 
 A key result that names an activity, such as "consult", "help", "analyze", or "participate", describes work, not its effect. Google's example is "publish average and tail latency measurements from six cells by March 7" in place of "assess latency". A key result in team-internal terms, such as "launch version 4.1", also falls short: "improve sign-ups by 25 percent" states the effect. A postmortem on a missed commitment is not a punishment. It helps the team plan the next commitment.
+
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [North star metric](north-star-metric.md)
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [HEART framework](heart-framework.md)

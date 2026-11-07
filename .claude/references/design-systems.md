@@ -14,6 +14,7 @@ A shared set of design decisions, components, and patterns, with the rules for t
 The output of each node in this list is an input of this node.
 
 - [Visual design](visual-design.md)
+- [Visual identity](visual-identity.md)
 
 ## Goes to
 

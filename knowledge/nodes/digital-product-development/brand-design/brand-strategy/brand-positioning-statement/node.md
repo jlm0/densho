@@ -10,8 +10,8 @@ sources:
   - https://www.aprildunford.com/post/a-quickstart-guide-to-positioning
 broader:
   - brand-strategy
-depends_on:
-  - positioning-components
+informs:
+  - brand-identity-prism
 ---
 
 ## Definition

@@ -9,6 +9,12 @@ No directive is in force at this node.
 
 The organization, structure, and naming of the content and functions of a product, and the relationships between them. It is not part of the interface, but it informs the interface. Louis Rosenfeld, Peter Morville, and Jorge Arango describe its components: the organization system, the labeling system, the navigation system, and the search system.
 
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Prioritization](product-prioritization.md)
+
 ## Goes to
 
 The output of this node is an input of each node in this list.

@@ -1,5 +1,5 @@
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
-# Measurement
+# Product measurement
 
 ## Directives
 
@@ -18,6 +18,13 @@ A raw count grows with the user base, so it can rise while each user does less. 
 The output of each node in this list is an input of this node.
 
 - [Software operations](software-operations.md)
+- [Strategy formulation](strategy-formulation.md)
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Product discovery](product-discovery.md)
 
 ## References
 

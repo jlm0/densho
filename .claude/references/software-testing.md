@@ -16,7 +16,7 @@ The ISTQB syllabus states 7 principles of testing:
 - Testing shows the presence of defects, not their absence.
 - Exhaustive testing is impossible, except in trivial cases.
 - Early testing saves time and money.
-- Defects cluster together in a small number of components.
+- Defects usually cluster in a small number of components.
 - Tests wear out: the same tests find fewer new defects each time.
 - Testing depends on its context.
 - A system without known defects can still fail the needs of its users.
@@ -25,7 +25,7 @@ An error of a person produces a defect, and a defect that runs can cause a failu
 
 The testing quadrants of Brian Marick group the tests in 2 dimensions. A test faces the business or the technology, and it supports the team or critiques the product. Unit and component integration tests support the team from the technology side, and they run in continuous integration. Functional tests and examples support the team from the business side. Exploratory, usability, and acceptance tests critique the product from the business side. Performance tests and other non-functional tests critique the product from the technology side. In the whole team approach, each member of the team shares the responsibility for quality.
 
-A flaky test passes and fails on the same code. Software Engineering at Google reports that a suite loses the trust of engineers when about `1%` of its runs are flaky.
+A flaky test passes and fails on the same code. Software Engineering at Google reports that as a suite approaches a flaky rate of `1%`, its tests begin to lose value.
 
 The coverage of this practice area follows 2 anchors: the ISTQB Certified Tester Foundation Level syllabus `v4.0.1` and chapter 5 of SWEBOK `v4`.
 

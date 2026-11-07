@@ -71,10 +71,9 @@ The dynamic validation that a system under test gives the expected behavior on a
 
 - Use the interface contract and the UI contract of each part as the test basis of its tests. ^contracts-as-test-basis
   - scope: node
-  - basis: standard
+  - basis: judgment
   - status: proposed
   - origin: template
-  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=19
 - Split each test into its setup, its action, and its verification. ^setup-action-verification
   - scope: subtree
   - basis: practitioner
@@ -100,7 +99,7 @@ The dynamic validation that a system under test gives the expected behavior on a
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=19
-- Write a defect report for each defect that test analysis finds in the test basis. ^report-test-basis-defects
+- Write a defect report for each defect that test analysis finds in the test basis, unless you fix it directly. ^report-test-basis-defects
   - scope: node
   - basis: standard
   - status: proposed
@@ -120,27 +119,27 @@ The dynamic validation that a system under test gives the expected behavior on a
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=26
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=27
-- Before you fix a bug, write a test that reproduces the bug. ^test-before-bug-fix
+- Include a test that reproduces the bug in each bug fix. ^test-before-bug-fix
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://martinfowler.com/bliki/TestPyramid.html
   - sources: https://abseil.io/resources/swe-book/html/ch12.html#strive_for_unchanging_tests
+  - sources: https://martinfowler.com/bliki/TestPyramid.html
 - Test each unit through its public interface, not through its private methods. ^test-public-interface
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://martinfowler.com/articles/practical-test-pyramid.html
+  - sources: https://martinfowler.com/articles/practical-test-pyramid.html#WhatToTest
   - sources: https://abseil.io/resources/swe-book/html/ch12.html#test_via_public_apis
-- Run static analysis of the source code before the dynamic tests. ^static-analysis-first
+- Run static analysis of the source code before the dynamic tests, or as part of an automated process. ^static-analysis-first
   - scope: node
   - basis: standard
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=27
-- Run the automated tests on each commit in continuous integration. ^tests-in-continuous-integration
+- Run the automated component tests on each commit in continuous integration. ^tests-in-continuous-integration
   - scope: node
   - basis: standard
   - status: proposed
@@ -177,13 +176,14 @@ The dynamic validation that a system under test gives the expected behavior on a
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=50
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=51
-- Choose the inputs of each functional test with a black-box test technique. ^choose-inputs-with-a-technique
+- Choose the inputs of each test with a test technique. ^choose-inputs-with-a-technique
   - scope: node
   - basis: standard
   - status: proposed
   - origin: template
-  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=19
-- Combine the black-box test techniques with code coverage, not only one kind. ^combine-functional-and-structural
+  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=18
+  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=39
+- If the budget allows, combine the black-box test techniques with code coverage, not only one kind. ^combine-functional-and-structural
   - scope: node
   - basis: standard
   - status: proposed
@@ -232,13 +232,13 @@ The dynamic validation that a system under test gives the expected behavior on a
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=19
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=56
-- Put the test object, the steps, the expected result, the actual result, and the severity in each defect report. ^defect-report-contents
+- Record the test object, steps, expected and actual results, and severity of each test failure in its defect report. ^defect-report-contents
   - scope: node
   - basis: standard
   - status: proposed
   - origin: template
-  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=56
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=57
+  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=56
 - Define the entry criteria and the exit criteria of each test level in the test plan. ^entry-and-exit-criteria
   - scope: node
   - basis: standard
@@ -251,13 +251,13 @@ The dynamic validation that a system under test gives the expected behavior on a
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=53
-- Before you end a test level that misses its exit criteria, ask the stakeholders to accept the risk. ^accepted-risk-for-early-exit
+- If no time or budget remains, end the testing early only with the risk acceptance of the stakeholders. ^accepted-risk-for-early-exit
   - scope: node
   - basis: standard
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=49
-- Use the exit criteria of the tests as the Definition of Done of each backlog item. ^exit-criteria-as-definition-of-done
+- In Agile development, use the exit criteria of the tests as the Definition of Done of each releasable item. ^exit-criteria-as-definition-of-done
   - scope: node
   - basis: standard
   - status: proposed
@@ -277,7 +277,7 @@ The ISTQB syllabus states 7 principles of testing:
 - Testing shows the presence of defects, not their absence.
 - Exhaustive testing is impossible, except in trivial cases.
 - Early testing saves time and money.
-- Defects cluster together in a small number of components.
+- Defects usually cluster in a small number of components.
 - Tests wear out: the same tests find fewer new defects each time.
 - Testing depends on its context.
 - A system without known defects can still fail the needs of its users.
@@ -286,7 +286,7 @@ An error of a person produces a defect, and a defect that runs can cause a failu
 
 The testing quadrants of Brian Marick group the tests in 2 dimensions. A test faces the business or the technology, and it supports the team or critiques the product. Unit and component integration tests support the team from the technology side, and they run in continuous integration. Functional tests and examples support the team from the business side. Exploratory, usability, and acceptance tests critique the product from the business side. Performance tests and other non-functional tests critique the product from the technology side. In the whole team approach, each member of the team shares the responsibility for quality.
 
-A flaky test passes and fails on the same code. Software Engineering at Google reports that a suite loses the trust of engineers when about `1%` of its runs are flaky.
+A flaky test passes and fails on the same code. Software Engineering at Google reports that as a suite approaches a flaky rate of `1%`, its tests begin to lose value.
 
 The coverage of this practice area follows 2 anchors: the ISTQB Certified Tester Foundation Level syllabus `v4.0.1` and chapter 5 of SWEBOK `v4`.
 

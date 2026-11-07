@@ -21,13 +21,13 @@ Testing that confirms that a change causes no adverse effect on the parts of the
 
 ## Directives
 
-- After a defect fix, run each test that failed on the defect. ^confirm-the-fix
+- After a defect fix, confirm that the steps that reproduced its failure no longer fail. ^confirm-the-fix
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=30
-- Add tests for each change that the fix of a defect needed. ^test-the-changes-of-a-fix
+- If the risk of a defect fix is high, add tests for each change that the fix needed. ^test-the-changes-of-a-fix
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -44,14 +44,14 @@ Testing that confirms that a change causes no adverse effect on the parts of the
   - basis: standard
   - status: proposed
   - origin: template
-  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=30
+  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=31
 - Set the scope of maintenance testing by the risk, the size of the system, and the size of the change. ^maintenance-test-scope
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=31
-- When the system moves to a new environment, test the system and its migrated data in that environment. ^test-environment-migrations
+- When the system moves to a new operational environment, test the changed system in that environment. ^test-environment-migrations
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -62,20 +62,20 @@ Testing that confirms that a change causes no adverse effect on the parts of the
   - basis: standard
   - status: proposed
   - origin: template
-  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=30
+  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=31
   - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=124
 - Write automated regression tests from the start of the project. ^automate-regression-early
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
-  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=30
-- Run the automated regression tests in continuous integration. ^regression-in-continuous-integration
+  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=31
+- If the team uses continuous integration, run the automated regression tests in it. ^regression-in-continuous-integration
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
-  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=30
+  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=31
 - Order the regression tests by risk, by coverage, or by the priority of their requirements. ^order-tests-by-priority
   - scope: subtree
   - basis: standard
@@ -89,19 +89,18 @@ Testing that confirms that a change causes no adverse effect on the parts of the
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=50
-- Run each new test repeatedly before you add it to the regression suite. ^check-new-tests-for-flakiness
+- Check each new test for flakiness before you add it to the regression suite. ^check-new-tests-for-flakiness
   - scope: subtree
   - basis: research
   - status: proposed
   - origin: template
   - sources: https://mir.cs.illinois.edu/lamyaa/publications/fse14.pdf#page=2
-- Build the starting state of each test from scratch, not from the state that another test leaves. ^isolated-test-state
+- Prefer a rebuild of the starting state of each test over a clean-up after each test. ^isolated-test-state
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/nonDeterminism.html
-  - sources: https://mir.cs.illinois.edu/lamyaa/publications/fse14.pdf#page=2
 - If a rebuild of the starting state is too slow, reset each shared state after each test. ^clean-shared-state
   - scope: subtree
   - basis: practitioner
@@ -129,7 +128,7 @@ Testing that confirms that a change causes no adverse effect on the parts of the
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/nonDeterminism.html
-- In the tests, limit each resource pool to `1` resource, with an error when the pool is empty. ^expose-resource-leaks
+- If you suspect a resource leak, limit each pool to `1` resource, with an error for an empty pool. ^expose-resource-leaks
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -167,7 +166,7 @@ Testing that confirms that a change causes no adverse effect on the parts of the
   - status: proposed
   - origin: template
   - sources: https://mir.cs.illinois.edu/lamyaa/publications/fse14.pdf#page=2
-- Run the full regression suite after integration testing and before each deployment to production. ^regression-before-deployment
+- Run the regression suite after integration testing and before each deployment to production. ^regression-before-deployment
   - scope: subtree
   - basis: standard
   - status: proposed

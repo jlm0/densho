@@ -27,4 +27,4 @@ The syllabus names 4 common failure modes. The response is slow at each load lev
 
 The syllabus warns about 2 traps of recorded scripts. Virtual users that share 1 set of data can hit a cache and give results better than production. They can also wait on the same locks and give results worse than production. Performance is a non-linear function of the environment, so a projection from a small environment to production is less reliable as the gap grows.
 
-The average response time can hide outliers, so the syllabus prefers a percentile such as the 90th as the goal. A failed transaction takes less time than a successful one, so a failure can inflate the throughput.
+The average response time can hide outliers, so the 90th percentile is often used as the goal. A failed transaction takes less time than a successful one, so a failure can inflate the throughput.

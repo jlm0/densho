@@ -30,7 +30,7 @@ Testing that checks the performance of a system or a component under different v
   - status: proposed
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=17
-- Collect only the metrics that the objectives of the performance test require. ^limit-performance-metrics
+- Define an obtainable set of metrics that supports the objectives of the performance test. ^limit-performance-metrics
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -43,7 +43,7 @@ Testing that checks the performance of a system or a component under different v
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=12
   - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=124
-- Define each operational profile from the roles of the users, their tasks, and their numbers in each period. ^operational-profiles
+- If users interact with the system, define each operational profile from their roles, tasks, and numbers in each period. ^operational-profiles
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -78,8 +78,8 @@ Testing that checks the performance of a system or a component under different v
   - basis: standard
   - status: proposed
   - origin: template
-  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=13
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=14
+  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=13
 - Put a timer around each business transaction in a performance test script. ^time-each-transaction
   - scope: subtree
   - basis: standard
@@ -116,7 +116,7 @@ Testing that checks the performance of a system or a component under different v
   - status: proposed
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=48
-- If the test environment differs from production, record each difference and its effect on the projected results. ^record-environment-differences
+- If the test environment differs from production, find each difference and its effect on the projection of the results. ^record-environment-differences
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -134,7 +134,7 @@ Testing that checks the performance of a system or a component under different v
   - status: proposed
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=49
-- Restore the system to its original state before you repeat a performance test. ^restore-state-before-repeat
+- If a performance test changes the system state, restore the original state before the next run. ^restore-state-before-repeat
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -146,7 +146,7 @@ Testing that checks the performance of a system or a component under different v
   - status: proposed
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=51
-- Measure the performance in the steady state, after the ramp-up ends. ^measure-in-steady-state
+- Measure the performance in the steady state after the ramp-up, unless the test targets a transient state. ^measure-in-steady-state
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -176,13 +176,13 @@ Testing that checks the performance of a system or a component under different v
   - status: proposed
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=52
-- Compare the results of each performance test with the results of a baseline test. ^compare-with-a-baseline
+- If a baseline test exists, compare the results of each later performance test with its results. ^compare-with-a-baseline
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
-  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=17
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=53
+  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=17
 - Before you read the response times, check that each virtual user finished the tasks of its profile. ^virtual-users-first
   - scope: subtree
   - basis: standard
@@ -195,19 +195,19 @@ Testing that checks the performance of a system or a component under different v
   - status: proposed
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=52
-- Run an endurance test to find each slow degradation, such as a memory leak. ^endurance-for-degradation
+- If a test objective covers degradation over time, such as from a memory leak, run an endurance test. ^endurance-for-degradation
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=12
-  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=15
+  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=16
 - Test the error handling of the system at its load limits and above them. ^error-handling-under-load
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
-  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=15
+  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=16
 - Record the start, the duration, the scripts, the data, the configuration, and the defects of each test run. ^log-each-performance-run
   - scope: subtree
   - basis: standard
@@ -231,9 +231,9 @@ Testing that checks the performance of a system or a component under different v
   - basis: standard
   - status: proposed
   - origin: template
-  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=29
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=31
-- In continuous integration, run a subset of the performance tests that checks each change for a regression. ^performance-subset-in-ci
+  - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=29
+- If a subset of the performance tests runs at build level, run that subset in continuous integration. ^performance-subset-in-ci
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -270,4 +270,4 @@ The syllabus names 4 common failure modes. The response is slow at each load lev
 
 The syllabus warns about 2 traps of recorded scripts. Virtual users that share 1 set of data can hit a cache and give results better than production. They can also wait on the same locks and give results worse than production. Performance is a non-linear function of the environment, so a projection from a small environment to production is less reliable as the gap grows.
 
-The average response time can hide outliers, so the syllabus prefers a percentile such as the 90th as the goal. A failed transaction takes less time than a successful one, so a failure can inflate the throughput.
+The average response time can hide outliers, so the 90th percentile is often used as the goal. A failed transaction takes less time than a successful one, so a failure can inflate the throughput.

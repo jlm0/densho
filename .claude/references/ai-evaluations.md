@@ -21,7 +21,7 @@ A task can combine graders. Its score can be weighted, binary, or a hybrid of th
 
 Agent behavior varies between runs, so 1 trial gives a noisy result. `pass@k` is the chance of at least 1 success in k trials, and it rises with k. `pass^k` is the chance that each of k trials succeeds, and it falls with k. With a `75%` success rate per trial, `pass^3` is about `42%`. A tool where 1 success is enough uses `pass@k`. A customer-facing agent uses `pass^k`.
 
-A capability eval asks what the agent can do well, and starts at a low pass rate. A regression eval asks whether the agent still handles the tasks that it handled before. A capability eval near `100%` gives no signal for improvement, so it can move to the regression suite.
+A capability eval asks what the agent can do well, and starts at a low pass rate. A regression eval asks whether the agent still handles the tasks that it handled before. A capability eval at `100%` gives no signal for improvement. After the agent launches, a capability eval with a high pass rate can move to the regression suite.
 
 Grading defects can hide a capable agent. Anthropic reports a benchmark where a model first scored `42%`. A researcher found rigid grading, ambiguous tasks, and tasks that no run could reproduce exactly. After the fixes and a less constrained scaffold, the score rose to `95%`. With frontier models, a pass rate of `0%` across many trials is most often a sign of a broken task, not of an incapable agent.
 

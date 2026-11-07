@@ -73,7 +73,7 @@ A test of an AI system: the test gives the system an input, and applies grading 
   - status: proposed
   - origin: template
   - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#collect-tasks-for-the-initial-eval-dataset
-- Make the agent in the eval match the agent in production. ^production-like-agent
+- Make the agent in the eval behave like the agent in production. ^production-like-agent
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -111,7 +111,7 @@ A test of an AI system: the test gives the system an input, and applies grading 
   - status: proposed
   - origin: template
   - sources: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests#eval-design-principles
-- Check the outcome of each trial, not the order of its tool calls. ^check-the-outcome
+- Prefer a check of the outcome of each trial over a check of the order of its tool calls. ^check-the-outcome
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -129,7 +129,7 @@ A test of an AI system: the test gives the system an input, and applies grading 
   - status: proposed
   - origin: template
   - sources: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests#tips-for-llm-based-grading
-- Use a separate LLM grader for each dimension of a task. ^one-llm-grader-per-dimension
+- Prefer a separate LLM grader for each dimension of a task. ^one-llm-grader-per-dimension
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -158,8 +158,8 @@ A test of an AI system: the test gives the system an input, and applies grading 
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests#grade-your-evaluations
   - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#design-the-eval-harness-and-graders
+  - sources: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests#grade-your-evaluations
 - Make each grader reject a result that exploits a loophole in place of a solution of the task. ^bypass-resistant-graders
   - scope: subtree
   - basis: practitioner
@@ -178,7 +178,7 @@ A test of an AI system: the test gives the system an input, and applies grading 
   - status: proposed
   - origin: template
   - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#maintain-and-use-the-eval-long-term
-- If a task fails each trial, check the task and its graders for a defect. ^zero-pass-rate-is-a-broken-task
+- If a frontier model fails each of `100` trials of a task, check the task and its graders for defects. ^zero-pass-rate-is-a-broken-task
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -209,7 +209,7 @@ A test of an AI system: the test gives the system an input, and applies grading 
   - status: proposed
   - origin: template
   - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#capability-vs-regression-evals
-- Move each capability eval with a high pass rate into the regression suite. ^graduate-capability-evals
+- After the agent launches, move each capability eval with a high pass rate into the regression suite. ^graduate-capability-evals
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -221,7 +221,7 @@ A test of an AI system: the test gives the system an input, and applies grading 
   - status: proposed
   - origin: template
   - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#maintain-and-use-the-eval-long-term
-- Add each failure that users report to the eval suite as a task. ^failures-into-eval-tasks
+- Add the failures that users report to the eval suite as tasks, first those with the highest impact. ^failures-into-eval-tasks
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -252,7 +252,7 @@ A test of an AI system: the test gives the system an input, and applies grading 
   - status: proposed
   - origin: template
   - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=142
-- After you deploy a model, test it online with the data that real users generate. ^online-tests-after-deployment
+- After you deploy a model, test it online to check how it interacts with the behavior of its users. ^online-tests-after-deployment
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -271,7 +271,7 @@ A task can combine graders. Its score can be weighted, binary, or a hybrid of th
 
 Agent behavior varies between runs, so 1 trial gives a noisy result. `pass@k` is the chance of at least 1 success in k trials, and it rises with k. `pass^k` is the chance that each of k trials succeeds, and it falls with k. With a `75%` success rate per trial, `pass^3` is about `42%`. A tool where 1 success is enough uses `pass@k`. A customer-facing agent uses `pass^k`.
 
-A capability eval asks what the agent can do well, and starts at a low pass rate. A regression eval asks whether the agent still handles the tasks that it handled before. A capability eval near `100%` gives no signal for improvement, so it can move to the regression suite.
+A capability eval asks what the agent can do well, and starts at a low pass rate. A regression eval asks whether the agent still handles the tasks that it handled before. A capability eval at `100%` gives no signal for improvement. After the agent launches, a capability eval with a high pass rate can move to the regression suite.
 
 Grading defects can hide a capable agent. Anthropic reports a benchmark where a model first scored `42%`. A researcher found rigid grading, ambiguous tasks, and tasks that no run could reproduce exactly. After the fixes and a less constrained scaffold, the score rose to `95%`. With frontier models, a pass rate of `0%` across many trials is most often a sign of a broken task, not of an incapable agent.
 

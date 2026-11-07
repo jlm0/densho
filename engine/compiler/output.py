@@ -1,10 +1,11 @@
 import hashlib
 import json
+from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from rdflib import Graph
+from rdflib import BNode, Graph
 from rdflib.compare import to_canonical_graph
 
 from engine.compiler.graph import normal_form
@@ -14,6 +15,8 @@ from engine.parser.result import Problem
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
+
+    from rdflib.term import Node
 
     from engine.compiler.graph import CompiledGraph
 
@@ -77,11 +80,40 @@ def render_json(compiled: CompiledGraph) -> bytes:
     )
 
 
+def _flat_blank_nodes(graph: Graph) -> bool:
+    return not any(
+        isinstance(subject, BNode) and isinstance(term, BNode) for subject, _, term in graph
+    )
+
+
+def _labelled(graph: Graph) -> Graph:
+    shapes: dict[BNode, list[str]] = defaultdict(list)
+    for subject, predicate, term in graph:
+        if isinstance(subject, BNode):
+            shapes[subject].append(f"out {predicate.n3()} {term.n3()}")
+        if isinstance(term, BNode):
+            shapes[term].append(f"in {subject.n3()} {predicate.n3()}")
+    labels: dict[Node, Node] = {}
+    seen: Counter[str] = Counter()
+    for blank, shape in sorted(shapes.items(), key=lambda pair: sorted(pair[1])):
+        content = "\n".join(sorted(shape))
+        seen[content] += 1
+        labels[blank] = BNode(_sha256(f"{content}\n{seen[content]}".encode()))
+    output = Graph()
+    for subject, predicate, term in graph:
+        output.add((labels.get(subject, subject), predicate, labels.get(term, term)))
+    return output
+
+
+def canonical_graph(graph: Graph) -> Graph:
+    return _labelled(graph) if _flat_blank_nodes(graph) else to_canonical_graph(graph)
+
+
 def render_turtle(compiled: CompiledGraph) -> bytes:
     output = Graph()
     output.bind("ka", KA)
     output.bind("node", NODE_NAMESPACE)
-    for triple in to_canonical_graph(rdf_graph(compiled.graph)):
+    for triple in canonical_graph(rdf_graph(compiled.graph)):
         output.add(triple)
     header = f"# {compiled.result.value}: {NOTICES[compiled.result]}\n\n"
     return header.encode("utf-8") + output.serialize(format="turtle", encoding="utf-8")

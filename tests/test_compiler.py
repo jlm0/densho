@@ -26,6 +26,7 @@ from engine.compiler import (
     file_names,
     render_output,
 )
+from engine.compiler.output import canonical_graph
 from engine.directives import resolve_directives
 from engine.generated.metamodel import (
     CompiledResult,
@@ -38,12 +39,13 @@ from engine.graph.shapes import GENERATED, rdf_graph
 from engine.parser import ParsedNode, Problem, parse_source
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    from collections.abc import Callable, Iterable
 
 REPO = Path(__file__).resolve().parents[1]
 RUNNER = CliRunner()
 GIT = shutil.which("git") or "git"
 KA = Namespace("https://github.com/jlm0/knowledge-architecture/schema/")
+EXAMPLE = Namespace("https://example.com/")
 IN_FORCE = CompiledResult.in_force
 PROPOSALS = CompiledResult.proposals
 TREE_FOLDERS = ("knowledge",)
@@ -621,6 +623,58 @@ def test_each_turtle_run_labels_blank_nodes_the_same_way() -> None:
     assert b"_:" not in first
 
 
+def blank_graph(*shapes: tuple[str, str]) -> Graph:
+    graph = Graph()
+    subject = EXAMPLE.root
+    for predicate, value in shapes:
+        blank = BNode()
+        graph.add((subject, EXAMPLE[predicate], blank))
+        graph.add((blank, EXAMPLE.value, Literal(value)))
+    return graph
+
+
+def test_canonical_labels_do_not_depend_on_the_input_labels() -> None:
+    shapes = (("pointers", "a"), ("pointers", "b"), ("other", "a"))
+    first = sorted(canonical_graph(blank_graph(*shapes)))
+    second = sorted(canonical_graph(blank_graph(*reversed(shapes))))
+    assert first == second
+
+
+def test_identical_blank_nodes_keep_each_copy() -> None:
+    graph = blank_graph(("pointers", "a"), ("pointers", "a"))
+    labelled = canonical_graph(graph)
+    assert len(labelled) == len(graph) == 4  # noqa: PLR2004
+    assert isomorphic(labelled, graph)
+
+
+def blank_nodes(graph: Graph) -> set[BNode]:
+    return {term for term in graph.all_nodes() if isinstance(term, BNode)}
+
+
+def nested_graph() -> Graph:
+    graph = blank_graph(("pointers", "a"))
+    outer = next(term for term in graph.objects() if isinstance(term, BNode))
+    inner = BNode()
+    graph.add((outer, EXAMPLE.inner, inner))
+    graph.add((inner, EXAMPLE.value, Literal("b")))
+    return graph
+
+
+def shared_graph() -> Graph:
+    graph = blank_graph(("pointers", "a"), ("pointers", "a"))
+    shared = next(term for term in graph.objects() if isinstance(term, BNode))
+    graph.add((EXAMPLE.other, EXAMPLE.pointers, shared))
+    return graph
+
+
+@pytest.mark.parametrize("build", [nested_graph, shared_graph])
+def test_each_build_of_a_graph_gets_the_same_labels(build: Callable[[], Graph]) -> None:
+    first, second = build(), build()
+    assert blank_nodes(first).isdisjoint(blank_nodes(second))
+    assert sorted(canonical_graph(first)) == sorted(canonical_graph(second))
+    assert isomorphic(canonical_graph(first), first)
+
+
 def test_identical_pointers_collapse_and_stay_cheap() -> None:
     copies = "".join(
         "  - kind: ka:TextPointer\n    target: alpha\n    trigger: You need it.\n"
@@ -761,11 +815,11 @@ node:root a ka:Root ;
     skos:prefLabel "root" ;
     ka:origin "template" ;
     ka:pointers [ a ka:TextPointer ;
-            ka:target node:beta ;
-            ka:trigger "You need beta." ],
-        [ a ka:TextPointer ;
             ka:target node:alpha ;
-            ka:trigger "You need alpha." ] ;
+            ka:trigger "You need alpha." ],
+        [ a ka:TextPointer ;
+            ka:target node:beta ;
+            ka:trigger "You need beta." ] ;
     ka:status "accepted" .
 
 node:alpha a ka:Domain ;

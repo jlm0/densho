@@ -13,6 +13,7 @@ from ruamel.yaml import YAML
 
 from engine.compiler.tree import checked_tree
 from engine.evaluation import check_tasks
+from engine.evaluation.check import discipline_directives
 from engine.generated.metamodel import Discipline, Origin
 from engine.interface import (
     VIEW_FOLDER,
@@ -543,7 +544,9 @@ def test_each_single_selection_passes_each_check(
     assert generate_runtime(project, proposals=False, verify=False).problems == []
     assert missing_presets(project) == []
     evals = {path.parts[-3] for path in (project / EVALS_FOLDER).glob("*/*/task.yaml")}
-    assert evals == set(report.disciplines or ())
+    items, _ = parse_tree(node_folders(project))
+    holding = {name for name in report.disciplines or () if discipline_directives(items, name)}
+    assert evals == holding
     assert check_tasks(project)[1] == []
 
 

@@ -46,7 +46,7 @@ The parser skips `knowledge/evals/`, so a Markdown file in a task isn't a node. 
 
 Each discipline has one canary task. It asks which rules of the project apply to a topic, by ID, and its target ID appears nowhere in the generated files unless the discipline is in force. So it can pass only when the rules are loaded.
 
-The template ships four tasks for each discipline: the canary and three tasks whose rules leave a trace that a regular expression can find. A project receives the tasks of the disciplines it takes.
+The template ships four tasks for each discipline that holds a directive: the canary and three tasks whose rules leave a trace that a regular expression can find. User research and content design hold no directive yet, so they ship no tasks, because a canary needs a rule to target. A project receives the tasks of the disciplines it takes.
 
 ## Check the tasks
 

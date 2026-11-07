@@ -13,6 +13,7 @@ The design of how an interface responds when people act on it: which controls ap
 
 The output of each node in this list is an input of this node.
 
+- [Evaluative research](evaluative-research.md)
 - [Information architecture](information-architecture.md)
 
 ## Goes to

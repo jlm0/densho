@@ -57,11 +57,13 @@ disciplines:
   help: The disciplines that this project takes. Each project also receives the root, the governance, and each skill that uses only what the project takes.
   multiselect: true
   choices:
-    Software engineering: software-engineering
-    UI/UX design: ui-ux-design
     Product strategy: product-strategy
+    User research: user-research
     Brand design: brand-design
-  default: [software-engineering, ui-ux-design, product-strategy, brand-design]
+    Content design: content-design
+    UI/UX design: ui-ux-design
+    Software engineering: software-engineering
+  default: [product-strategy, user-research, brand-design, content-design, ui-ux-design, software-engineering]
 
 keep_template_status:
   type: bool

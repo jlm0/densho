@@ -14,6 +14,7 @@ The work that decides what to build, before a team builds it. Discovery learns t
 The output of each node in this list is an input of this node.
 
 - [Product measurement](product-measurement.md)
+- [Research synthesis](research-synthesis.md)
 
 ## Goes to
 

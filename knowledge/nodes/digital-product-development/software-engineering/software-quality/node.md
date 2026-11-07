@@ -12,6 +12,7 @@ broader:
   - software-engineering
 informs:
   - software-operations
+  - documentation
 pointers:
   - kind: densho:TextPointer
     target: code-review

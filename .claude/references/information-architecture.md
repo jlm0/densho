@@ -13,6 +13,7 @@ The organization, structure, and naming of the content and functions of a produc
 
 The output of each node in this list is an input of this node.
 
+- [Content strategy](content-strategy.md)
 - [Prioritization](product-prioritization.md)
 
 ## Goes to

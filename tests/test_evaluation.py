@@ -13,6 +13,7 @@ from typer.testing import CliRunner
 from engine.cli import app
 from engine.evaluation import EvalOptions, check_tasks, run_eval
 from engine.evaluation import harness as harness_module
+from engine.evaluation.check import discipline_directives
 from engine.evaluation.conditions import (
     NEUTRAL_EMAIL,
     NEUTRAL_NAME,
@@ -70,7 +71,7 @@ from engine.evaluation.tasks import (
     load_tasks,
     read_files,
 )
-from engine.generated.metamodel import Status
+from engine.generated.metamodel import Discipline, Status
 from engine.governance.entities import DIRECTIVE, governed_entities
 from engine.governance.status_line import set_status_lines
 from engine.layout import EVALS_FOLDER, KNOWLEDGE_FOLDER
@@ -237,16 +238,27 @@ def test_the_template_tasks_pass_their_check() -> None:
     assert count >= 3 * 4
 
 
-def test_each_discipline_has_a_canary_and_3_tasks() -> None:
+def test_each_discipline_with_a_directive_has_a_canary_and_3_tasks() -> None:
     tasks, problems = load_tasks(REPO)
     assert problems == []
-    disciplines = {task.discipline for task in tasks}
-    assert disciplines == {
-        "software-engineering",
-        "ui-ux-design",
-        "product-strategy",
-        "brand-design",
+    items, parse_problems = parse_tree(node_folders(REPO))
+    assert parse_problems == []
+    holding = {
+        item.node.id
+        for item in items
+        if isinstance(item.node, Discipline) and discipline_directives(items, item.node.id)
     }
+    disciplines = {task.discipline for task in tasks}
+    assert (
+        disciplines
+        == holding
+        == {
+            "software-engineering",
+            "ui-ux-design",
+            "product-strategy",
+            "brand-design",
+        }
+    )
     for discipline in disciplines:
         own = [task for task in tasks if task.discipline == discipline]
         assert sum(task.canary for task in own) == 1

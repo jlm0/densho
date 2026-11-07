@@ -13,6 +13,7 @@ broader:
   - brand-design
 informs:
   - visual-identity
+  - ux-writing
 pointers:
   - kind: densho:TextPointer
     target: tone-of-voice-dimensions

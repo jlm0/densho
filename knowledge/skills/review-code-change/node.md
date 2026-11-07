@@ -9,7 +9,7 @@ description: Review a code change for its design, its behavior, its tests, and i
 invocation: agent
 uses:
   - code-review
-  - software-testing
+  - test-pyramid
   - software-security
   - access-control
   - injection

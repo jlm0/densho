@@ -21,6 +21,18 @@ pointers:
     target: test-pyramid
     trigger: You choose the level of a new test.
   - kind: densho:TextPointer
+    target: unit-testing
+    trigger: You write a test for one function, one class, or one module.
+  - kind: densho:TextPointer
+    target: integration-testing
+    trigger: A test connects the code to a database, a file system, a queue, or another service.
+  - kind: densho:TextPointer
+    target: end-to-end-testing
+    trigger: A test runs the whole deployed system through its user interface or its public API.
+  - kind: densho:TextPointer
+    target: test-doubles
+    trigger: A test replaces a dependency with a stub, a mock, or a fake.
+  - kind: densho:TextPointer
     target: contract-testing
     trigger: A test uses a test double for another service.
   - kind: densho:TextPointer

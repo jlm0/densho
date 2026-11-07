@@ -44,3 +44,4 @@ Each finding names a directive from the first step of the procedure. A finding w
 - The change passes input to a query, a command, or an output. Read [Injection](../../references/injection.md).
 - The change handles a password, a session, an error, or a connection. Read [Software security](../../references/software-security.md).
 - You judge the tests of the change. Read [Software testing](../../references/software-testing.md).
+- Read [Test pyramid](../../references/test-pyramid.md).

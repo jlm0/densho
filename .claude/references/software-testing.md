@@ -29,5 +29,9 @@ The output of this node is an input of each node in this list.
 
 - You test the output of an AI model or an AI feature. Read [AI evaluations](ai-evaluations.md).
 - A test uses a test double for another service. Read [Contract testing](contract-testing.md).
+- A test runs the whole deployed system through its user interface or its public API. Read [End-to-end testing](end-to-end-testing.md).
+- A test connects the code to a database, a file system, a queue, or another service. Read [Integration testing](integration-testing.md).
+- A test replaces a dependency with a stub, a mock, or a fake. Read [Test doubles](test-doubles.md).
 - You write the code for a new behavior. Read [Test-driven development](test-driven-development.md).
 - You choose the level of a new test. Read [Test pyramid](test-pyramid.md).
+- You write a test for one function, one class, or one module. Read [Unit testing](unit-testing.md).

@@ -9,8 +9,6 @@ sources:
   - https://www.oreilly.com/library/view/information-architecture-4th/9781491913529/
 broader:
   - information-architecture
-informs:
-  - navigation
 ---
 
 ## Definition

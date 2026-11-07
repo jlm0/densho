@@ -10,8 +10,6 @@ sources:
   - https://www.gov.uk/service-manual/technology/using-progressive-enhancement
 broader:
   - frontend-engineering
-informs:
-  - core-web-vitals
 ---
 
 ## Definition

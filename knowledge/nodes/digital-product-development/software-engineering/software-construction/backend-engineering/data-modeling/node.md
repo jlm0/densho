@@ -9,8 +9,6 @@ sources:
   - https://www.seas.upenn.edu/~zives/03f/cis550/codd.pdf
 broader:
   - backend-engineering
-informs:
-  - expand-and-contract
 ---
 
 ## Definition

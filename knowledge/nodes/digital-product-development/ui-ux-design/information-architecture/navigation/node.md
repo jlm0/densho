@@ -11,8 +11,6 @@ broader:
   - information-architecture
 depends_on:
   - categorization
-informs:
-  - search-system
 ---
 
 ## Definition

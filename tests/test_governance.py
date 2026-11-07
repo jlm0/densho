@@ -26,10 +26,13 @@ from engine.governance.base import (
 )
 from engine.governance.changes import check_changes
 from engine.governance.entities import governed_entities
+from engine.governance.exposure import exposure_problems
+from engine.governance.sources import source_problems
 from engine.graph import check_tree
 from engine.language import check_language
 from engine.layout import HISTORY_FILE
 from engine.parser import ParsedNode, parse_source, parse_tree
+from engine.parser.node import node_folders
 from engine.template import history_drift
 
 if TYPE_CHECKING:
@@ -523,6 +526,37 @@ def test_a_closed_directive_and_exception_cannot_jump_to_accepted(status: str) -
     assert codes([before], [after]) == ["status-jump", "status-jump"]
 
 
+@pytest.mark.parametrize(
+    ("before", "action"),
+    [("accepted", "Set it to deprecated"), ("deprecated", "Keep it deprecated")],
+)
+def test_only_a_proposal_can_be_rejected(before: str, action: str) -> None:
+    after = node("a", "rejected", rejection_reason=NO_NEED)
+    assert compare([node("a", before)], [after]) == [
+        (
+            f"{line_of(after, 'status: rejected')}: status-jump: HEAD has node a as {before}. "
+            f"{action}. A person rejects a proposal."
+        )
+    ]
+
+
+@pytest.mark.parametrize("status", ["accepted", "deprecated"])
+def test_a_closed_or_accepted_directive_and_exception_cannot_be_rejected(status: str) -> None:
+    before = node("a", rules=[rule("b", status)], exceptions=[stop("c", status)])
+    after = node(
+        "a",
+        rules=[rule("b", "rejected", rejection_reason=NO_NEED)],
+        exceptions=[stop("c", "rejected", rejection_reason=NO_NEED)],
+    )
+    assert codes([before], [after]) == ["status-jump", "status-jump"]
+
+
+def test_an_accepted_entity_rejected_with_a_change_reports_the_status_only() -> None:
+    before = node("a", "accepted")
+    after = node("a", "rejected", rejection_reason=NO_NEED, definition="New.")
+    assert codes([before], [after]) == ["status-jump"]
+
+
 def test_a_new_rejected_entity_fails() -> None:
     assert codes([], [node("a", "rejected", rejection_reason=NO_NEED)]) == ["new-status"]
 
@@ -583,6 +617,20 @@ def test_removing_an_accepted_node_fails() -> None:
             "Set its status to deprecated in one commit, and remove it in a later commit."
         )
     ]
+
+
+def test_a_removal_in_a_left_out_discipline_names_the_discipline() -> None:
+    before = node("a", "accepted", rules=[rule("b", "accepted")])
+    known = governed_entities(parsed(before))
+    left_out = dict.fromkeys(known, "brand-design")
+    found = [str(problem) for problem in check_changes(known, {}, left_out=left_out)]
+    assert found[0] == (
+        f"{line_of(before, 'status: accepted')}: removed-accepted: HEAD has node a as accepted, "
+        "and disciplines leaves out brand-design. Put brand-design back in disciplines, "
+        "and set each accepted entity of brand-design to deprecated in one commit. "
+        "Then leave it out in a later pull."
+    )
+    assert len(found) == len(known)
 
 
 def test_removing_an_accepted_directive_fails() -> None:
@@ -1253,6 +1301,9 @@ MUST_FAIL: dict[str, tuple[tuple[Spec, ...], tuple[Spec, ...]]] = {
         (root_spec("rejected", rejection_reason=NO_NEED),),
     ),
     "basis": ((), (node("a", rules=[rule("b", basis="standard")]),)),
+    "source-form": ((), (node("a", sources=["WCAG"]),)),
+    "secret": ((), (node("a", definition="password: " + "not-a-real-value"),)),
+    "email": ((), (node("a", definition="Write to jane.doe@example.com."),)),
     "policy-governs": (
         (),
         (
@@ -1297,6 +1348,70 @@ def test_a_promotion_in_a_later_commit_passes_the_whole_check(repository: Path) 
     assert run_check(repository) == []
     commit_all(repository)
     assert run_check(repository) == []
+
+
+def discipline_tree(repository: Path, *, status: str) -> list[Spec]:
+    specs = [
+        root_spec(pointers=["domain"]),
+        node("domain", pointers=["kept", "dropped"]),
+        concept("kept", "domain", status=status),
+        concept("dropped", "domain", status=status, rules=[rule("c", status)]),
+        concept("item", "dropped", status=status),
+    ]
+    for spec in specs[2:4]:
+        spec["kind"] = "ka:Discipline"
+    write(repository, *specs)
+    return specs
+
+
+def test_a_pull_that_drops_an_accepted_discipline_says_to_deprecate_first(
+    repository: Path,
+) -> None:
+    discipline_tree(repository, status="accepted")
+    commit_all(repository)
+    (repository / ".copier-answers.yml").write_text("disciplines: [kept]\n", encoding="utf-8")
+    shutil.rmtree(repository / "knowledge/nodes/dropped")
+    shutil.rmtree(repository / "knowledge/nodes/item")
+    problems = [p for p in check_governance(repository).problems if p.code == "removed-accepted"]
+    assert sorted(problem.message.split(" as accepted")[0] for problem in problems) == [
+        "HEAD has directive c",
+        "HEAD has node dropped",
+        "HEAD has node item",
+    ]
+    assert all("leaves out dropped" in problem.message for problem in problems)
+
+
+def test_a_removal_in_a_kept_discipline_gives_the_plain_message(repository: Path) -> None:
+    discipline_tree(repository, status="accepted")
+    commit_all(repository)
+    (repository / ".copier-answers.yml").write_text(
+        "disciplines: [kept, dropped]\n", encoding="utf-8"
+    )
+    shutil.rmtree(repository / "knowledge/nodes/item")
+    problems = [p for p in check_governance(repository).problems if p.code == "removed-accepted"]
+    assert [problem.message for problem in problems] == [
+        (
+            "HEAD has node item as accepted. "
+            "Set its status to deprecated in one commit, and remove it in a later commit."
+        )
+    ]
+
+
+def test_a_removal_in_a_kept_and_a_left_out_discipline_gives_the_plain_message(
+    repository: Path,
+) -> None:
+    discipline_tree(repository, status="accepted")
+    write(repository, concept("shared", "kept", "dropped", status="accepted"))
+    commit_all(repository)
+    (repository / ".copier-answers.yml").write_text("disciplines: [kept]\n", encoding="utf-8")
+    shutil.rmtree(repository / "knowledge/nodes/shared")
+    problems = [p for p in check_governance(repository).problems if p.code == "removed-accepted"]
+    assert [problem.message for problem in problems] == [
+        (
+            "HEAD has node shared as accepted. "
+            "Set its status to deprecated in one commit, and remove it in a later commit."
+        )
+    ]
 
 
 def test_a_first_commit_can_hold_accepted_entities(repository: Path) -> None:
@@ -1991,10 +2106,188 @@ def test_each_basis_but_judgment_fails_with_no_source(basis: str) -> None:
     assert static_codes(node("a", rules=[rule("b", basis=basis)])) == ["basis"]
 
 
-@pytest.mark.parametrize("basis", ["standard", "research", "practitioner", "judgment"])
-def test_a_directive_with_a_source_passes_with_each_basis(basis: str) -> None:
+@pytest.mark.parametrize("basis", ["standard", "research", "practitioner"])
+def test_a_directive_with_a_source_passes_with_each_basis_but_judgment(basis: str) -> None:
     spec = node("a", rules=[rule("b", basis=basis, sources=["https://example.com/a"])])
     assert statics(spec) == []
+
+
+def test_judgment_with_a_source_fails() -> None:
+    spec = node("a", rules=[rule("b", basis="judgment", sources=["https://example.com/a"])])
+    assert statics(spec) == [
+        (
+            f"{line_of(spec, '  - basis: judgment')}: basis: This directive names a source, "
+            "and judgment means that no source supports it. "
+            "Set basis from the kind of the source, or remove the source."
+        )
+    ]
+
+
+FORMS = "Write a URL, a path from the repository root, or a citation of two or more words."
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "https://example.com/a",
+        "http://example.com/a",
+        "HTTPS://example.com/a",
+        "Wertheimer, M. (1923). Laws of organization in perceptual forms.",
+        "ISO 9241-110:2020",
+        "docs/a.md",
+    ],
+)
+def test_each_form_of_source_passes(tmp_path: Path, value: str) -> None:
+    (tmp_path / "docs").mkdir()
+    (tmp_path / "docs/a.md").write_text("A page.\n", encoding="utf-8")
+    spec = node("a", sources=[value], rules=[rule("b", basis="research", sources=[value])])
+    assert statics(spec, repository=tmp_path) == []
+
+
+@pytest.mark.parametrize(
+    ("value", "message"),
+    [
+        ("ftp://example.com/a", "Write the URL with https or http."),
+        ("file:///etc/hosts", "Write the URL with https or http."),
+        ("https://name:word@example.com/a", "Remove the user name and the password from the URL."),
+        ("https://name@example.com/a", "Remove the user name and the password from the URL."),
+        ("https:///a", "The URL names no host. Add the host."),
+        ("/etc/hosts", "Write the path from the repository root, with no `..`."),
+        ("docs/../../a.md", "Write the path from the repository root, with no `..`."),
+        ("docs\\a.md", "Write the path from the repository root, with no `..`."),
+        ("docs/missing.md", f"No file in the repository has this path. {FORMS}"),
+        ("docs", FORMS),
+        ("rules/coding.md:14", f"No file in the repository has this path. {FORMS}"),
+        ("example.com/a", f"No file in the repository has this path. {FORMS}"),
+        ("WCAG", FORMS),
+    ],
+)
+def test_a_source_of_no_known_form_fails(tmp_path: Path, value: str, message: str) -> None:
+    (tmp_path / "docs").mkdir()
+    spec = node("a", rules=[rule("b", basis="research", sources=[value])])
+    assert statics(spec, repository=tmp_path) == [
+        f"{line_of(spec, '  - sources:')}: source-form: {message}"
+    ]
+
+
+def test_a_node_source_of_no_known_form_fails(tmp_path: Path) -> None:
+    spec = node("a", sources=["https://example.com/a", "WCAG"])
+    found = statics(spec, repository=tmp_path)
+    assert [problem.split(": ", 2)[1:] for problem in found] == [["source-form", FORMS]]
+
+
+def test_each_value_in_sources_is_checked(tmp_path: Path) -> None:
+    spec = node(
+        "a", rules=[rule("b", basis="research", sources=["https://example.com/a", "x", "y"])]
+    )
+    assert static_codes_at(spec, tmp_path) == ["source-form", "source-form"]
+
+
+def static_codes_at(spec: Spec, repository: Path) -> list[str]:
+    return [problem.split(": ")[1] for problem in statics(spec, repository=repository)]
+
+
+def test_the_tree_sources_have_a_known_form() -> None:
+    items, problems = parse_tree(node_folders(REPO))
+    assert problems == []
+    assert [str(problem) for problem in source_problems(items, REPO)] == []
+
+
+PLANTED = {
+    "aws": "key " + "AKIA" + "IOSFODNN7EXAMPLE",
+    "aws-session": "key " + "ASIA" + "IOSFODNN7EXAMPLE",
+    "github": "gh" + "p_" + "a" * 36,
+    "github-fine": "github" + "_pat_" + "a" * 30,
+    "api": "sk" + "-" + "a" * 30,
+    "anthropic": "sk" + "-ant-" + "a" * 30,
+    "slack": "xo" + "xb-" + "1234-5678",
+    "google": "AI" + "za" + "a" * 35,
+    "stripe": "sk" + "_live_" + "a" * 24,
+    "private": "-----BEGIN RSA " + "PRIVATE KEY-----",
+    "jwt": "ey" + "Jaaaaaaaaaa.ey" + "Jbbbbbbbbbb.cccccccccc",
+    "login": "https://name:" + "word" + "@localhost/a",
+    "password": "password: " + "not-a-real-value",
+    "token": "API_KEY=" + "not-a-real-value",
+    "quoted": 'secret = "' + "not-a-real-value" + '"',
+}
+CLEAN = [
+    "Rotate the token before a release.",
+    "Store a secret in a vault, not in the repository.",
+    "A token: a short string.",
+    "https://example.com/a",
+    "uvx --from git+https://github.com/a/b.git@0123456789abcdef ka",
+    "Set `basis: judgment`.",
+]
+
+
+def plant(repository: Path, files: dict[str, str]) -> None:
+    for name, value in files.items():
+        path = repository / "knowledge" / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(f"clean line\n{value}\n", encoding="utf-8")
+
+
+def exposure_hits(repository: Path) -> list[tuple[str, int, str]]:
+    return [
+        (problem.path.relative_to(repository).as_posix(), problem.line, problem.code)
+        for problem in exposure_problems(repository)
+    ]
+
+
+@pytest.mark.parametrize("name", sorted(PLANTED))
+def test_planted_secret_material_in_knowledge_fails(tmp_path: Path, name: str) -> None:
+    plant(tmp_path, {f"skills/a/scripts/{name}.txt": PLANTED[name]})
+    assert exposure_hits(tmp_path) == [(f"knowledge/skills/a/scripts/{name}.txt", 2, "secret")]
+
+
+@pytest.mark.parametrize("value", ["jane.doe@example.com", "Write to a+b@mail.example.org."])
+def test_an_email_address_in_knowledge_fails(tmp_path: Path, value: str) -> None:
+    plant(tmp_path, {"nodes/a/node.md": value})
+    assert exposure_hits(tmp_path) == [("knowledge/nodes/a/node.md", 2, "email")]
+
+
+@pytest.mark.parametrize("value", CLEAN)
+def test_clean_text_passes_the_exposure_check(tmp_path: Path, value: str) -> None:
+    plant(tmp_path, {"nodes/a/node.md": value})
+    assert exposure_hits(tmp_path) == []
+
+
+def test_the_exposure_message_holds_no_value(tmp_path: Path) -> None:
+    plant(tmp_path, {"a.md": PLANTED["password"], "b.md": "jane.doe@example.com"})
+    for problem in exposure_problems(tmp_path):
+        assert "not-a-real-value" not in problem.message
+        assert "jane" not in problem.message
+
+
+def test_the_exposure_check_reads_each_file_in_knowledge_only(tmp_path: Path) -> None:
+    plant(tmp_path, {".ka/history.jsonl": PLANTED["github"], "governance/language/a.yaml": "x"})
+    (tmp_path / "docs").mkdir()
+    (tmp_path / "docs/a.md").write_text(PLANTED["github"], encoding="utf-8")
+    (tmp_path / "knowledge/binary.bin").write_bytes(b"\xff\xfe" + PLANTED["github"].encode())
+    assert exposure_hits(tmp_path) == [("knowledge/.ka/history.jsonl", 2, "secret")]
+
+
+def test_the_exposure_check_does_not_follow_a_link(tmp_path: Path) -> None:
+    outside = tmp_path / "outside"
+    plant(outside, {"a.md": PLANTED["github"]})
+    (tmp_path / "knowledge").mkdir()
+    (tmp_path / "knowledge/file.md").symlink_to(outside / "knowledge/a.md")
+    (tmp_path / "knowledge/folder").symlink_to(outside / "knowledge", target_is_directory=True)
+    assert exposure_hits(tmp_path) == []
+
+
+def test_the_governance_check_reports_exposure(repository: Path) -> None:
+    spec = node("a", definition="Write to jane.doe@example.com.")
+    write(repository, root_spec(pointers=["a"]), spec)
+    found = [
+        f"{problem.path.relative_to(repository).as_posix()}:{problem.line}: {problem.code}"
+        for problem in check_governance(repository).problems
+    ]
+    assert found == [f"{line_of(spec, 'jane.doe')}: email"]
+
+
+def test_the_tree_holds_no_secret_material_or_email() -> None:
+    assert [str(problem) for problem in exposure_problems(REPO)] == []
 
 
 def test_a_node_source_does_not_count_for_a_directive() -> None:
@@ -2103,7 +2396,7 @@ def test_a_script_change_on_an_accepted_skill_fails(repository: Path) -> None:
 
 @pytest.mark.parametrize(
     "change",
-    ["add", "remove", "rename", "nested"],
+    ["add", "remove", "rename", "nested", "mode"],
 )
 def test_each_script_change_reopens_the_review(repository: Path, change: str) -> None:
     write(repository, SCRIPT_SKILL)
@@ -2116,6 +2409,8 @@ def test_each_script_change_reopens_the_review(repository: Path, change: str) ->
         (folder / "check.py").unlink()
     elif change == "rename":
         (folder / "check.py").rename(folder / "other.py")
+    elif change == "mode":
+        (folder / "check.py").chmod(0o755)
     else:
         write_scripts(repository, "review", {"lib/util.py": b"x = 1\n"})
     assert run_check(repository) == ["accepted-change"]
@@ -2171,14 +2466,6 @@ def test_the_base_skips_a_node_file_inside_scripts(repository: Path) -> None:
     assert base.notes == []
     assert [item.node.id for item in base.items] == ["review"]
     assert [str(script.path) for script in base.items[0].scripts] == ["node.md"]
-
-
-def test_a_script_mode_change_needs_no_review(repository: Path) -> None:
-    write(repository, SCRIPT_SKILL)
-    write_scripts(repository, "review", {"check.py": b"print(1)\n"})
-    commit_all(repository)
-    (repository / "knowledge/skills/review/scripts/check.py").chmod(0o755)
-    assert run_check(repository) == []
 
 
 def test_an_install_fails_a_closed_entity_over_an_accepted_line(repository: Path) -> None:

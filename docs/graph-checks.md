@@ -25,7 +25,7 @@ An empty tree passes, so a project can remove what it received and still start c
 | Placement    | `placement`    | A node's kind does not match its folder, including a second root                                                                                     |
 | References   | `reference`    | An edge, a pointer, an exception, or a directive field such as `also_attached_to` names an ID that does not exist                                    |
 | Types        | `type`         | A reference names a kind the [schema](schema.md) does not allow, such as a `broader` target of the wrong rank, or a non-skill behind a skill pointer |
-| Skills       | `skill`        | A skill has neither `uses` nor `applies`                                                                                                             |
+| Skills       | `skill`        | A skill has neither `uses` nor `applies`, or its ID is `synced` or `anthropic-skills`, which Claude Code reserves                                    |
 | Ownership    | `implements`   | `implements` starts from a node that is not workspace knowledge                                                                                      |
 | Associations | `association`  | `related` joins a node to one in its own `broader` chain, up or down                                                                                 |
 | Cycles       | `cycle`        | A chain of `broader` edges, or a chain of `depends_on` edges, leads back to its start                                                                |

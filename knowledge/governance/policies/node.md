@@ -37,7 +37,7 @@ The rules that set how knowledge enters the graph and how it changes. They cover
 
 ## Directives
 
-- Run `uv run pre-commit run --all-files` before each commit. ^run-checks-before-commit
+- Run each hook in `.pre-commit-config.yaml` on each file before each commit. ^run-checks-before-commit
   - scope: subtree
   - basis: judgment
   - status: proposed

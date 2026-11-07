@@ -34,7 +34,7 @@ def script_folders[PathT: PurePath](
 
 def scripts_digest(scripts: Sequence[Script]) -> str:
     listing = [
-        [script.path.as_posix(), hashlib.sha256(script.data).hexdigest()]
+        [script.path.as_posix(), hashlib.sha256(script.data).hexdigest(), script.executable]
         for script in sorted(scripts)
     ]
     return hashlib.sha256(json.dumps(listing).encode("ascii")).hexdigest()

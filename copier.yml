@@ -17,7 +17,7 @@ _skip_if_exists:
   - "/.claude/rules/knowledge/"
   - "/.claude/skills/"
   - "/.gitignore"
-  - "/.pre-commit-config.yaml"
+  - "{% if started_from == _copier_conf.vcs_ref_hash %}/.pre-commit-config.yaml{% endif %}"
 _tasks:
   - command: ["knowledge/.ka/ka", "select"]
     when: "{{ _copier_operation == 'update' }}"

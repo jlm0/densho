@@ -1,15 +1,13 @@
 import re
 import shutil
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, cast
 
-from ruamel.yaml import YAML
-from ruamel.yaml.error import YAMLError
-
-from engine.generated.metamodel import Discipline, Origin, Skill
+from engine.disciplines import memberships, read_answer
+from engine.generated.metamodel import Origin, Skill
 from engine.graph.references import edge_targets, references_of
 from engine.language.profile import BRANCH_FOLDER, BRANCH_SUFFIX
-from engine.layout import ANSWERS_FILE, KNOWLEDGE_FOLDER, LANGUAGE_FOLDER, SKILLS_FOLDER
+from engine.layout import KNOWLEDGE_FOLDER, LANGUAGE_FOLDER, SKILLS_FOLDER
 from engine.parser.node import node_folders, parse_source, parse_tree, universal_newlines
 from engine.parser.result import ParsedNode, Problem
 
@@ -21,7 +19,6 @@ if TYPE_CHECKING:
     from engine.parser.result import FieldPath
 
 SELECT_CODES = ("select",)
-ANSWER_KEY = "disciplines"
 PRUNED_FIELDS = frozenset({"informs", "related", "also_attached_to", "refines"})
 POINTER_FIELD = "pointers"
 DIRECTIVES_FIELD = "directives"
@@ -45,54 +42,6 @@ class _Plan:
     notes: list[str] = field(default_factory=list[str])
 
 
-def _read_answer(repository: Path) -> tuple[list[str] | None, list[Problem]]:
-    path = repository / ANSWERS_FILE
-    try:
-        text = path.read_text(encoding="utf-8")
-    except FileNotFoundError:
-        return None, []
-    except OSError, UnicodeDecodeError:
-        return None, [Problem(path, 1, "select", "The file cannot be read as UTF-8 text.")]
-    yaml: Any = YAML(typ="safe")
-    try:
-        data = cast("object", yaml.load(text))
-    except YAMLError:
-        return None, [Problem(path, 1, "select", "The file is not valid YAML.")]
-    if not isinstance(data, dict) or ANSWER_KEY not in data:
-        return None, []
-    answer = cast("dict[object, object]", data)[ANSWER_KEY]
-    if not isinstance(answer, list) or not all(
-        isinstance(name, str) for name in cast("list[object]", answer)
-    ):
-        message = f"{ANSWER_KEY} must be a list of discipline IDs."
-        return None, [Problem(path, 1, "select", message)]
-    return cast("list[str]", answer), []
-
-
-def _memberships(items: Sequence[ParsedNode]) -> dict[str, frozenset[str]]:
-    by_id = {item.node.id: item for item in items}
-    disciplines = {
-        item.node.id
-        for item in items
-        if isinstance(item.node, Discipline) and item.node.origin == Origin.template
-    }
-    found: dict[str, frozenset[str]] = {}
-    for start in by_id:
-        reached: set[str] = set()
-        seen = {start}
-        waiting = [start]
-        while waiting:
-            node_id = waiting.pop()
-            if node_id in disciplines:
-                reached.add(node_id)
-            for parent in edge_targets(by_id[node_id], "broader"):
-                if parent in by_id and parent not in seen:
-                    seen.add(parent)
-                    waiting.append(parent)
-        found[start] = frozenset(reached)
-    return found
-
-
 def _holders(items: Sequence[ParsedNode]) -> dict[str, str]:
     return {
         directive.id: item.node.id for item in items for directive in item.node.directives or []
@@ -104,8 +53,8 @@ def _left_out(item: ParsedNode, membership: frozenset[str], selected: set[str]) 
 
 
 def _plan(items: Sequence[ParsedNode], answer: list[str]) -> _Plan:
-    memberships = _memberships(items)
-    known = {name for names in memberships.values() for name in names}
+    found = memberships(items)
+    known = {name for names in found.values() for name in names}
     plan = _Plan({name for name in answer if name in known}, set())
     plan.notes += [
         f"The answer names {name}, and the template has no discipline with this ID."
@@ -114,15 +63,13 @@ def _plan(items: Sequence[ParsedNode], answer: list[str]) -> _Plan:
     ]
     by_id = {item.node.id: item for item in items}
     while True:
-        kept = [
-            item for item in items if not _left_out(item, memberships[item.node.id], plan.selected)
-        ]
+        kept = [item for item in items if not _left_out(item, found[item.node.id], plan.selected)]
         needed = {
             (discipline, item.node.id, target)
             for item in kept
             for target in edge_targets(item, "depends_on")
-            if target in by_id and _left_out(by_id[target], memberships[target], plan.selected)
-            for discipline in memberships[target]
+            if target in by_id and _left_out(by_id[target], found[target], plan.selected)
+            for discipline in found[target]
         }
         if not needed:
             break
@@ -318,7 +265,7 @@ def _write(repository: Path, doomed: Sequence[Path], edits: Mapping[Path, str]) 
 
 
 def select_disciplines(repository: Path) -> SelectionReport:
-    answer, problems = _read_answer(repository)
+    answer, problems = read_answer(repository)
     if problems or answer is None:
         return SelectionReport(None, (), (), [], problems)
     items, problems = parse_tree(node_folders(repository))

@@ -46,7 +46,7 @@ Not everything is a rule, and the skill doesn't force prose into one.
 | A rule about the old rule system, such as its grammar          | Stays at its path, with the replacement noted      |
 | A rule that fails the checks after two edits, or anything else | Stays at its path, and `## Not converted` shows it |
 
-Project knowledge becomes workspace knowledge, with `knowledge_type: workspace` and `origin: project`. A rule that covers every task goes on the root with `scope: node`, so it loads with `AGENTS.md` and isn't copied into every skill. Each directive names its source file and line in `sources`, and `## Rule groups` in the body keeps the headings the rules sat under. Its `basis` is `judgment` unless the old rule cites a standard, a study, or a named method, because a project file is a record of a decision and not evidence for it. A skill whose source sets `disable-model-invocation: true` gets `invocation: person`, and every other skill gets `invocation: agent`.
+Project knowledge becomes workspace knowledge, with `knowledge_type: workspace` and `origin: project`. A rule that covers every task goes on the root with `scope: node`, so it loads with `AGENTS.md` and isn't copied into every skill. The file and line that each directive came from go in a `## Signals` section at the end of the node body, the same place `propose-knowledge` cites a signal, and `## Rule groups` keeps the headings the rules sat under. Its `basis` is `judgment` unless the old rule cites a standard, a study, or a named method, because a project file is a record of a decision and not evidence for it. Only such a cited source goes in `sources`. A skill whose source sets `disable-model-invocation: true` gets `invocation: person`, and every other skill gets `invocation: agent`.
 
 ### What you get
 
@@ -176,7 +176,7 @@ After the split, each skill was followed again: `migrate-project` on a small `CL
 - Whether a rule kept its meaning, or whether a class is right. The ledger shows each edit and each item left out, for a person to read.
 - A verb added to a vocabulary file. No `status` covers it, so only the report names it.
 - A copy of a skill for another tool, such as `.agents/skills/`. It stays at its path, and its text can name an old path.
-- `.pre-commit-config.yaml` and `.gitignore`. The agent compares them with the template by hand and reports each new line.
+- `.gitignore`. The agent compares it with the template by hand and reports each new line. A pull merges the template's change to `.pre-commit-config.yaml`, and a hunk that doesn't apply leaves a `.rej` file that the hook stops on.
 - The job itself. The test reads the skill text and doesn't run a model.
 - The steps of `sync-template`. As a node, only its description and directives go through the language checks.
 

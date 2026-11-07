@@ -122,7 +122,7 @@ An install never overwrites these files:
 - `CLAUDE.md` is what Claude Code reads instead of `AGENTS.md`, so `ka adopt` adds the line `@AGENTS.md` at the end and changes nothing else. A `.claude/CLAUDE.md` receives `@../AGENTS.md` when it's the only one. If you already import the root, the command adds nothing.
 - `CLAUDE.local.md` is your private file, so the command doesn't touch it. It prints a note with the line to add.
 - An `AGENTS.md` that you wrote stays, and the install ends with `not-generated`, because the generator won't overwrite a file without its marker. Move your text to `CLAUDE.md` or to a node, delete the file, and run `knowledge/.ka/ka adopt`.
-- A `.pre-commit-config.yaml` of your own stays, so the checks don't run until you add the hooks from [the git hook](#the-git-hook).
+- A `.pre-commit-config.yaml` of your own stays, so the checks don't run until you add the hooks from [the git hook](#the-git-hook). A later pull applies the template's changes to it, as [pull a template change](#pull-a-template-change) describes.
 - A `.gitignore` of your own stays. Add `build/` to it, or the compiled output and the [site](human-interface.md) show up as untracked files.
 
 A rule directly in `.claude/rules/` and a skill folder of your own stay as well, as they do in [runtime files](runtime-files.md#hand-written-files).
@@ -172,7 +172,7 @@ Resolve any conflict, then run `knowledge/.ka/ka adopt`, read the result, and co
 
 Your `started_from` stays. `_commit`, the engine pin, and `knowledge/.ka/history.jsonl` move. Copier doesn't merge the generated files, so they never conflict, and `knowledge/.ka/ka adopt` writes them again. It also removes a generated file that a pull brought back for a node you deleted.
 
-`.pre-commit-config.yaml` and `.gitignore` stay as they are too, so a hook that the template adds later doesn't reach you. Compare the two files by hand when you pull.
+A pull merges the template's change to `.pre-commit-config.yaml` into yours, so a hook that the template adds later reaches you. If you edited the same lines, the pull leaves a `.pre-commit-config.yaml.rej` file, and the hook that stops a commit on a `.rej` file holds the commit until you apply it by hand. Your `.gitignore` stays as it is, so compare it with the template by hand when you pull.
 
 ### Change the disciplines
 
@@ -214,6 +214,8 @@ knowledge/.ka/ka history --drift
 
 For a moved node that the template also changed, the line names both `path` and the changed field. To take the change, read the template's version and edit your node.
 
+The disciplines you left out at the install aren't listed one entity at a time. Each one gets a single `note:` line with a count, such as `note: 215 entities of ui-ux-design are not in this tree, because disciplines leaves the discipline out.` The count covers each entity that the history places under the folder of that discipline, and its vocabulary branch. A skill that only the left-out discipline used still gets its own line, because the history can't tell which discipline a skill served.
+
 ## The change history
 
 `knowledge/.ka/history.jsonl` lists each change to the template, one entity on each line, for an agent to read. A search for an ID finds every change to that entity, wherever its file sits now. The [`sync-template` skill](migration-and-reconciliation.md#pull-template-changes) reads this file.
@@ -245,6 +247,8 @@ In the template, the `template-history` hook runs `uv run ka history --verify` o
 
 The file only grows. To undo a template commit, use `git revert --no-commit`, restore the file with `git checkout HEAD -- knowledge/.ka/history.jsonl`, run `uv run ka history`, stage the result, and commit, so the undo appears as a new change.
 
+A plain `git revert` commits without the hook and takes the history lines of the reverted commit with it. The next `uv run ka history --verify` then fails with `rewritten`, because the last commit lost lines that its parent holds. Run `git checkout HEAD~1 -- knowledge/.ka/history.jsonl` and `uv run ka history`, then commit the result.
+
 The `engine-constraints` hook writes `knowledge/.ka/engine-constraints.txt` from `uv.lock` in the same way, and fails when the file changes.
 
 ## What you can delete from governance
@@ -274,6 +278,7 @@ adopted.selection  # the selection that ran first
 
 drift = history_drift(Path())
 drift.entries  # each difference, in the form of a history line
+drift.notes  # the count for each discipline that the answer leaves out
 
 recorded = record_history(Path(), verify=False)
 recorded.problems  # the same problems that ka history prints
@@ -289,7 +294,7 @@ These codes come from `ka adopt`, `ka select`, and `ka history`. Each other code
 | `import`       | The command can't add the import, because the file is a symbolic link to another file or can't be written                          |
 | `select`       | The answer can't be read, a kept entity links to a removed one in a field that the command can't remove, or a file can't be edited |
 | `history`      | A line doesn't parse, a change number leaves a gap, or an action doesn't fit the replay                                            |
-| `rewritten`    | The file doesn't start with its text at `HEAD`                                                                                     |
+| `rewritten`    | The file doesn't start with its text at `HEAD`, or the last commit lost lines that its parent holds                                |
 | `not-template` | `ka history` ran in a folder with no `copier.yml`. `--drift` runs anywhere.                                                        |
 | `changed`      | With `--verify`, the command appended a change                                                                                     |
 | `not-staged`   | With `--verify`, the git index doesn't hold the history file                                                                       |

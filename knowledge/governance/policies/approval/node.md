@@ -33,7 +33,7 @@ The step that takes knowledge from a proposal to a rule. An agent can propose a 
   - basis: judgment
   - status: proposed
   - origin: template
-- Run `uv run ka governance --pending` to list each proposal. ^list-the-proposals
+- Run the engine with `governance --pending` to list each proposal. ^list-the-proposals
   - scope: node
   - basis: judgment
   - status: proposed
@@ -43,7 +43,7 @@ The step that takes knowledge from a proposal to a rule. An agent can propose a 
   - basis: judgment
   - status: proposed
   - origin: template
-- Run `uv run ka directives --at` on the node before you accept a directive. ^read-what-applies
+- Run the engine with `directives --at` on the node before you accept a directive. ^read-what-applies
   - scope: node
   - basis: judgment
   - status: proposed

@@ -192,12 +192,16 @@ def tracked_files(repository: Path) -> frozenset[str] | None:
     return frozenset(os.fsdecode(name) for name in listing.stdout.split(b"\0") if name)
 
 
-def read_head_file(repository: Path, path: PurePosixPath) -> bytes | None:
+def read_file_at(repository: Path, revision: str, path: PurePosixPath) -> bytes | None:
     program = shutil.which("git")
     if program is None:
         return None
-    shown = _git(program, repository, "show", f"HEAD:./{path}")
+    shown = _git(program, repository, "show", f"{revision}:./{path}")
     return shown.stdout if shown.returncode == 0 else None
+
+
+def read_head_file(repository: Path, path: PurePosixPath) -> bytes | None:
+    return read_file_at(repository, "HEAD", path)
 
 
 def head_holds(repository: Path, path: PurePosixPath) -> bool | None:

@@ -136,7 +136,7 @@ def _tagged_findings(entry: _Entry, grammar: Grammar, tagger: Tagger) -> list[Fi
     if not entry.form_passed:
         return findings
     if entry.text.kind == "directive":
-        return [*findings, *tagger.directive(doc, grammar)]
+        return [*findings, *tagger.directive(doc, grammar, entry.terms)]
     if entry.text.kind == "trigger":
         return [*findings, *tagger.trigger(doc, grammar)]
     return [*findings, *tagger.description(entry.masked, grammar)]

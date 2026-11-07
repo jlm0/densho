@@ -183,6 +183,13 @@ def words(count: int) -> str:
         "Format dates in the locale of the user.",
         "Link help text to its field.",
         "If a form fails, group fields by task.",
+        "Place labels near the field.",
+        "Place controls that users press in sequence close to each other.",
+        "Measure reach as the number of people in one fixed period.",
+        "Show each logo rule with a correct example and an incorrect example.",
+        "Assert labels.",
+        "Review failed tests.",
+        "Label changed fields.",
     ],
 )
 def test_a_good_directive_passes(text: str) -> None:
@@ -230,6 +237,10 @@ def test_a_good_directive_passes(text: str) -> None:
         ("Run the suite then wait for the port.", "second-directive"),
         ("Start the server, wait for the port, and run the tests.", "second-directive"),
         ("If a test fails, test files pass.", "imperative"),
+        ("Before you reject a node, reject or move each directive in it.", "second-directive"),
+        ("Do not disable or hide a tab bar item.", "second-directive"),
+        ("If a test fails, run the suite, stop.", "second-directive"),
+        ("Run the suite and fix bugs.", "second-directive"),
         ("Stop the run if the build fails when the suite runs.", "condition-count"),
         ("If the build fails, stop the run when the suite runs.", "condition-count"),
         ("Before a merge, run the suite when the build fails.", "condition-count"),
@@ -1054,8 +1065,89 @@ def test_a_node_does_not_get_the_vocabulary_of_a_skill_that_uses_it(tmp_path: Pa
     assert "other" in problem_folders(tmp_path)
 
 
-def test_a_bare_statement_passes_as_a_known_limit() -> None:
-    assert directive_codes("Build fails.") == set()
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Build fails.",
+        "Build is red.",
+        "Build has failed.",
+        "Build failed on Linux.",
+        "Build does not pass.",
+        "Check succeeds.",
+        "Review depends on the change.",
+        "If a test fails, build fails.",
+    ],
+)
+def test_a_bare_statement_fails(text: str) -> None:
+    assert directive_codes(text) == {"imperative"}
+
+
+@pytest.mark.parametrize("text", ["Build passes.", "Test runs nightly."])
+def test_a_statement_whose_verb_is_also_a_noun_passes_as_a_known_limit(text: str) -> None:
+    assert directive_codes(text) == set()
+
+
+def test_a_subject_after_a_condition_mark_is_not_a_statement() -> None:
+    text = (
+        "If automated and manual results diverge, fix the "
+        "test or the code to make the results agree."
+    )
+    assert directive_codes(text) == set()
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "For each status page or alarm change, check metric units, alarm datapoints, and routing.",
+        (
+            "Before the push, fix each introduced, worsened, "
+            "or newly reachable path in the same change."
+        ),
+        (
+            "Before a change with a new or changed call "
+            "to a server route leaves draft, check the call."
+        ),
+        (
+            "Do not make an unselected integration a "
+            "type, build, or runtime requirement of a consumer."
+        ),
+        "Before a docs change leaves draft, check code snippets, links, alt text, and navigation.",
+        "When a change affects how to build, test, or release the code, update the docs.",
+        "Use conventional format for branch names, commit messages, and PR titles.",
+        "Report scenario counts and profile counts separately.",
+        "Treat lock files, name records, and seeded markers as hints, not authority.",
+        "Do not commit generated keys, session identifiers, or encrypted key material.",
+        "Search the backlog, the open tickets, and the closed tickets with the affected area.",
+        "Describe the brand voice with `3` or `4` named traits.",
+        "Write each heading to name the content under it, not to make a joke.",
+        "Keep each content and function usable when the text size is `200` percent.",
+        "Give each time limit a control to disable it, change it, or extend it.",
+        (
+            "Give a review step to each submission that "
+            "spends money, signs an agreement, or deletes data."
+        ),
+        "Before a team builds an idea, test its value risk and its viability risk.",
+        "Define the goals, then the signals, then the metrics, for each category that you use.",
+    ],
+)
+def test_a_list_or_a_condition_verb_is_not_a_second_directive(text: str) -> None:
+    assert directive_codes(text) == set()
+
+
+def test_a_later_verb_with_no_noun_reading_is_a_second_action() -> None:
+    assert "redeploy" not in PROFILE.vocabulary.approved_verbs
+    assert directive_codes("Run the suite and redeploy the build.") == {"second-directive"}
+
+
+@pytest.mark.parametrize(
+    "text", ["Run the suite, then starts the review.", "Run the suite, then remains the review."]
+)
+def test_a_later_verb_with_its_own_subject_is_not_a_second_action(text: str) -> None:
+    assert directive_codes(text) == set()
+
+
+def test_a_noun_before_a_noun_in_a_list_reads_as_a_second_action_as_a_known_limit() -> None:
+    assert directive_codes("Give a pause or stop control to each audio.") == {"second-directive"}
 
 
 def test_a_statement_with_a_longer_subject_still_fails() -> None:

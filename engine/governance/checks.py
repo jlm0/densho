@@ -1,11 +1,14 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from engine.disciplines import memberships, read_answer
 from engine.generated.metamodel import Basis, KnowledgeType, Origin, Root, Status
 from engine.governance.base import read_base
 from engine.governance.changes import CHANGE_CODES, check_changes
-from engine.governance.entities import governed_entities
+from engine.governance.entities import DIRECTIVE, governed_entities
+from engine.governance.exposure import CREDENTIAL_CODE, EMAIL_CODE, exposure_problems
 from engine.governance.history_lines import install_matches
+from engine.governance.sources import SOURCE_CODE, source_problems
 from engine.graph.references import (
     edge_targets,
     entity_ids,
@@ -17,11 +20,11 @@ from engine.layout import POLICY_FOLDER
 from engine.parser.node import node_folders, parse_tree
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Mapping, Sequence
     from pathlib import Path
 
     from engine.generated.metamodel import Directive, DirectiveException, Node
-    from engine.governance.entities import Entity
+    from engine.governance.entities import Entity, EntityKey
     from engine.graph.references import Reference
     from engine.parser.result import FieldPath, ParsedNode, Problem
 
@@ -37,6 +40,9 @@ GOVERNANCE_CODES = (
     "rejected-reference",
     "rejected-root",
     "basis",
+    SOURCE_CODE,
+    CREDENTIAL_CODE,
+    EMAIL_CODE,
     "policy-governs",
     "base",
 )
@@ -200,13 +206,23 @@ def _entity_status(item: ParsedNode, field_path: FieldPath) -> Status:
             return item.node.status
 
 
+def _basis_message(directive: Directive) -> str | None:
+    if not directive.sources and directive.basis != Basis.judgment:
+        return "This directive names no source. Set basis to judgment, or add a source."
+    if directive.sources and directive.basis == Basis.judgment:
+        return (
+            "This directive names a source, and judgment means that no source supports it. "
+            "Set basis from the kind of the source, or remove the source."
+        )
+    return None
+
+
 def _basis_problems(items: Sequence[ParsedNode]) -> list[Problem]:
-    message = "This directive names no source. Set basis to judgment, or add a source."
     return [
         problem_at(item, ("directives", index, "basis"), "basis", message)
         for item in items
         for index, directive in enumerate(item.node.directives or [])
-        if not directive.sources and directive.basis != Basis.judgment
+        if (message := _basis_message(directive)) is not None
     ]
 
 
@@ -233,8 +249,28 @@ def check_items(items: Sequence[ParsedNode], repository: Path) -> list[Problem]:
         *_rejected_holders(items),
         *_rejected_references(items),
         *_basis_problems(items),
+        *source_problems(items, repository),
         *_policy_problems(items, repository),
     ]
+
+
+def _left_out_disciplines(
+    repository: Path, base: Sequence[ParsedNode], known: Mapping[EntityKey, Entity]
+) -> dict[EntityKey, str]:
+    answer, problems = read_answer(repository)
+    if answer is None or problems:
+        return {}
+    found = memberships(base)
+    holders = {
+        directive.id: item.node.id for item in base for directive in item.node.directives or []
+    }
+    left_out: dict[EntityKey, str] = {}
+    for key in known:
+        node_id = holders.get(key[1], key[1]) if key[0] == DIRECTIVE else key[1]
+        outside = sorted(found.get(node_id, frozenset()) - set(answer))
+        if outside and len(outside) == len(found[node_id]):
+            left_out[key] = outside[0]
+    return left_out
 
 
 def check_governance(
@@ -246,14 +282,12 @@ def check_governance(
             return GovernanceReport(0, [], problems)
     current = governed_entities(items)
     base = read_base(repository)
-    found = {*check_items(items, repository), *base.problems}
+    found = {*check_items(items, repository), *exposure_problems(repository), *base.problems}
     if base.readable:
         template_accepted = install_matches(items, repository)
-        found.update(
-            check_changes(
-                governed_entities(base.items), current, base.unreadable, template_accepted
-            )
-        )
+        known = governed_entities(base.items)
+        left_out = _left_out_disciplines(repository, base.items, known)
+        found.update(check_changes(known, current, base.unreadable, template_accepted, left_out))
     return GovernanceReport(len(current), base.notes, sorted(found))
 
 

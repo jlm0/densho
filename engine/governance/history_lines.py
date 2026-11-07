@@ -67,12 +67,14 @@ def digest(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()[:DIGEST_LENGTH]
 
 
+def field_digest(value: object) -> str:
+    return digest(_canonical(_normal(value)).encode("ascii"))
+
+
 def _content(model: BaseModel, without: frozenset[str], **extra: str) -> dict[str, str]:
     fields = cast("dict[str, object]", model.model_dump(mode="json", exclude=set(without)))
     return {
-        name: digest(_canonical(_normal(value)).encode("ascii"))
-        for name, value in sorted({**fields, **extra}.items())
-        if value
+        name: field_digest(value) for name, value in sorted({**fields, **extra}.items()) if value
     }
 
 

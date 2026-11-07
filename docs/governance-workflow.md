@@ -105,7 +105,9 @@ In a directive or an exception the field sits next to `status`, in the same form
 
 The entity stays in the file as a record that someone weighed it, so the same idea doesn't come back unread. `--pending` stops listing it, and no generated file holds it. To look at it again, set it back to `proposed`. It can't go straight to `accepted`, which fails `status-jump`, so a reviewer reads it again first. When nobody needs the record any more, delete the entity. Git history keeps it.
 
-Before you reject a node, reject or move what rests on it:
+Only a proposal can be rejected. An `accepted` or `deprecated` entity that goes straight to `rejected` fails `status-jump`. Set an `accepted` one to `deprecated` instead, and delete it later if nobody needs it.
+
+Before you reject a node, leave nothing live in it, and move what rests on it:
 
 - A `rejected` node can't hold a `proposed` or `accepted` directive or exception. That fails `rejected-holder`.
 - Only a `rejected` entity, or an entity in a `rejected` node, can name a `rejected` one in an edge, pointer, exception, `applies`, or directive field. Anything else fails `rejected-reference`, so the nodes under a rejected node have to move too.
@@ -123,7 +125,7 @@ Set `status` back to `proposed` in the same commit as the change, then accept it
 
 A pointer does not reopen a review, because every new node needs a pointer and would otherwise reopen its parent. The [graph checks](graph-checks.md) still prove the route, and a reviewer reads the trigger. A node's `exceptions` and `directives` have their own `status`, so adding one leaves the node alone.
 
-The scripts of a skill count as one field. The check hashes the path and the bytes of each file under the skill's `scripts/` folder, so a script that changes, arrives, goes, or moves reopens the skill. A change to the file mode does not.
+The scripts of a skill count as one field. The check hashes the path, the bytes, and the executable bit of each file under the skill's `scripts/` folder, so a script that changes, arrives, goes, moves, or becomes executable reopens the skill.
 
 The comparison uses rendered Markdown and ignores the order of a list, so a formatter can't reopen a review. A moved file is the same entity, because its ID identifies it.
 
@@ -156,9 +158,9 @@ The install can also keep what the template already accepted. Then `new-status` 
 | `new-status`           | An entity that the last commit does not have, with a status other than `proposed`, unless the [narrow pass](#knowledge-from-the-template) covers it |
 | `promotion-change`     | One commit accepts an entity and also changes a field that needs review                                                                             |
 | `accepted-change`      | An entity stays `accepted`, and a field that needs review changes                                                                                   |
-| `status-jump`          | An entity goes from `deprecated` or `rejected` straight to `accepted`                                                                               |
+| `status-jump`          | An entity goes from `deprecated` or `rejected` straight to `accepted`, or from `accepted` or `deprecated` to `rejected`                             |
 | `origin-change`        | The `origin` of a node or a directive changes                                                                                                       |
-| `removed-accepted`     | An `accepted` node or directive leaves the tree                                                                                                     |
+| `removed-accepted`     | An `accepted` node or directive leaves the tree. When `disciplines` leaves out its discipline, the message says so                                  |
 | `template-workspace`   | `origin: template` on a workspace node, or on a directive in one                                                                                    |
 | `deprecated-holder`    | A `deprecated` node holds a directive that is `proposed` or `accepted`                                                                              |
 | `deprecated-reference` | A live entity names a `deprecated` one in `broader`, `uses`, `depends_on`, `implements`, `also_attached_to`, or `refines`                           |
@@ -166,7 +168,10 @@ The install can also keep what the template already accepted. Then `new-status` 
 | `rejected-holder`      | A `rejected` node holds a directive or an exception that is `proposed` or `accepted`                                                                |
 | `rejected-reference`   | An entity that isn't `rejected`, and isn't in a `rejected` node, names a `rejected` one in any reference                                            |
 | `rejected-root`        | The root is `rejected`                                                                                                                              |
-| `basis`                | A directive with no `sources` has a `basis` other than `judgment`                                                                                   |
+| `basis`                | A directive with no `sources` has a `basis` other than `judgment`, or a directive with `sources` has `judgment`                                     |
+| `source-form`          | A value in `sources` is not an `https` or `http` URL with a host, a file path from the repository root, or a citation of two or more words          |
+| `secret`               | A line of a file in `knowledge/` holds what reads as a key, a token, a password, or a private key                                                   |
+| `email`                | A line of a file in `knowledge/` holds an email address                                                                                             |
 | `policy-governs`       | A policy has no `governs`, or no policy names it in `governs`                                                                                       |
 | `base`                 | Git can't read the last commit                                                                                                                      |
 
@@ -227,8 +232,10 @@ This layer sits on top of the [graph checks](graph-checks.md) and the [directive
 - Whether a change to `body`, `title`, or a pointer's trigger changes what an agent does. These count as routine, so a reviewer has to catch it.
 - A `broader` edge on a `proposed` node. It carries directives as soon as it exists, so moving a node can drop a rule before anyone reviews the move. The `status` change and the diff show it.
 - Whether a `deprecated` rule is reused under a new ID, or a deleted ID comes back with a new meaning
-- Whether a `basis` fits its source. The check reads only whether `sources` is empty, so `judgment` with a source passes, and so does `standard` on a blog post.
+- Whether a `basis` fits its source. The check reads only whether `sources` is empty and the form of each value, so `standard` on a blog post passes.
 - What a script does. The checks never read one, so a reviewer reads each script.
-- Who rejected an entity. The change rules let any entity move to `rejected`, so an `accepted` or `deprecated` one can get there in one step.
-- A name in a node. The `no-personal-data` directive states the rule, and a reviewer enforces it.
+- Who rejected an entity. Only a `proposed` entity can move to `rejected`, but nothing local can tell who made the change.
+- A name in a node. The `no-personal-data` directive states the rule, and a reviewer enforces it. The `email` check finds an email address, and an SSH remote such as `git@github.com:` reads as one too, so write the `https` form.
+- Secret material in a form that no pattern of the `secret` check knows. The check reads each line on its own, so a key split over two lines passes.
+- Whether a source page exists or says what the directive says. The checks run with no network.
 - Changes to `knowledge/governance/language/` and `knowledge/governance/schema/`. They have no `status`, so they reach a reviewer only through the diff.

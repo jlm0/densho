@@ -1,14 +1,18 @@
+from collections import Counter
 from dataclasses import dataclass
 from itertools import zip_longest
+from pathlib import PurePosixPath
 from typing import TYPE_CHECKING, cast
 
 from engine.compiler.tree import path_problems
-from engine.governance.base import read_head_file, tracked_files
+from engine.disciplines import read_answer
+from engine.governance.base import read_file_at, read_head_file, tracked_files
 from engine.governance.history_lines import (
     Entry,
     Recorded,
     digest,
     entity_lines,
+    field_digest,
     read_entries,
     replay,
 )
@@ -17,12 +21,15 @@ from engine.parser.node import node_folders, parse_tree
 from engine.parser.result import Problem
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Mapping, Sequence
     from pathlib import Path
 
     from engine.governance.history_lines import EntryKey
 
 TEMPLATE_FILE = "copier.yml"
+PARENT = "HEAD~1"
+DISCIPLINE_KIND = "ka:Discipline"
+BRANCHES_FOLDER = LANGUAGE_FOLDER / "branches"
 FILE = "file"
 FILE_FIELD = "bytes"
 HISTORY_CODES = ("history", "rewritten", "not-template", "changed", "not-staged", "write")
@@ -114,19 +121,97 @@ def _difference(
     return entries
 
 
-def history_drift(repository: Path) -> HistoryReport:
+def _drift(repository: Path) -> tuple[HistoryReport, dict[EntryKey, Recorded]]:
     path = repository / HISTORY_FILE
     entries, problems = read_entries(path)
     if problems:
-        return HistoryReport(0, (), [], problems)
+        return HistoryReport(0, (), [], problems), {}
     recorded, problems = replay(entries, path)
     if problems:
-        return HistoryReport(0, (), [], problems)
+        return HistoryReport(0, (), [], problems), {}
     current, problems = _tree_state(repository)
     if problems:
-        return HistoryReport(0, (), [], problems)
+        return HistoryReport(0, (), [], problems), {}
     change = entries[-1].change + 1 if entries else 1
-    return HistoryReport(change, tuple(_difference(recorded, current, change)), [], [])
+    entries_now = tuple(_difference(recorded, current, change))
+    return HistoryReport(change, entries_now, [], []), recorded
+
+
+def history_drift(repository: Path) -> HistoryReport:
+    report, recorded = _drift(repository)
+    if report.problems:
+        return report
+    answer, problems = read_answer(repository)
+    if problems:
+        return HistoryReport(0, (), [], problems)
+    kept, notes = _summarize_left_out(recorded, report.entries, answer)
+    return HistoryReport(report.change, tuple(kept), notes, [])
+
+
+def _left_out_folders(
+    recorded: Mapping[EntryKey, Recorded], answer: Sequence[str]
+) -> dict[str, PurePosixPath]:
+    kind = field_digest(DISCIPLINE_KIND)
+    return {
+        name: PurePosixPath(state.path).parent
+        for (entry_kind, name), state in recorded.items()
+        if entry_kind == "node" and state.content.get("kind") == kind and name not in answer
+    }
+
+
+def _folder_owner(path: str, folders: Mapping[str, PurePosixPath]) -> str | None:
+    location = PurePosixPath(path)
+    owners = [(len(folder.parts), name) for name, folder in folders.items()]
+    inside = [(depth, name) for depth, name in owners if location.is_relative_to(folders[name])]
+    return max(inside)[1] if inside else None
+
+
+def _owner(
+    entry: Entry, folders: Mapping[str, PurePosixPath], node_owners: Mapping[str, str]
+) -> str | None:
+    if entry.action != "removed":
+        return None
+    if entry.kind == FILE:
+        path = PurePosixPath(entry.path)
+        return node_owners.get(path.stem) if path.parent == BRANCHES_FOLDER else None
+    return _folder_owner(entry.path, folders)
+
+
+def _summarize_left_out(
+    recorded: Mapping[EntryKey, Recorded], entries: Sequence[Entry], answer: Sequence[str] | None
+) -> tuple[list[Entry], list[str]]:
+    if answer is None:
+        return list(entries), []
+    folders = _left_out_folders(recorded, answer)
+    node_owners = {
+        entry.id: owner
+        for entry in entries
+        if entry.kind == "node" and (owner := _owner(entry, folders, {})) is not None
+    }
+    counts: Counter[str] = Counter()
+    kept: list[Entry] = []
+    for entry in entries:
+        owner = _owner(entry, folders, node_owners)
+        if owner is None:
+            kept.append(entry)
+        else:
+            counts[owner] += 1
+    notes = [
+        f"{counts[name]} entities of {name} are not in this tree, "
+        "because disciplines leaves the discipline out."
+        for name in sorted(counts)
+    ]
+    return kept, notes
+
+
+def _first_difference(old: bytes, new: bytes) -> int:
+    pairs = zip_longest(old.split(b"\n"), new.split(b"\n"))
+    return next(number for number, (before, after) in enumerate(pairs, start=1) if before != after)
+
+
+def _loses_lines(head: bytes, parent: bytes) -> bool:
+    kept = set(head.split(b"\n"))
+    return any(line not in kept for line in parent.split(b"\n"))
 
 
 def _rewritten(repository: Path) -> list[Problem]:
@@ -140,12 +225,19 @@ def _rewritten(repository: Path) -> list[Problem]:
         data = b""
     except OSError:
         return []
+    parent = read_file_at(repository, PARENT, HISTORY_FILE)
+    if parent is not None and _loses_lines(head, parent):
+        if data.startswith(parent):
+            return []
+        message = (
+            "The last commit removed history lines, as a git revert does. "
+            f"Run git checkout {PARENT} -- {HISTORY_FILE}, then run the command again."
+        )
+        return [Problem(path, _first_difference(parent, data), "rewritten", message)]
     if data.startswith(head):
         return []
-    pairs = zip_longest(head.split(b"\n"), data.split(b"\n"))
-    line = next(number for number, (old, new) in enumerate(pairs, start=1) if old != new)
     message = "The history only grows. Restore this file from HEAD, then run the command again."
-    return [Problem(path, line, "rewritten", message)]
+    return [Problem(path, _first_difference(head, data), "rewritten", message)]
 
 
 def _append(repository: Path, entries: tuple[Entry, ...]) -> list[Problem]:
@@ -191,7 +283,7 @@ def record_history(repository: Path, *, verify: bool = False) -> HistoryReport:
     rewritten = _rewritten(repository)
     if rewritten:
         return HistoryReport(0, (), [], rewritten)
-    report = history_drift(repository)
+    report, _ = _drift(repository)
     if report.problems:
         return report
     written = _append(repository, report.entries) if report.entries else []

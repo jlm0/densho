@@ -405,6 +405,151 @@ def test_drift_with_no_history_lists_each_entity(tmp_path: Path) -> None:
     assert not (tmp_path / HISTORY_FILE).exists()
 
 
+DROPPED_NOTE = (
+    "4 entities of dropped are not in this tree, because disciplines leaves the discipline out."
+)
+
+
+def taxonomy_node(node_id: str, kind: str, broader: str, directive: str = "") -> str:
+    rules = (
+        f"\n## Directives\n\n- Run the check. ^{directive}\n  - scope: subtree\n"
+        "  - basis: judgment\n  - status: proposed\n  - origin: template\n"
+        if directive
+        else ""
+    )
+    return (
+        f"---\nid: {node_id}\nkind: {kind}\ntitle: {node_id.title()}\nstatus: proposed\n"
+        f"origin: template\nknowledge_type: domain\nbroader:\n  - {broader}\n---\n\n"
+        f"## Definition\n\nThe meaning of {node_id}.\n{rules}"
+    )
+
+
+def write_disciplines(folder: Path) -> None:
+    nodes = folder / "knowledge/nodes/domain"
+    files = {
+        "kept/node.md": taxonomy_node("kept", "ka:Discipline", "domain"),
+        "kept/near/node.md": taxonomy_node("near", "ka:Concept", "kept"),
+        "dropped/node.md": taxonomy_node("dropped", "ka:Discipline", "domain", "check-dropped"),
+        "dropped/far/node.md": taxonomy_node("far", "ka:Concept", "dropped"),
+    }
+    for name, text in files.items():
+        (nodes / name).parent.mkdir(parents=True, exist_ok=True)
+        (nodes / name).write_text(text, encoding="utf-8")
+    branches = folder / "knowledge/governance/language/branches"
+    for name in ("kept", "dropped"):
+        (branches / f"{name}.yaml").write_text("verbs: []\n", encoding="utf-8")
+
+
+def select_kept(folder: Path, answer: str | None = "disciplines: [kept]\n") -> None:
+    (folder / "copier.yml").unlink()
+    shutil.rmtree(folder / "knowledge/nodes/domain/dropped")
+    (folder / "knowledge/governance/language/branches/dropped.yaml").unlink()
+    if answer is not None:
+        (folder / ".copier-answers.yml").write_text(answer, encoding="utf-8")
+
+
+def test_drift_counts_the_entities_of_a_left_out_discipline(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    write_disciplines(tmp_path)
+    assert not record_history(tmp_path).problems
+    select_kept(tmp_path)
+    (tmp_path / "knowledge/nodes/domain/kept/near/node.md").unlink()
+    report = history_drift(tmp_path)
+    assert report.problems == []
+    assert report.notes == [
+        "4 entities of dropped are not in this tree, because disciplines leaves the discipline out."
+    ]
+    assert [(entry.id, entry.action) for entry in report.entries] == [("near", "removed")]
+
+
+def test_drift_with_no_answer_lists_each_removal(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    write_disciplines(tmp_path)
+    assert not record_history(tmp_path).problems
+    select_kept(tmp_path, None)
+    report = history_drift(tmp_path)
+    assert report.notes == []
+    assert sorted(entry.id for entry in report.entries) == [
+        "check-dropped",
+        "dropped",
+        "far",
+        "knowledge/governance/language/branches/dropped.yaml",
+    ]
+
+
+def test_drift_lists_a_change_inside_a_left_out_discipline(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    write_disciplines(tmp_path)
+    assert not record_history(tmp_path).problems
+    (tmp_path / "copier.yml").unlink()
+    (tmp_path / ".copier-answers.yml").write_text("disciplines: [kept]\n", encoding="utf-8")
+    replace(tmp_path / "knowledge/nodes/domain/dropped/far/node.md", "title: Far", "title: Near")
+    report = history_drift(tmp_path)
+    assert report.notes == []
+    assert [(entry.id, entry.action) for entry in report.entries] == [("far", "changed")]
+
+
+def test_drift_fails_on_a_bad_answer(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    record_history(tmp_path)
+    (tmp_path / ".copier-answers.yml").write_text("disciplines: kept\n", encoding="utf-8")
+    assert codes(history_drift(tmp_path).problems) == ["select"]
+
+
+def test_the_command_prints_the_count_of_each_left_out_discipline(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    write_disciplines(tmp_path)
+    assert not record_history(tmp_path).problems
+    select_kept(tmp_path)
+    result = RUNNER.invoke(app, ["history", str(tmp_path), "--drift"])
+    assert result.exit_code == 0
+    assert result.output.splitlines() == [
+        f"note: {DROPPED_NOTE}",
+        "0 entities differ from the history, 0 problems",
+    ]
+
+
+def test_drift_counts_a_nested_discipline_apart(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    write_disciplines(tmp_path)
+    nodes = tmp_path / "knowledge/nodes/domain/dropped"
+    (nodes / "inner/leaf").mkdir(parents=True)
+    (nodes / "inner/node.md").write_text(
+        taxonomy_node("inner", "ka:Discipline", "dropped"), encoding="utf-8"
+    )
+    (nodes / "inner/leaf/node.md").write_text(
+        taxonomy_node("leaf", "ka:Concept", "inner"), encoding="utf-8"
+    )
+    assert not record_history(tmp_path).problems
+    select_kept(tmp_path)
+    report = history_drift(tmp_path)
+    assert report.notes == [
+        DROPPED_NOTE,
+        "2 entities of inner are not in this tree, because disciplines leaves the discipline out.",
+    ]
+    assert report.entries == ()
+
+
+def test_record_writes_each_removal_when_the_answer_leaves_a_discipline_out(
+    tmp_path: Path,
+) -> None:
+    write_tree(tmp_path)
+    write_disciplines(tmp_path)
+    assert not record_history(tmp_path).problems
+    shutil.rmtree(tmp_path / "knowledge/nodes/domain/dropped")
+    (tmp_path / "knowledge/governance/language/branches/dropped.yaml").unlink()
+    (tmp_path / ".copier-answers.yml").write_text("disciplines: [kept]\n", encoding="utf-8")
+    report = record_history(tmp_path)
+    assert (report.notes, report.problems) == ([], [])
+    removed = sorted(entry.id for entry in lines_of(tmp_path) if entry.action == "removed")
+    assert removed == [
+        "check-dropped",
+        "dropped",
+        "far",
+        "knowledge/governance/language/branches/dropped.yaml",
+    ]
+
+
 def test_verify_writes_the_change_then_fails(tmp_path: Path) -> None:
     committed(tmp_path)
     replace(domain_file(tmp_path), "title: Domain", "title: Area")
@@ -478,6 +623,64 @@ def test_verify_keeps_a_problem_of_the_tree(tmp_path: Path) -> None:
     report = record_history(tmp_path, verify=True)
     assert report.problems
     assert "not-staged" not in codes(report.problems)
+
+
+REVERT_MESSAGE = (
+    "The last commit removed history lines, as a git revert does. "
+    f"Run git checkout HEAD~1 -- {HISTORY_FILE}, then run the command again."
+)
+
+
+def commit_title(folder: Path, old: str, new: str) -> None:
+    replace(domain_file(folder), f"title: {old}", f"title: {new}")
+    assert not record_history(folder).problems
+    git(folder, "add", "-A")
+    git(folder, "commit", "-qm", new)
+
+
+def test_a_revert_of_the_last_change_fails_the_next_check(tmp_path: Path) -> None:
+    committed(tmp_path)
+    commit_title(tmp_path, "Domain", "Area")
+    before = (tmp_path / HISTORY_FILE).read_bytes()
+    git(tmp_path, "revert", "--no-edit", "HEAD")
+    report = record_history(tmp_path, verify=True)
+    assert [(problem.code, problem.message) for problem in report.problems] == [
+        ("rewritten", REVERT_MESSAGE)
+    ]
+    assert report.problems[0].line == len(before.split(b"\n")) - 1
+    git(tmp_path, "checkout", "HEAD~1", "--", str(HISTORY_FILE))
+    (entry,) = record_history(tmp_path).entries
+    assert (entry.id, entry.action, entry.fields) == ("domain", "changed", ["title"])
+    assert (tmp_path / HISTORY_FILE).read_bytes().startswith(before)
+    git(tmp_path, "add", "-A")
+    git(tmp_path, "commit", "-qm", "record the revert")
+    assert record_history(tmp_path, verify=True).problems == []
+
+
+def test_a_commit_that_removes_an_older_line_fails_and_takes_the_restore(
+    tmp_path: Path,
+) -> None:
+    committed(tmp_path)
+    commit_title(tmp_path, "Domain", "Area")
+    commit_title(tmp_path, "Area", "Field")
+    full = (tmp_path / HISTORY_FILE).read_bytes()
+    lines = full.split(b"\n")
+    middle = next(index for index, line in enumerate(lines) if b'"change":2' in line)
+    (tmp_path / HISTORY_FILE).write_bytes(b"\n".join(lines[:middle] + lines[middle + 1 :]))
+    git(tmp_path, "commit", "-qam", "damage")
+    assert codes(record_history(tmp_path, verify=True).problems) == ["rewritten"]
+    git(tmp_path, "checkout", "HEAD~1", "--", str(HISTORY_FILE))
+    assert (tmp_path / HISTORY_FILE).read_bytes() == full
+    assert record_history(tmp_path).problems == []
+    git(tmp_path, "commit", "-qam", "restore")
+    assert record_history(tmp_path, verify=True).problems == []
+
+
+def test_a_commit_that_keeps_each_parent_line_passes(tmp_path: Path) -> None:
+    committed(tmp_path)
+    commit_title(tmp_path, "Domain", "Area")
+    commit_title(tmp_path, "Area", "Field")
+    assert record_history(tmp_path, verify=True).problems == []
 
 
 def test_a_rewritten_line_fails_at_its_line(tmp_path: Path) -> None:
@@ -791,6 +994,8 @@ def test_the_scripts_of_a_skill_are_one_field(tmp_path: Path) -> None:
     assert (changed.id, changed.fields) == ("review", ["scripts"])
     assert changed.content["scripts"] != first.content["scripts"]
     (scripts / "check.py").chmod(0o755)
+    (mode,) = record_history(tmp_path).entries
+    assert (mode.id, mode.fields) == ("review", ["scripts"])
     assert record_history(tmp_path).entries == ()
     (scripts / "check.py").unlink()
     (gone,) = record_history(tmp_path).entries

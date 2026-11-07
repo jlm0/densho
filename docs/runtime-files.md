@@ -201,7 +201,6 @@ A link in the body of a node resolves from the generated file, not from the node
 ## What it does not check yet
 
 - Whether a pattern in `paths` matches any file, or matches what the author meant.
-- Whether a skill ID is one that Claude Code reserves. It skips a skill named `synced` or `anthropic-skills`.
 - What a script does, or whether a script that git ignores in the source should ship.
 - Whether a token estimate holds. The 15,000 characters are an estimate, and a text with many long links can use more tokens for each character.
 - Whether a stale file that you deleted but didn't stage is gone from the commit, in `pre-commit run --all-files`. A real commit restores the file first, so the hook then removes it and fails.

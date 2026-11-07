@@ -51,7 +51,7 @@ This skill has two jobs: a pull and an upstream proposal. Do one job at a time. 
 5. Edit the node at the `path` of its drift line.
 6. Keep each `deleted` entity out of the project, unless the person asks for it.
 7. If the person declines a change to a file, run `git checkout HEAD -- <path>` on that file.
-8. Compare `.pre-commit-config.yaml` with `<clone>/.pre-commit-config.yaml.jinja`, and `.gitignore` with `<clone>/.gitignore.jinja`.
+8. Compare `.gitignore` with `<clone>/.gitignore.jinja`. The update merges `.pre-commit-config.yaml`, so step 5 lists a hunk that it cannot apply.
 9. Report each line that the template file adds.
 
 ### Finish the pull
@@ -100,7 +100,7 @@ After a pull, `knowledge/.ka/ka runtime --verify` passes, and the report names e
 
 Leave `status` out when you compare `fields`. A template `status` does not carry over, because `knowledge/.ka/ka adopt` sets it back.
 
-The last line of `knowledge/.ka/ka history --drift` is a count. Each other line is a JSON object.
+The last line of `knowledge/.ka/ka history --drift` is a count. A line that starts with `note:` gives the count of entities in a discipline that `disciplines` leaves out. Each other line is a JSON object.
 
 | Class               | Template line | Drift line                             | What the update does                           | What you do             |
 | ------------------- | ------------- | -------------------------------------- | ---------------------------------------------- | ----------------------- |

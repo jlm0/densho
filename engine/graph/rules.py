@@ -20,6 +20,8 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
 
+RESERVED_SKILL_NAMES = frozenset({"synced", "anthropic-skills"})
+
 
 def check_identity(items: Sequence[ParsedNode]) -> list[Problem]:
     problems: list[Problem] = []
@@ -82,11 +84,22 @@ def check_references(items: Sequence[ParsedNode]) -> list[Problem]:
     ]
 
 
+def _skill_message(skill: Skill) -> str | None:
+    if skill.id.casefold() in RESERVED_SKILL_NAMES:
+        return (
+            f"Claude Code reserves the skill name {skill.id}, so the skill does not load. "
+            "Choose another ID."
+        )
+    if not (skill.uses or skill.applies):
+        return "Add uses or applies, so the skill names what it needs."
+    return None
+
+
 def check_skills(items: Sequence[ParsedNode]) -> list[Problem]:
     return [
-        problem_at(item, ("id",), "skill", "Add uses or applies, so the skill names what it needs.")
+        problem_at(item, ("id",), "skill", message)
         for item in items
-        if isinstance(item.node, Skill) and not (item.node.uses or item.node.applies)
+        if isinstance(item.node, Skill) and (message := _skill_message(item.node)) is not None
     ]
 
 

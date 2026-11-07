@@ -26,6 +26,8 @@ if TYPE_CHECKING:
     from engine.parser.result import Problem
     from engine.template import SelectionReport
 
+REPOSITORY_HELP = "The folder that holds knowledge/."
+
 app = typer.Typer(add_completion=False, pretty_exceptions_enable=False, rich_markup_mode=None)
 
 
@@ -54,9 +56,7 @@ def parse(
 
 @app.command()
 def graph(
-    repository: Annotated[
-        Path, typer.Argument(help="The folder that holds knowledge/ and skills/.")
-    ] = Path(),
+    repository: Annotated[Path, typer.Argument(help=REPOSITORY_HELP)] = Path(),
 ) -> None:
     """Parse each node file, then check the whole graph."""
     items, problems = check_tree(repository)
@@ -65,9 +65,7 @@ def graph(
 
 @app.command()
 def language(
-    repository: Annotated[
-        Path, typer.Argument(help="The folder that holds governance/language/ and the nodes.")
-    ] = Path(),
+    repository: Annotated[Path, typer.Argument(help=REPOSITORY_HELP)] = Path(),
 ) -> None:
     """Check the language of each directive, trigger, and skill description."""
     count, problems = check_language(repository)
@@ -76,9 +74,7 @@ def language(
 
 @app.command()
 def directives(
-    repository: Annotated[
-        Path, typer.Argument(help="The folder that holds knowledge/ and skills/.")
-    ] = Path(),
+    repository: Annotated[Path, typer.Argument(help=REPOSITORY_HELP)] = Path(),
     at: Annotated[
         str | None, typer.Option(help="List the directives that apply at this node ID.")
     ] = None,
@@ -110,9 +106,7 @@ def directives(
 
 @app.command()
 def governance(
-    repository: Annotated[
-        Path, typer.Argument(help="The folder that holds knowledge/, skills/, and governance/.")
-    ] = Path(),
+    repository: Annotated[Path, typer.Argument(help=REPOSITORY_HELP)] = Path(),
     *,
     pending: Annotated[
         bool, typer.Option("--pending", help="List each proposed entity, and do not check.")
@@ -133,9 +127,7 @@ def governance(
 
 @app.command()
 def build(
-    repository: Annotated[
-        Path, typer.Argument(help="The folder that holds knowledge/, skills/, and governance/.")
-    ] = Path(),
+    repository: Annotated[Path, typer.Argument(help=REPOSITORY_HELP)] = Path(),
     *,
     proposals: Annotated[
         bool,
@@ -166,9 +158,7 @@ def build(
 
 @app.command()
 def runtime(
-    repository: Annotated[
-        Path, typer.Argument(help="The folder that holds knowledge/, skills/, and governance/.")
-    ] = Path(),
+    repository: Annotated[Path, typer.Argument(help=REPOSITORY_HELP)] = Path(),
     *,
     proposals: Annotated[
         bool,
@@ -205,9 +195,7 @@ def runtime(
 
 @app.command()
 def view(
-    repository: Annotated[
-        Path, typer.Argument(help="The folder that holds knowledge/, skills/, and governance/.")
-    ] = Path(),
+    repository: Annotated[Path, typer.Argument(help=REPOSITORY_HELP)] = Path(),
 ) -> None:
     """Run each check, then write a read-only site for people to build/view/."""
     report = write_view(repository)
@@ -234,9 +222,7 @@ def accept(
             help="Accept this node, each node under it, and each directive and exception on them."
         ),
     ] = None,
-    repository: Annotated[
-        Path, typer.Option(help="The folder that holds knowledge/, skills/, and governance/.")
-    ] = Path(),
+    repository: Annotated[Path, typer.Option(help=REPOSITORY_HELP)] = Path(),
     *,
     dry_run: Annotated[
         bool,
@@ -276,9 +262,7 @@ def _echo_selection(selection: SelectionReport | None) -> None:
 
 @app.command()
 def select(
-    repository: Annotated[
-        Path, typer.Argument(help="The folder that holds the installed knowledge.")
-    ] = Path(),
+    repository: Annotated[Path, typer.Argument(help=REPOSITORY_HELP)] = Path(),
 ) -> None:
     """Remove the template disciplines that the install answer leaves out, and their edges."""
     report = select_disciplines(repository)
@@ -290,9 +274,7 @@ def select(
 
 @app.command()
 def adopt(
-    repository: Annotated[
-        Path, typer.Argument(help="The folder that holds the installed knowledge.")
-    ] = Path(),
+    repository: Annotated[Path, typer.Argument(help=REPOSITORY_HELP)] = Path(),
     *,
     keep_accepted: Annotated[
         bool,
@@ -318,9 +300,7 @@ def adopt(
 
 @app.command()
 def history(
-    repository: Annotated[
-        Path, typer.Argument(help="The folder that holds the template.")
-    ] = Path(),
+    repository: Annotated[Path, typer.Argument(help=REPOSITORY_HELP)] = Path(),
     *,
     verify: Annotated[
         bool,
@@ -332,7 +312,11 @@ def history(
     drift: Annotated[
         bool,
         typer.Option(
-            "--drift", help="Print how this tree differs from the history, and write nothing."
+            "--drift",
+            help=(
+                "Print how this tree differs from the history, and write nothing. "
+                "Give a count for each discipline that the install answer leaves out."
+            ),
         ),
     ] = False,
 ) -> None:

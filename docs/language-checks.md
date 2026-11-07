@@ -145,8 +145,9 @@ spaCy loads only when there is text to check, and the rules in `grammar.yaml` co
 The model is statistical, so it can misread a sentence, and the checks lean toward letting a sentence through, because a false failure blocks a commit:
 
 - It often reads the last word of `The build passes.` as a plural noun. The check accepts that shape when the sentence has a determiner, which means a fragment such as `The test files.` also passes.
-- It can read the opening verb as a noun, so `Group fields by task.` looks like a group that fields something. A sentence reads as a statement only when its main word is a verb and its subject is more than one bare word. So `Test files pass.` fails, but `Build fails.` passes.
-- It can make a later word the main word of the sentence, as in `` Limit progressive disclosure to `2` levels. `` The check then reports a second action only if a comma, a colon, or `then` stands before that word.
+- It can read the opening verb as a noun, so `Group fields by task.` looks like a group that fields something. A one-word subject therefore makes a statement only when the verb can't be read as a plural noun. The check asks the WordNet noun list that ships in the spaCy model. So `Build fails.` fails, because no noun is spelled `fails`, but `Place labels near the field.` passes. A verb that is also a noun still slips through: `Build passes.` passes.
+- It can make a later word the main word of the sentence, as in `` Limit progressive disclosure to `2` levels. `` The check then reports a second action only if a comma, a colon, `then`, `and`, or `or` stands before that word, and the word reads as a verb in its base form. After an opening condition such as `If a test fails,`, it starts from the directive verb, not from the verb of the condition.
+- A noun in a list can still read as a second action. `Give a pause or stop control to each audio.` fails, because the model reads `stop` as a verb. Reword the list, or split the rule.
 
 If a good sentence still fails a structure check, reword it.
 

@@ -6,6 +6,7 @@ from typer.testing import CliRunner
 
 from engine.cli import app
 from engine.compiler.tree import checked_tree
+from engine.disciplines import read_answer
 from engine.template import SELECT_CODES, adopt_template, select_disciplines
 
 REPO = Path(__file__).resolve().parents[1]
@@ -312,6 +313,12 @@ def test_no_selection_changes_nothing(tmp_path: Path, answer: str | None) -> Non
     assert snapshot(tmp_path) == before
 
 
+@pytest.mark.parametrize("name", ["true", "null", "no", "on", "e5"])
+def test_each_answer_reads_as_text(tmp_path: Path, name: str) -> None:
+    (tmp_path / ANSWERS).write_text(f"disciplines: [{name}]\n", encoding="utf-8")
+    assert read_answer(tmp_path) == ([name], [])
+
+
 def test_a_missing_answer_keeps_each_discipline(tmp_path: Path) -> None:
     write_tree(tmp_path, None)
     assert select_disciplines(tmp_path).disciplines is None
@@ -323,6 +330,8 @@ def test_a_missing_answer_keeps_each_discipline(tmp_path: Path) -> None:
         ("disciplines: [alpha\n", "The file is not valid YAML."),
         ("disciplines: alpha\n", "disciplines must be a list of discipline IDs."),
         ("disciplines: [alpha, 3]\n", "disciplines must be a list of discipline IDs."),
+        ("disciplines: [alpha, [beta]]\n", "disciplines must be a list of discipline IDs."),
+        ("disciplines: [Alpha]\n", "disciplines must be a list of discipline IDs."),
     ],
 )
 def test_a_bad_answer_is_a_problem(tmp_path: Path, answer: str, message: str) -> None:

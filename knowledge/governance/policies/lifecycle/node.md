@@ -48,7 +48,7 @@ The states of a node, a directive, or an exception. `proposed` means that an aut
   - basis: judgment
   - status: proposed
   - origin: template
-- Before you reject a node, reject or move each `proposed` or `accepted` directive and exception in it. ^reject-the-contents
+- Before you reject a node, leave no `proposed` or `accepted` directive or exception in it. ^reject-the-contents
   - scope: node
   - basis: judgment
   - status: proposed

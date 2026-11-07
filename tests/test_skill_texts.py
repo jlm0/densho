@@ -13,6 +13,8 @@ from typer.main import get_command
 
 from engine.cli import app
 from engine.generated.metamodel import Invocation, Root, Skill
+from engine.governance import check_items as check_governance_items
+from engine.graph.rules import RESERVED_SKILL_NAMES
 from engine.language import check_items
 from engine.language.form import HARD_LEVEL
 from engine.language.profile import LanguageProfile, read_profile
@@ -272,6 +274,8 @@ def name_problems(name: str, folder: str) -> list[str]:
         problems.append("form")
     if len(name) > MAX_NAME_CHARACTERS:
         problems.append("length")
+    if name.casefold() in RESERVED_SKILL_NAMES:
+        problems.append("reserved")
     return problems
 
 
@@ -578,6 +582,21 @@ def test_the_skeleton_parses_as_a_proposed_node(text: str, skill: GlobalSkill) -
     assert skeleton_source_problems(result, skill) == []
 
 
+def test_the_skeleton_passes_the_governance_checks(text: str, skill: GlobalSkill) -> None:
+    result = skeleton_result(text, skill)
+    assert isinstance(result, ParsedNode), result
+    assert [str(problem) for problem in check_governance_items([result], REPO)] == []
+
+
+def test_the_migration_skeleton_cites_its_source_line_in_signals() -> None:
+    result = skeleton_result(MIGRATE.path.read_text(encoding="utf-8"), MIGRATE)
+    assert isinstance(result, ParsedNode), result
+    assert [directive.sources for directive in result.node.directives or []] == [None]
+    assert "## Signals\n\n- `use-whole-words`: 2026-11-06, migration. `rules/coding.md:14`." in (
+        result.node.body or ""
+    )
+
+
 def test_a_template_skeleton_without_a_source_fails() -> None:
     text = AUTHOR.path.read_text(encoding="utf-8")
     changed = text.replace("  - sources: https://example.com/error-messages\n", "", 1)
@@ -641,6 +660,8 @@ def test_the_name_has_the_form_of_a_skill_name(text: str, skill: GlobalSkill) ->
         (MIGRATE.name, "other-folder", "folder"),
         ("Migrate_It", "Migrate_It", "form"),
         ("a" * (MAX_NAME_CHARACTERS + 1), "a" * (MAX_NAME_CHARACTERS + 1), "length"),
+        ("synced", "synced", "reserved"),
+        ("anthropic-skills", "anthropic-skills", "reserved"),
     ],
 )
 def test_a_bad_name_fails(name: str, folder: str, code: str) -> None:

@@ -19,6 +19,7 @@ CHANGE_CODES = (
     "removed-accepted",
 )
 CLOSED_STATUSES = frozenset({Status.deprecated, Status.rejected})
+OUT_OF_PROPOSAL = frozenset({Status.accepted, Status.deprecated})
 
 
 def _report(entity: Entity, code: str, message: str) -> Problem:
@@ -34,11 +35,24 @@ def _changed_fields(old: Entity, new: Entity) -> str:
     return ", ".join(sorted(fields))
 
 
+def _rejection_message(old: Entity, new: Entity) -> str | None:
+    if new.status != Status.rejected or old.status not in OUT_OF_PROPOSAL:
+        return None
+    if old.status == Status.accepted:
+        return (
+            f"HEAD has {new.label} as accepted. Set it to deprecated. A person rejects a proposal."
+        )
+    return f"HEAD has {new.label} as deprecated. Keep it deprecated. A person rejects a proposal."
+
+
 def _transition_problems(old: Entity, new: Entity) -> list[Problem]:
     problems: list[Problem] = []
     if old.origin != new.origin:
         message = f"Keep the origin of {new.label}. HEAD has {old.origin}."
         problems.append(_report(new, "origin-change", message))
+    rejection = _rejection_message(old, new)
+    if rejection is not None:
+        problems.append(_report(new, "status-jump", rejection))
     if new.status != Status.accepted:
         return problems
     changed = _changed_fields(old, new)
@@ -70,11 +84,25 @@ def _new_status_message(
     )
 
 
+def _removed_message(old: Entity, discipline: str | None) -> str:
+    if discipline is None:
+        return (
+            f"HEAD has {old.label} as accepted. Set its status to deprecated in one commit, "
+            "and remove it in a later commit."
+        )
+    return (
+        f"HEAD has {old.label} as accepted, and disciplines leaves out {discipline}. "
+        f"Put {discipline} back in disciplines, and set each accepted entity of {discipline} "
+        "to deprecated in one commit. Then leave it out in a later pull."
+    )
+
+
 def check_changes(
     base: Mapping[EntityKey, Entity],
     current: Mapping[EntityKey, Entity],
     unreadable: Collection[Path] = (),
     template_accepted: Collection[EntityKey] | None = None,
+    left_out: Mapping[EntityKey, str] | None = None,
 ) -> list[Problem]:
     problems: list[Problem] = []
     for key, new in current.items():
@@ -87,9 +115,6 @@ def check_changes(
                 problems.append(_report(new, "new-status", message))
     for key, old in base.items():
         if key not in current and old.status == Status.accepted and old.kind != EXCEPTION:
-            message = (
-                f"HEAD has {old.label} as accepted. Set its status to deprecated in one commit, "
-                "and remove it in a later commit."
-            )
+            message = _removed_message(old, (left_out or {}).get(key))
             problems.append(_report(old, "removed-accepted", message))
     return problems

@@ -136,7 +136,7 @@ A node or an exception holds the fields in its front matter. A directive holds t
 
 - Write the reason in one line, in the words of the person, with no name and no email.
 - Write the reason as plain text, with no backticks. The parser rejects a code span inside the value.
-- Before you reject a node, reject or move each `proposed` or `accepted` directive and exception in it.
+- Before you reject a node, leave no `proposed` or `accepted` directive or exception in it.
 - Before you reject an entity, remove each reference to it from the entities that are not `rejected`.
 
 ### Commands

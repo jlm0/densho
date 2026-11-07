@@ -619,6 +619,24 @@ def test_a_skill_needs_uses_or_applies(tree: Tree) -> None:
     assert tree.problems() == [tree.expect("review", "id: review", "skill", NO_SKILL_EDGE)]
 
 
+@pytest.mark.parametrize("name", ["synced", "anthropic-skills"])
+def test_a_skill_with_a_reserved_name_fails(tree: Tree, name: str) -> None:
+    tree.change("root", pointers=[text_pointer("design"), skill_pointer(name)])
+    tree.change("review", id=name)
+    message = (
+        f"Claude Code reserves the skill name {name}, so the skill does not load. "
+        "Choose another ID."
+    )
+    assert tree.problems() == [tree.expect("review", f"id: {name}", "skill", message)]
+
+
+@pytest.mark.parametrize("name", ["synced-notes", "anthropic", "skills"])
+def test_a_skill_name_near_a_reserved_name_passes(tree: Tree, name: str) -> None:
+    tree.change("root", pointers=[text_pointer("design"), skill_pointer(name)])
+    tree.change("review", id=name)
+    assert tree.problems() == []
+
+
 def test_empty_uses_and_applies_do_not_count(tree: Tree) -> None:
     tree.change("review", uses=[], applies=[])
     assert tree.problems() == [tree.expect("review", "id: review", "skill", NO_SKILL_EDGE)]

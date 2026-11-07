@@ -2,6 +2,8 @@ import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from typer.core import TyperGroup
+from typer.main import get_command
 from typer.testing import CliRunner
 
 from engine.cli import app
@@ -284,3 +286,34 @@ def test_directives_at_stops_on_a_graph_problem(tmp_path: Path) -> None:
     assert result.exit_code == 1
     assert ": reference: broader names 'missing'" in result.output
     assert "run-tests (" not in result.output
+
+
+def _folder_options() -> list[tuple[str, str]]:
+    command = get_command(app)
+    assert isinstance(command, TyperGroup)
+    return [
+        (name, str(getattr(param, "help", None)))
+        for name, sub in command.commands.items()
+        for param in sub.params
+        if param.name == "repository"
+    ]
+
+
+def test_each_command_with_a_folder_gives_the_same_help() -> None:
+    found = _folder_options()
+    assert {name for name, _ in found} == set(get_command_names()) - {"parse"}
+    assert {text for _, text in found} == {"The folder that holds knowledge/."}
+
+
+def test_the_help_of_each_command_names_no_old_folder() -> None:
+    for name in get_command_names():
+        output = RUNNER.invoke(app, [name, "--help"]).output
+        assert "governance/language/ and" not in output, name
+        assert "skills/, and governance/" not in output, name
+        assert "holds the template." not in output, name
+
+
+def get_command_names() -> list[str]:
+    command = get_command(app)
+    assert isinstance(command, TyperGroup)
+    return sorted(command.commands)

@@ -4,7 +4,7 @@ import re
 import shutil
 import subprocess
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import copier
 import pytest
@@ -188,11 +188,39 @@ def test_each_generated_file_keeps_the_marker(installed: Path) -> None:
         assert is_generated((installed / name).read_bytes()), name
 
 
+def answers_of(project: Path) -> dict[str, object]:
+    text = (project / ".copier-answers.yml").read_text(encoding="utf-8")
+    return cast("dict[str, object]", YAML(typ="base").load(text))
+
+
+def write_selection(project: Path, selection: list[str]) -> None:
+    answers = project / ".copier-answers.yml"
+    kept = [
+        line
+        for line in answers.read_text(encoding="utf-8").splitlines()
+        if not line.startswith(("disciplines:", "- "))
+    ]
+    lines = [*kept, f"disciplines: [{', '.join(selection)}]", ""]
+    answers.write_text("\n".join(lines), encoding="utf-8")
+
+
+def test_an_answer_that_reads_as_a_number_in_yaml_1_2_stays_text(tmp_path: Path) -> None:
+    (tmp_path / ".copier-answers.yml").write_text(
+        "_commit: 12345e6\nstarted_from: 12345e6abc\nkeep_template_status: false\n",
+        encoding="utf-8",
+    )
+    assert answers_of(tmp_path) == {
+        "_commit": "12345e6",
+        "started_from": "12345e6abc",
+        "keep_template_status": "false",
+    }
+
+
 def test_the_answers_record_the_template_base(source: Path, installed: Path) -> None:
-    answers = YAML(typ="safe").load((installed / ".copier-answers.yml").read_text(encoding="utf-8"))
+    answers = answers_of(installed)
     head = git(source, "rev-parse", "HEAD").strip()
     assert answers["started_from"] == head
-    assert head.startswith(answers["_commit"])
+    assert head.startswith(str(answers["_commit"]))
     assert answers["_src_path"] == source.as_posix()
 
 
@@ -247,6 +275,77 @@ def test_the_rejected_hunk_hook_finds_a_file(installed: Path) -> None:
     pattern = config["repos"][0]["hooks"][1]["files"]
     assert re.search(pattern, "knowledge/node.md.rej")
     assert not re.search(pattern, "knowledge/node.md")
+
+
+PLANTED_HOOK = """      - id: planted-hook
+        name: a hook that a later template adds
+        entry: Remove the planted hook.
+        language: fail
+"""
+
+
+def committed_project(source: Path, folder: Path) -> Path:
+    install(source, folder)
+    git(folder, "init", "-q", "--template=", "--initial-branch=main")
+    git(folder, "config", "user.name", "Test")
+    git(folder, "config", "user.email", "test@example.com")
+    git(folder, "add", "-A")
+    git(folder, "commit", "-qm", "install")
+    return folder
+
+
+def add_template_hook(template: Path) -> None:
+    hooks = template / ".pre-commit-config.yaml.jinja"
+    text = hooks.read_text(encoding="utf-8")
+    hooks.write_text(text.rstrip(" ") + PLANTED_HOOK, encoding="utf-8")
+    git(template, "commit", "-qam", "add a hook")
+
+
+def pull(project: Path) -> None:
+    copier.run_update(
+        str(project),
+        defaults=True,
+        skip_tasks=True,
+        overwrite=True,
+        unsafe=True,
+        vcs_ref="HEAD",
+        quiet=True,
+    )
+
+
+def hook_ids(project: Path) -> list[str]:
+    config = YAML(typ="safe").load(
+        (project / ".pre-commit-config.yaml").read_text(encoding="utf-8")
+    )
+    return [hook["id"] for hook in config["repos"][0]["hooks"]]
+
+
+def test_a_pull_brings_a_new_template_hook(source: Path, tmp_path: Path) -> None:
+    template = tmp_path / "template"
+    git(source, "clone", "-q", str(source), str(template))
+    project = committed_project(template, tmp_path / "project")
+    assert "planted-hook" not in hook_ids(project)
+    add_template_hook(template)
+    pull(project)
+    assert hook_ids(project)[-1] == "planted-hook"
+    assert not list(project.rglob("*.rej"))
+
+
+def test_a_pull_keeps_a_project_hook_beside_a_new_template_hook(
+    source: Path, tmp_path: Path
+) -> None:
+    template = tmp_path / "template"
+    git(source, "clone", "-q", str(source), str(template))
+    project = committed_project(template, tmp_path / "project")
+    hooks = project / ".pre-commit-config.yaml"
+    own = "  - repo: https://github.com/example/hooks\n    rev: v1\n    hooks:\n      - id: own\n"
+    hooks.write_text(hooks.read_text(encoding="utf-8") + own, encoding="utf-8")
+    git(project, "commit", "-qam", "own hook")
+    add_template_hook(template)
+    pull(project)
+    text = hooks.read_text(encoding="utf-8")
+    assert "planted-hook" in text
+    assert "id: own" in text
 
 
 def test_the_ignore_file_covers_the_build_output(installed: Path) -> None:
@@ -399,9 +498,9 @@ def test_the_status_question_keeps_nothing_by_default() -> None:
 
 
 def test_the_default_install_records_both_answers(installed: Path) -> None:
-    answers = YAML(typ="safe").load((installed / ".copier-answers.yml").read_text(encoding="utf-8"))
+    answers = answers_of(installed)
     assert answers["disciplines"] == list(settings()["disciplines"]["choices"].values())
-    assert answers["keep_template_status"] is False
+    assert answers["keep_template_status"] == "false"
 
 
 @pytest.mark.parametrize(
@@ -428,11 +527,7 @@ def test_each_single_selection_passes_each_check(
 ) -> None:
     project = tmp_path / "project"
     shutil.copytree(installed, project)
-    answers = project / ".copier-answers.yml"
-    data = YAML(typ="safe").load(answers.read_text(encoding="utf-8"))
-    data["disciplines"] = selection
-    with answers.open("w", encoding="utf-8") as stream:
-        YAML(typ="safe").dump(data, stream)
+    write_selection(project, selection)
     report = select_disciplines(project)
     assert report.problems == []
     assert set(selection) <= set(report.disciplines or ())

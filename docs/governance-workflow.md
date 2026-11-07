@@ -145,28 +145,30 @@ A project owns its copy, so it can change or delete anything it received, and no
 
 `origin` records who added an entity, so it does not change, and the template ships no workspace knowledge. A project can add domain knowledge of its own.
 
-A first commit has no history to compare with, so a template copied into a new repo keeps its statuses. In a repo that already has history, everything from the template counts as new. It arrives as `proposed`, and a person accepts it in one commit. [The install](template-packaging.md#which-status-knowledge-arrives-with) sets those statuses for you, and a later pull follows the same rule.
+Everything from the template counts as new, in a new repo and in one with history. It arrives as `proposed`, and a person accepts it. [The install](template-packaging.md#which-status-knowledge-arrives-with) sets those statuses for you, and a later pull follows the same rule.
+
+The install can also keep what the template already accepted. Then `new-status` lets an `accepted` entity through when the template's `knowledge/.ka/history.jsonl` holds its last line as `accepted`, with the same digest for each field. This narrow pass holds only while the last commit has no `knowledge/.ka/history.jsonl`, so it covers the install commit and never a pull. A history file that doesn't parse or replay gives no pass.
 
 ## What fails
 
-| Code                   | What fails                                                                                                                |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `new-status`           | An entity that the last commit does not have, with a status other than `proposed`                                         |
-| `promotion-change`     | One commit accepts an entity and also changes a field that needs review                                                   |
-| `accepted-change`      | An entity stays `accepted`, and a field that needs review changes                                                         |
-| `status-jump`          | An entity goes from `deprecated` or `rejected` straight to `accepted`                                                     |
-| `origin-change`        | The `origin` of a node or a directive changes                                                                             |
-| `removed-accepted`     | An `accepted` node or directive leaves the tree                                                                           |
-| `template-workspace`   | `origin: template` on a workspace node, or on a directive in one                                                          |
-| `deprecated-holder`    | A `deprecated` node holds a directive that is `proposed` or `accepted`                                                    |
-| `deprecated-reference` | A live entity names a `deprecated` one in `broader`, `uses`, `depends_on`, `implements`, `also_attached_to`, or `refines` |
-| `rejected-reason`      | A `rejected` entity has no `rejection_reason`                                                                             |
-| `rejected-holder`      | A `rejected` node holds a directive or an exception that is `proposed` or `accepted`                                      |
-| `rejected-reference`   | An entity that isn't `rejected`, and isn't in a `rejected` node, names a `rejected` one in any reference                  |
-| `rejected-root`        | The root is `rejected`                                                                                                    |
-| `basis`                | A directive with no `sources` has a `basis` other than `judgment`                                                         |
-| `policy-governs`       | A policy has no `governs`, or no policy names it in `governs`                                                             |
-| `base`                 | Git can't read the last commit                                                                                            |
+| Code                   | What fails                                                                                                                                          |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `new-status`           | An entity that the last commit does not have, with a status other than `proposed`, unless the [narrow pass](#knowledge-from-the-template) covers it |
+| `promotion-change`     | One commit accepts an entity and also changes a field that needs review                                                                             |
+| `accepted-change`      | An entity stays `accepted`, and a field that needs review changes                                                                                   |
+| `status-jump`          | An entity goes from `deprecated` or `rejected` straight to `accepted`                                                                               |
+| `origin-change`        | The `origin` of a node or a directive changes                                                                                                       |
+| `removed-accepted`     | An `accepted` node or directive leaves the tree                                                                                                     |
+| `template-workspace`   | `origin: template` on a workspace node, or on a directive in one                                                                                    |
+| `deprecated-holder`    | A `deprecated` node holds a directive that is `proposed` or `accepted`                                                                              |
+| `deprecated-reference` | A live entity names a `deprecated` one in `broader`, `uses`, `depends_on`, `implements`, `also_attached_to`, or `refines`                           |
+| `rejected-reason`      | A `rejected` entity has no `rejection_reason`                                                                                                       |
+| `rejected-holder`      | A `rejected` node holds a directive or an exception that is `proposed` or `accepted`                                                                |
+| `rejected-reference`   | An entity that isn't `rejected`, and isn't in a `rejected` node, names a `rejected` one in any reference                                            |
+| `rejected-root`        | The root is `rejected`                                                                                                                              |
+| `basis`                | A directive with no `sources` has a `basis` other than `judgment`                                                                                   |
+| `policy-governs`       | A policy has no `governs`, or no policy names it in `governs`                                                                                       |
+| `base`                 | Git can't read the last commit                                                                                                                      |
 
 The state rules need only the working tree. The change rules also need a last commit, and the command prints a `note:` and skips them when:
 
@@ -220,6 +222,7 @@ This layer sits on top of the [graph checks](graph-checks.md) and the [directive
 ## What it does not check yet
 
 - Who approved a change. Nothing local can. See the table above.
+- Where `knowledge/.ka/history.jsonl` came from. The narrow pass reads the working copy, so an edited file in the install commit can let an `accepted` entity through.
 - Old commits. The comparison covers one step, from the last commit to the working tree.
 - Whether a change to `body`, `title`, or a pointer's trigger changes what an agent does. These count as routine, so a reviewer has to catch it.
 - A `broader` edge on a `proposed` node. It carries directives as soon as it exists, so moving a node can drop a rule before anyone reviews the move. The `status` change and the diff show it.

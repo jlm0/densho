@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-This layer installs the template into a project, records which template commit the project started from, and keeps a change history that agents can read. [Copier](https://copier.readthedocs.io/) does the copy and the later merge.
+This layer installs the template into a project, lets the project choose its disciplines, records which template commit the project started from, and keeps a change history that agents can read. [Copier](https://copier.readthedocs.io/) does the copy and the later merge.
 
 A project receives one copy, and from then on it owns that copy. It can change and grow anything it received, so drift from the template is expected. Nothing pins a project's knowledge to a template version, and nothing forces it to pull a change.
 
@@ -27,8 +27,8 @@ Leave out `git init` if the folder already holds a repo. Each new clone of the p
 
 The flags each have a reason:
 
-- `--trust` lets Copier run the one command that the template asks for after the copy, `knowledge/.ka/ka adopt`.
-- `--defaults` accepts the only question, which records the start commit.
+- `--trust` lets Copier run the template's commands: `knowledge/.ka/ka adopt` after the copy, and `knowledge/.ka/ka select` during a pull.
+- `--defaults` accepts the default answer to [each question](#the-questions): every discipline, and each entity as `proposed`.
 - `--vcs-ref=HEAD` takes the latest commit. The template has no tags yet, and Copier picks the latest tag once one exists.
 - `--python 3.14` keeps uvx away from an old system Python, which resolves a Copier too old for this template.
 
@@ -36,18 +36,54 @@ Install from the URL, not from a local checkout. A checkout with uncommitted cha
 
 Don't install over your own `knowledge/`. Copier overwrites a file at the same path: in a terminal it asks about each file and the default answer is yes, and without a terminal it stops with an error and leaves a partial copy. Rename that folder first, then bring its content back as nodes.
 
+## The questions
+
+Two questions decide what you get, and `--defaults` takes the default answer to both. Leave out `--defaults` to answer in a terminal, or pass an answer with `--data`:
+
+```sh
+uvx --python 3.14 copier copy --trust --defaults --vcs-ref=HEAD \
+  --data 'disciplines=[ui-ux-design, brand-design]' \
+  --data keep_template_status=true \
+  https://github.com/jlm0/knowledge-architecture.git .
+```
+
+| Question               | Default  | What it decides                                                                                                                       |
+| ---------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `disciplines`          | All four | Which disciplines the project receives: `software-engineering`, `ui-ux-design`, `product-strategy`, and `brand-design`                |
+| `keep_template_status` | `false`  | Whether what the template accepted stays `accepted`. See [which status knowledge arrives with](#which-status-knowledge-arrives-with). |
+
+A third question, `started_from`, records the start commit, so keep its default. Copier records each answer in `.copier-answers.yml`, and a pull reuses them.
+
+### Choose the disciplines
+
+A discipline brings its practice areas and concepts, with their directives. A node belongs to each discipline that its `broader` chain reaches. Everything that belongs to no discipline always arrives: the root, the domain node, the governance policies, and the language files.
+
+Leaving a discipline out removes:
+
+- Each of its nodes, and its branch vocabulary in `knowledge/governance/language/branches/`.
+- Each skill that uses or applies something you left out. A skill that draws only on what you keep, or only on the governance, arrives.
+- Each `informs`, `related`, `also_attached_to`, or `refines` entry, and each pointer, that names something you left out. The node or directive that held it stays.
+
+If a node you keep `depends_on` a node in another discipline, the install adds that discipline and prints a note. Brand design is an example: a brand positioning statement depends on the positioning components of product strategy, so `[brand-design]` brings product strategy too.
+
+A link of any other kind to something you left out, such as `broader`, `uses`, or `conflicts_with`, stops the command with `select`, and no file changes. The template has no such link, and its tests install each discipline on its own to keep it that way.
+
+`knowledge/.ka/ka select` applies the answer, and `knowledge/.ka/ka adopt` runs it first. It reads `disciplines` from `.copier-answers.yml`, and without that key it keeps everything. During a pull, Copier runs it on each copy that it renders, so a discipline you left out doesn't come back, and a link it removed doesn't show up as a template change.
+
 ## What a project receives
 
-| Path                                                                              | What it is                                      |
-| --------------------------------------------------------------------------------- | ----------------------------------------------- |
-| `knowledge/node.md`, `knowledge/nodes/`, `knowledge/skills/`                      | The nodes                                       |
-| `knowledge/governance/language/`, `knowledge/governance/policies/`                | The grammar, the vocabularies, and the policies |
-| `knowledge/governance/schema/metamodel.yaml`                                      | The schema, as a reference for an author        |
-| `knowledge/.ka/ka`, `knowledge/.ka/engine-constraints.txt`                        | The way to the engine                           |
-| `knowledge/.ka/history.jsonl`                                                     | The change history                              |
-| `AGENTS.md`, `.claude/references/`, `.claude/rules/knowledge/`, `.claude/skills/` | The [runtime files](runtime-files.md)           |
-| `.pre-commit-config.yaml`, `.gitignore`                                           | The git hook and the ignore rule for `build/`   |
-| `.copier-answers.yml`                                                             | The record of the template commit               |
+| Path                                                                              | What it is                                         |
+| --------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `knowledge/node.md`, `knowledge/nodes/`, `knowledge/skills/`                      | The nodes                                          |
+| `knowledge/governance/language/`, `knowledge/governance/policies/`                | The grammar, the vocabularies, and the policies    |
+| `knowledge/governance/schema/metamodel.yaml`                                      | The schema, as a reference for an author           |
+| `knowledge/.ka/ka`, `knowledge/.ka/engine-constraints.txt`                        | The way to the engine                              |
+| `knowledge/.ka/history.jsonl`                                                     | The change history                                 |
+| `AGENTS.md`, `.claude/references/`, `.claude/rules/knowledge/`, `.claude/skills/` | The [runtime files](runtime-files.md)              |
+| `.pre-commit-config.yaml`, `.gitignore`                                           | The git hook and the ignore rule for `build/`      |
+| `.copier-answers.yml`                                                             | The record of the template commit and your answers |
+
+A [selection](#choose-the-disciplines) narrows `knowledge/nodes/`, `knowledge/skills/`, the branch vocabularies, and the runtime files.
 
 That's the whole list. A project receives no engine source, tests, docs, or lock file. `copier.yml` names each path that a project receives and excludes everything else, so a file that no one listed can't reach a project, even a file that git ignores on the machine that runs the install. Everything under `knowledge/` ships, so the template keeps its own tool files elsewhere: the schema lint settings and the model template sit in `engine/schema/`.
 
@@ -55,22 +91,29 @@ That's the whole list. A project receives no engine source, tests, docs, or lock
 
 `.copier-answers.yml` records where a project came from. Don't edit it.
 
-| Key            | What it holds                                                      |
-| -------------- | ------------------------------------------------------------------ |
-| `started_from` | The full hash of the first template commit. It never changes.      |
-| `_commit`      | The template commit that the project last pulled. A pull moves it. |
-| `_src_path`    | The source of the install                                          |
+| Key                    | What it holds                                                            |
+| ---------------------- | ------------------------------------------------------------------------ |
+| `started_from`         | The full hash of the first template commit. It never changes.            |
+| `_commit`              | The template commit that the project last pulled. A pull moves it.       |
+| `_src_path`            | The source of the install                                                |
+| `disciplines`          | Your choice of [disciplines](#choose-the-disciplines). A pull reuses it. |
+| `keep_template_status` | Your answer at the install. A pull doesn't read it.                      |
 
 ## Which status knowledge arrives with
 
 The [governance workflow](governance-workflow.md#knowledge-from-the-template) sets the rule, and `ka adopt` applies it. The install runs the command for you.
 
-- In a folder with no commit yet, each entity keeps its status. There's no history to compare with, so a person reviews the whole copy in the first commit.
-- In a repo with history, each entity that the last commit doesn't hold arrives as `proposed`, and the command lists it. `knowledge/.ka/ka governance --pending` lists it again later, and a person accepts it in one commit.
+By default each entity arrives as `proposed`, in an empty folder and in a repo with history alike, and the command lists it. `knowledge/.ka/ka governance --pending` lists it again later, and a person accepts it.
 
-A pull follows the same rule. Anything new or changed in a reviewed field arrives as `proposed`. The template can't promote an entity in your project either: a status that becomes `accepted` in a pull goes back to `proposed`, even when nothing else changed.
+If you answer yes to `keep_template_status`, an entity that the template accepted keeps `accepted`, as long as you receive the same content that the template accepted. The template's `knowledge/.ka/history.jsonl` decides: its last line for the entity must say `accepted`, and each field digest must match. `knowledge/.ka/ka adopt --keep-accepted` applies this answer. Everything else still arrives as `proposed`, and the git hook runs the same test, so the install commit passes.
 
-If an entity was `deprecated` or `rejected` in the template, it loses that mark when it arrives as `proposed`. The command prints a note, so you can set it back. A rejected entity keeps its `rejection_reason`, so you can read why the template turned it down.
+Answer yes only if you accept that content for your project, because each accepted directive is in force from the first commit. Today the template has accepted nothing, so the answer changes nothing yet.
+
+A selection changes some entities: removing a link changes the node or directive that held it. Such an entity no longer matches the template's history, so it arrives as `proposed` with either answer. With only `ui-ux-design`, that's three nodes and one directive, if the template had accepted them.
+
+A pull follows the stricter rule, whatever you answered at the install. Anything new or changed in a reviewed field arrives as `proposed`. The template can't promote an entity in your project either: a status that becomes `accepted` in a pull goes back to `proposed`, even when nothing else changed. Once the last commit holds `knowledge/.ka/history.jsonl`, `--keep-accepted` keeps nothing and prints a note, and the hook stops a new `accepted` entity.
+
+If an entity was `deprecated` or `rejected` in the template, it loses that mark when it arrives as `proposed`, with either answer. The command prints a note, so you can set it back. A rejected entity keeps its `rejection_reason`, so you can read why the template turned it down.
 
 ## Your own files
 
@@ -123,13 +166,23 @@ Pulling is optional. Commit your work first, because Copier needs a clean tree.
 uvx --python 3.14 copier update --trust --defaults --vcs-ref=HEAD
 ```
 
-Copier replays your changes on a new copy of the template. It asks for `--trust` because the template holds a task, although the task runs only on an install.
+Copier replays your changes on a new copy of the template. It asks for `--trust` because it runs `knowledge/.ka/ka select` on each copy that it renders, which keeps your choice of disciplines.
 
 Resolve any conflict, then run `knowledge/.ka/ka adopt`, read the result, and commit. The hook stops the commit if you skip a step.
 
 Your `started_from` stays. `_commit`, the engine pin, and `knowledge/.ka/history.jsonl` move. Copier doesn't merge the generated files, so they never conflict, and `knowledge/.ka/ka adopt` writes them again. It also removes a generated file that a pull brought back for a node you deleted.
 
 `.pre-commit-config.yaml` and `.gitignore` stay as they are too, so a hook that the template adds later doesn't reach you. Compare the two files by hand when you pull.
+
+### Change the disciplines
+
+A pull can change your answer. Pass the whole new list:
+
+```sh
+uvx --python 3.14 copier update --trust --defaults --vcs-ref=HEAD --data 'disciplines=[ui-ux-design, software-engineering]'
+```
+
+A discipline you add arrives as `proposed`, like anything new in a pull, and the links to it come back. A discipline you drop leaves the tree. If it holds `accepted` entities, `knowledge/.ka/ka adopt` and the hook stop with `removed-accepted` on each one, as for any removal of accepted knowledge.
 
 ### A node that both sides changed
 
@@ -207,11 +260,17 @@ Most of what you received is yours to delete. Three folders behave differently.
 ```python
 from pathlib import Path
 
-from engine.template import adopt_template, history_drift, record_history
+from engine.template import adopt_template, history_drift, record_history, select_disciplines
 
-adopted = adopt_template(Path())
+selected = select_disciplines(Path())
+selected.disciplines  # the disciplines that stay, or None without an answer
+selected.removed  # each path that the selection removed
+selected.pruned  # each link that the selection removed
+
+adopted = adopt_template(Path(), keep_accepted=True)
 adopted.proposed  # the entities that this run set to proposed
 adopted.imported  # the file that received the import of the root
+adopted.selection  # the selection that ran first
 
 drift = history_drift(Path())
 drift.entries  # each difference, in the form of a history line
@@ -222,23 +281,24 @@ recorded.problems  # the same problems that ka history prints
 
 ## Codes
 
-These codes come from `ka adopt` and `ka history`. Each other code comes from a check that the command runs.
+These codes come from `ka adopt`, `ka select`, and `ka history`. Each other code comes from a check that the command runs.
 
-| Code           | What it reports                                                                                           |
-| -------------- | --------------------------------------------------------------------------------------------------------- |
-| `adopt`        | The command can't set a status, because a file blocks it or the status line has another form              |
-| `import`       | The command can't add the import, because the file is a symbolic link to another file or can't be written |
-| `history`      | A line doesn't parse, a change number leaves a gap, or an action doesn't fit the replay                   |
-| `rewritten`    | The file doesn't start with its text at `HEAD`                                                            |
-| `not-template` | `ka history` ran in a folder with no `copier.yml`. `--drift` runs anywhere.                               |
-| `changed`      | With `--verify`, the command appended a change                                                            |
-| `not-staged`   | With `--verify`, the git index doesn't hold the history file                                              |
-| `write`        | The command can't change the history file                                                                 |
+| Code           | What it reports                                                                                                                    |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `adopt`        | The command can't set a status, because a file blocks it or the status line has another form                                       |
+| `import`       | The command can't add the import, because the file is a symbolic link to another file or can't be written                          |
+| `select`       | The answer can't be read, a kept entity links to a removed one in a field that the command can't remove, or a file can't be edited |
+| `history`      | A line doesn't parse, a change number leaves a gap, or an action doesn't fit the replay                                            |
+| `rewritten`    | The file doesn't start with its text at `HEAD`                                                                                     |
+| `not-template` | `ka history` ran in a folder with no `copier.yml`. `--drift` runs anywhere.                                                        |
+| `changed`      | With `--verify`, the command appended a change                                                                                     |
+| `not-staged`   | With `--verify`, the git index doesn't hold the history file                                                                       |
+| `write`        | The command can't change the history file                                                                                          |
 
 ## What it does not check yet
 
 - Whether a merged node says what either side meant. The checks read the result, and a person reads the meaning.
-- Whether a project's copy of the history matches the template's. A project can edit its copy, and no check there reads the file except `--drift`.
+- Whether a project's copy of the history matches the template's. A project can edit its copy. Only `--drift` and the [narrow pass](governance-workflow.md#knowledge-from-the-template) at the install read it, and neither can tell an edited copy, so an edited file can keep a status that the template never accepted.
 - A commit that skips the hook. A plain `git revert` commits with no hook, so it removes history lines and nothing fails.
 - Whether the commit in `knowledge/.ka/ka` still exists in the template. A rewritten template history stops a project at its next cold cache.
 - Whether a pull lost a change to a moved node. `--drift` shows the difference, and nothing makes you read it.
@@ -246,8 +306,9 @@ These codes come from `ka adopt` and `ka history`. Each other code comes from a 
 
 ## What hasn't been tested
 
-The install, the hooks, and a pull have run from a local clone of the template on macOS, with a clean home folder and a cold cache. The install, the hooks, and a pull have also run from the private URL, on a machine with read access. Three things are still untested:
+The install, the hooks, and a pull have run from a local clone of the template on macOS, with a clean home folder and a cold cache. The install, the hooks, and a pull have also run from the private URL, on a machine with read access. Each answer to each question has run in an empty folder and in a repo with history, from a copy of the template with accepted entities, and so has a pull that adds a discipline. These things are still untested:
 
 - A machine with no read access to the private repo.
 - Linux and Windows. `knowledge/.ka/ka` is a POSIX shell script, so Windows needs a shell that runs it.
+- A pull that drops a discipline after you deprecate its accepted entities.
 - A real Claude Code session loading `AGENTS.md` through the import. This rests on the Claude Code docs, as [the runtime page](runtime-files.md#what-only-a-real-session-can-show) explains.

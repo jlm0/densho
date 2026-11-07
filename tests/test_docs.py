@@ -32,7 +32,7 @@ from engine.language.profile import (
 )
 from engine.parser import ParsedNode, parse_source, parse_tree
 from engine.runtime import REVIEW_FOLDER, RUNTIME_CODES, review_path
-from engine.template import ADOPT_CODES, HISTORY_CODES, Entry
+from engine.template import ADOPT_CODES, HISTORY_CODES, SELECT_CODES, Entry
 
 REPO = Path(__file__).resolve().parents[1]
 README = REPO / "README.md"
@@ -464,7 +464,7 @@ def test_the_interface_page_names_each_form_of_the_command(command: str) -> None
     assert command in INTERFACE_PAGE.read_text(encoding="utf-8")
 
 
-@pytest.mark.parametrize("code", [*ADOPT_CODES, *HISTORY_CODES])
+@pytest.mark.parametrize("code", [*ADOPT_CODES, *SELECT_CODES, *HISTORY_CODES])
 def test_the_template_page_names_each_code(code: str) -> None:
     assert f"`{code}`" in TEMPLATE_PAGE.read_text(encoding="utf-8")
 

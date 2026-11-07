@@ -317,12 +317,12 @@ slots:
     range: TaxonomyNode
     multivalued: true
   informs:
-    description: The nodes that this node has an influence on.
+    description: The nodes that take the output of this node as an input. This edge is the flow from one step to the next.
     is_a: edge
     range: TaxonomyNode
     multivalued: true
   depends_on:
-    description: The nodes that this node needs.
+    description: The nodes that this node cannot exist without. A handoff from one step to the next uses informs.
     is_a: edge
     range: TaxonomyNode
     multivalued: true

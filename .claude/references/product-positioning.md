@@ -15,6 +15,12 @@ Dunford rejects the fill-in positioning statement as a way to find positioning. 
 
 When a product is called a "CRM", buyers assume its competitor, its buyer, its features, and its price before they read further. Good positioning makes those assumptions true.
 
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Brand design](brand-design.md)
+
 ## References
 
 - You define the alternatives, the attributes, the value, the customers, or the market category of a product. Read [Components of positioning](positioning-components.md).

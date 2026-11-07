@@ -95,7 +95,7 @@ Digital product development
 
 Directives sit at every level of the taxonomy. A pointer on the root reaches the domain, and pointers lead from there down the tree, so every node is four hops or fewer from the root.
 
-The hierarchy is not the only structure. `informs`, `depends_on`, and `related` record links across branches, such as Product strategy informing the other three disciplines. Those edges state a relationship and carry no directive, so one accessibility rule also attaches to Visual design and Brand design with `also_attached_to`.
+The hierarchy is not the only structure. `informs` records the flow of work across branches, such as Product strategy informing the other three disciplines, and each reference page lists that flow as [Comes from and Goes to](runtime-files.md#the-flow-of-a-node). `depends_on` and `related` record other links. None of these edges carries a directive, so one accessibility rule also attaches to Visual design and Brand design with `also_attached_to`.
 
 ## The skills
 

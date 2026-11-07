@@ -9,6 +9,12 @@ No directive is in force at this node.
 
 The visual form of an interface: its layout, type, color, imagery, and spacing. It decides what people notice first and how they read a screen.
 
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Brand design](brand-design.md)
+
 ## References
 
 - You rank the elements of a screen. Read [Information hierarchy](information-hierarchy.md).

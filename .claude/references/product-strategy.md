@@ -9,6 +9,14 @@ No directive is in force at this node.
 
 Deciding which problem a product solves, for which users, and what it leaves out. Strategy sets the goals that the other disciplines work toward.
 
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Brand design](brand-design.md)
+- [Software engineering](software-engineering.md)
+- [UI/UX design](ui-ux-design.md)
+
 ## References
 
 - You decide how to measure the success of a product or a feature. Use the skill `define-success-metrics`.

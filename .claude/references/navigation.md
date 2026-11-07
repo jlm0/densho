@@ -8,3 +8,9 @@ No directive is in force at this node.
 ## Definition
 
 The interface components that let people move between the parts of a product. Navigation shows the information architecture, but it is not the same thing.
+
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Information architecture](information-architecture.md)

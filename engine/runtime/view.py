@@ -81,6 +81,8 @@ class NodeView:
     paths: tuple[str, ...] = ()
     invocation: str | None = None
     scripts: tuple[Script, ...] = ()
+    comes_from: tuple[NodeLink, ...] = ()
+    goes_to: tuple[NodeLink, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -162,6 +164,18 @@ def _entry_lines(
     return lines
 
 
+def _informs(node: Node) -> list[str]:
+    return (node.informs or []) if isinstance(node, TaxonomyNode) else []
+
+
+def _informed_by(nodes: Sequence[Node]) -> dict[str, list[str]]:
+    sources: dict[str, list[str]] = {}
+    for node in nodes:
+        for target in _informs(node):
+            sources.setdefault(target, []).append(node.id)
+    return sources
+
+
 def _exceptions_of(node: Node) -> list[DirectiveException]:
     return (node.exceptions or []) if isinstance(node, KnowledgeNode) else []
 
@@ -188,6 +202,7 @@ def build_view(compiled: CompiledGraph) -> RuntimeView:
     nodes = [root, *others]
     links = {node.id: NodeLink(node.id, node.title, compiled.paths[node.id]) for node in nodes}
     tool_loaded = _tool_loaded_targets(nodes)
+    informed_by = _informed_by(nodes)
 
     def view_of(node: Node, paths: Sequence[str] = ()) -> NodeView:
         return NodeView(
@@ -204,6 +219,8 @@ def build_view(compiled: CompiledGraph) -> RuntimeView:
             tuple(paths),
             Invocation(node.invocation).value if isinstance(node, Skill) else None,
             compiled.scripts.get(node.id, ()),
+            tuple(links[source] for source in informed_by.get(node.id, [])),
+            tuple(links[target] for target in _informs(node)),
         )
 
     def rule_paths(node: Node) -> list[str]:

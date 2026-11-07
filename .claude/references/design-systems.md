@@ -9,6 +9,12 @@ No directive is in force at this node.
 
 A shared set of design decisions, components, and patterns, with the rules for their use, that the people who design and build a product draw on. Design tokens store the decisions, such as colors and sizes. Components combine into larger components, layouts, and screens.
 
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Software engineering](software-engineering.md)
+
 ## References
 
 - You build, combine, or test the components of a design system. Read [Atomic design](atomic-design.md).

@@ -274,7 +274,7 @@ densho:depends_on a owl:ObjectProperty ;
 	rdfs:label "depends_on" ;
 	rdfs:range skos:Concept ;
 	rdfs:subPropertyOf densho:edge ;
-	skos:definition "The nodes that this node needs." ;
+	skos:definition "The nodes that this node cannot exist without. A handoff from one step to the next uses informs." ;
 	skos:inScheme densho:metamodel .
 densho:description a owl:DatatypeProperty ;
 	rdfs:label "description" ;
@@ -322,7 +322,7 @@ densho:informs a owl:ObjectProperty ;
 	rdfs:label "informs" ;
 	rdfs:range skos:Concept ;
 	rdfs:subPropertyOf densho:edge ;
-	skos:definition "The nodes that this node has an influence on." ;
+	skos:definition "The nodes that take the output of this node as an input. This edge is the flow from one step to the next." ;
 	skos:inScheme densho:metamodel .
 densho:invocation a owl:ObjectProperty ;
 	rdfs:label "invocation" ;

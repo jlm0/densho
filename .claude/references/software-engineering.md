@@ -9,6 +9,14 @@ No directive is in force at this node.
 
 The design, construction, testing, and operation of software. It turns product and interface decisions into a system that keeps working as it changes.
 
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Design systems](design-systems.md)
+- [Product strategy](product-strategy.md)
+- [UI/UX design](ui-ux-design.md)
+
 ## References
 
 - A change is ready for review. Use the skill `review-code-change`.

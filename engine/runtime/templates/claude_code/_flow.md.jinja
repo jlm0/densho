@@ -1,0 +1,20 @@
+{% if node.comes_from %}
+
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+{% for source in node.comes_from %}
+- [{{ source.title | link_text }}]({{ href(source) }})
+{% endfor %}
+{% endif %}
+{% if node.goes_to %}
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+{% for target in node.goes_to %}
+- [{{ target.title | link_text }}]({{ href(target) }})
+{% endfor %}
+{% endif %}

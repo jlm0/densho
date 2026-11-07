@@ -47,18 +47,34 @@ A skill with `invocation: person` gets `disable-model-invocation: true` in its f
 
 ## What a file holds
 
-Each file puts its directives first, then its procedures, then its references.
+Each file puts its directives first, then its procedures, then its links to other files.
 
 | File           | Holds                                                                                                                |
 | -------------- | -------------------------------------------------------------------------------------------------------------------- |
 | Root           | The state of the graph, its directives, the body of `knowledge/node.md`, the domains, the governance, and the skills |
 | Skill          | Its directives and exceptions, its body, its pointers, and a link to each node in `uses`                             |
-| Path rule      | Its directives and exceptions, the definition, the body, and its pointers                                            |
-| Reference page | Its directives and exceptions, the definition, the body, and its pointers                                            |
+| Path rule      | Its directives and exceptions, the definition, the body, its [flow](#the-flow-of-a-node), and its pointers           |
+| Reference page | Its directives and exceptions, the definition, the body, its [flow](#the-flow-of-a-node), and its pointers           |
 
 The root holds only what an agent can't work out from the files. It names each domain, the governance node and its policies, and each skill with its description, so an agent can still find a skill if the tool drops its description. Setup, paths, and commands stay in the README and in these pages. The architecture facts come from the body of `knowledge/node.md`. A body change needs no review, so a reviewer reads it in the diff.
 
 A directive list holds what applies at that node and nothing else: inherited directives, attached ones, and `applies`, minus each one an [exception](directive-semantics.md#stepping-out) stops. Each directive keeps its `^id`, and each group links to the generated file of the node that holds it. A list is complete for its own node, so the files for a node and its parent can repeat a line.
+
+## The flow of a node
+
+An `informs` edge says that the output of one node is an input of another. A reference page or a rule shows these edges in both directions, after the body and before the references, so an agent at one step sees the step before it and the step after it:
+
+```text
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Information architecture](information-architecture.md)
+```
+
+`Comes from` lists each node that informs this one, and `Goes to` lists each node that this one informs. A node with no `informs` edge on either side shows neither section. Each entry links to the generated file of the other node, in ID order, and in the review copy it links to the review copy of that file. The root and a skill never show a flow, because only a taxonomy node can hold `informs`. A `rejected` node drops out of the flow, as it drops out of every generated file.
+
+`related`, `depends_on`, `governs`, and `implements` appear in no generated file. Each node page of the [site](human-interface.md) shows them.
 
 ## Nothing is in force yet
 
@@ -202,6 +218,7 @@ A link in the body of a node resolves from the generated file, not from the node
 
 - Whether a pattern in `paths` matches any file, or matches what the author meant.
 - What a script does, or whether a script that git ignores in the source should ship.
+- Whether a flow makes sense. A node can inform itself, and its file then lists it under both headings.
 - Whether a token estimate holds. The 15,000 characters are an estimate, and a text with many long links can use more tokens for each character.
 - Whether a stale file that you deleted but didn't stage is gone from the commit, in `pre-commit run --all-files`. A real commit restores the file first, so the hook then removes it and fails.
 

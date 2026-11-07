@@ -9,6 +9,12 @@ No directive is in force at this node.
 
 The path of a change from a commit to software that runs in production: integration, versioning, release, and deployment. Delivery performance is how fast and how safely changes move along that path.
 
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Error budget](error-budget.md)
+
 ## References
 
 - You write a commit message. Read [Conventional Commits](conventional-commits.md).

@@ -13,6 +13,19 @@ The identity that a product presents: its name, voice, logo, color, typography, 
 
 A brand definition belongs to one project. A project states its values in a workspace node that names this node in `implements`.
 
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Positioning](product-positioning.md)
+- [Product strategy](product-strategy.md)
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Visual design](visual-design.md)
+
 ## References
 
 - You review the touchpoints of a brand for consistency. Use the skill `audit-brand-consistency`.

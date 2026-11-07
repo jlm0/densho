@@ -581,6 +581,181 @@ def test_a_review_link_resolves_from_the_review_folder() -> None:
     assert "Read [beta](beta.proposals.md).\n" in alpha
 
 
+COMES_FROM = "## Comes from\n\nThe output of each node in this list is an input of this node.\n\n"
+GOES_TO = "## Goes to\n\nThe output of this node is an input of each node in this list.\n\n"
+FLOW = {
+    "knowledge/node.md": node(
+        "root", "densho:Root", front=pointers(pointer("TextPointer", "product"))
+    ),
+    "knowledge/nodes/product/node.md": node(
+        "product",
+        front=pointers(pointer("TextPointer", "strategy"), pointer("TextPointer", "design")),
+    ),
+    "knowledge/nodes/product/strategy/node.md": node(
+        "strategy",
+        "densho:Discipline",
+        front="broader: [product]\n"
+        + pointers(pointer("TextPointer", "research"), pointer("TextPointer", "positioning")),
+    ),
+    "knowledge/nodes/product/strategy/research/node.md": node(
+        "research", "densho:PracticeArea", front="broader: [strategy]\ninforms: [positioning]\n"
+    ),
+    "knowledge/nodes/product/strategy/positioning/node.md": node(
+        "positioning",
+        "densho:PracticeArea",
+        front="broader: [strategy]\ninforms: [identity]\n"
+        + pointers(pointer("TextPointer", "statement")),
+        body="## Notes\n\nThe body of positioning.\n",
+    ),
+    "knowledge/nodes/product/strategy/positioning/statement/node.md": node(
+        "statement", "densho:Concept", front="broader: [positioning]\n"
+    ),
+    "knowledge/nodes/product/design/node.md": node(
+        "design",
+        "densho:Discipline",
+        front="broader: [product]\n" + pointers(pointer("TextPointer", "identity")),
+    ),
+    "knowledge/nodes/product/design/identity/node.md": node(
+        "identity", "densho:PracticeArea", front="broader: [design]\n"
+    ),
+}
+
+
+def flow_page(node_id: str, sources: dict[str, str] | None = None) -> str:
+    return rendered(FLOW if sources is None else sources)[f".claude/references/{node_id}.md"].text
+
+
+def test_a_page_lists_the_node_before_it_and_the_node_after_it() -> None:
+    expected = f"{COMES_FROM}- [research](research.md)\n\n{GOES_TO}- [identity](identity.md)\n"
+    assert expected in flow_page("positioning")
+
+
+def test_an_informs_edge_across_two_disciplines_shows_on_both_pages() -> None:
+    assert f"{GOES_TO}- [identity](identity.md)\n" in flow_page("positioning")
+    identity = flow_page("identity")
+    assert identity.endswith(
+        f"The meaning of identity.\n\n{COMES_FROM}- [positioning](positioning.md)\n"
+    )
+    assert "## Goes to" not in identity
+
+
+def test_a_node_that_only_informs_lists_only_the_node_after_it() -> None:
+    research = flow_page("research")
+    assert research.endswith(
+        f"The meaning of research.\n\n{GOES_TO}- [positioning](positioning.md)\n"
+    )
+    assert "## Comes from" not in research
+
+
+def test_a_node_with_no_informs_edge_prints_neither_section() -> None:
+    files = {**rendered(FLOW), **rendered()}
+    for path in (
+        ".claude/references/product.md",
+        ".claude/references/strategy.md",
+        ".claude/references/statement.md",
+        ".claude/references/alpha.md",
+        ".claude/rules/knowledge/gamma.md",
+        ".claude/skills/review/SKILL.md",
+        "AGENTS.md",
+    ):
+        assert "## Comes from" not in files[path].text, path
+        assert "## Goes to" not in files[path].text, path
+
+
+def test_the_flow_sits_after_the_body_and_before_the_references() -> None:
+    text = flow_page("positioning")
+    order = ["## Directives", "## Definition", "## Notes", "## Comes from", "## Goes to"]
+    places = [text.index(part) for part in [*order, "## References"]]
+    assert places == sorted(places)
+
+
+def test_the_flow_lists_each_node_in_id_order() -> None:
+    sources = {
+        **FLOW,
+        "knowledge/nodes/product/strategy/research/node.md": node(
+            "research",
+            "densho:PracticeArea",
+            front="broader: [strategy]\ninforms: [positioning, identity]\n",
+        ),
+    }
+    backward = dict(reversed(sources.items()))
+    for tree in (sources, backward):
+        research = flow_page("research", tree)
+        assert f"{GOES_TO}- [identity](identity.md)\n- [positioning](positioning.md)\n" in research
+        identity = flow_page("identity", tree)
+        assert (
+            f"{COMES_FROM}- [positioning](positioning.md)\n- [research](research.md)\n" in identity
+        )
+
+
+def test_a_flow_link_goes_to_the_rule_of_a_node_with_a_rule() -> None:
+    sources = {
+        **FLOW,
+        "knowledge/nodes/product/design/node.md": node(
+            "design",
+            "densho:Discipline",
+            front="broader: [product]\n" + pointers(pointer("PathPointer", "identity", "src/**/*")),
+        ),
+    }
+    files = rendered(sources)
+    positioning = files[".claude/references/positioning.md"].text
+    assert f"{GOES_TO}- [identity](../rules/knowledge/identity.md)\n" in positioning
+    rule = files[".claude/rules/knowledge/identity.md"].text
+    assert rule.endswith(f"{COMES_FROM}- [positioning](../../references/positioning.md)\n")
+
+
+def test_the_review_copy_holds_the_flow_with_links_into_the_copy() -> None:
+    files = rendered(FLOW, proposals=True)
+    positioning = files[f"{REVIEW}/claude/references/positioning.proposals.md"].text
+    expected = (
+        f"{COMES_FROM}- [research](research.proposals.md)\n\n"
+        f"{GOES_TO}- [identity](identity.proposals.md)\n"
+    )
+    assert expected in positioning
+
+
+def test_a_rejected_node_is_not_in_the_flow() -> None:
+    rejected = node(
+        "research", "densho:PracticeArea", front="broader: [strategy]\ninforms: [positioning]\n"
+    ).replace("status: proposed\n", "status: rejected\nrejection_reason: A person said no.\n")
+    sources = {
+        **FLOW,
+        "knowledge/nodes/product/strategy/node.md": node(
+            "strategy",
+            "densho:Discipline",
+            front="broader: [product]\n" + pointers(pointer("TextPointer", "positioning")),
+        ),
+        "knowledge/nodes/product/strategy/research/node.md": rejected,
+    }
+    positioning = flow_page("positioning", sources)
+    assert "## Comes from" not in positioning
+    assert f"{GOES_TO}- [identity](identity.md)\n" in positioning
+
+
+def test_a_title_in_the_flow_makes_no_link() -> None:
+    hostile = FLOW["knowledge/nodes/product/strategy/positioning/node.md"].replace(
+        "title: positioning", 'title: "Fake](../../x) [a"'
+    )
+    sources = {**FLOW, "knowledge/nodes/product/strategy/positioning/node.md": hostile}
+    for page in ("research", "identity"):
+        text = flow_page(page, sources)
+        assert "- [Fake\\](../../x) \\[a](positioning.md)\n" in text, page
+        assert local_links(text) == ["positioning.md"], page
+
+
+def test_the_runtime_writes_the_flow_of_a_checked_tree(tmp_path: Path) -> None:
+    write_tree(tmp_path, FLOW)
+    for proposals in (False, True):
+        report = generate_runtime(tmp_path, proposals=proposals)
+        assert not report.problems, report.problems
+    identity = (tmp_path / ".claude/references/identity.md").read_text(encoding="utf-8")
+    assert identity.endswith(f"{COMES_FROM}- [positioning](positioning.md)\n")
+    review = tmp_path / REVIEW_FOLDER / "claude/references/identity.proposals.md"
+    assert f"{COMES_FROM}- [positioning](positioning.proposals.md)\n" in review.read_text(
+        encoding="utf-8"
+    )
+
+
 def test_a_skill_links_each_node_that_it_uses() -> None:
     front = (
         "description: Review a sample. Use when a sample needs a review.\n"
@@ -1455,6 +1630,30 @@ def real_output(*, proposals: bool = False) -> list[RenderedFile]:
     report = compile_tree(REPO, proposals=proposals)
     assert report.compiled is not None, report.problems
     return render_files(build_view(report.compiled))
+
+
+def flow_section(text: str, heading: str) -> str:
+    return text.partition(f"\n{heading}\n")[2].partition("\n## ")[0]
+
+
+def test_each_informs_edge_of_the_real_seed_shows_on_both_pages() -> None:
+    report = compile_tree(REPO)
+    assert report.compiled is not None
+    view = build_view(report.compiled)
+    texts = {entry.path: entry.text for entry in render_files(view)}
+    paths = claude_code.generated_paths(view)
+    edges = [
+        (node.id, target)
+        for node in report.compiled.graph.nodes
+        for target in getattr(node, "informs", None) or []
+    ]
+    assert edges
+    for source, target in edges:
+        source_path, target_path = paths[source], paths[target]
+        forward = posixpath.relpath(target_path, source_path.parent)
+        back = posixpath.relpath(source_path, target_path.parent)
+        assert f"]({forward})\n" in flow_section(texts[source_path], "## Goes to"), source
+        assert f"]({back})\n" in flow_section(texts[target_path], "## Comes from"), target
 
 
 def test_the_committed_files_match_a_fresh_generation() -> None:

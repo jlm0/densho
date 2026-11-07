@@ -9,6 +9,18 @@ No directive is in force at this node.
 
 The design of how people understand and operate a product. It covers how information is organized, how the interface responds, and how each screen looks.
 
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Product strategy](product-strategy.md)
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Software engineering](software-engineering.md)
+
 ## References
 
 - A screen, a component, or a flow needs an accessibility check. Use the skill `audit-accessibility`.

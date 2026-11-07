@@ -12,3 +12,9 @@ A branching model in which each developer merges small batches of work into one 
 ## Notes
 
 The DORA research linked these practices with higher delivery performance: `3` or fewer active branches, a merge into the trunk at least once a day, and no code freeze or integration phase.
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Conventional Commits](conventional-commits.md)

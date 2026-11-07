@@ -13,6 +13,12 @@ Choosing the goals, the metrics, and the targets that show whether a product or 
 
 A raw count grows with the user base, so it can rise while each user does less. Rodden and her colleagues also note that a rise in page views can mean that a feature is popular, or that a confusing interface makes users click around to escape. Metrics add to user research and do not replace early research.
 
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Software operations](software-operations.md)
+
 ## References
 
 - You measure the user experience of a product or a feature. Read [HEART framework](heart-framework.md).

@@ -11,7 +11,7 @@ sources:
 broader:
   - ui-ux-design
 informs:
-  - software-engineering
+  - software-design
 pointers:
   - kind: densho:TextPointer
     target: design-tokens

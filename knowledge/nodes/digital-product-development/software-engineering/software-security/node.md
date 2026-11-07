@@ -1,11 +1,12 @@
 ---
 id: software-security
 kind: densho:PracticeArea
-title: Security
+title: Software security
 status: proposed
 origin: template
 knowledge_type: domain
 sources:
+  - https://www.computer.org/education/bodies-of-knowledge/software-engineering
   - https://top10.owasp.org/2025/
   - https://asvs.owasp.org/
   - https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x03-What-is-the-ASVS.md
@@ -13,17 +14,20 @@ broader:
   - software-engineering
 pointers:
   - kind: densho:TextPointer
-    target: access-control
-    trigger: You set which users read or change a resource.
+    target: threat-modeling
+    trigger: You design a new system or a new feature.
   - kind: densho:TextPointer
-    target: injection
-    trigger: Input from outside the code reaches a query, a command, or an output.
+    target: secure-coding
+    trigger: You write code that handles input, access, a secret, or a dependency.
   - kind: densho:TextPointer
-    target: secrets-management
-    trigger: You store, pass, or log a secret.
+    target: security-review
+    trigger: You review a change for security flaws.
   - kind: densho:TextPointer
-    target: software-supply-chain
-    trigger: You add, update, or remove a dependency.
+    target: security-assessment
+    trigger: You audit the security of a system that already runs.
+  - kind: densho:TextPointer
+    target: vulnerability-management
+    trigger: A vulnerability is reported in a system or in a dependency.
 ---
 
 ## Definition
@@ -37,6 +41,8 @@ Protecting a system and its data from people who act outside their permissions. 
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: software-construction
+  - also_attached_to: software-quality
   - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x20-V11-Cryptography.md
   - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x92-Appendix-C_Cryptography.md
 - Generate each token and each secret with a cryptographically secure random number generator. ^secure-random-for-secrets
@@ -44,12 +50,16 @@ Protecting a system and its data from people who act outside their permissions. 
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: software-construction
+  - also_attached_to: software-quality
   - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x20-V11-Cryptography.md
 - Replace the session token of a user at each login. ^new-session-at-login
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: software-construction
+  - also_attached_to: software-quality
   - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x16-V7-Session-Management.md
   - sources: https://top10.owasp.org/2025/A07_2025-Authentication_Failures/
 - Do not include a default account or a default password in a release. ^no-default-credentials
@@ -57,6 +67,8 @@ Protecting a system and its data from people who act outside their permissions. 
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: software-construction
+  - also_attached_to: software-quality
   - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x15-V6-Authentication.md
   - sources: https://top10.owasp.org/2025/A07_2025-Authentication_Failures/
 - Do not show a stack trace, a query, or a secret in an error message to a user. ^generic-error-message
@@ -64,6 +76,8 @@ Protecting a system and its data from people who act outside their permissions. 
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: software-construction
+  - also_attached_to: software-quality
   - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md
   - sources: https://top10.owasp.org/2025/A02_2025-Security_Misconfiguration/
 - If a step of a transaction fails, revert the whole transaction. ^revert-failed-transaction
@@ -71,6 +85,8 @@ Protecting a system and its data from people who act outside their permissions. 
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: software-construction
+  - also_attached_to: software-quality
   - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md
   - sources: https://top10.owasp.org/2025/A10_2025-Mishandling_of_Exceptional_Conditions/
 - Add a global handler that catches each exception that other code does not catch. ^global-exception-handler
@@ -78,6 +94,8 @@ Protecting a system and its data from people who act outside their permissions. 
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: software-construction
+  - also_attached_to: software-quality
   - sources: https://top10.owasp.org/2025/A10_2025-Mishandling_of_Exceptional_Conditions/
   - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md
 - Use TLS for each connection between a client and an external service. ^tls-for-external-connections
@@ -85,12 +103,18 @@ Protecting a system and its data from people who act outside their permissions. 
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: software-architecture
+  - also_attached_to: software-construction
+  - also_attached_to: software-quality
   - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x21-V12-Secure-Communication.md
 - Do not put an API key or a session token in a URL. ^no-secret-in-url
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: software-architecture
+  - also_attached_to: software-construction
+  - also_attached_to: software-quality
   - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x23-V14-Data-Protection.md
 
 ## Notes

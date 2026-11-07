@@ -12,3 +12,9 @@ A version number of the form `MAJOR.MINOR.PATCH` that states how a release chang
 ## Notes
 
 An increment of the major version resets the minor and the patch versions to `0`. An increment of the minor version resets the patch version to `0`. If a minor release breaks compatibility by mistake, release a new minor version that restores compatibility, and leave the faulty release as it is.
+
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Build pipeline](build-pipeline.md)

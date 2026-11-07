@@ -10,6 +10,8 @@ sources:
   - https://www.svpg.com/the-alternative-to-roadmaps/
 broader:
   - product-strategy
+informs:
+  - software-requirements
 pointers:
   - kind: densho:TextPointer
     target: rice-scoring

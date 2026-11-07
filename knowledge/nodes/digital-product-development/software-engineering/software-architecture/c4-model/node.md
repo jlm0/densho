@@ -12,6 +12,8 @@ sources:
   - https://c4model.com/diagrams/notation
 broader:
   - software-architecture
+informs:
+  - architecture-decision-record
 ---
 
 ## Definition

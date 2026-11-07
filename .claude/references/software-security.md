@@ -1,5 +1,5 @@
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
-# Security
+# Software security
 
 ## Directives
 
@@ -21,7 +21,8 @@ The directives cite OWASP Top 10:2025 and ASVS 5.0.0. ASVS gives each requiremen
 
 ## References
 
-- You set which users read or change a resource. Read [Access control](access-control.md).
-- Input from outside the code reaches a query, a command, or an output. Read [Injection](injection.md).
-- You store, pass, or log a secret. Read [Secrets management](secrets-management.md).
-- You add, update, or remove a dependency. Read [Software supply chain](software-supply-chain.md).
+- You write code that handles input, access, a secret, or a dependency. Read [Secure coding](secure-coding.md).
+- You audit the security of a system that already runs. Read [Security assessment](security-assessment.md).
+- You review a change for security flaws. Read [Security review](security-review.md).
+- You design a new system or a new feature. Read [Threat modeling](threat-modeling.md).
+- A vulnerability is reported in a system or in a dependency. Read [Vulnerability management](vulnerability-management.md).

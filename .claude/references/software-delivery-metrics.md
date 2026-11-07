@@ -20,3 +20,9 @@ The five measures of software delivery performance from the DORA research progra
 | Deployment rework rate          | The share of deployments that are unplanned and that an incident causes |
 
 DORA warns that a metric used as a target invites gaming. A team uses the metrics together to track its own improvement over time.
+
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Postmortem](postmortem.md)

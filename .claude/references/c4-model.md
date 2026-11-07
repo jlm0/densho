@@ -12,3 +12,15 @@ A set of abstractions and diagrams for software architecture by Simon Brown. Peo
 ## Notes
 
 The C4 model sets no notation. Each line shows a relationship in one direction. A label such as `Uses` says too little, so the label names what flows or what depends.
+
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Integration style](integration-style.md)
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Architecture decision record](architecture-decision-record.md)

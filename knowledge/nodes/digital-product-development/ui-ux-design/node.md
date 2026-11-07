@@ -7,8 +7,6 @@ origin: template
 knowledge_type: domain
 broader:
   - digital-product-development
-informs:
-  - software-engineering
 pointers:
   - kind: densho:TextPointer
     target: information-architecture

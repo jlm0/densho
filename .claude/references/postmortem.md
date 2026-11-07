@@ -12,3 +12,15 @@ A written record of an incident: its impact, the actions that mitigated or resol
 ## Notes
 
 Other common triggers are downtime that users see beyond a threshold, an on-call action such as a rollback, a resolution time beyond a threshold, and an incident that monitoring did not detect.
+
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Error budget](error-budget.md)
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Software delivery metrics](software-delivery-metrics.md)

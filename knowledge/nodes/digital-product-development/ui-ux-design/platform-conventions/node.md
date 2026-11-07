@@ -9,6 +9,8 @@ sources:
   - https://www.nngroup.com/articles/ten-usability-heuristics/
 broader:
   - ui-ux-design
+informs:
+  - native-engineering
 related:
   - usability-heuristics
 pointers:

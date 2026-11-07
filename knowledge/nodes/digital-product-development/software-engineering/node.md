@@ -5,27 +5,38 @@ title: Software engineering
 status: proposed
 origin: template
 knowledge_type: domain
+sources:
+  - https://www.computer.org/education/bodies-of-knowledge/software-engineering
 broader:
   - digital-product-development
 pointers:
   - kind: densho:TextPointer
-    target: software-security
-    trigger: You write code that handles input, a user account, or a secret.
-  - kind: densho:TextPointer
-    target: software-testing
-    trigger: You write a test or fix a bug.
-  - kind: densho:TextPointer
-    target: software-delivery
-    trigger: You make a commit, a branch, or a release.
+    target: software-requirements
+    trigger: You define the requirements of a change.
   - kind: densho:TextPointer
     target: software-architecture
     trigger: You design the structure of a system or change it.
   - kind: densho:TextPointer
-    target: software-reliability
-    trigger: You define, monitor, or alert on the reliability of a service.
+    target: software-design
+    trigger: You define the interface of an API or a component.
   - kind: densho:TextPointer
-    target: code-review
-    trigger: You review a change or prepare a change for review.
+    target: software-testing
+    trigger: You write a test or fix a bug.
+  - kind: densho:TextPointer
+    target: software-construction
+    trigger: You write the code of a service, a client, or its infrastructure.
+  - kind: densho:TextPointer
+    target: software-configuration-management
+    trigger: You make a commit, a branch, or a build.
+  - kind: densho:TextPointer
+    target: software-quality
+    trigger: You review, verify, or accept a change.
+  - kind: densho:TextPointer
+    target: software-operations
+    trigger: You deploy or monitor a service.
+  - kind: densho:TextPointer
+    target: software-security
+    trigger: You write code that handles input, a user account, or a secret.
   - kind: densho:SkillPointer
     target: write-decision-record
     trigger: You make or change a decision about the structure of a system.
@@ -36,7 +47,7 @@ pointers:
 
 ## Definition
 
-The design, construction, testing, and operation of software. It turns product and interface decisions into a system that keeps working as it changes.
+The design, construction, testing, and operation of software. It turns product and interface decisions into a system that keeps working as it changes. Its practice areas follow the knowledge areas of the Guide to the Software Engineering Body of Knowledge (SWEBOK) `v4`, in the order of the work: requirements, architecture, design, testing, construction, configuration management, quality, and operations. Security runs across each step.
 
 ## Directives
 

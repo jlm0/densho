@@ -1,19 +1,31 @@
 ---
 id: software-testing
 kind: densho:PracticeArea
-title: Testing
+title: Software testing
 status: proposed
 origin: template
 knowledge_type: domain
 sources:
+  - https://www.computer.org/education/bodies-of-knowledge/software-engineering
   - https://martinfowler.com/articles/practical-test-pyramid.html
   - https://abseil.io/resources/swe-book/html/ch11.html
 broader:
   - software-engineering
+informs:
+  - software-construction
 pointers:
+  - kind: densho:TextPointer
+    target: test-driven-development
+    trigger: You write the code for a new behavior.
   - kind: densho:TextPointer
     target: test-pyramid
     trigger: You choose the level of a new test.
+  - kind: densho:TextPointer
+    target: contract-testing
+    trigger: A test uses a test double for another service.
+  - kind: densho:TextPointer
+    target: ai-evaluations
+    trigger: You test the output of an AI model or an AI feature.
 ---
 
 ## Definition

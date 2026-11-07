@@ -20,3 +20,9 @@ A short text file in the repository that records one architecturally significant
 | Consequences | Each result of the decision, positive, negative, and neutral                        |
 
 A record is one or two pages long.
+
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [C4 model](c4-model.md)

@@ -12,3 +12,15 @@ A specification for commit messages that a person and a tool can both read. Each
 ## Notes
 
 The specification also permits other types, such as `docs`, `refactor`, `test`, and `chore`. Only `feat`, `fix`, and a breaking change affect the version.
+
+## Comes from
+
+The output of each node in this list is an input of this node.
+
+- [Trunk-based development](trunk-based-development.md)
+
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Build pipeline](build-pipeline.md)

@@ -13,6 +13,12 @@ Deciding the order in which a team works on items when it cannot build everythin
 
 Cagan keeps two needs that a roadmap serves: work on the most valuable items first, and dates that the business needs. Prioritized business objectives for each team meet the first need. A high-integrity commitment meets the second, for the few cases that need a date.
 
+## Goes to
+
+The output of this node is an input of each node in this list.
+
+- [Software requirements](software-requirements.md)
+
 ## References
 
 - You weigh the urgency of items against their value and their duration. Read [Cost of delay](cost-of-delay.md).

@@ -13,7 +13,7 @@ A shared set of design decisions, components, and patterns, with the rules for t
 
 The output of this node is an input of each node in this list.
 
-- [Software engineering](software-engineering.md)
+- [Software design](software-design.md)
 
 ## References
 

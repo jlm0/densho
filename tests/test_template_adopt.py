@@ -12,7 +12,7 @@ from engine.governance.base import Base
 from engine.parser.generated import MARKER
 from engine.parser.result import Problem
 from engine.runtime.claude_code import add_root_import, instruction_notes
-from engine.template import ADOPT_CODES, adopt_template
+from engine.template import ADOPT_CODES, adopt_template, record_history
 from engine.template import adopt as adopt_module
 
 if TYPE_CHECKING:
@@ -150,18 +150,126 @@ def labels(folder: Path) -> set[str]:
 
 
 @pytest.mark.parametrize("repository", [False, True])
-def test_a_folder_with_no_commit_keeps_each_status(tmp_path: Path, *, repository: bool) -> None:
+def test_a_folder_with_no_commit_brings_each_entity_in_as_proposed(
+    tmp_path: Path, *, repository: bool
+) -> None:
     write_tree(tmp_path)
     if repository:
         new_repository(tmp_path)
-    before = text_of(tmp_path)
     report = adopt_template(tmp_path)
     assert not report.problems
-    assert report.proposed == ()
-    assert text_of(tmp_path) == before
+    assert {entity.label for entity in report.proposed} == {
+        "node domain",
+        "directive run-it",
+        "exception child run-it",
+    }
+    assert "status: accepted" not in text_of(tmp_path)
+    assert "status: accepted" not in text_of(tmp_path, CHILD_PATH)
     assert report.runtime is not None
     assert (tmp_path / "AGENTS.md").is_file()
     assert any("change rules did not run" in note for note in report.notes)
+
+
+def test_a_merge_in_progress_keeps_each_status(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    write_tree(tmp_path)
+    before = text_of(tmp_path)
+    monkeypatch.setattr(adopt_module, "read_base", lambda _: Base(notes=["A merge."]))
+    report = adopt_template(tmp_path)
+    assert report.proposed == ()
+    assert text_of(tmp_path) == before
+
+
+def record_template_history(folder: Path) -> None:
+    (folder / "copier.yml").write_text("{}\n", encoding="utf-8")
+    assert record_history(folder).problems == []
+    (folder / "copier.yml").unlink()
+
+
+@pytest.mark.parametrize("repository", ["none", "empty", "history"])
+def test_an_install_keeps_each_status_that_the_template_accepted(
+    tmp_path: Path, repository: str
+) -> None:
+    write_tree(tmp_path)
+    record_template_history(tmp_path)
+    if repository != "none":
+        new_repository(tmp_path)
+    if repository == "history":
+        (tmp_path / "README.md").write_text("A project.\n", encoding="utf-8")
+        git(tmp_path, "add", "README.md")
+        git(tmp_path, "commit", "-qm", "first")
+    before = text_of(tmp_path)
+    report = adopt_template(tmp_path, keep_accepted=True)
+    assert not report.problems
+    assert report.proposed == ()
+    assert text_of(tmp_path) == before
+    assert text_of(tmp_path, CHILD_PATH) == CHILD_NODE
+
+
+def test_an_install_keeps_no_status_that_differs_from_the_template_line(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    record_template_history(tmp_path)
+    set_text(tmp_path, "Run the check. ^run-it", "Run the new check. ^run-it")
+    report = adopt_template(tmp_path, keep_accepted=True)
+    assert {entity.label for entity in report.proposed} == {"directive run-it"}
+    assert "title: Domain\nstatus: accepted" in text_of(tmp_path)
+
+
+def test_an_install_keeps_no_status_without_a_template_line(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    report = adopt_template(tmp_path, keep_accepted=True)
+    assert {entity.label for entity in report.proposed} == {
+        "node domain",
+        "directive run-it",
+        "exception child run-it",
+    }
+
+
+def test_an_install_keeps_no_status_that_the_template_line_does_not_accept(
+    tmp_path: Path,
+) -> None:
+    write_tree(tmp_path, DOMAIN_NODE.replace("  - status: accepted", "  - status: proposed"))
+    record_template_history(tmp_path)
+    set_text(
+        tmp_path,
+        "  - status: proposed\n  - origin: template\n- Run the other",
+        "  - status: accepted\n  - origin: template\n- Run the other",
+    )
+    report = adopt_template(tmp_path, keep_accepted=True)
+    assert {entity.label for entity in report.proposed} == {"directive run-it"}
+
+
+@pytest.mark.parametrize("status", ["deprecated", "rejected"])
+def test_an_install_keeps_no_closed_status(tmp_path: Path, status: str) -> None:
+    rule = REJECTED_RULE if status == "rejected" else "  - status: deprecated"
+    write_tree(tmp_path, DOMAIN_NODE.replace("  - status: accepted", rule))
+    record_template_history(tmp_path)
+    report = adopt_template(tmp_path, keep_accepted=True)
+    assert "directive run-it" in {entity.label for entity in report.proposed}
+    assert any(note.startswith(f"directive run-it was {status}") for note in report.notes)
+
+
+RUN_IT = (
+    "- Run the check. ^run-it\n"
+    "  - scope: subtree\n"
+    "  - basis: judgment\n"
+    "  - status: accepted\n"
+    "  - origin: template\n"
+)
+
+
+def test_a_pull_keeps_no_new_status_that_the_template_accepted(tmp_path: Path) -> None:
+    assert RUN_IT in DOMAIN_NODE
+    committed_tree(tmp_path, DOMAIN_NODE.replace(RUN_IT, ""))
+    record_template_history(tmp_path)
+    git(tmp_path, "add", "-A")
+    git(tmp_path, "commit", "-qm", "the history")
+    (tmp_path / DOMAIN_PATH).write_text(DOMAIN_NODE, encoding="utf-8")
+    record_template_history(tmp_path)
+    report = adopt_template(tmp_path, keep_accepted=True)
+    assert {entity.label for entity in report.proposed} == {"directive run-it"}
+    assert adopt_module.NOT_AN_INSTALL_NOTE in report.notes
 
 
 def test_a_repo_with_history_brings_each_entity_in_as_proposed(tmp_path: Path) -> None:
@@ -456,7 +564,7 @@ def test_the_command_prints_each_step(tmp_path: Path) -> None:
 
 def test_the_command_prints_a_note(tmp_path: Path) -> None:
     write_tree(tmp_path)
-    result = RUNNER.invoke(app, ["adopt", str(tmp_path)])
+    result = RUNNER.invoke(app, ["adopt", "--keep-accepted", str(tmp_path)])
     assert result.exit_code == 0
     assert "note: This folder is not a git repository" in result.output
 
@@ -634,3 +742,34 @@ def test_a_rejected_status_with_no_change_stays(tmp_path: Path) -> None:
     set_text(tmp_path, "  - status: accepted", REJECTED_RULE)
     assert labels(tmp_path) == set()
     assert REJECTED_RULE in text_of(tmp_path)
+
+
+def test_an_install_without_the_answer_keeps_no_status(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    record_template_history(tmp_path)
+    report = adopt_template(tmp_path)
+    assert not report.problems
+    assert {entity.label for entity in report.proposed} == {
+        "node domain",
+        "directive run-it",
+        "exception child run-it",
+    }
+
+
+def test_an_install_keeps_no_closed_status_over_an_accepted_line(tmp_path: Path) -> None:
+    write_tree(tmp_path)
+    record_template_history(tmp_path)
+    set_text(tmp_path, RUN_IT, RUN_IT.replace("status: accepted", "status: deprecated"))
+    report = adopt_template(tmp_path, keep_accepted=True)
+    assert {entity.label for entity in report.proposed} == {"directive run-it"}
+
+
+@pytest.mark.parametrize(("option", "count"), [(["--keep-accepted"], 0), ([], 3)])
+def test_the_option_keeps_each_status_that_the_template_accepted(
+    tmp_path: Path, option: list[str], count: int
+) -> None:
+    write_tree(tmp_path)
+    record_template_history(tmp_path)
+    result = RUNNER.invoke(app, ["adopt", *option, str(tmp_path)])
+    assert result.exit_code == 0, result.output
+    assert f"{count} entities set to proposed" in result.output

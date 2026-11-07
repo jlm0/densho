@@ -11,3 +11,4 @@ LANGUAGE_FOLDER = GOVERNANCE_FOLDER / "language"
 ENGINE_FOLDER = KNOWLEDGE_FOLDER / ".ka"
 LAUNCHER = ENGINE_FOLDER / "ka"
 HISTORY_FILE = ENGINE_FOLDER / "history.jsonl"
+ANSWERS_FILE = PurePosixPath(".copier-answers.yml")

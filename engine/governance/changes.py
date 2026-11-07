@@ -57,10 +57,24 @@ def _transition_problems(old: Entity, new: Entity) -> list[Problem]:
     return problems
 
 
+def _new_status_message(
+    key: EntityKey, new: Entity, template_accepted: Collection[EntityKey] | None
+) -> str | None:
+    if template_accepted is None or new.status != Status.accepted:
+        return f"HEAD does not have {new.label}. Set its status to proposed."
+    if key in template_accepted:
+        return None
+    return (
+        f"HEAD does not have {new.label}, and the template history holds no accepted line "
+        "with its content. Set its status to proposed."
+    )
+
+
 def check_changes(
     base: Mapping[EntityKey, Entity],
     current: Mapping[EntityKey, Entity],
     unreadable: Collection[Path] = (),
+    template_accepted: Collection[EntityKey] | None = None,
 ) -> list[Problem]:
     problems: list[Problem] = []
     for key, new in current.items():
@@ -68,8 +82,9 @@ def check_changes(
         if old is not None:
             problems += _transition_problems(old, new)
         elif new.status != Status.proposed and new.path not in unreadable:
-            message = f"HEAD does not have {new.label}. Set its status to proposed."
-            problems.append(_report(new, "new-status", message))
+            message = _new_status_message(key, new, template_accepted)
+            if message is not None:
+                problems.append(_report(new, "new-status", message))
     for key, old in base.items():
         if key not in current and old.status == Status.accepted and old.kind != EXCEPTION:
             message = (

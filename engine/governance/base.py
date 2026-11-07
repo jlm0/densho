@@ -27,6 +27,7 @@ MERGE_NOTE = "A merge is in progress, so the change rules did not run."
 @dataclass(frozen=True, slots=True)
 class Base:
     readable: bool = False
+    empty: bool = False
     items: list[ParsedNode] = field(default_factory=list[ParsedNode])
     unreadable: frozenset[Path] = frozenset()
     notes: list[str] = field(default_factory=list[str])
@@ -145,10 +146,10 @@ def _stopped_state(program: str, repository: Path) -> Base | None:
     inside = _git(program, repository, "rev-parse", "--is-inside-work-tree")
     if inside.returncode != 0:
         if NOT_A_REPOSITORY in inside.stderr.decode("utf-8", "replace"):
-            return Base(notes=[NO_REPOSITORY_NOTE])
+            return Base(empty=True, notes=[NO_REPOSITORY_NOTE])
         return _failure(repository, inside.stderr)
     if _git(program, repository, "rev-parse", "--verify", "--quiet", "HEAD").returncode != 0:
-        return Base(notes=[NO_COMMIT_NOTE])
+        return Base(empty=True, notes=[NO_COMMIT_NOTE])
     if _git(program, repository, "rev-parse", "--verify", "--quiet", "MERGE_HEAD").returncode == 0:
         return Base(notes=[MERGE_NOTE])
     return None
@@ -197,3 +198,10 @@ def read_head_file(repository: Path, path: PurePosixPath) -> bytes | None:
         return None
     shown = _git(program, repository, "show", f"HEAD:./{path}")
     return shown.stdout if shown.returncode == 0 else None
+
+
+def head_holds(repository: Path, path: PurePosixPath) -> bool | None:
+    program = shutil.which("git")
+    if program is None:
+        return None
+    return _git(program, repository, "cat-file", "-e", f"HEAD:./{path}").returncode == 0

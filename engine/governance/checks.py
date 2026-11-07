@@ -5,6 +5,7 @@ from engine.generated.metamodel import Basis, KnowledgeType, Origin, Root, Statu
 from engine.governance.base import read_base
 from engine.governance.changes import CHANGE_CODES, check_changes
 from engine.governance.entities import governed_entities
+from engine.governance.history_lines import install_matches
 from engine.graph.references import (
     edge_targets,
     entity_ids,
@@ -247,7 +248,12 @@ def check_governance(
     base = read_base(repository)
     found = {*check_items(items, repository), *base.problems}
     if base.readable:
-        found.update(check_changes(governed_entities(base.items), current, base.unreadable))
+        template_accepted = install_matches(items, repository)
+        found.update(
+            check_changes(
+                governed_entities(base.items), current, base.unreadable, template_accepted
+            )
+        )
     return GovernanceReport(len(current), base.notes, sorted(found))
 
 

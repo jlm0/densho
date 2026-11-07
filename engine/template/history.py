@@ -1,59 +1,32 @@
-import hashlib
-import json
 from dataclasses import dataclass
 from itertools import zip_longest
-from typing import TYPE_CHECKING, Literal, cast
-
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from typing import TYPE_CHECKING, cast
 
 from engine.compiler.tree import path_problems
-from engine.generated.metamodel import Status
 from engine.governance.base import read_head_file, tracked_files
-from engine.governance.entities import DIRECTIVE, EXCEPTION, NODE, SCRIPTS_FIELD, normal_text
-from engine.graph.references import exceptions_of
+from engine.governance.history_lines import (
+    Entry,
+    Recorded,
+    digest,
+    entity_lines,
+    read_entries,
+    replay,
+)
 from engine.layout import HISTORY_FILE, LANGUAGE_FOLDER
 from engine.parser.node import node_folders, parse_tree
 from engine.parser.result import Problem
-from engine.parser.scripts import scripts_digest
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Mapping
+    from collections.abc import Mapping
     from pathlib import Path
 
-    from engine.parser.result import ParsedNode
-
-type EntryKind = Literal["node", "directive", "exception", "file"]
-type EntryKey = tuple[EntryKind, str]
+    from engine.governance.history_lines import EntryKey
 
 TEMPLATE_FILE = "copier.yml"
 FILE = "file"
 FILE_FIELD = "bytes"
-DIGEST_LENGTH = 16
 HISTORY_CODES = ("history", "rewritten", "not-template", "changed", "not-staged", "write")
 NO_INDEX_NOTE = "git cannot read an index in this folder, so the check of the index did not run."
-NODE_FIELDS_WITHOUT_DIGEST = frozenset({"id", "status", "origin", "directives", "exceptions"})
-DIRECTIVE_FIELDS_WITHOUT_DIGEST = frozenset({"id", "status", "origin"})
-EXCEPTION_FIELDS_WITHOUT_DIGEST = frozenset({"directive", "status"})
-
-
-class Entry(BaseModel):
-    model_config = ConfigDict(extra="forbid", frozen=True, strict=True)
-
-    change: int = Field(ge=1)
-    kind: EntryKind
-    id: str
-    action: Literal["added", "changed", "removed"]
-    fields: list[str]
-    path: str
-    status: str | None
-    content: dict[str, str]
-
-
-@dataclass(frozen=True, slots=True)
-class _Recorded:
-    path: str
-    status: str | None
-    content: Mapping[str, str]
 
 
 @dataclass(frozen=True, slots=True)
@@ -64,121 +37,32 @@ class HistoryReport:
     problems: list[Problem]
 
 
-def _normal(value: object) -> object:
-    if isinstance(value, str):
-        return normal_text(value)
-    if isinstance(value, list):
-        return sorted((_normal(entry) for entry in cast("list[object]", value)), key=_canonical)
-    if isinstance(value, dict):
-        return {name: _normal(entry) for name, entry in cast("dict[str, object]", value).items()}
-    return value
-
-
-def _canonical(value: object) -> str:
-    return json.dumps(value, sort_keys=True)
-
-
-def _digest(data: bytes) -> str:
-    return hashlib.sha256(data).hexdigest()[:DIGEST_LENGTH]
-
-
-def _content(model: BaseModel, without: frozenset[str], **extra: str) -> dict[str, str]:
-    fields = cast("dict[str, object]", model.model_dump(mode="json", exclude=set(without)))
-    return {
-        name: _digest(_canonical(_normal(value)).encode("ascii"))
-        for name, value in sorted({**fields, **extra}.items())
-        if value
-    }
-
-
-def _node_entries(item: ParsedNode, repository: Path) -> Iterator[tuple[EntryKey, _Recorded]]:
-    node = item.node
-    path = item.path.relative_to(repository).as_posix()
-    content = _content(node, NODE_FIELDS_WITHOUT_DIGEST)
-    if item.scripts:
-        digest = scripts_digest(item.scripts)[:DIGEST_LENGTH]
-        content = dict(sorted({**content, SCRIPTS_FIELD: digest}.items()))
-    yield (NODE, node.id), _Recorded(path, Status(node.status).value, content)
-    for directive in node.directives or []:
-        content = _content(directive, DIRECTIVE_FIELDS_WITHOUT_DIGEST, holder=node.id)
-        yield (DIRECTIVE, directive.id), _Recorded(path, Status(directive.status).value, content)
-    for exception in exceptions_of(item):
-        content = _content(exception, EXCEPTION_FIELDS_WITHOUT_DIGEST)
-        key = f"{node.id}/{exception.directive}"
-        yield (EXCEPTION, key), _Recorded(path, Status(exception.status).value, content)
-
-
-def _language_entries(repository: Path) -> tuple[dict[EntryKey, _Recorded], list[Problem]]:
-    entries: dict[EntryKey, _Recorded] = {}
+def _language_entries(repository: Path) -> tuple[dict[EntryKey, Recorded], list[Problem]]:
+    entries: dict[EntryKey, Recorded] = {}
     problems: list[Problem] = []
     for path in sorted((repository / LANGUAGE_FOLDER).rglob("*.yaml")):
         relative = path.relative_to(repository).as_posix()
         try:
-            content = {FILE_FIELD: _digest(path.read_bytes())}
+            content = {FILE_FIELD: digest(path.read_bytes())}
         except OSError as error:
             message = f"The file cannot be read: {error.strerror!a}."
             problems.append(Problem(path, 1, "history", message))
             continue
-        entries[FILE, relative] = _Recorded(relative, None, content)
+        entries[FILE, relative] = Recorded(relative, None, content)
     return entries, problems
 
 
-def _tree_state(repository: Path) -> tuple[dict[EntryKey, _Recorded], list[Problem]]:
+def _tree_state(repository: Path) -> tuple[dict[EntryKey, Recorded], list[Problem]]:
     items, problems = parse_tree(node_folders(repository))
     problems = [*problems, *path_problems(items, repository)]
     if problems:
         return {}, problems
-    state = dict(entry for item in items for entry in _node_entries(item, repository))
+    state = {key: recorded for item in items for _, key, recorded in entity_lines(item, repository)}
     files, problems = _language_entries(repository)
     return {**state, **files}, problems
 
 
-def _read_entries(path: Path) -> tuple[list[Entry], list[Problem]]:
-    try:
-        data = path.read_bytes()
-    except FileNotFoundError:
-        return [], []
-    except OSError as error:
-        message = f"The file cannot be read: {error.strerror!a}."
-        return [], [Problem(path, 1, "history", message)]
-    lines = data.split(b"\n")
-    if lines.pop():
-        message = "The last line has no line end."
-        return [], [Problem(path, len(lines) + 1, "history", message)]
-    entries: list[Entry] = []
-    problems: list[Problem] = []
-    for number, line in enumerate(lines, start=1):
-        try:
-            entries.append(Entry.model_validate_json(line))
-        except ValidationError as error:
-            detail = error.errors(include_url=False, include_input=False)[0]
-            where = ".".join(map(str, detail["loc"]))
-            message = f"{where}: {detail['msg']}" if where else detail["msg"]
-            problems.append(Problem(path, number, "history", message))
-    return entries, problems
-
-
-def _replay(entries: list[Entry], path: Path) -> tuple[dict[EntryKey, _Recorded], list[Problem]]:
-    state: dict[EntryKey, _Recorded] = {}
-    problems: list[Problem] = []
-    last = 0
-    for number, entry in enumerate(entries, start=1):
-        key = (entry.kind, entry.id)
-        if entry.change not in {last, last + 1}:
-            message = f"The change number {entry.change} does not follow {last}."
-            problems.append(Problem(path, number, "history", message))
-        last = entry.change
-        if (entry.action == "added") == (key in state):
-            message = f"The action {entry.action} does not fit {entry.kind} {entry.id}."
-            problems.append(Problem(path, number, "history", message))
-        elif entry.action == "removed":
-            del state[key]
-        else:
-            state[key] = _Recorded(entry.path, entry.status, entry.content)
-    return state, problems
-
-
-def _changed_fields(old: _Recorded, new: _Recorded) -> list[str]:
+def _changed_fields(old: Recorded, new: Recorded) -> list[str]:
     names = {
         name
         for name in old.content.keys() | new.content.keys()
@@ -192,14 +76,14 @@ def _changed_fields(old: _Recorded, new: _Recorded) -> list[str]:
 
 
 def _difference(
-    recorded: Mapping[EntryKey, _Recorded], current: Mapping[EntryKey, _Recorded], change: int
+    recorded: Mapping[EntryKey, Recorded], current: Mapping[EntryKey, Recorded], change: int
 ) -> list[Entry]:
     entries: list[Entry] = []
     for key in sorted(recorded.keys() | current.keys()):
         kind, name = key
         old, new = recorded.get(key), current.get(key)
         if new is None:
-            gone = cast("_Recorded", old)
+            gone = cast("Recorded", old)
             entries.append(
                 Entry(
                     change=change,
@@ -232,10 +116,10 @@ def _difference(
 
 def history_drift(repository: Path) -> HistoryReport:
     path = repository / HISTORY_FILE
-    entries, problems = _read_entries(path)
+    entries, problems = read_entries(path)
     if problems:
         return HistoryReport(0, (), [], problems)
-    recorded, problems = _replay(entries, path)
+    recorded, problems = replay(entries, path)
     if problems:
         return HistoryReport(0, (), [], problems)
     current, problems = _tree_state(repository)

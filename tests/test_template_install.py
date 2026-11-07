@@ -4,12 +4,15 @@ import re
 import shutil
 import subprocess
 from pathlib import Path
+from typing import Any
 
 import copier
 import pytest
 from jinja2 import Environment
 from ruamel.yaml import YAML
 
+from engine.compiler.tree import checked_tree
+from engine.generated.metamodel import Discipline, Origin
 from engine.interface import (
     VIEW_FOLDER,
     accept_entities,
@@ -17,7 +20,9 @@ from engine.interface import (
     write_view,
 )
 from engine.parser.generated import is_generated
+from engine.parser.node import node_folders, parse_tree
 from engine.runtime import generate_runtime
+from engine.template import select_disciplines
 from engine.template.history import HISTORY_FILE
 
 REPO = Path(__file__).resolve().parents[1]
@@ -330,11 +335,107 @@ def test_a_project_is_told_of_the_commands() -> None:
     assert "A person" in message
 
 
-def test_the_task_runs_only_on_a_copy() -> None:
-    config = YAML(typ="safe").load((REPO / "copier.yml").read_text(encoding="utf-8"))
-    assert config["_tasks"] == [
-        {"command": ["knowledge/.ka/ka", "adopt"], "when": "{{ _copier_operation == 'copy' }}"}
+def settings() -> dict[str, Any]:
+    return YAML(typ="safe").load((REPO / "copier.yml").read_text(encoding="utf-8"))
+
+
+def test_the_tasks_select_on_an_update_and_adopt_on_a_copy() -> None:
+    assert settings()["_tasks"] == [
+        {"command": ["knowledge/.ka/ka", "select"], "when": "{{ _copier_operation == 'update' }}"},
+        {
+            "command": ["knowledge/.ka/ka", "adopt", "--keep-accepted"],
+            "when": "{{ _copier_operation == 'copy' and keep_template_status }}",
+        },
+        {
+            "command": ["knowledge/.ka/ka", "adopt"],
+            "when": "{{ _copier_operation == 'copy' and not keep_template_status }}",
+        },
     ]
+
+
+@pytest.mark.parametrize(
+    ("keep", "operation", "commands"),
+    [
+        (True, "copy", [["knowledge/.ka/ka", "adopt", "--keep-accepted"]]),
+        (False, "copy", [["knowledge/.ka/ka", "adopt"]]),
+        (True, "update", [["knowledge/.ka/ka", "select"]]),
+        (False, "update", [["knowledge/.ka/ka", "select"]]),
+    ],
+)
+def test_one_task_runs_for_each_operation(
+    operation: str, commands: list[list[str]], *, keep: bool
+) -> None:
+    environment = Environment(autoescape=False)  # noqa: S701
+    context = {"_copier_operation": operation, "keep_template_status": keep}
+    chosen = [
+        task["command"]
+        for task in settings()["_tasks"]
+        if environment.from_string(task["when"]).render(context) == "True"
+    ]
+    assert chosen == commands
+
+
+def template_disciplines() -> dict[str, str]:
+    items, problems = parse_tree(node_folders(REPO))
+    assert problems == []
+    return {
+        item.node.title: item.node.id
+        for item in items
+        if isinstance(item.node, Discipline) and item.node.origin == Origin.template
+    }
+
+
+def test_the_question_lists_each_template_discipline() -> None:
+    question = settings()["disciplines"]
+    assert question["multiselect"] is True
+    assert question["choices"] == template_disciplines()
+    assert sorted(question["default"]) == sorted(template_disciplines().values())
+
+
+def test_the_status_question_keeps_nothing_by_default() -> None:
+    question = settings()["keep_template_status"]
+    assert (question["type"], question["default"]) == ("bool", False)
+
+
+def test_the_default_install_records_both_answers(installed: Path) -> None:
+    answers = YAML(typ="safe").load((installed / ".copier-answers.yml").read_text(encoding="utf-8"))
+    assert answers["disciplines"] == list(settings()["disciplines"]["choices"].values())
+    assert answers["keep_template_status"] is False
+
+
+@pytest.mark.parametrize(
+    ("keep", "text"),
+    [
+        (True, "Each entity that the template accepted keeps its status"),
+        (False, "Each entity starts as a proposal, so nothing is in force yet. To read"),
+    ],
+)
+def test_the_message_follows_the_answer(text: str, *, keep: bool) -> None:
+    message = Environment(autoescape=False).from_string(  # noqa: S701
+        settings()["_message_after_copy"]
+    )
+    rendered = message.render(keep_template_status=keep)
+    assert text in rendered
+    assert "\n\n  knowledge/.ka/ka view\n" in rendered
+
+
+@pytest.mark.parametrize(
+    "selection", [[], *([name] for name in sorted(template_disciplines().values()))]
+)
+def test_each_single_selection_passes_each_check(
+    installed: Path, tmp_path: Path, selection: list[str]
+) -> None:
+    project = tmp_path / "project"
+    shutil.copytree(installed, project)
+    answers = project / ".copier-answers.yml"
+    data = YAML(typ="safe").load(answers.read_text(encoding="utf-8"))
+    data["disciplines"] = selection
+    with answers.open("w", encoding="utf-8") as stream:
+        YAML(typ="safe").dump(data, stream)
+    report = select_disciplines(project)
+    assert report.problems == []
+    assert set(selection) <= set(report.disciplines or ())
+    assert checked_tree(project).problems == []
 
 
 def test_the_template_ships_no_instruction_file(source: Path, installed: Path) -> None:

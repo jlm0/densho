@@ -19,8 +19,12 @@ _skip_if_exists:
   - "/.gitignore"
   - "/.pre-commit-config.yaml"
 _tasks:
+  - command: ["knowledge/.ka/ka", "select"]
+    when: "{{ _copier_operation == 'update' }}"
+  - command: ["knowledge/.ka/ka", "adopt", "--keep-accepted"]
+    when: "{{ _copier_operation == 'copy' and keep_template_status }}"
   - command: ["knowledge/.ka/ka", "adopt"]
-    when: "{{ _copier_operation == 'copy' }}"
+    when: "{{ _copier_operation == 'copy' and not keep_template_status }}"
 _message_after_copy: |
   The project now owns this copy. To run the checks on each commit:
 
@@ -29,7 +33,12 @@ _message_after_copy: |
 
   Then stage the files and commit them. Each clone of the project needs the second command.
 
-  Each directive starts as a proposal, so nothing is in force yet. To read and accept them:
+  {% if keep_template_status -%}
+  Each entity that the template accepted keeps its status, unless the selection changed it.
+  Each other entity starts as a proposal. To read and accept the proposals:
+  {%- else -%}
+  Each entity starts as a proposal, so nothing is in force yet. To read and accept them:
+  {%- endif %}
 
     knowledge/.ka/ka view
     knowledge/.ka/ka accept --subtree <node-id>
@@ -42,6 +51,22 @@ _message_after_update: |
     knowledge/.ka/ka adopt
 
   Then read the result, stage the files, and commit them.
+
+disciplines:
+  type: str
+  help: The disciplines that this project takes. Each project also receives the root, the governance, and each skill that uses only what the project takes.
+  multiselect: true
+  choices:
+    Software engineering: software-engineering
+    UI/UX design: ui-ux-design
+    Product strategy: product-strategy
+    Brand design: brand-design
+  default: [software-engineering, ui-ux-design, product-strategy, brand-design]
+
+keep_template_status:
+  type: bool
+  help: Keep each status that the template accepted. Answer yes only if you accept that content for this project.
+  default: false
 
 started_from:
   type: str

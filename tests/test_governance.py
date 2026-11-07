@@ -28,7 +28,9 @@ from engine.governance.changes import check_changes
 from engine.governance.entities import governed_entities
 from engine.graph import check_tree
 from engine.language import check_language
+from engine.layout import HISTORY_FILE
 from engine.parser import ParsedNode, parse_source, parse_tree
+from engine.template import history_drift
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
@@ -1310,6 +1312,140 @@ def test_a_copy_into_a_repository_with_history_starts_as_proposed(repository: Pa
     assert run_check(repository) == ["new-status"]
 
 
+def write_template_history(repository: Path) -> None:
+    report = history_drift(repository)
+    assert report.problems == []
+    path = repository / HISTORY_FILE
+    path.parent.mkdir(parents=True, exist_ok=True)
+    text = "".join(f"{entry.model_dump_json()}\n" for entry in report.entries)
+    path.write_text(text, encoding="utf-8")
+
+
+TEMPLATE_RULES = [rule("b", "accepted")]
+TEMPLATE_STOPS = [stop("b", "accepted")]
+
+
+def test_an_install_keeps_what_the_template_history_accepted(repository: Path) -> None:
+    commit_all(repository, "first")
+    write(
+        repository,
+        node("a", "accepted", rules=TEMPLATE_RULES),
+        concept("c", "a", status="accepted", exceptions=TEMPLATE_STOPS),
+    )
+    write_template_history(repository)
+    assert run_check(repository) == []
+
+
+def install_problems(repository: Path, *after: Spec) -> list[str]:
+    commit_all(repository, "first")
+    write(repository, node("a", "accepted", rules=TEMPLATE_RULES))
+    write_template_history(repository)
+    clear_nodes(repository)
+    write(repository, *after)
+    return [str(problem) for problem in check_governance(repository).problems]
+
+
+def clear_nodes(repository: Path) -> None:
+    shutil.rmtree(repository / "knowledge/nodes", ignore_errors=True)
+
+
+def install_message(label: str) -> str:
+    return (
+        f"new-status: HEAD does not have {label}, and the template history holds no accepted "
+        "line with its content. Set its status to proposed."
+    )
+
+
+def test_an_install_fails_an_accepted_entity_with_no_template_line(repository: Path) -> None:
+    found = install_problems(
+        repository, node("a", "accepted", rules=TEMPLATE_RULES), node("d", "accepted")
+    )
+    assert [problem.split(": ", 1)[1] for problem in found] == [install_message("node d")]
+
+
+def test_an_install_fails_an_accepted_entity_whose_content_differs(repository: Path) -> None:
+    found = install_problems(
+        repository, node("a", "accepted", rules=[rule("b", "accepted", text="Do another thing.")])
+    )
+    assert [problem.split(": ", 1)[1] for problem in found] == [install_message("directive b")]
+
+
+def test_an_install_fails_an_accepted_entity_with_a_proposed_template_line(
+    repository: Path,
+) -> None:
+    commit_all(repository, "first")
+    write(repository, node("a", rules=TEMPLATE_RULES))
+    write_template_history(repository)
+    write(repository, node("a", "accepted", rules=TEMPLATE_RULES))
+    assert run_check(repository) == ["new-status"]
+
+
+@pytest.mark.parametrize(
+    "spec",
+    [
+        node("a", "deprecated", rules=[rule("b", "deprecated")]),
+        node(
+            "a",
+            "rejected",
+            rejection_reason=NO_NEED,
+            rules=[rule("b", "rejected", rejection_reason=NO_NEED)],
+        ),
+    ],
+)
+def test_an_install_fails_each_closed_entity(repository: Path, spec: Spec) -> None:
+    commit_all(repository, "first")
+    write(repository, spec)
+    write_template_history(repository)
+    assert set(run_check(repository)) == {"new-status"}
+
+
+def test_a_pull_gets_no_narrow_pass(repository: Path) -> None:
+    write(repository, node("x"))
+    write_template_history(repository)
+    commit_all(repository, "the install")
+    write(repository, node("a", "accepted", rules=TEMPLATE_RULES))
+    write_template_history(repository)
+    found = [str(problem) for problem in check_governance(repository).problems]
+    assert [problem.split(": ", 1)[1] for problem in found] == [
+        "new-status: HEAD does not have node a. Set its status to proposed.",
+        "new-status: HEAD does not have directive b. Set its status to proposed.",
+    ]
+
+
+@pytest.mark.parametrize("text", ["not json\n", '{"change": 1}\n', "no line end"])
+def test_a_broken_template_history_gives_no_narrow_pass(repository: Path, text: str) -> None:
+    commit_all(repository, "first")
+    write(repository, node("a", "accepted"))
+    write_template_history(repository)
+    path = repository / HISTORY_FILE
+    path.write_text(path.read_text(encoding="utf-8") + text, encoding="utf-8")
+    assert run_check(repository) == ["new-status"]
+
+
+def test_a_gap_in_the_template_history_gives_no_narrow_pass(repository: Path) -> None:
+    commit_all(repository, "first")
+    write(repository, node("a", "accepted"))
+    write_template_history(repository)
+    path = repository / HISTORY_FILE
+    path.write_text(
+        path.read_text(encoding="utf-8").replace('"change":1', '"change":2'), encoding="utf-8"
+    )
+    assert run_check(repository) == ["new-status"]
+
+
+def test_a_removed_template_line_gives_no_narrow_pass(repository: Path) -> None:
+    commit_all(repository, "first")
+    write(repository, node("a", "accepted"))
+    write_template_history(repository)
+    path = repository / HISTORY_FILE
+    line = path.read_text(encoding="utf-8")
+    removed = line.replace('"action":"added"', '"action":"removed"').replace(
+        '"change":1', '"change":2'
+    )
+    path.write_text(line + removed, encoding="utf-8")
+    assert run_check(repository) == ["new-status"]
+
+
 def test_a_template_entity_can_change_when_it_reopens(repository: Path) -> None:
     write(repository, node("a", "accepted", rules=[rule("b", "accepted")]))
     commit_all(repository)
@@ -2043,3 +2179,11 @@ def test_a_script_mode_change_needs_no_review(repository: Path) -> None:
     commit_all(repository)
     (repository / "knowledge/skills/review/scripts/check.py").chmod(0o755)
     assert run_check(repository) == []
+
+
+def test_an_install_fails_a_closed_entity_over_an_accepted_line(repository: Path) -> None:
+    commit_all(repository, "first")
+    write(repository, node("a", "accepted", rules=TEMPLATE_RULES))
+    write_template_history(repository)
+    write(repository, node("a", "accepted", rules=[rule("b", "deprecated")]))
+    assert run_check(repository) == ["new-status"]

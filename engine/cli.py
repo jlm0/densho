@@ -17,13 +17,14 @@ from engine.interface import (
 from engine.language import check_language
 from engine.parser import parse_tree
 from engine.runtime import generate_runtime
-from engine.template import adopt_template, history_drift, record_history
+from engine.template import adopt_template, history_drift, record_history, select_disciplines
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from engine.directives import AppliedDirective
     from engine.parser.result import Problem
+    from engine.template import SelectionReport
 
 app = typer.Typer(add_completion=False, pretty_exceptions_enable=False, rich_markup_mode=None)
 
@@ -262,14 +263,48 @@ def accept(
     _finish(f"{count}, {report.not_proposed} not proposed", report.problems)
 
 
+def _echo_selection(selection: SelectionReport | None) -> None:
+    if selection is None:
+        return
+    for note in selection.notes:
+        typer.echo(f"note: {note}")
+    for path in selection.removed:
+        typer.echo(f"removed {path}")
+    for entry in selection.pruned:
+        typer.echo(f"removed the entry {entry}")
+
+
+@app.command()
+def select(
+    repository: Annotated[
+        Path, typer.Argument(help="The folder that holds the installed knowledge.")
+    ] = Path(),
+) -> None:
+    """Remove the template disciplines that the install answer leaves out, and their edges."""
+    report = select_disciplines(repository)
+    _echo_selection(report)
+    kept = "each discipline" if report.disciplines is None else ", ".join(report.disciplines)
+    summary = f"kept {kept or 'no discipline'}, {len(report.removed)} paths removed"
+    _finish(f"{summary}, {len(report.pruned)} entries removed", report.problems)
+
+
 @app.command()
 def adopt(
     repository: Annotated[
         Path, typer.Argument(help="The folder that holds the installed knowledge.")
     ] = Path(),
+    *,
+    keep_accepted: Annotated[
+        bool,
+        typer.Option(
+            "--keep-accepted",
+            help="At an install, keep each status that the template history holds as accepted.",
+        ),
+    ] = False,
 ) -> None:
     """Bring in template knowledge as the last commit requires, then write the runtime files."""
-    report = adopt_template(repository)
+    report = adopt_template(repository, keep_accepted=keep_accepted)
+    _echo_selection(report.selection)
     for note in report.notes:
         typer.echo(f"note: {note}")
     for name in report.imported:

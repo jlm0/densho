@@ -107,7 +107,18 @@ Digital product development
     ├── 4 Software testing
     │   ├── Test-driven development
     │   ├── Test pyramid
+    │   ├── Unit testing
+    │   ├── Integration testing
+    │   ├── End-to-end testing
+    │   ├── Test doubles
     │   ├── Contract testing
+    │   ├── Black-box test techniques
+    │   ├── Property-based testing
+    │   ├── Model-based testing
+    │   ├── Code coverage
+    │   ├── Mutation testing
+    │   ├── Regression testing
+    │   ├── Performance testing
     │   └── AI evaluations
     ├── 5 Software construction
     │   ├── Infrastructure engineering
@@ -181,7 +192,7 @@ None of these edges carries a directive. A practice area whose rules apply acros
 | `review-screen-hierarchy`   | A screen design is ready for review                             | Information hierarchy, Visual grouping, and Visual communication                                                                 |
 | `review-usability`          | A flow is ready for a usability review                          | Usability heuristics, Fitts's law, Hick's law, Navigation, and Platform conventions                                              |
 | `audit-accessibility`       | A screen, a component, or a flow needs an accessibility check   | Accessibility, and the Consistent Navigation rule through `applies`                                                              |
-| `review-code-change`        | A change is ready for review                                    | Code review, Software testing, Software security, Access control, and Injection                                                  |
+| `review-code-change`        | A change is ready for review                                    | Code review, Test pyramid, Software security, Access control, and Injection                                                      |
 | `write-decision-record`     | You make or change a decision about the structure of a system   | Architecture decision record                                                                                                     |
 | `write-strategy`            | You write the strategy of a product, a team, or a company       | Strategy formulation and Kernel of a strategy                                                                                    |
 | `map-opportunities`         | A team chooses the next customer need that it works on          | Opportunity solution tree, Jobs to be done, and Assumption testing                                                               |
@@ -192,7 +203,7 @@ None of these edges carries a directive. A practice area whose rules apply acros
 | `write-brand-guidelines`    | You write or update brand guidelines                            | Brand strategy, Visual identity, Brand voice, Brand systems, seven of their concepts, and three contrast rules through `applies` |
 | `audit-brand-consistency`   | You review the touchpoints of a brand for consistency           | Visual identity, Logo, Color roles, Type scale, Distinctive brand assets, Brand voice, and Brand guidelines                      |
 
-Most accessibility rules reach a skill through their attachments, not through what the skill lists. Accessibility holds 61 rules. The 38 that apply to any screen, such as contrast, focus, and labels, have `subtree` scope: they reach each node of UI/UX design, and each skill that uses one of those nodes carries them. The other 23, such as captions, flashing content, and sign-in, have `node` scope. They reach only a skill that uses Accessibility, Software testing, or Frontend engineering itself, such as `audit-accessibility` and `review-code-change`, and they stay out of `design-settings-interface`, where they have nothing to check on a settings screen. A skill source names knowledge and does not copy it. Its body holds only the inputs, the procedure, the output, and how to validate the result. The [generated skill file](runtime-files.md#why-a-skill-holds-a-copy) holds the directives in force. To see every rule a skill carries, with each proposal labeled:
+Most accessibility rules reach a skill through their attachments, not through what the skill lists. Accessibility holds 61 rules. The 38 that apply to any screen, such as contrast, focus, and labels, have `subtree` scope: they reach each node of UI/UX design, and each skill that uses one of those nodes carries them. The other 23, such as captions, flashing content, and sign-in, have `node` scope. They reach only a skill that uses Accessibility, Software testing, or Frontend engineering itself, such as `audit-accessibility`. They stay out of `design-settings-interface`, where they have nothing to check on a settings screen. They also stay out of `review-code-change`, which uses Test pyramid in place of Software testing to stay under the size limit for a skill. A skill source names knowledge and does not copy it. Its body holds only the inputs, the procedure, the output, and how to validate the result. The [generated skill file](runtime-files.md#why-a-skill-holds-a-copy) holds the directives in force. To see every rule a skill carries, with each proposal labeled:
 
 ```sh
 uv run densho directives --at design-settings-interface
@@ -249,7 +260,7 @@ A `sources` value names a page that was read when the rule was written. Where a 
 - Software engineering: the Guide to the Software Engineering Body of Knowledge (SWEBOK) `v4`, which sets the practice areas
 - Requirements: the Extreme Programming rules, Gojko Adzic's *Specification by Example*, martinfowler.com on Given When Then, and ISO/IEC/IEEE 29148
 - Architecture and design: martinfowler.com, Gregor Hohpe and Bobby Woolf on integration styles, the C4 model site, Michael Nygard's post on architecture decision records, the OpenAPI and AsyncAPI specifications, and the Storybook docs
-- Testing: Kent Beck on test-driven development, the test pyramid and contract test pages on martinfowler.com, the testing chapter of *Software Engineering at Google*, and Anthropic's guide to evaluations
+- Testing: the ISTQB Foundation Level, Model-Based Tester, and Performance Testing syllabi, the software testing chapter of SWEBOK `v4`, NIST SP 800-142 on combinatorial testing, Kent Beck on test-driven development, the test pyramid, integration test, test double, and contract test pages on martinfowler.com, Martin Fowler on non-determinism in tests, *xUnit Test Patterns*, the Pact docs, the testing chapters of *Software Engineering at Google*, Google's papers and blog posts on code coverage, mutation testing, and flaky tests, the Jia and Harman survey of mutation testing, the Luo et al. study of flaky tests, the QuickCheck paper and John Hughes's "How to Specify It!", and Anthropic's guide and engineering post on evaluations
 - Construction: martinfowler.com on infrastructure as code and parallel change, The Twelve-Factor App, Edgar Codd's 1970 paper on the relational model, MDN and the GOV.UK Service Manual on progressive enhancement, web.dev on Core Web Vitals, the App Store Review Guidelines, and the Google Play developer policy
 - Configuration management: trunkbaseddevelopment.com, the DORA guides, Conventional Commits 1.0.0, martinfowler.com on continuous integration and deployment pipelines, and Semantic Versioning 2.0.0
 - Quality: Google's engineering practices guide, martinfowler.com on YAGNI and exploratory testing, Toyota and the Lean Enterprise Institute on the five whys, the Extreme Programming rules on acceptance tests, the Scrum Guide, and ISO/IEC 25010
@@ -262,12 +273,12 @@ A rule with no `sources` is a judgment call, so read it with more care.
 
 Each directive also states its `basis`, the kind of source behind it. In the domain and the skills:
 
-| `basis`        | Directives | Where they come from                                                                                                                                                                                                                                                                                                                  |
-| -------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `standard`     | 111        | WCAG 2.2, the Design Tokens Format Module, the OWASP Top 10 and ASVS, Conventional Commits, and Semantic Versioning                                                                                                                                                                                                                   |
-| `research`     | 48         | The Gestalt grouping research, Fitts's law, and Hick's law, mostly through Nielsen Norman Group articles, the DORA research, the HEART paper from Google, and the Ehrenberg-Bass Institute's research on distinctive brand assets                                                                                                     |
-| `practitioner` | 267        | Named methods and authors: Nielsen Norman Group, WCAG-EM, Apple, Android and Material Components, Brad Frost, MDN, an OWASP cheat sheet, martinfowler.com, Google, Paul Hammant, Simon Brown, Michael Nygard, Adam Wiggins, the voice guides of Mailchimp, Atlassian, and Microsoft, and the product strategy and brand authors above |
-| `judgment`     | 24         | No source                                                                                                                                                                                                                                                                                                                             |
+| `basis`        | Directives | Where they come from                                                                                                                                                                                                                                                                                                                                                                        |
+| -------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `standard`     | 238        | WCAG 2.2, the Design Tokens Format Module, the OWASP Top 10 and ASVS, Conventional Commits, Semantic Versioning, the ISTQB syllabi, and SWEBOK                                                                                                                                                                                                                                              |
+| `research`     | 88         | The Gestalt grouping research, Fitts's law, and Hick's law, mostly through Nielsen Norman Group articles, the DORA research, the HEART paper from Google, NIST SP 800-142, the papers on QuickCheck, mutation testing, code coverage, and flaky tests, and the Ehrenberg-Bass Institute's research on distinctive brand assets                                                              |
+| `practitioner` | 452        | Named methods and authors: Nielsen Norman Group, WCAG-EM, Apple, Android and Material Components, Brad Frost, MDN, an OWASP cheat sheet, martinfowler.com, Kent Beck, Gerard Meszaros, the Pact docs, Anthropic, Google, Paul Hammant, Simon Brown, Michael Nygard, Adam Wiggins, the voice guides of Mailchimp, Atlassian, and Microsoft, and the product strategy and brand authors above |
+| `judgment`     | 26         | No source                                                                                                                                                                                                                                                                                                                                                                                   |
 
 Every governance directive is `judgment`, because the policies come from this project's own design and cite nothing.
 

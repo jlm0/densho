@@ -15,7 +15,7 @@ broader:
 
 ## Definition
 
-A way to test in which a tool generates the test cases from a model of the system under test or of its environment. Utting, Pretschner, and Legeard give this definition in their taxonomy of model-based testing approaches. The ISTQB Model-Based Tester syllabus names the parts: the model, the test selection criteria that choose the tests from the model, the generated testware, and the test adaptation layer that connects the abstract tests to the real interfaces. SWEBOK v4 lists the approach as scenario-based testing.
+A way to test that derives the test cases from a model of the system under test or of its environment. Utting, Pretschner, and Legeard give this definition in their taxonomy of model-based testing approaches. The ISTQB Model-Based Tester syllabus names the parts: the model, the test selection criteria that choose the tests from the model, the generated testware, and the test adaptation layer that connects the abstract tests to the real interfaces. SWEBOK v4 lists the approach as scenario-based testing.
 
 ## Directives
 

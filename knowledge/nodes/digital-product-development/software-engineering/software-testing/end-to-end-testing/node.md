@@ -59,13 +59,6 @@ A test that checks the whole system, with each of its parts integrated, through 
   - sources: https://martinfowler.com/bliki/TestPyramid.html
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#RestApiEnd-to-endTest
   - sources: https://abseil.io/resources/swe-book/html/ch14.html#reducing_the_size_of_your_sut_at_proble
-- In a large test, wait for each state change with a polling loop and a timeout, not a sleep. ^wait-by-polling
-  - scope: subtree
-  - basis: practitioner
-  - status: proposed
-  - origin: template
-  - sources: https://abseil.io/resources/swe-book/html/ch14.html#speeding_up_tests
-  - sources: https://abseil.io/resources/swe-book/html/ch14.html#driving_out_flakiness
 - Make each timeout and delay of the production code configurable for the large tests. ^configurable-timeouts
   - scope: subtree
   - basis: practitioner
@@ -115,4 +108,4 @@ Software Engineering at Google names the gaps that unit tests leave, and each ga
 
 A large test has 4 parts: the system under test, the seeded data, the actions, and the verification. A hermetic system under test runs in isolation from production and from a shared staging environment, so other users do not change its results. A system under test with fewer parts is faster and less flaky. A test that drives both the user interface and the backend is costly to keep. Software Engineering at Google splits such a test at the boundary between the user interface and the public API.
 
-End-to-end tests are slow, and they fail for reasons outside the code, such as timing and browser quirks. The test pyramid limits them to the core user journeys. Performance testing and acceptance testing also run against the whole system. Performance testing holds the rules for load. Acceptance testing in software quality holds the rules that check the requirements of the users.
+End-to-end tests are slow, and they fail for reasons outside the code, such as timing and browser quirks. The test pyramid limits them to the core user journeys. Performance testing and acceptance testing also run against the whole system. Performance testing holds the rules for load. Regression testing holds the rules for waits and for flaky tests. Acceptance testing in software quality holds the rules that check the requirements of the users.

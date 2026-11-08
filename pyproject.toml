@@ -34,7 +34,7 @@ wheel-exclude = ["engine/schema"]
 target-version = "py314"
 line-length = 100
 src = [".", "tests"]
-extend-exclude = ["engine/generated", "engine/vendor", "knowledge/evals"]
+extend-exclude = ["engine/generated", "engine/vendor", "knowledge/evals", "fixtures/project"]
 force-exclude = true
 
 [tool.ruff.lint]
@@ -43,9 +43,10 @@ ignore = ["COM812", "CPY", "D"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["INP001", "S101"]
+"fixtures/**" = ["INP001"]
 
 [tool.pyright]
-include = ["engine", "tests"]
+include = ["engine", "fixtures/generate.py", "tests"]
 ignore = ["engine/generated", "engine/vendor"]
 pythonVersion = "3.14"
 typeCheckingMode = "strict"

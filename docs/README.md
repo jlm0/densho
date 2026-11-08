@@ -58,6 +58,7 @@ Each page explains how to use what exists today, and ends with what it does not 
 | `uv run densho select`                 | Removes the disciplines a project left out | [Template packaging](template-packaging.md)   |
 | `uv run densho history`                | Records template changes for agents        | [Template packaging](template-packaging.md)   |
 | `uv run densho history --drift`        | Lists differences from the history         | [Template packaging](template-packaging.md)   |
+| `uv run python fixtures/generate.py`   | Writes the fixture project                 | [Template packaging](template-packaging.md)   |
 | `uv run densho eval --check`           | Grades the known outputs of the eval tasks | [Evaluation](evaluation.md)                   |
 | `uv run densho eval --discipline <id>` | Runs the eval tasks with and without it    | [Evaluation](evaluation.md)                   |
 | `uv run pytest`                        | Runs the tests                             |                                               |
@@ -67,7 +68,7 @@ Each page explains how to use what exists today, and ends with what it does not 
 
 In a project, `knowledge/.densho/densho` takes the place of `uv run densho`.
 
-In this repo, the git hook runs these checks on each commit: file hygiene, the lock file, the engine constraints, the schema lint, the generated models, the knowledge nodes, the graph checks, the directive checks, the governance checks, the language checks, the compiled outputs, the runtime files, the template history, the eval tasks, Ruff lint and format, Markdown format, Pyright, and the tests. [A project runs fewer](template-packaging.md#the-git-hook).
+In this repo, the git hook runs these checks on each commit: file hygiene, the lock file, the engine constraints, the schema lint, the generated models, the knowledge nodes, the graph checks, the directive checks, the governance checks, the language checks, the compiled outputs, the runtime files, the template history, the fixture project, the eval tasks, Ruff lint and format, Markdown format, Pyright, and the tests. [A project runs fewer](template-packaging.md#the-git-hook).
 
 ## Where the code lives
 

@@ -1,0 +1,12 @@
+# Copier writes this file. Do not edit it.
+_commit: working-tree
+_src_path: https://github.com/jlm0/densho.git
+disciplines:
+- product-strategy
+- user-research
+- brand-design
+- content-design
+- ui-ux-design
+- software-engineering
+keep_template_status: false
+started_from: working-tree

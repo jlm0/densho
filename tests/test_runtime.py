@@ -1668,7 +1668,7 @@ def test_each_generated_file_is_a_tracked_file() -> None:
 
 def test_no_tracked_file_with_the_marker_lacks_a_node() -> None:
     expected = {entry.path.as_posix() for entry in real_output()}
-    for relative in git(REPO, "ls-files").splitlines():
+    for relative in git(REPO, "ls-files", "--", ".", ":(exclude)fixtures/project").splitlines():
         path = REPO / relative
         if path.suffix == ".md" and is_generated(path.read_bytes()):
             assert relative in expected

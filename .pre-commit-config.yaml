@@ -6,10 +6,13 @@ repos:
       - id: check-added-large-files
       - id: check-merge-conflict
         args: [--assume-in-merge]
+        exclude: ^fixtures/project/
       - id: check-toml
       - id: check-yaml
       - id: end-of-file-fixer
+        exclude: ^fixtures/project/
       - id: trailing-whitespace
+        exclude: ^fixtures/project/
   - repo: local
     hooks:
       - id: uv-lock
@@ -91,6 +94,12 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: fixture-project
+        name: compare the fixture project with a fresh install
+        entry: uv run --frozen python fixtures/generate.py --verify
+        language: system
+        pass_filenames: false
+        files: ^(knowledge|engine|fixtures)/|^copier\.yml$|^uv\.lock$|^\{\{_copier_conf\.answers_file\}\}\.jinja$
       - id: eval-tasks
         name: grade the known outputs of the eval tasks
         entry: uv run --frozen densho eval --check
@@ -112,7 +121,7 @@ repos:
         entry: uv run --frozen mdformat
         language: system
         types: [markdown]
-        exclude: ^knowledge/evals/
+        exclude: ^knowledge/evals/|^fixtures/project/
       - id: pyright
         name: pyright
         entry: uv run --frozen pyright

@@ -39,12 +39,13 @@ uv run pre-commit run --all-files
 | `build/`                                                                          | Generated output. Git ignores it.                                  |
 | `copier.yml`, `*.jinja`                                                           | What a project receives, and the files only a project holds        |
 | `global-skills/`                                                                  | Skills you install yourself. A project doesn't receive them.       |
+| `fixtures/`                                                                       | What a project receives, with every directive in force, for review |
 
 You edit `knowledge/`. Agents read `AGENTS.md` and `.claude/`.
 
 ## Use the template
 
-Install the template into a project once. From then on the project owns its copy. You need a current uv, git, and read access to this repo, which is private. A project needs no Python.
+Install the template into a project once. From then on the project owns its copy. You need a current uv and git. The repo has been public since 2026-11-08. A project needs no Python.
 
 ```sh
 uvx --python 3.14 copier copy --trust --defaults --vcs-ref=HEAD https://github.com/jlm0/densho.git .

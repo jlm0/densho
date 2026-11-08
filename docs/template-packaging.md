@@ -10,7 +10,7 @@ A project receives one copy, and from then on it owns that copy. It can change a
 
 ## Install
 
-You need a current [uv](https://docs.astral.sh/uv/), git, and read access to the template repo. You don't need Python, because uv fetches it.
+You need a current [uv](https://docs.astral.sh/uv/) and git. You don't need Python, because uv fetches it.
 
 Run this in the project folder. The folder can be empty, or it can hold a repo with history.
 
@@ -87,6 +87,29 @@ A [selection](#choose-the-disciplines) narrows `knowledge/nodes/`, `knowledge/sk
 
 That's the whole list. A project receives no engine source, tests, docs, or lock file. `copier.yml` names each path that a project receives and excludes everything else, so a file that no one listed can't reach a project, even a file that git ignores on the machine that runs the install. Everything under `knowledge/` ships, so the template keeps its own tool files elsewhere: the schema lint settings and the model template sit in `engine/schema/`.
 
+## See what a project receives
+
+[`fixtures/project/`](../fixtures/project/) holds the files that a project gets from an install with every discipline: the root, the reference pages, the rules, the skills, and the answers. Every entity there is `accepted`, to show what an agent loads once the defaults are in force. That status is a simulation for review. The script installs the working tree into a scratch project in a temporary folder and accepts each entity there, never in this repo.
+
+The fixture renames `AGENTS.md` to `AGENTS.fixture.md`, `.claude/` to `claude/`, and `.copier-answers.yml` to `copier-answers.yml`, and rewrites the links to match. Under the real names, Claude Code would load the fixture into a session on this repo, and Copier would write the fixture's answers into every project.
+
+```sh
+uv run python fixtures/generate.py
+```
+
+The `fixture-project` hook runs it with `--verify` on each commit that touches `knowledge/`, `engine/`, `fixtures/`, `copier.yml`, `uv.lock`, or `{{_copier_conf.answers_file}}.jinja`. [Its README](../fixtures/README.md) lists what differs from a real install. The script reports these codes:
+
+| Code         | What it reports                                                                          |
+| ------------ | ---------------------------------------------------------------------------------------- |
+| `refused`    | The scratch project isn't an empty folder outside this repo                              |
+| `install`    | A step of the install failed: the copy of the working tree, Copier, or git               |
+| `pending`    | An entity is still `proposed` after the accept                                           |
+| `changed`    | With `--verify`, a fixture file differed from a fresh generation, so the script wrote it |
+| `not-staged` | With `--verify`, the git index doesn't hold a fixture file                               |
+| `write`      | The script can't change the fixture folder                                               |
+
+A problem from `densho adopt`, `densho accept`, or `densho runtime` keeps its own code.
+
 ## The template commit
 
 `.copier-answers.yml` records where a project came from. Don't edit it.
@@ -144,7 +167,7 @@ A project needs uv and git, and nothing else. Without uv, the file names uv and 
 
 The first run on a machine downloads the engine and takes about 30 seconds. A later run takes about 2 seconds and needs no network.
 
-The template repo is private today, and that reaches every project. `copier copy`, `copier update`, and the first `knowledge/.densho/densho` on a machine all read the repo with that machine's git credentials. A person without read access can't install, and a clone of the project on their machine fails at its first hook. A public repo would remove this limit with no change to a file.
+`copier copy`, `copier update`, and the first `knowledge/.densho/densho` on a machine all read the template repo. The repo has been public since 2026-11-08.
 
 ## The git hook
 
@@ -309,12 +332,13 @@ These codes come from `densho adopt`, `densho select`, and `densho history`. Eac
 - Whether the commit in `knowledge/.densho/densho` still exists in the template. A rewritten template history stops a project at its next cold cache.
 - Whether a pull lost a change to a moved node. `--drift` shows the difference, and nothing makes you read it.
 - Whether a project keeps `knowledge/.densho/`, the hooks, or the import. A project owns those files too.
+- What an install with fewer disciplines, or with a project's own knowledge, looks like. The fixture covers only an install with every discipline, and it runs none of the project's hooks.
 
 ## What hasn't been tested
 
-The install, the hooks, and a pull have run from a local clone of the template on macOS, with a clean home folder and a cold cache. The install, the hooks, and a pull have also run from the private URL, on a machine with read access. Each answer to each question has run in an empty folder and in a repo with history, from a copy of the template with accepted entities, and so has a pull that adds a discipline. These things are still untested:
+The install, the hooks, and a pull have run from a local clone of the template on macOS, with a clean home folder and a cold cache. The install, the hooks, and a pull have also run from the URL while the repo was private, on a machine with read access. Each answer to each question has run in an empty folder and in a repo with history, from a copy of the template with accepted entities, and so has a pull that adds a discipline. These things are still untested:
 
-- A machine with no read access to the private repo.
+- An install from the public URL on a machine with no GitHub credentials.
 - Linux and Windows. `knowledge/.densho/densho` is a POSIX shell script, so Windows needs a shell that runs it.
 - A pull that drops a discipline after you deprecate its accepted entities.
 - A real Claude Code session loading `AGENTS.md` through the import. This rests on the Claude Code docs, as [the runtime page](runtime-files.md#what-only-a-real-session-can-show) explains.

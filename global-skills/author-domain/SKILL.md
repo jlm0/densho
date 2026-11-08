@@ -30,7 +30,7 @@ An agent proposes each entity, and a person accepts it. Run the steps in the tem
 
 ### Plan the work
 
-1. Ask a person for the outline: the discipline, its practice areas, its frameworks, and its candidate skills.
+1. Ask a person for the outline: the discipline, its practice areas, the order of its steps, and its frameworks.
 2. Record the commit, the count of nodes and directives, and the count from `uv run densho governance --pending`.
 3. Read the reference page of each node that a new node links.
 4. Do not repeat a rule of a linked node.
@@ -59,17 +59,22 @@ An agent proposes each entity, and a person accepts it. Run the steps in the tem
 07. Use `depends_on` only when a node has no meaning without another node.
 08. Use `related` when two nodes coexist and no flow joins them.
 09. Before you add a directive to a node that a skill uses, run `uv run densho directives --at <skill-id>`.
-10. Add a skill only for an ordered procedure that no skill holds.
-11. Keep each procedure of a skill to `9` steps.
-12. If you add a `densho:Discipline` node, add its ID to `choices` and `default` of `disciplines` in `copier.yml`.
-13. Add each new opening verb to `knowledge/governance/language/branches/<discipline-id>.yaml`.
+10. Put the ordered procedure of a practice area in its step file in the flow skill of its discipline.
+11. If no opened source gives a procedure for a step, write `The procedure of this step is missing.` in its step file.
+12. Add a lens skill only for a review that no lens skill holds.
+13. Keep each procedure of a skill or a step file to `9` steps.
+14. If you add a practice area to a flow, add its ID to `steps` of the flow skill.
+15. If you add a practice area to a flow, add its step file.
+16. If you add a `densho:Discipline` node, add its flow skill and the row of the flow skill on the root.
+17. If you add a `densho:Discipline` node, add its ID to `choices` and `default` of `disciplines` in `copier.yml`.
+18. Add each new opening verb to `knowledge/governance/language/branches/<discipline-id>.yaml`.
 
 ### Check the work
 
 01. Run `uv run densho language`.
 02. Correct each problem from the first line down.
 03. Run `uv run densho runtime`.
-04. Run `uv run densho runtime --proposals` to read the size of each changed skill.
+04. Run `uv run densho runtime --proposals` to read the size of each changed skill and step file.
 05. Run the URL search from `### Commands`.
 06. Find each URL of the search in the source log.
 07. Run `git add -A` for the result.
@@ -91,14 +96,16 @@ An agent proposes each entity, and a person accepts it. Run the steps in the tem
 
 ### Outputs
 
-| Finding                        | Output                                    |
-| ------------------------------ | ----------------------------------------- |
-| A rule that an agent can check | A directive                               |
-| A meaning                      | A `densho:Concept` node with a definition |
-| An ordered procedure           | A `densho:Skill` node                     |
+| Finding                                  | Output                                        |
+| ---------------------------------------- | --------------------------------------------- |
+| A rule that an agent can check           | A directive                                   |
+| A meaning                                | A `densho:Concept` node with a definition     |
+| An ordered procedure for a practice area | A step file of the flow skill                 |
+| An ordered review from one angle         | A `densho:Skill` node with `skill_type: lens` |
 
-- Security, testing, and accessibility give mostly directives. Strategy and brand give mostly concepts and skills.
-- A domain skill gets `invocation: agent`, unless its job changes something outside the repo.
+- Security, testing, and accessibility give mostly directives. Strategy and brand give mostly concepts and step procedures.
+- A flow skill and a lens skill get `invocation: agent` and a `densho:SkillPointer` row on the root.
+- The description of a skill holds the trigger of its row, after `Use when`.
 - Each skill uses a part of the listing budget. Keep the count of new skills low, and merge a skill into another one when the two overlap.
 
 ### Basis
@@ -135,7 +142,7 @@ An agent proposes each entity, and a person accepts it. Run the steps in the tem
 - A fact that no opened source states
 - A directive that states only a fact, and no instruction that an agent can check
 - A broken or garbled sentence
-- A skill that grows past its size, because a node in its `uses` received directives
+- A skill or a step file that grows past its size, because a node in its home received directives
 
 ### Node skeleton
 

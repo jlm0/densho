@@ -61,7 +61,7 @@ A discipline brings its practice areas and concepts, with their directives. A no
 Leaving a discipline out removes:
 
 - Each of its nodes, its branch vocabulary in `knowledge/governance/language/branches/`, and its eval tasks in `knowledge/evals/`.
-- Each skill that uses or applies something you left out. A skill that draws only on what you keep, or only on the governance, arrives. The four preset skills, three of the [improvement loop](improvement-loop.md) and the [eval](evaluation.md) skill, draw only on the governance, so every install has them.
+- Each skill that uses or applies something you left out. A skill that draws only on what you keep, or only on the governance, arrives. The four preset skills, three of the [improvement loop](improvement-loop.md) and the [eval](evaluation.md) skill, draw only on the governance, so every install has them. A flow skill goes with its discipline, and `design-brand` also applies three contrast rules of UI/UX design, so an install without UI/UX design has no brand flow.
 - Each `informs`, `related`, `also_attached_to`, or `refines` entry, and each pointer, that names something you left out. The node or directive that held it stays.
 
 If a node you keep `depends_on` a node in another discipline, the install adds that discipline and prints a note. The template has no such link: a handoff from one discipline to the next is an `informs` edge, so `[brand-design]` arrives without product strategy, and the edge from product positioning to brand strategy goes with it.

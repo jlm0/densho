@@ -119,12 +119,14 @@ A test that checks one unit of the code in isolation from the rest of the system
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#private-methods-sidebar
-- If a pure refactor breaks a unit test, make the test use the public API. ^refactor-breaks-test
+- If a pure refactor breaks a unit test, make the test verify state through the public API. ^refactor-breaks-test
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch12.html#strive_for_unchanging_tests
+  - sources: https://abseil.io/resources/swe-book/html/ch12.html#test_via_public_apis
+  - sources: https://abseil.io/resources/swe-book/html/ch12.html#test_statecomma_not_interactions
   - sources: https://testdesiderata.com/
 - Make the result of each unit test independent of the order in which the tests run. ^order-independent-tests
   - scope: subtree

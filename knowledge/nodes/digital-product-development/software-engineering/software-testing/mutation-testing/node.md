@@ -9,6 +9,7 @@ sources:
   - https://web.eecs.umich.edu/~weimerw/2020-481F/readings/mutation-testing.pdf
   - https://storage.googleapis.com/gweb-research2023-media/pubtools/4203.pdf
   - https://arxiv.org/pdf/2102.11378
+  - https://homes.cs.washington.edu/~rjust/publ/practical_mutation_testing_tse_2021.pdf
   - https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=130
 broader:
   - software-testing
@@ -54,7 +55,7 @@ A fault-based technique that measures how well a test set detects faults. Jia an
   - status: proposed
   - origin: template
   - sources: https://storage.googleapis.com/gweb-research2023-media/pubtools/4203.pdf#page=2
-- Do not generate mutants in arid code, such as logging statements and memory reservations. ^skip-arid-code
+- Do not generate mutants in logging code, test code, or code that controls only non-functional properties, such as memory reservation. ^skip-arid-code
   - scope: subtree
   - basis: research
   - status: proposed
@@ -73,12 +74,12 @@ A fault-based technique that measures how well a test set detects faults. Jia an
   - origin: template
   - sources: https://arxiv.org/pdf/2102.11378#page=2
   - sources: https://web.eecs.umich.edu/~weimerw/2020-481F/readings/mutation-testing.pdf#page=4
-- Do not add a test for an unproductive mutant, such as a changed initial capacity of a collection. ^skip-unproductive-mutants
+- Do not add a test that kills a mutant through an assertion on an implementation detail, not on the specification. ^skip-unproductive-mutants
   - scope: subtree
   - basis: research
   - status: proposed
   - origin: template
-  - sources: https://arxiv.org/pdf/2102.11378#page=2
+  - sources: https://homes.cs.washington.edu/~rjust/publ/practical_mutation_testing_tse_2021.pdf#page=2
 - Exclude each equivalent mutant from the mutation score. ^exclude-equivalent-mutants
   - scope: subtree
   - basis: research
@@ -124,6 +125,6 @@ A full mutation analysis is costly in machines and in human attention. Selective
 - It generates at most 1 mutant for each line.
 - It skips arid code, where each mutant would be unproductive.
 
-An unproductive mutant is equivalent to the original, or a test that kills it does not improve the suite. At Google, developers first marked `85%` of the shown mutants as unproductive. Suppression based on their feedback raised the share of productive mutants from `15%` to `89%`.
+An unproductive mutant is equivalent to the original, or a test that kills it does not improve the suite. Such a test asserts on an implementation detail, such as the initial capacity of a collection, and not on the specification. At Google, developers first marked `85%` of the shown mutants as unproductive. Suppression based on their feedback raised the share of productive mutants from `15%` to `89%`.
 
 Code coverage shows which lines the tests execute. Mutation testing shows whether the tests detect a change in those lines.

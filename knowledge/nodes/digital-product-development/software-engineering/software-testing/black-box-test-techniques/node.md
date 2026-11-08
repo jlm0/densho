@@ -165,7 +165,7 @@ Techniques that select test cases from the specified behavior of the test object
   - origin: template
   - sources: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-142.pdf#page=7
   - sources: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-142.pdf#page=27
-- Limit each parameter of a combinatorial test to `10` values or fewer. ^limit-values-per-parameter
+- Limit each parameter of a combinatorial test to `10` values, unless the values for its partitions and boundaries exceed `10`. ^limit-values-per-parameter
   - scope: subtree
   - basis: practitioner
   - status: proposed

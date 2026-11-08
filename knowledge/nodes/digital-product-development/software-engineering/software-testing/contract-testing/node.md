@@ -128,7 +128,7 @@ A test that checks that a test double still behaves like the external service th
   - status: proposed
   - origin: template
   - sources: https://docs.pact.io/consumer#choose-the-right-type-of-matching-for-the-situation
-- If a stub holds a snapshot of a response, make the contract test check its data format, not its values. ^check-format-not-data
+- If a stub holds a snapshot, check field formats, not field content, unless the consumer depends on that content. ^check-format-not-data
   - scope: subtree
   - basis: practitioner
   - status: proposed

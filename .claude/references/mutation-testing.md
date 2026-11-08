@@ -21,6 +21,6 @@ A full mutation analysis is costly in machines and in human attention. Selective
 - It generates at most 1 mutant for each line.
 - It skips arid code, where each mutant would be unproductive.
 
-An unproductive mutant is equivalent to the original, or a test that kills it does not improve the suite. At Google, developers first marked `85%` of the shown mutants as unproductive. Suppression based on their feedback raised the share of productive mutants from `15%` to `89%`.
+An unproductive mutant is equivalent to the original, or a test that kills it does not improve the suite. Such a test asserts on an implementation detail, such as the initial capacity of a collection, and not on the specification. At Google, developers first marked `85%` of the shown mutants as unproductive. Suppression based on their feedback raised the share of productive mutants from `15%` to `89%`.
 
 Code coverage shows which lines the tests execute. Mutation testing shows whether the tests detect a change in those lines.

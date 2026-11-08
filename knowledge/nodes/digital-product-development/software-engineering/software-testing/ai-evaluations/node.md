@@ -19,7 +19,7 @@ A test of an AI system: the test gives the system an input, and applies grading 
 
 ## Directives
 
-- Define each success criterion of an AI feature as a specific and measurable target. ^specific-success-criteria
+- Define each success criterion of an AI feature as a named metric, a threshold, and its test set. ^specific-success-criteria
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -43,7 +43,7 @@ A test of an AI system: the test gives the system an input, and applies grading 
   - status: proposed
   - origin: template
   - sources: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests#eval-design-principles
-- Start the eval suite with `20` to `50` tasks from the manual checks and the reported failures. ^tasks-from-real-failures
+- Start the eval suite with `20` to `50` tasks from manual checks, common user tasks, and failure reports from production. ^tasks-from-real-failures
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -203,6 +203,7 @@ A test of an AI system: the test gives the system an input, and applies grading 
   - status: proposed
   - origin: template
   - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#maintain-and-use-the-eval-long-term
+  - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#collect-tasks-for-the-initial-eval-dataset
 - Monitor each capability eval for saturation. ^monitor-eval-saturation
   - scope: subtree
   - basis: practitioner

@@ -34,12 +34,13 @@ A measure of the degree to which a test suite exercises the code of a system. Iv
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=42
   - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=129
-- Measure the coverage automatically at each key point of the development workflow. ^measure-coverage-automatically
+- Measure the coverage automatically for each change in code review and for each project once a day. ^measure-coverage-automatically
   - scope: subtree
   - basis: research
   - status: proposed
   - origin: template
   - sources: https://storage.googleapis.com/gweb-research2023-media/pubtools/5172.pdf#page=8
+  - sources: https://storage.googleapis.com/gweb-research2023-media/pubtools/5172.pdf#page=3
 - Show the coverage of each changed line in the code review of the change. ^coverage-in-code-review
   - scope: subtree
   - basis: research
@@ -77,13 +78,13 @@ A measure of the degree to which a test suite exercises the code of a system. Iv
   - status: proposed
   - origin: template
   - sources: https://testing.googleblog.com/2020/08/code-coverage-best-practices.html
-- Raise the coverage of each part of the code with a high rate of change. ^cover-changing-code
+- Make the coverage of the changed lines of each commit meet its per-commit coverage goal. ^cover-changing-code
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://testing.googleblog.com/2020/08/code-coverage-best-practices.html
-- When you change a file with low coverage, raise its coverage. ^raise-coverage-on-change
+- When you change a file with coverage below the target of its code base, raise its coverage. ^raise-coverage-on-change
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -116,7 +117,7 @@ A measure of the degree to which a test suite exercises the code of a system. Iv
   - sources: https://abseil.io/resources/swe-book/html/ch11.html#a_note_on_code_coverage
   - sources: https://testing.googleblog.com/2020/08/code-coverage-best-practices.html
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=42
-- Do not add a test of little value only to reach a coverage target. ^no-tests-for-the-number
+- Do not add a copied test or a test without an assertion only to reach a coverage target. ^no-tests-for-the-number
   - scope: subtree
   - basis: practitioner
   - status: proposed

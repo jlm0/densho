@@ -55,7 +55,7 @@ A way to test that derives the test cases from a model of the system under test 
   - status: proposed
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=25
-- When you build a test model from a system design model, add elements for unusual scenarios and error situations. ^model-error-situations
+- When you build a test model from a requirements model, add elements for unusual scenarios and error situations. ^model-error-situations
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -68,7 +68,7 @@ A way to test that derives the test cases from a model of the system under test 
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=23
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=26
-- If one selection criterion does not fit the test objectives, combine criteria, such as requirements coverage and model coverage. ^combine-selection-criteria
+- If one selection criterion does not cover each aspect of the test objectives, combine criteria. ^combine-selection-criteria
   - scope: subtree
   - basis: standard
   - status: proposed

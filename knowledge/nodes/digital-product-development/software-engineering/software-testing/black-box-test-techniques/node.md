@@ -151,20 +151,20 @@ Techniques that select test cases from the specified behavior of the test object
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=42
-- If an exhaustive test is too costly, test at least each pair of values with a covering array. ^pairwise-covering-array
+- In a combinatorial test, test at least each pair of parameter values with a covering array. ^pairwise-covering-array
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-142.pdf#page=7
   - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=127
-- In mission-critical software, do not limit the combinatorial tests to pairs of values. ^beyond-pairs-for-critical-software
+- In mission-critical software, raise the interaction strength above `2` until the `t`-way tests detect no failure. ^beyond-pairs-for-critical-software
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-142.pdf#page=7
-  - sources: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-142.pdf#page=11
+  - sources: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-142.pdf#page=27
 - Limit each parameter of a combinatorial test to `10` values or fewer. ^limit-values-per-parameter
   - scope: subtree
   - basis: practitioner

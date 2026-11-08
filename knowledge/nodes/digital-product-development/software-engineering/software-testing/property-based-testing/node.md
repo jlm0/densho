@@ -45,14 +45,14 @@ A way to test code by stating general properties that the code must hold, and by
   - status: proposed
   - origin: template
   - sources: https://research.chalmers.se/publication/517894/file/517894_Fulltext.pdf#page=10
-- If the expected result is hard to compute, write metamorphic properties that relate the results of `2` related calls. ^metamorphic-properties
+- If the expected result needs a copy of the implementation, write metamorphic properties that relate the results of `2` calls. ^metamorphic-properties
   - scope: subtree
   - basis: research
   - status: proposed
   - origin: template
   - sources: https://research.chalmers.se/publication/517894/file/517894_Fulltext.pdf#page=11
   - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=131
-- If time is limited, write model-based and validity properties first, unless the model is costly or resembles the implementation. ^model-based-properties-first
+- Write the model-based and validity properties first, unless the model is costly or resembles the implementation. ^model-based-properties-first
   - scope: subtree
   - basis: research
   - status: proposed

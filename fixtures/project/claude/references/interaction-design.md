@@ -66,6 +66,7 @@ From [UI/UX design](ui-ux-design.md):
 From [Interaction design](interaction-design.md):
 
 - Show the result of each user action on the screen. ^show-action-result
+- Show the current value of each setting next to its name. ^show-current-setting-value
 - Give each custom button a visible pressed state. ^show-pressed-state
 
 ## Definition

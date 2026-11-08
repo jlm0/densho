@@ -19,6 +19,7 @@ EDGE_FIELDS = (
     "implements",
     "uses",
     "applies",
+    "steps",
 )
 DIRECTIVE_REFERENCE_FIELDS = ("also_attached_to", "refines", "conflicts_with")
 

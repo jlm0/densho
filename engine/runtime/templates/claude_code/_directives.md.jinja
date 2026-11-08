@@ -2,9 +2,9 @@
 
 {% if not node.groups %}
 {% if notice %}
-No directive applies at this node.
+No directive applies at this {{ place | default("node") }}.
 {% else %}
-No directive is in force at this node.
+No directive is in force at this {{ place | default("node") }}.
 {% endif %}
 {% endif %}
 {% include "_groups.md.jinja" %}
@@ -13,6 +13,6 @@ No directive is in force at this node.
 ## Exceptions
 
 {% for exception in node.exceptions %}
-- `{{ exception.directive }}` does not apply at this node. {{ exception.reason }}{% if exception.status != "accepted" %} ({{ exception.status }}){% endif +%}
+- `{{ exception.directive }}` does not apply at {% if exception.holder %}[{{ exception.holder.title | link_text }}]({{ href(exception.holder) }}){% else %}this node{% endif %}. {{ exception.reason }}{% if exception.status != "accepted" %} ({{ exception.status }}){% endif +%}
 {% endfor %}
 {% endif %}

@@ -12,6 +12,7 @@ from engine.graph.references import exceptions_of
 from engine.layout import HISTORY_FILE
 from engine.parser.result import Problem
 from engine.parser.scripts import scripts_digest
+from engine.parser.steps import step_files_digest
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping, Sequence
@@ -25,6 +26,7 @@ type EntryKind = Literal["node", "directive", "exception", "file"]
 type EntryKey = tuple[EntryKind, str]
 
 DIGEST_LENGTH = 16
+STEP_FILES_FIELD = "step_files"
 NODE_FIELDS_WITHOUT_DIGEST = frozenset({"id", "status", "origin", "directives", "exceptions"})
 DIRECTIVE_FIELDS_WITHOUT_DIGEST = frozenset({"id", "status", "origin"})
 EXCEPTION_FIELDS_WITHOUT_DIGEST = frozenset({"directive", "status"})
@@ -88,6 +90,9 @@ def entity_lines(
     if item.scripts:
         scripts = scripts_digest(item.scripts)[:DIGEST_LENGTH]
         content = dict(sorted({**content, SCRIPTS_FIELD: scripts}.items()))
+    if item.step_files:
+        step_files = step_files_digest(item.step_files)[:DIGEST_LENGTH]
+        content = dict(sorted({**content, STEP_FILES_FIELD: step_files}.items()))
     yield (NODE, node.id), (NODE, node.id), Recorded(path, Status(node.status).value, content)
     for directive in node.directives or []:
         content = _content(directive, DIRECTIVE_FIELDS_WITHOUT_DIGEST, holder=node.id)

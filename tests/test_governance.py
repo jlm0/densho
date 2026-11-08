@@ -137,7 +137,11 @@ def front_matter(spec: Spec) -> list[str]:
     if spec["kind"] != "densho:Root":
         lines.append(f"knowledge_type: {spec.get('knowledge_type', 'domain')}")
     if spec["kind"] == "densho:Skill":
-        lines += ["description: Review a change. Use when a change lands.", "invocation: agent"]
+        lines += [
+            "description: Review a change. Use when a change lands.",
+            "invocation: agent",
+            "skill_type: system",
+        ]
     for key in (*NODE_EDGES, "sources"):
         if spec.get(key) == []:
             lines.append(f"{key}: []")

@@ -1,4 +1,5 @@
 # pyright: reportUnknownArgumentType=false, reportUnknownLambdaType=false
+import dataclasses
 import json
 import re
 import shutil
@@ -11,7 +12,9 @@ from typer.testing import CliRunner
 
 from engine.cli import app
 from engine.governance.base import read_head_file
+from engine.governance.history_lines import entity_lines
 from engine.parser import ParsedNode, parse_source
+from engine.parser.result import StepFile
 from engine.template import (
     HISTORY_CODES,
     HISTORY_FILE,
@@ -964,6 +967,7 @@ origin: template
 knowledge_type: domain
 description: Review a sample. Use when a sample needs a review.
 invocation: agent
+skill_type: system
 uses:
   - domain
 ---
@@ -1001,6 +1005,25 @@ def test_the_scripts_of_a_skill_are_one_field(tmp_path: Path) -> None:
     (gone,) = record_history(tmp_path).entries
     assert (gone.id, gone.fields) == ("review", ["scripts"])
     assert "scripts" not in gone.content
+
+
+def node_content(item: ParsedNode) -> dict[str, str]:
+    (_, _, recorded), *_ = entity_lines(item, Path("/r"))
+    return dict(recorded.content)
+
+
+def test_the_step_files_of_a_skill_are_one_field() -> None:
+    item = parse_source(SKILL_NODE, Path("/r/knowledge/skills/review/node.md"))
+    assert isinstance(item, ParsedNode)
+    assert "step_files" not in node_content(item)
+    first = node_content(dataclasses.replace(item, step_files=(StepFile("a", (("Inputs", "x"),)),)))
+    assert list(first) == sorted(first)
+    assert re.fullmatch(f"[0-9a-f]{{{SCRIPTS_DIGEST_LENGTH}}}", first["step_files"])
+    changed = node_content(
+        dataclasses.replace(item, step_files=(StepFile("a", (("Inputs", "y"),)),))
+    )
+    assert changed["step_files"] != first["step_files"]
+    assert {**changed, "step_files": first["step_files"]} == first
 
 
 def test_a_skill_with_no_scripts_has_no_scripts_field(tmp_path: Path) -> None:

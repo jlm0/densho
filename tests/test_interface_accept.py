@@ -116,6 +116,7 @@ origin: template
 knowledge_type: domain
 description: Review a sample. Use when a sample needs a review.
 invocation: agent
+skill_type: system
 uses:
   - beta
 ---

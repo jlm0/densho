@@ -146,6 +146,24 @@ class Invocation(str, Enum):
     """
 
 
+class SkillType(str, Enum):
+    """
+    The kinds of skill.
+    """
+    flow = "flow"
+    """
+    The skill runs the steps of a discipline in their order. Each step has a step file.
+    """
+    lens = "lens"
+    """
+    The skill reviews work from one angle, or runs other lens skills.
+    """
+    system = "system"
+    """
+    The skill runs an operation of Densho on the graph.
+    """
+
+
 class Basis(str, Enum):
     """
     The kinds of source that support a directive.
@@ -1006,8 +1024,10 @@ class Skill(KnowledgeNode):
     """
     description: str = Field(default=..., description="""The text that an agent reads to select the skill.""")
     invocation: Invocation = Field(default=..., description="""The actor that starts the skill.""")
+    skill_type: SkillType = Field(default=..., description="""The kind of work that the skill does.""")
     uses: Optional[list[str]] = Field(default=None, description="""The knowledge that the skill composes.""")
     applies: Optional[list[str]] = Field(default=None, description="""The directives that the skill applies.""")
+    steps: Optional[list[str]] = Field(default=None, description="""The steps of a flow skill, in their order. Each step is a node under the node that the flow uses.""")
     knowledge_type: KnowledgeType = Field(default=..., description="""The kind of knowledge in the node.""")
     exceptions: Optional[list[DirectiveException]] = Field(default=None, description="""The inherited directives that stop at this node.""")
     kind: Literal["https://github.com/jlm0/densho/schema/Skill","densho:Skill"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example densho:Concept.""")

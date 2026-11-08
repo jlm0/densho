@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import StrEnum
 from typing import TYPE_CHECKING
 
@@ -10,10 +10,12 @@ from engine.generated.metamodel import (
     PathPointer,
     Skill,
     SkillPointer,
+    SkillType,
     Status,
     TaxonomyNode,
 )
 from engine.layout import POLICY_FOLDER
+from engine.runtime.placement import Tree, flow_placement, skill_placement
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -25,7 +27,8 @@ if TYPE_CHECKING:
         DirectiveException,
         Node,
     )
-    from engine.parser.result import Script
+    from engine.parser.result import Script, StepFile
+    from engine.runtime.placement import Placement
 
 
 class LoadMechanism(StrEnum):
@@ -60,6 +63,13 @@ class ExceptionLine:
     directive: str
     reason: str
     status: str
+    holder: NodeLink | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class ReadLine:
+    holder: NodeLink
+    directives: tuple[str, ...]
 
 
 @dataclass(frozen=True, slots=True)
@@ -67,6 +77,22 @@ class PointerLine:
     mechanism: LoadMechanism
     target: NodeLink
     trigger: str | None
+
+
+@dataclass(frozen=True, slots=True)
+class StepView:
+    link: NodeLink
+    flow: str
+    number: int
+    total: int
+    groups: tuple[DirectiveGroup, ...]
+    exceptions: tuple[ExceptionLine, ...]
+    reads: tuple[ReadLine, ...]
+    source: StepFile
+    comes_from: tuple[NodeLink, ...]
+    goes_to: tuple[NodeLink, ...]
+    following: NodeLink | None
+    pointers: tuple[PointerLine, ...]
 
 
 @dataclass(frozen=True, slots=True)
@@ -83,6 +109,8 @@ class NodeView:
     scripts: tuple[Script, ...] = ()
     comes_from: tuple[NodeLink, ...] = ()
     goes_to: tuple[NodeLink, ...] = ()
+    reads: tuple[ReadLine, ...] = ()
+    steps: tuple[StepView, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -100,6 +128,7 @@ class RuntimeView:
     domains: tuple[PointerLine, ...]
     governance: tuple[PointerLine, ...]
     references: tuple[PointerLine, ...]
+    rows: tuple[PointerLine, ...]
     skills: tuple[NodeView, ...]
     rules: tuple[NodeView, ...]
     pages: tuple[NodeView, ...]
@@ -196,13 +225,33 @@ def _counts(compiled: CompiledGraph, nodes: Sequence[Node]) -> DirectiveCounts:
     )
 
 
+def _exception_lines(
+    placement: Placement, skill_id: str, links: Mapping[str, NodeLink]
+) -> tuple[ExceptionLine, ...]:
+    return tuple(
+        ExceptionLine(
+            entry.directive,
+            entry.reason,
+            Status(entry.status).value,
+            None if holder == skill_id else links[holder],
+        )
+        for holder, entry in placement.exceptions
+    )
+
+
+def _read_lines(placement: Placement, links: Mapping[str, NodeLink]) -> tuple[ReadLine, ...]:
+    return tuple(ReadLine(links[holder], directives) for holder, directives in placement.reads)
+
+
 def build_view(compiled: CompiledGraph) -> RuntimeView:
     root = compiled.graph.root
     others: list[Node] = list(compiled.graph.nodes)
     nodes = [root, *others]
+    by_id = {node.id: node for node in nodes}
     links = {node.id: NodeLink(node.id, node.title, compiled.paths[node.id]) for node in nodes}
     tool_loaded = _tool_loaded_targets(nodes)
     informed_by = _informed_by(nodes)
+    tree = Tree(nodes)
 
     def view_of(node: Node, paths: Sequence[str] = ()) -> NodeView:
         return NodeView(
@@ -221,6 +270,47 @@ def build_view(compiled: CompiledGraph) -> RuntimeView:
             compiled.scripts.get(node.id, ()),
             tuple(links[source] for source in informed_by.get(node.id, [])),
             tuple(links[target] for target in _informs(node)),
+        )
+
+    def step_views(skill: Skill, steps: Mapping[str, Placement]) -> tuple[StepView, ...]:
+        sources = {step.id: step for step in compiled.step_files.get(skill.id, ())}
+        order = [step for step in skill.steps or [] if step in steps and step in sources]
+        return tuple(
+            StepView(
+                link=links[step],
+                flow=skill.id,
+                number=index + 1,
+                total=len(order),
+                groups=_groups(steps[step].copies, links),
+                exceptions=_exception_lines(steps[step], skill.id, links),
+                reads=_read_lines(steps[step], links),
+                source=sources[step],
+                comes_from=tuple(links[source] for source in informed_by.get(step, [])),
+                goes_to=tuple(links[target] for target in _informs(by_id[step])),
+                following=links[order[index + 1]] if index + 1 < len(order) else None,
+                pointers=_pointers(by_id[step], links),
+            )
+            for index, step in enumerate(order)
+        )
+
+    def skill_view(node: Skill) -> NodeView:
+        base = view_of(node)
+        if node.skill_type == SkillType.flow:
+            flow = flow_placement(node, tree, compiled.applied)
+            placement = flow.skill
+            steps = step_views(node, flow.steps)
+            pointers = _pointers(node, links)
+        else:
+            placement = skill_placement(node, tree, compiled.applied)
+            steps = ()
+            pointers = base.pointers
+        return replace(
+            base,
+            pointers=pointers,
+            groups=_groups(placement.copies, links),
+            exceptions=_exception_lines(placement, node.id, links),
+            reads=_read_lines(placement, links),
+            steps=steps,
         )
 
     def rule_paths(node: Node) -> list[str]:
@@ -242,8 +332,13 @@ def build_view(compiled: CompiledGraph) -> RuntimeView:
             *_entry_lines(policies, root_lines, links),
             *(line for policy in policies for line in _pointers(policy, links)),
         ),
-        references=tuple(line for line in root_lines if line.target.id not in named),
-        skills=tuple(view_of(node) for node in others if isinstance(node, Skill)),
+        references=tuple(
+            line
+            for line in root_lines
+            if line.target.id not in named and line.mechanism != LoadMechanism.SKILL
+        ),
+        rows=tuple(line for line in root_lines if line.mechanism == LoadMechanism.SKILL),
+        skills=tuple(skill_view(node) for node in others if isinstance(node, Skill)),
         rules=tuple(view_of(node, rule_paths(node)) for node in others if node.id in tool_loaded),
         pages=tuple(
             view_of(node)

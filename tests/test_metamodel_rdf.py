@@ -99,6 +99,7 @@ SAMPLE_GRAPH = {
             "knowledge_type": "domain",
             "description": "Use this skill for a review.",
             "invocation": "agent",
+            "skill_type": "system",
             "uses": ["hierarchy", "settings"],
             "applies": ["use-a-verb"],
         },
@@ -188,6 +189,7 @@ def test_schema_lists_each_edge_kind() -> None:
         "implements",
         "uses",
         "applies",
+        "steps",
     }
 
 

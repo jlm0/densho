@@ -7,6 +7,7 @@ origin: template
 knowledge_type: domain
 description: Check the touchpoints of a brand against its guidelines, and list each inconsistency. Use when you review the touchpoints of a brand for consistency.
 invocation: agent
+skill_type: lens
 uses:
   - visual-identity
   - brand-logo

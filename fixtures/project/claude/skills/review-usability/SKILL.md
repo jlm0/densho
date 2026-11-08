@@ -1,6 +1,6 @@
 ---
 name: review-usability
-description: "Review a flow against the usability heuristics, the size and position of its targets, and its choices. Use when a flow is ready for a usability review."
+description: "Review a flow against the usability heuristics, the size and position of its targets, and its choices. Use when a person asks for a usability review of a flow."
 ---
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Review the usability of a flow
@@ -8,10 +8,6 @@ description: "Review a flow against the usability heuristics, the size and posit
 If compaction cuts this skill, invoke the skill again.
 
 ## Directives
-
-From [Digital product development](../../references/digital-product-development.md):
-
-- Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
 From [Accessibility](../../references/accessibility.md):
 
@@ -139,6 +135,12 @@ From [Hick's law](../../references/hicks-law.md):
 From [Review the usability of a flow](SKILL.md):
 
 - Give each finding a severity from `0` to `4`. ^rate-finding-severity
+
+## Required reads
+
+Read each file in this list, and follow the directives that its line names.
+
+- Read [Digital product development](../../references/digital-product-development.md), and follow each directive from Digital product development.
 
 ## Inputs
 

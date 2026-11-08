@@ -12,7 +12,7 @@ from typer.core import TyperGroup
 from typer.main import get_command
 
 from engine.cli import app
-from engine.generated.metamodel import Invocation, Root, Skill
+from engine.generated.metamodel import Invocation, Root, Skill, SkillType
 from engine.governance import check_items as check_governance_items
 from engine.graph.rules import RESERVED_SKILL_NAMES
 from engine.language import check_items
@@ -166,6 +166,7 @@ def skill_source(text: str, skill: GlobalSkill) -> tuple[str, dict[int, int]]:
         "knowledge_type: domain",
         f"description: {front['description']}",
         "invocation: agent",
+        "skill_type: system",
         "---",
         "",
         "## Directives",
@@ -305,6 +306,8 @@ def preset_problems(items: list[ParsedNode]) -> list[str]:
             problems.append(f"{name}: missing")
         elif node.invocation != invocation:
             problems.append(f"{name}: invocation")
+        elif node.skill_type != SkillType.system:
+            problems.append(f"{name}: skill_type")
     return problems
 
 
@@ -704,6 +707,25 @@ def test_the_presets_are_the_skills_that_draw_only_on_the_governance(
     items: list[ParsedNode],
 ) -> None:
     assert preset_candidates(items) == set(PRESETS)
+
+
+def test_the_presets_are_the_system_skills(items: list[ParsedNode]) -> None:
+    system = {
+        item.node.id
+        for item in items
+        if isinstance(item.node, Skill) and item.node.skill_type == SkillType.system
+    }
+    assert system == set(PRESETS)
+
+
+def test_a_preset_that_is_no_system_skill_fails(items: list[ParsedNode]) -> None:
+    changed = [
+        replace(item, node=item.node.model_copy(update={"skill_type": SkillType.lens}))
+        if item.node.id == "propose-knowledge"
+        else item
+        for item in items
+    ]
+    assert preset_problems(changed) == ["propose-knowledge: skill_type"]
 
 
 def test_a_preset_that_uses_a_discipline_is_no_preset(items: list[ParsedNode]) -> None:

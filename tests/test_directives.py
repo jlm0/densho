@@ -77,7 +77,11 @@ def front_matter(spec: Spec, others: list[str]) -> list[str]:
         return lines
     lines.append("knowledge_type: domain")
     if spec["kind"] == "densho:Skill":
-        lines += ["description: Use this skill for a review.", "invocation: agent"]
+        lines += [
+            "description: Use this skill for a review.",
+            "invocation: agent",
+            "skill_type: system",
+        ]
     for key in LIST_FIELDS:
         if key in spec:
             lines += [f"{key}:", *[f"  - {value}" for value in spec[key]]]

@@ -15,6 +15,7 @@ from typer.testing import CliRunner
 from engine.cli import app
 from engine.compiler import compile_tree
 from engine.governance import pending_entities
+from engine.graph.references import EDGE_FIELDS
 from engine.interface import (
     REACH_LISTED,
     VIEW_FOLDER,
@@ -24,6 +25,7 @@ from engine.interface import (
     render_site,
     write_view,
 )
+from engine.interface.site import FIELD_LABELS
 from engine.interface.tree import children_by_broader, subtree_ids, tree_rows
 from engine.parser import ParsedNode, parse_source
 from engine.parser.generated import MARKER, is_generated
@@ -158,7 +160,7 @@ SAMPLE = {
         "densho:Skill",
         front=(
             "description: Review a sample. Use when a sample needs a review.\n"
-            "invocation: agent\nuses: [beta]\n" + pointers("beta")
+            "invocation: agent\nskill_type: system\nuses: [beta]\n" + pointers("beta")
         ),
         body="## Procedure\n\n1. Read each directive.\n",
     ),
@@ -335,7 +337,7 @@ def hostile_tree(payload: str) -> dict[str, str]:
             "review",
             "densho:Skill",
             title=quoted,
-            front=f"description: {quoted}\ninvocation: agent\nuses: [beta]\n",
+            front=f"description: {quoted}\ninvocation: agent\nskill_type: system\nuses: [beta]\n",
             body=f"Intro {payload} outro.\n",
         ),
     }
@@ -632,7 +634,10 @@ def test_a_node_with_two_parents_says_that_it_is_listed_above() -> None:
     sources["knowledge/skills/review/node.md"] = node(
         "review",
         "densho:Skill",
-        front=f"description: {SKILL_DESCRIPTION}\ninvocation: agent\nuses: [beta]\n",
+        front=(
+            f"description: {SKILL_DESCRIPTION}\ninvocation: agent\n"
+            "skill_type: system\nuses: [beta]\n"
+        ),
     )
     page = site_of(sources)["index.html"]
     assert page.count('href="nodes/beta.html"') == len(("first", "second"))
@@ -807,7 +812,7 @@ def test_each_edge_of_a_directive_and_a_node_links_to_its_target() -> None:
             "densho:Skill",
             front=(
                 "description: Review a sample. Use when a sample needs a review.\n"
-                "invocation: agent\n"
+                "invocation: agent\nskill_type: system\n"
                 "uses: [gamma]\napplies: [base-rule]\n"
             ),
         ),
@@ -822,6 +827,30 @@ def test_each_edge_of_a_directive_and_a_node_links_to_its_target() -> None:
     assert '<dt>Applies</dt>\n<dd><a href="alpha.html#directive-base-rule">' in skill
     review = site["review.html"]
     assert 'Refines: <a href="nodes/alpha.html#directive-base-rule">' in review
+
+
+def test_a_flow_shows_its_steps_in_their_order() -> None:
+    sources = {
+        "knowledge/node.md": node("root", "densho:Root", front=pointers("area")),
+        "knowledge/nodes/area/node.md": node("area"),
+        "knowledge/nodes/zeta/node.md": node("zeta", "densho:Concept", front="broader: [area]\n"),
+        "knowledge/nodes/alpha/node.md": node("alpha", "densho:Concept", front="broader: [area]\n"),
+        "knowledge/skills/flow/node.md": node(
+            "flow",
+            "densho:Skill",
+            front=(
+                "description: Run the flow. Use when you run the flow.\n"
+                "invocation: agent\nskill_type: flow\nuses: [area]\nsteps: [zeta, alpha]\n"
+            ),
+        ),
+    }
+    skill = site_of(sources)["nodes/flow.html"]
+    assert '<dt>Steps</dt>\n<dd><a href="zeta.html">' in skill
+    assert skill.index('href="zeta.html"') < skill.index('href="alpha.html"')
+
+
+def test_each_edge_field_has_a_label() -> None:
+    assert set(EDGE_FIELDS) <= set(FIELD_LABELS)
 
 
 def test_a_path_pointer_shows_its_patterns() -> None:
@@ -855,7 +884,10 @@ def test_the_generated_file_of_a_rule_and_a_skill_are_named() -> None:
         "knowledge/skills/review/node.md": node(
             "review",
             "densho:Skill",
-            front=f"description: {SKILL_DESCRIPTION}\ninvocation: agent\nuses: [alpha]\n",
+            front=(
+                f"description: {SKILL_DESCRIPTION}\ninvocation: agent\n"
+                "skill_type: system\nuses: [alpha]\n"
+            ),
         ),
     }
     site = site_of(sources)
@@ -945,7 +977,10 @@ def test_the_queue_shows_a_node_with_two_parents_once() -> None:
     sources["knowledge/skills/review/node.md"] = node(
         "review",
         "densho:Skill",
-        front=f"description: {SKILL_DESCRIPTION}\ninvocation: agent\nuses: [beta]\n",
+        front=(
+            f"description: {SKILL_DESCRIPTION}\ninvocation: agent\n"
+            "skill_type: system\nuses: [beta]\n"
+        ),
     )
     page = site_of(sources)["review.html"]
     assert page.count('id="node-beta"') == 1

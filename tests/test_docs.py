@@ -266,7 +266,7 @@ def language_example_source(example: str) -> str:
     if example.endswith("changes code."):
         fields = (
             f"knowledge_type: domain\nkind: densho:Skill\ndescription: {example}\n"
-            "invocation: agent\nuses: [b]\n"
+            "invocation: agent\nskill_type: system\nuses: [b]\n"
         )
         return f"{LANGUAGE_NODE}{fields}---\n"
     if example in LANGUAGE_TRIGGERS:

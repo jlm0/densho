@@ -42,3 +42,8 @@ The design of how an interface responds when people act on it: which controls ap
   - status: proposed
   - origin: template
   - sources: https://developer.apple.com/design/human-interface-guidelines/buttons
+- Show the current value of each setting next to its name. ^show-current-setting-value
+  - scope: node
+  - basis: judgment
+  - status: proposed
+  - origin: template

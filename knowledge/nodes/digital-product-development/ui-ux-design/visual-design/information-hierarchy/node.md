@@ -59,7 +59,12 @@ The organization of design elements so that the eye takes them in the order of t
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/gestalt-similarity/
-- Give each screen one primary action. ^one-primary-action
+- Give each screen one primary action, unless the screen is a settings screen. ^one-primary-action
+  - scope: subtree
+  - basis: judgment
+  - status: proposed
+  - origin: template
+- If a screen is a settings screen, give each control on it the same rank. ^settings-controls-same-rank
   - scope: subtree
   - basis: judgment
   - status: proposed

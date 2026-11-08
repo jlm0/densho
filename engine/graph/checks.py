@@ -9,6 +9,7 @@ from engine.graph.rules import (
     root_nodes,
 )
 from engine.graph.shapes import check_shapes
+from engine.graph.skills import check_skill_types
 from engine.graph.structure import (
     check_associations,
     check_cycles,
@@ -37,7 +38,11 @@ def check_graph(items: Sequence[ParsedNode], repository: Path) -> list[Problem]:
         references = check_references(items)
         problems += [*references, *check_associations(items), *check_cycles(items)]
         if not references and len(root_nodes(items)) == 1:
-            problems += [*check_shapes(items), *check_reachability(items)]
+            problems += [
+                *check_shapes(items),
+                *check_reachability(items),
+                *check_skill_types(items),
+            ]
     return sorted(set(problems), key=_sort_key)
 
 

@@ -1,6 +1,6 @@
 ---
 name: review-screen-hierarchy
-description: "Review a screen for its hierarchy, its grouping, and its use of prose. Use when a screen design is ready for review."
+description: "Review a screen for its hierarchy, its grouping, and its use of prose. Use when a person asks for a review of the hierarchy of a screen."
 ---
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Review the hierarchy of a screen

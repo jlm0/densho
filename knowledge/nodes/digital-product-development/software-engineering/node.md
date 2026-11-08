@@ -37,12 +37,6 @@ pointers:
   - kind: densho:TextPointer
     target: software-security
     trigger: You write code that handles input, a user account, or a secret.
-  - kind: densho:SkillPointer
-    target: write-decision-record
-    trigger: You make or change a decision about the structure of a system.
-  - kind: densho:SkillPointer
-    target: review-code-change
-    trigger: A change is ready for review.
 ---
 
 ## Definition

@@ -139,6 +139,7 @@ SAMPLE = {
         status="proposed",
         front=(
             "description: Review a sample. Use when a sample needs a review.\ninvocation: agent\n"
+            "skill_type: system\n"
             "uses: [gamma]\napplies: [solid, spare]\n"
         ),
     ),

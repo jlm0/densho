@@ -19,8 +19,6 @@ The design, construction, testing, and operation of software. It turns product a
 
 ## References
 
-- A change is ready for review. Use the skill `review-code-change`.
-- You make or change a decision about the structure of a system. Use the skill `write-decision-record`.
 - You design the structure of a system or change it. Read [Software architecture](software-architecture.md).
 - You make a commit, a branch, or a build. Read [Software configuration management](software-configuration-management.md).
 - You write the code of a service, a client, or its infrastructure. Read [Software construction](software-construction.md).

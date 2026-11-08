@@ -46,6 +46,7 @@ SKILL: Sample = {
     "knowledge_type": "domain",
     "description": "Use this skill for X.",
     "invocation": "agent",
+    "skill_type": "system",
     "uses": ["other"],
 }
 

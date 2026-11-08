@@ -14,6 +14,24 @@ If compaction cuts this skill, invoke the skill again.
 {% endif %}
 
 {% include "_directives.md.jinja" %}
+{% include "_reads.md.jinja" %}
+{% if node.steps %}
+
+## Steps
+
+Run the steps in this order:
+
+{% for step in node.steps %}
+{{ step.number }}. [{{ step.link.title | link_text }}]({{ step_href(step.link) }})
+{% endfor %}
+
+For each step:
+
+1. Read its step file and each required read in it.
+2. If the output of the step exists already, go to the next step.
+3. Run the procedure of the step.
+4. Go to the next step only after the exit gate of the step passes.
+{% endif %}
 {% if node.body %}
 
 {{ node.body }}

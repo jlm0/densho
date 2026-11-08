@@ -12,12 +12,13 @@ from engine.generated.metamodel import CompiledResult
 from engine.parser.generated import MARKER
 from engine.parser.result import Problem
 from engine.parser.scripts import SCRIPTS_FOLDER_NAME
+from engine.parser.steps import STEP_SUFFIX, STEPS_FOLDER_NAME
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable, Iterator
+    from collections.abc import Iterable, Iterator, Mapping
 
     from engine.parser.result import Script
-    from engine.runtime.view import DirectiveCounts, NodeLink, NodeView, RuntimeView
+    from engine.runtime.view import DirectiveCounts, NodeLink, NodeView, RuntimeView, StepView
 
 REVIEW_FOLDER = PurePosixPath("build/runtime-proposals")
 ROOT_FILE = PurePosixPath("AGENTS.md")
@@ -27,6 +28,7 @@ TOOL_FOLDER = ".claude"
 SKILLS_FOLDER = PurePosixPath(".claude/skills")
 SKILL_FILE_NAME = "SKILL.md"
 SKILL_TEMPLATE = "skill.md.jinja"
+STEP_TEMPLATE = "step.md.jinja"
 REVIEW_MARK = ".proposals"
 IMPORTING_FILES = ("CLAUDE.md", ".claude/CLAUDE.md")
 REPLACING_FILES = (*IMPORTING_FILES, "CLAUDE.local.md")
@@ -34,6 +36,8 @@ SKILL_KEPT_TOKENS = 5_000
 CHARACTERS_PER_TOKEN = 3
 SKILL_KEPT_CHARACTERS = SKILL_KEPT_TOKENS * CHARACTERS_PER_TOKEN
 ON_DEMAND_CHARACTERS = 40_000
+READ_TOKENS = 25_000
+STEP_CHARACTERS = READ_TOKENS * CHARACTERS_PER_TOKEN
 ROOT_LINES = 200
 SKILL_LINES = 500
 
@@ -54,6 +58,14 @@ def _link_text(text: str) -> str:
 
 def _yaml_string(text: str) -> str:
     return json.dumps(text, ensure_ascii=False)
+
+
+def _table_cell(text: str) -> str:
+    return text.replace("|", "\\|")
+
+
+def _code_list(names: Iterable[str]) -> str:
+    return ", ".join(f"`{name}`" for name in names)
 
 
 def _count(number: int, noun: str) -> str:
@@ -90,6 +102,8 @@ _ENVIRONMENT = Environment(
 )
 _ENVIRONMENT.filters["link_text"] = _link_text
 _ENVIRONMENT.filters["yaml_string"] = _yaml_string
+_ENVIRONMENT.filters["table_cell"] = _table_cell
+_ENVIRONMENT.filters["code_list"] = _code_list
 _IMPORT_PARSER = MarkdownIt("commonmark")
 
 
@@ -124,6 +138,15 @@ def marker_owner(path: PurePosixPath) -> PurePosixPath:
 
 def _skill_file(node: NodeView) -> PurePosixPath:
     return SKILLS_FOLDER / node.link.id / SKILL_FILE_NAME
+
+
+def _step_file(flow: str, step: str) -> PurePosixPath:
+    return SKILLS_FOLDER / flow / STEPS_FOLDER_NAME / f"{step}{STEP_SUFFIX}"
+
+
+def _step_source(node: NodeView, step: StepView) -> str:
+    folder = PurePosixPath(node.link.path).parent / STEPS_FOLDER_NAME
+    return (folder / f"{step.link.id}{STEP_SUFFIX}").as_posix()
 
 
 def _rule_file(node: NodeView) -> PurePosixPath:
@@ -161,18 +184,30 @@ def render_files(view: RuntimeView) -> list[RenderedFile]:
     def location(path: PurePosixPath) -> PurePosixPath:
         return REVIEW_FOLDER / review_path(path) if review else path
 
-    def render(template: str, path: PurePosixPath, node: NodeView) -> str:
+    def render(
+        template: str,
+        path: PurePosixPath,
+        node: NodeView | StepView,
+        steps: Mapping[str, PurePosixPath] | None = None,
+    ) -> str:
         folder = location(path).parent.as_posix()
+        local = steps or {}
 
         def href(target: NodeLink) -> str:
             destination = location(generated[target.id]).as_posix()
             return posixpath.relpath(destination, start=folder)
+
+        def step_href(target: NodeLink) -> str:
+            if target.id not in local:
+                return href(target)
+            return posixpath.relpath(location(local[target.id]).as_posix(), start=folder)
 
         return _ENVIRONMENT.get_template(template).render(
             view=view,
             node=node,
             state=state_sentence(view.counts),
             href=href,
+            step_href=step_href,
             marker=MARKER,
             notice=NOTICES[view.result] if review else None,
         )
@@ -181,23 +216,35 @@ def render_files(view: RuntimeView) -> list[RenderedFile]:
         text = render(template, path, node)
         return RenderedFile(location(path), text, node.link.path, text, ON_DEMAND_CHARACTERS)
 
-    def skill(node: NodeView) -> RenderedFile:
+    def skill(node: NodeView) -> list[RenderedFile]:
         path = _skill_file(node)
         head = replace(node, body=None, pointers=())
-        return RenderedFile(
+        steps = {step.link.id: _step_file(node.link.id, step.link.id) for step in node.steps}
+        skill_file = RenderedFile(
             location(path),
-            render(SKILL_TEMPLATE, path, node),
+            render(SKILL_TEMPLATE, path, node, steps),
             node.link.path,
-            render(SKILL_TEMPLATE, path, head),
+            render(SKILL_TEMPLATE, path, head, steps),
             SKILL_KEPT_CHARACTERS,
             SKILL_LINES,
         )
+        step_files = [
+            RenderedFile(
+                location(steps[step.link.id]),
+                text := render(STEP_TEMPLATE, steps[step.link.id], step, steps),
+                _step_source(node, step),
+                text,
+                STEP_CHARACTERS,
+            )
+            for step in node.steps
+        ]
+        return [skill_file, *step_files]
 
     root_text = render("root.md.jinja", ROOT_FILE, view.root)
     root_path = view.root.link.path
     return [
         RenderedFile(location(ROOT_FILE), root_text, root_path, root_text, None, ROOT_LINES),
-        *(skill(node) for node in view.skills),
+        *(entry for node in view.skills for entry in skill(node)),
         *(on_demand("rule.md.jinja", _rule_file(node), node) for node in view.rules),
         *(on_demand("reference.md.jinja", _reference_file(node), node) for node in view.pages),
     ]
@@ -228,6 +275,7 @@ def candidate_files(repository: Path) -> Iterator[Path]:
     yield from (repository / RULES_FOLDER).rglob("*.md")
     yield from (repository / SKILLS_FOLDER).glob(f"*/{SKILL_FILE_NAME}")
     yield from (repository / SKILLS_FOLDER).glob(f"*/{SCRIPTS_FOLDER_NAME}/**/*")
+    yield from (repository / SKILLS_FOLDER).glob(f"*/{STEPS_FOLDER_NAME}/*{STEP_SUFFIX}")
     yield from (repository / REFERENCES_FOLDER).glob("*.md")
 
 

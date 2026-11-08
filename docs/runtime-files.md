@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-This layer generates the files an agent tool loads: the root `AGENTS.md`, a reference page for most nodes, path rules, and skills. Claude Code is the first target, and no hook injects context, because the tool loads these files with its own mechanisms. The code is in `engine/runtime/`.
+This layer generates the files an agent tool loads: the root `AGENTS.md`, a reference page for most nodes, path rules, skills, and the step files of each flow skill. Claude Code is the first target, and no hook injects context, because the tool loads these files with its own mechanisms. The code is in `engine/runtime/`.
 
 The generated files sit in `AGENTS.md` and `.claude/`, and none of them sits in `knowledge/`. They are output, and the repo still commits them, because an agent tool reads them straight from a clone. A node file stays the source, so a change goes in the node and the command writes the file again. A hand edit doesn't survive.
 
@@ -16,7 +16,7 @@ uv run densho runtime
 
 ```text
 wrote AGENTS.md
-wrote .claude/skills/design-settings-interface/SKILL.md
+wrote .claude/skills/design-interface/SKILL.md
 406 entities wait for review. Run uv run densho governance --pending to list them.
 in_force: 59 files, 2 written, 0 removed, 0 problems
 ```
@@ -33,13 +33,14 @@ A tree that fails a check leaves the committed files alone, so an agent keeps it
 | -------------------------------------- | ----------------------------------------------- | ----------------------------------------- |
 | The root                               | `AGENTS.md`                                     | At session start                          |
 | A skill                                | `.claude/skills/<id>/SKILL.md`                  | The agent picks it from the skill listing |
+| A step of a flow skill                 | `.claude/skills/<flow>/steps/<step>.md`         | When the flow reaches the step            |
 | The target of a `densho:PathPointer`   | `.claude/rules/knowledge/<id>.md` with `paths`  | When the agent touches a matching file    |
 | The target of a `densho:AlwaysPointer` | `.claude/rules/knowledge/<id>.md` without paths | At session start                          |
 | Any other node                         | `.claude/references/<id>.md`                    | When the agent follows a link to it       |
 
 A `densho:TextPointer` adds no file. It becomes a line that holds the trigger and a link, such as `You decide how a screen looks. Read [Visual design](visual-design.md).`, and following that link opens the reference page of the node.
 
-A node file names its pointer targets by ID. The generated files turn each ID into the path of its generated file, so each link in a generated file goes to another generated file, and no link goes to a node file. The root links each domain and the governance, and names each skill with no link. A skill also links the page of each node in `uses`.
+A node file names its pointer targets by ID. The generated files turn each ID into the path of its generated file, so each link in a generated file goes to another generated file, and no link goes to a node file. The root links each domain and the governance, and names each skill with no link. A lens or a system skill also links the page of each node in `uses`. A flow skill links each of its step files instead.
 
 A skill behind a path or always pointer gets both a skill file and a rule, and a link to it goes to the rule. A path rule also matches its own node file.
 
@@ -52,11 +53,12 @@ Each file puts its directives first, then its procedures, then its links to othe
 | File           | Holds                                                                                                                |
 | -------------- | -------------------------------------------------------------------------------------------------------------------- |
 | Root           | The state of the graph, its directives, the body of `knowledge/node.md`, the domains, the governance, and the skills |
-| Skill          | Its directives and exceptions, its body, its pointers, and a link to each node in `uses`                             |
+| Skill          | Its directives and exceptions, its required reads, its steps, its body, its pointers, and its `uses` links           |
+| Step file      | Its directives and exceptions, its required reads, its inputs, procedure, output, exit gate, and next step           |
 | Path rule      | Its directives and exceptions, the definition, the body, its [flow](#the-flow-of-a-node), and its pointers           |
 | Reference page | Its directives and exceptions, the definition, the body, its [flow](#the-flow-of-a-node), and its pointers           |
 
-The root holds only what an agent can't work out from the files. It names each domain, the governance node and its policies, and each skill with its description, so an agent can still find a skill if the tool drops its description. Setup, paths, and commands stay in the README and in these pages. The architecture facts come from the body of `knowledge/node.md`. A body change needs no review, so a reviewer reads it in the diff.
+The root holds only what an agent can't work out from the files. It names each domain, the governance node and its policies, and each skill. A flow or a lens skill sits in the [skill table](#the-skill-table) with the activity that starts it, and each other skill sits under the table with its description, so an agent can still find a skill if the tool drops its description. Setup, paths, and commands stay in the README and in these pages. The architecture facts come from the body of `knowledge/node.md`. A body change needs no review, so a reviewer reads it in the diff.
 
 A directive list holds what applies at that node and nothing else: inherited directives, attached ones, and `applies`, minus each one an [exception](directive-semantics.md#stepping-out) stops. Each directive keeps its `^id`, and each group links to the generated file of the node that holds it. A list is complete for its own node, so the files for a node and its parent can repeat a line.
 
@@ -76,6 +78,35 @@ The output of each node in this list is an input of this node.
 `Comes from` lists each node that informs this one, and `Goes to` lists each node that this one informs. A node with no `informs` edge on either side shows neither section. Each entry links to the generated file of the other node, in ID order, and in the review copy it links to the review copy of that file. The root and a skill never show a flow, because only a taxonomy node can hold `informs`. A `rejected` node drops out of the flow, as it drops out of every generated file.
 
 `related`, `depends_on`, `governs`, and `implements` appear in no generated file. Each node page of the [site](human-interface.md) shows them.
+
+## The skill table
+
+The root ends with a table that sends each kind of activity to one skill, so the agent picks the skill by itself and nobody has to type a command:
+
+```text
+| Activity | Skill |
+| --- | --- |
+| You create or change a user interface. | `design-interface` |
+| A screen or a flow is ready for review. | `review-interface` |
+```
+
+Each row is a `densho:SkillPointer` on the root, with the activity as its trigger. The [graph checks](graph-checks.md#skills-and-steps) make each flow and lens skill have a row, and make its description hold the activity, so the table and the skill listing agree. Rows sort by skill ID.
+
+Three root directives make the table binding: run the skill of a matching row first, follow each directive, required read, and procedure step of the skill, and after a compaction read the current step file and its required reads again. They are proposals for now, like every seed directive.
+
+## Flow skills
+
+A flow skill runs one discipline from start to finish. Its `SKILL.md` lists the steps in order, with a link to each step file, and tells the agent to read the step file and its required reads, skip a step whose output exists already, run the procedure, and move on only after the exit gate passes.
+
+The directives split between the files by where they sit in the discipline:
+
+- `SKILL.md` holds what applies at the flow skill, at the discipline, at each practice area that runs alongside the steps, such as accessibility or software security, and each directive that a step node holds itself.
+- A step file holds each other directive of the step's subtree: the concepts of the step and the practice areas under it.
+- An exception on the flow skill stops its directive in every file of the flow. Each file lists the exceptions of the nodes it collects.
+
+A step file opens with its place in the flow, such as step 3 of 4, then the directives and the required reads. The source sections follow: `Inputs`, with a link to each node that informs the step, `Procedure`, `Output`, with a link to each node the step informs, and `Exit gate`. A link to another step of the same flow goes to its step file. The file ends with the next step and the pointers of the step node.
+
+Only the runtime files show a step file. The [site](human-interface.md) and the [compiled outputs](compiled-outputs.md) leave them out, so a reviewer reads a step file in the diff.
 
 ## Nothing is in force yet
 
@@ -105,26 +136,34 @@ This writes a review copy to `build/runtime-proposals/`, which git ignores, and 
 
 Claude Code also loads `AGENTS.md`, `.claude/rules/`, and `.claude/skills/` from a subfolder when an agent works there, so a copy under those names could load as if it were real. The review copy therefore renames each file, and an agent that reads it can't trigger a load:
 
-| Committed file                    | Review copy                                                        |
-| --------------------------------- | ------------------------------------------------------------------ |
-| `AGENTS.md`                       | `build/runtime-proposals/AGENTS.proposals.md`                      |
-| `.claude/skills/<id>/SKILL.md`    | `build/runtime-proposals/claude/skills/<id>/SKILL.proposals.md`    |
-| `.claude/rules/knowledge/<id>.md` | `build/runtime-proposals/claude/rules/knowledge/<id>.proposals.md` |
-| `.claude/references/<id>.md`      | `build/runtime-proposals/claude/references/<id>.proposals.md`      |
+| Committed file                        | Review copy                                                            |
+| ------------------------------------- | ---------------------------------------------------------------------- |
+| `AGENTS.md`                           | `build/runtime-proposals/AGENTS.proposals.md`                          |
+| `.claude/skills/<id>/SKILL.md`        | `build/runtime-proposals/claude/skills/<id>/SKILL.proposals.md`        |
+| `.claude/skills/<id>/steps/<step>.md` | `build/runtime-proposals/claude/skills/<id>/steps/<step>.proposals.md` |
+| `.claude/rules/knowledge/<id>.md`     | `build/runtime-proposals/claude/rules/knowledge/<id>.proposals.md`     |
+| `.claude/references/<id>.md`          | `build/runtime-proposals/claude/references/<id>.proposals.md`          |
 
 Each link in the copy goes to another file of the copy. A link in the body of a node keeps its text, so it fails with `link` in the copy even when it passes in the committed files. No node body holds a link today. A tree that fails a check removes the copy.
 
 The [review queue](human-interface.md#read-the-knowledge) lists the same effect for each entity, and names the generated files it reaches.
 
-## Why a skill holds a copy
+## Copies and required reads
 
-A skill is an entry point in the middle of the tree, so it has to carry the directives that reach it. The build copies them into the skill file. It links the page of each node in `uses` too, but the skill doesn't depend on a read.
+A skill is an entry point in the middle of the tree, so it has to carry the directives that reach it. Each one reaches the skill file in one of two ways:
 
-Compaction decides this. After compaction, Claude Code re-attaches each invoked skill and keeps the first 5,000 tokens, while it restores only a few of the files an agent read. A required read also leaves the choice to the agent, and a node file holds proposals and rules that an exception stops. `design-settings-interface` draws 63 directives from 11 nodes, so a list of reads would be the weaker answer.
+- A **copy** is the directive itself, in the skill file or the step file. A skill copies each directive from its own branch: the subtree of each discipline above a node in `uses`, or of each domain when no discipline is above it. A flow copies the subtree of its discipline.
+- A **required read** is a link to the page of the node that holds the directive, with the order to follow it. Each directive inherited or attached from another branch becomes one. The line names each directive that applies, or tells the agent to follow each directive from that node when all of them apply.
 
-The directives sit directly after the title, so they are the part that compaction keeps. The build fails with `size` if the title and the directives of a skill take more than 15,000 characters. That is 3 characters for each of the 5,000 tokens, a low estimate on purpose, because the repo has no tokenizer. The procedure comes after the directives, so a long one can still be cut. A skill says near its top that the agent can invoke it again, and the root says the same, because the oldest skill can drop out entirely. A person skill tells the agent to ask the person instead.
+```text
+- Read [Accessibility](../../references/accessibility.md), and follow these directives from it: `contrast-large-text`, `contrast-regular-text`.
+```
 
-Two line budgets also fail with `size`: 200 lines for the root `AGENTS.md`, from the Claude Code memory docs, and 500 lines for a `SKILL.md`, from the Agent Skills specification. A reference page has no line budget, only its 40,000 characters. A file over a budget means the node holds too much, so the message asks you to move knowledge out of it or attach fewer directives. The review copy follows the same budgets.
+Compaction decides how much a file can copy. After compaction, Claude Code re-attaches each invoked skill and keeps the first 5,000 tokens, while it restores only a few of the files an agent read. A copy of every branch would push a skill past that, so the copies stay with the skill's own branch, and a root directive tells the agent to read the step file and each required read again after a compaction.
+
+The directives sit directly after the title, so they are the part that compaction keeps. The build fails with `size` if the title, the directives, the required reads, and the steps of a skill take more than 15,000 characters. That is 3 characters for each of the 5,000 tokens, a low estimate on purpose, because the repo has no tokenizer. The procedure comes after the directives, so a long one can still be cut. A skill says near its top that the agent can invoke it again, and the root says the same, because the oldest skill can drop out entirely. A person skill tells the agent to ask the person instead.
+
+Two line budgets also fail with `size`: 200 lines for the root `AGENTS.md`, from the Claude Code memory docs, and 500 lines for a `SKILL.md`, from the Agent Skills specification. A reference page has no line budget, only its 40,000 characters. A step file has no line budget either, and it can take 75,000 characters: 3 characters for each of the 25,000 tokens that one Read call returns, so the agent reads the whole file at once. The software testing step is the largest, at about 48,000. A file over a budget means the node holds too much, so the message asks you to move knowledge out of it or attach fewer directives. The review copy follows the same budgets.
 
 The copy can't go stale, because the hook compares it with a fresh generation on each commit.
 
@@ -170,6 +209,7 @@ From the Claude Code docs on 2026-11-05:
 | A rule without `paths`          | At session start                                                                                                                                                                                    | The tool    |
 | A skill body                    | When the agent uses the skill                                                                                                                                                                       | The agent   |
 | A reference page behind a link  | When the agent opens it                                                                                                                                                                             | The agent   |
+| A step file or a required read  | When the agent opens it, as its skill tells it to                                                                                                                                                   | The agent   |
 
 And after compaction:
 
@@ -180,6 +220,7 @@ And after compaction:
 | A skill body                                  | Injected again, up to 5,000 tokens for each skill and 25,000 in total, oldest out first |
 | A rule with `paths`                           | Gone from the context until a matching file loads it again                              |
 | A reference page                              | Gone from the context unless the tool restores it with the few files it keeps           |
+| A step file or a required read                | Gone the same way. A root directive tells the agent to read them again                  |
 
 Patterns in `paths` start from the folder that holds `.claude`. The docs show `src/**/*`, so write that form rather than `src/**`.
 
@@ -220,6 +261,7 @@ A link in the body of a node resolves from the generated file, not from the node
 - Whether a pattern in `paths` matches any file, or matches what the author meant.
 - What a script does, or whether a script that git ignores in the source should ship.
 - Whether a flow makes sense. A node can inform itself, and its file then lists it under both headings.
+- Whether a step procedure is complete. A step with no source for its procedure says so, and the check only counts its sections.
 - Whether a token estimate holds. The 15,000 characters are an estimate, and a text with many long links can use more tokens for each character.
 - Whether a stale file that you deleted but didn't stage is gone from the commit, in `pre-commit run --all-files`. A real commit restores the file first, so the hook then removes it and fails.
 
@@ -230,4 +272,5 @@ This layer has been tested by reading the generated bytes, not by running a mode
 - That the tool loads the root and lists each skill.
 - That `knowledge/**/*` loads the governance rule.
 - That a root `AGENTS.md` is injected again after compaction. The docs state this for a root `CLAUDE.md`.
+- That an agent runs the skill of a matching row in the skill table, and reads each step file and required read that the skill names.
 - That an agent follows a pointer when its trigger holds. The [graph checks](graph-checks.md) prove that every node can be found, not that it gets read.

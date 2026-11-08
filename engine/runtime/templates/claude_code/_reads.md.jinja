@@ -1,0 +1,10 @@
+{% if node.reads %}
+
+## Required reads
+
+Read each file in this list, and follow the directives that its line names.
+
+{% for read in node.reads %}
+- Read [{{ read.holder.title | link_text }}]({{ href(read.holder) }}), and follow {% if read.directives %}these directives from it: {{ read.directives | code_list }}.{% else %}each directive from {{ read.holder.title | link_text }}.{% endif +%}
+{% endfor %}
+{% endif %}

@@ -29,18 +29,6 @@ pointers:
   - kind: densho:TextPointer
     target: platform-conventions
     trigger: You design for a specific operating system or with its components.
-  - kind: densho:SkillPointer
-    target: design-settings-interface
-    trigger: You design or change a settings screen.
-  - kind: densho:SkillPointer
-    target: review-screen-hierarchy
-    trigger: A screen design is ready for review.
-  - kind: densho:SkillPointer
-    target: review-usability
-    trigger: A flow is ready for a usability review.
-  - kind: densho:SkillPointer
-    target: audit-accessibility
-    trigger: A screen, a component, or a flow needs an accessibility check.
 ---
 
 ## Definition

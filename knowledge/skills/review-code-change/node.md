@@ -5,8 +5,9 @@ title: Review a code change
 status: proposed
 origin: template
 knowledge_type: domain
-description: Review a code change for its design, its behavior, its tests, and its security. Use when a change is ready for review.
+description: Review a code change for its design, its behavior, its tests, and its security. Use when a code change is ready for review.
 invocation: agent
+skill_type: lens
 uses:
   - code-review
   - test-pyramid

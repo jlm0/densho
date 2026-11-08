@@ -1,6 +1,6 @@
 ---
 name: audit-accessibility
-description: "Check an interface against the WCAG `2.2` success criteria of level A and AA. Use when a screen, a component, or a flow needs an accessibility check."
+description: "Check an interface against the WCAG `2.2` success criteria of level A and AA. Use when a person asks for an accessibility check of an interface."
 ---
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Audit the accessibility of an interface

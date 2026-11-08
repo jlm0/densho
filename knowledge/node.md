@@ -13,11 +13,62 @@ pointers:
     trigger: You change a node file.
     paths:
       - knowledge/**/*
+  - kind: densho:SkillPointer
+    target: plan-product-strategy
+    trigger: You decide what a product does, who it is for, or what a team builds next.
+  - kind: densho:SkillPointer
+    target: research-users
+    trigger: You study the people who use a product.
+  - kind: densho:SkillPointer
+    target: design-brand
+    trigger: You define or change the strategy, the voice, the visual identity, or the guidelines of a brand.
+  - kind: densho:SkillPointer
+    target: design-content
+    trigger: You plan or write the content of a product.
+  - kind: densho:SkillPointer
+    target: design-interface
+    trigger: You create or change a user interface.
+  - kind: densho:SkillPointer
+    target: engineer-software
+    trigger: You write, test, or release software.
+  - kind: densho:SkillPointer
+    target: review-interface
+    trigger: A screen or a flow is ready for review.
+  - kind: densho:SkillPointer
+    target: review-screen-hierarchy
+    trigger: A person asks for a review of the hierarchy of a screen.
+  - kind: densho:SkillPointer
+    target: review-usability
+    trigger: A person asks for a usability review of a flow.
+  - kind: densho:SkillPointer
+    target: audit-accessibility
+    trigger: A person asks for an accessibility check of an interface.
+  - kind: densho:SkillPointer
+    target: audit-brand-consistency
+    trigger: You review the touchpoints of a brand for consistency.
+  - kind: densho:SkillPointer
+    target: review-code-change
+    trigger: A code change is ready for review.
 ---
 
 ## Directives
 
 - When a person corrects your work, propose the change with `propose-knowledge`. ^propose-corrections
+  - scope: node
+  - basis: judgment
+  - status: proposed
+  - origin: template
+- If your task matches an activity in the skill table, run the skill of that row first. ^run-triggered-skill
+  - scope: node
+  - basis: judgment
+  - status: proposed
+  - origin: template
+- Follow each directive, each required read, and each procedure step of a skill that you run. ^follow-triggered-skill
+  - scope: node
+  - basis: judgment
+  - status: proposed
+  - origin: template
+- After a compaction, read the current step file and each required read of your skill again. ^read-skill-after-compaction
   - scope: node
   - basis: judgment
   - status: proposed

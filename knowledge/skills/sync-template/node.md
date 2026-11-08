@@ -7,6 +7,7 @@ origin: template
 knowledge_type: domain
 description: Pull template changes into this project, or prepare a workspace rule for the template. Use when a person asks for a template pull or an upstream proposal.
 invocation: person
+skill_type: system
 uses:
   - change-rules
   - lifecycle

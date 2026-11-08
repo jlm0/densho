@@ -23,21 +23,6 @@ pointers:
   - kind: densho:TextPointer
     target: product-positioning
     trigger: You define the market, the competitors, or the target customers of a product.
-  - kind: densho:SkillPointer
-    target: write-strategy
-    trigger: You write the strategy of a product, a team, or a company.
-  - kind: densho:SkillPointer
-    target: map-opportunities
-    trigger: A team chooses the next customer need that it works on.
-  - kind: densho:SkillPointer
-    target: write-positioning
-    trigger: You write or change the positioning of a product.
-  - kind: densho:SkillPointer
-    target: prioritize-work
-    trigger: You set the order of the work of a team.
-  - kind: densho:SkillPointer
-    target: define-success-metrics
-    trigger: You decide how to measure the success of a product or a feature.
 ---
 
 ## Definition

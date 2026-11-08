@@ -146,7 +146,7 @@ def _with_rewrites(items: Iterable[ParsedNode], rewrites: Mapping[Path, bytes]) 
             continue
         parsed = parse_source(universal_newlines(data.decode("utf-8")), item.path)
         if isinstance(parsed, ParsedNode):
-            result.append(replace(parsed, scripts=item.scripts))
+            result.append(replace(parsed, scripts=item.scripts, step_files=item.step_files))
         else:
             result.append(item)
     return result

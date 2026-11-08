@@ -85,6 +85,7 @@ FIELD_LABELS = {
     "also_attached_to": "Also attached to",
     "refines": "Refines",
     "conflicts_with": "Conflicts with",
+    "steps": "Steps",
 }
 
 _ENVIRONMENT = Environment(

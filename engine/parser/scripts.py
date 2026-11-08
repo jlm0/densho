@@ -21,7 +21,7 @@ def folder_of[PathT: PurePath](path: PathT, folders: Mapping[PathT, PathT]) -> P
 
 
 def script_folders[PathT: PurePath](
-    node_files: Iterable[PathT], skills: PathT
+    node_files: Iterable[PathT], skills: PathT, name: str = SCRIPTS_FOLDER_NAME
 ) -> dict[PathT, PathT]:
     folders: dict[PathT, PathT] = {}
     for node_file in sorted(node_files, key=lambda path: (len(path.parts), path)):
@@ -29,7 +29,7 @@ def script_folders[PathT: PurePath](
         if holder == skills or not holder.is_relative_to(skills):
             continue
         if folder_of(node_file, folders) is None:
-            folders[holder / SCRIPTS_FOLDER_NAME] = node_file
+            folders[holder / name] = node_file
     return folders
 
 

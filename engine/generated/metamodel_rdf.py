@@ -551,8 +551,10 @@ class Skill(KnowledgeNode):
     knowledge_type: Union[str, "KnowledgeType"] = None
     description: str = None
     invocation: Union[str, "Invocation"] = None
+    skill_type: Union[str, "SkillType"] = None
     uses: Optional[Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]]] = empty_list()
     applies: Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]] = empty_list()
+    steps: Optional[Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]]] = empty_list()
 
     def __post_init__(self, *_: str, **kwargs: Any):
         if self._is_empty(self.id):
@@ -570,6 +572,11 @@ class Skill(KnowledgeNode):
         if not isinstance(self.invocation, Invocation):
             self.invocation = Invocation(self.invocation)
 
+        if self._is_empty(self.skill_type):
+            self.MissingRequiredField("skill_type")
+        if not isinstance(self.skill_type, SkillType):
+            self.skill_type = SkillType(self.skill_type)
+
         if not isinstance(self.uses, list):
             self.uses = [self.uses] if self.uses is not None else []
         self.uses = [v if isinstance(v, TaxonomyNodeId) else TaxonomyNodeId(v) for v in self.uses]
@@ -577,6 +584,10 @@ class Skill(KnowledgeNode):
         if not isinstance(self.applies, list):
             self.applies = [self.applies] if self.applies is not None else []
         self.applies = [v if isinstance(v, DirectiveId) else DirectiveId(v) for v in self.applies]
+
+        if not isinstance(self.steps, list):
+            self.steps = [self.steps] if self.steps is not None else []
+        self.steps = [v if isinstance(v, TaxonomyNodeId) else TaxonomyNodeId(v) for v in self.steps]
 
         super().__post_init__(**kwargs)
         if self._is_empty(self.kind):
@@ -934,6 +945,25 @@ class Invocation(EnumDefinitionImpl):
         description="The actors that can start a skill.",
     )
 
+class SkillType(EnumDefinitionImpl):
+    """
+    The kinds of skill.
+    """
+    flow = PermissibleValue(
+        text="flow",
+        description="The skill runs the steps of a discipline in their order. Each step has a step file.")
+    lens = PermissibleValue(
+        text="lens",
+        description="The skill reviews work from one angle, or runs other lens skills.")
+    system = PermissibleValue(
+        text="system",
+        description="The skill runs an operation of Densho on the graph.")
+
+    _defn = EnumDefinition(
+        name="SkillType",
+        description="The kinds of skill.",
+    )
+
 class Basis(EnumDefinitionImpl):
     """
     The kinds of source that support a directive.
@@ -1044,6 +1074,9 @@ slots.description = Slot(uri=DENSHO.description, name="description", curie=DENSH
 slots.invocation = Slot(uri=DENSHO.invocation, name="invocation", curie=DENSHO.curie('invocation'),
                    model_uri=DENSHO.invocation, domain=None, range=Union[str, "Invocation"])
 
+slots.skill_type = Slot(uri=DENSHO.skill_type, name="skill_type", curie=DENSHO.curie('skill_type'),
+                   model_uri=DENSHO.skill_type, domain=None, range=Union[str, "SkillType"])
+
 slots.text = Slot(uri=DENSHO.text, name="text", curie=DENSHO.curie('text'),
                    model_uri=DENSHO.text, domain=None, range=str,
                    pattern=re.compile(r'^\S(?: *\S)*(?!\n)$'))
@@ -1100,6 +1133,9 @@ slots.uses = Slot(uri=DENSHO.uses, name="uses", curie=DENSHO.curie('uses'),
 
 slots.applies = Slot(uri=DENSHO.applies, name="applies", curie=DENSHO.curie('applies'),
                    model_uri=DENSHO.applies, domain=None, range=Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]])
+
+slots.steps = Slot(uri=DENSHO.steps, name="steps", curie=DENSHO.curie('steps'),
+                   model_uri=DENSHO.steps, domain=None, range=Optional[Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]]])
 
 slots.Root_pointers = Slot(uri=DENSHO.pointers, name="Root_pointers", curie=DENSHO.curie('pointers'),
                    model_uri=DENSHO.Root_pointers, domain=Root, range=Union[Union[dict, "Pointer"], list[Union[dict, "Pointer"]]])

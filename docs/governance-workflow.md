@@ -117,15 +117,17 @@ Before you reject a node, leave nothing live in it, and move what rests on it:
 
 Set `status` back to `proposed` in the same commit as the change, then accept it again later. These fields reopen a review, and the rest do not:
 
-| Entity    | Reopens a review                                                                                                             | Does not reopen a review                                                               |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| Node      | Every other field: `kind`, `definition`, `knowledge_type`, each edge, and a skill's `description`, `invocation`, and scripts | `title`, `body`, `pointers`, `sources`, `rejection_reason`, `exceptions`, `directives` |
-| Directive | `text`, `scope`, `basis`, `also_attached_to`, `refines`, `conflicts_with`, and the node that holds it                        | `sources`, `rejection_reason`                                                          |
-| Exception | `reason`                                                                                                                     | `rejection_reason`                                                                     |
+| Entity    | Reopens a review                                                                                                                           | Does not reopen a review                                                                               |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| Node      | Every other field: `kind`, `definition`, `knowledge_type`, each edge, and a skill's `description`, `invocation`, `skill_type`, and scripts | `title`, `body`, `pointers`, `sources`, `rejection_reason`, `exceptions`, `directives`, and step files |
+| Directive | `text`, `scope`, `basis`, `also_attached_to`, `refines`, `conflicts_with`, and the node that holds it                                      | `sources`, `rejection_reason`                                                                          |
+| Exception | `reason`                                                                                                                                   | `rejection_reason`                                                                                     |
 
 A pointer does not reopen a review, because every new node needs a pointer and would otherwise reopen its parent. The [graph checks](graph-checks.md) still prove the route, and a reviewer reads the trigger. A node's `exceptions` and `directives` have their own `status`, so adding one leaves the node alone.
 
 The scripts of a skill count as one field. The check hashes the path, the bytes, and the executable bit of each file under the skill's `scripts/` folder, so a script that changes, arrives, goes, moves, or becomes executable reopens the skill.
+
+The [step files](node-format.md#step-files) of a flow skill are text like `body`, so a change to one doesn't reopen the skill. The order of the steps is the `steps` edge, and a change to it does. `knowledge/.densho/history.jsonl` records a digest of the step files, so the history still shows each change.
 
 The comparison uses rendered Markdown and ignores the order of a list, so a formatter can't reopen a review. A moved file is the same entity, because its ID identifies it.
 
@@ -232,7 +234,7 @@ This layer sits on top of the [graph checks](graph-checks.md) and the [directive
 - Who approved a change. Nothing local can. See the table above.
 - Where `knowledge/.densho/history.jsonl` came from. The narrow pass reads the working copy, so an edited file in the install commit can let an `accepted` entity through.
 - Old commits. The comparison covers one step, from the last commit to the working tree.
-- Whether a change to `body`, `title`, or a pointer's trigger changes what an agent does. These count as routine, so a reviewer has to catch it.
+- Whether a change to `body`, `title`, a step file, or a pointer's trigger changes what an agent does. These count as routine, so a reviewer has to catch it.
 - A `broader` edge on a `proposed` node. It carries directives as soon as it exists, so moving a node can drop a rule before anyone reviews the move. The `status` change and the diff show it.
 - Whether a `deprecated` rule is reused under a new ID, or a deleted ID comes back with a new meaning
 - Whether a `basis` fits its source. The check reads only whether `sources` is empty and the form of each value, so `standard` on a blog post passes.

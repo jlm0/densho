@@ -1,6 +1,6 @@
 ---
 name: audit-accessibility
-description: "Check an interface against the WCAG `2.2` success criteria of level A and AA. Use when a screen, a component, or a flow needs an accessibility check."
+description: "Check an interface against the WCAG `2.2` success criteria of level A and AA. Use when a person asks for an accessibility check of an interface."
 ---
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Audit the accessibility of an interface
@@ -8,10 +8,6 @@ description: "Check an interface against the WCAG `2.2` success criteria of leve
 If compaction cuts this skill, invoke the skill again.
 
 ## Directives
-
-From [Digital product development](../../references/digital-product-development.md):
-
-- Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
 From [Responsive design](../../references/responsive-design.md):
 
@@ -100,6 +96,12 @@ From [Audit the accessibility of an interface](SKILL.md):
 From [Navigation](../../references/navigation.md):
 
 - Keep repeated navigation elements in the same relative order on each screen. ^keep-navigation-order
+
+## Required reads
+
+Read each file in this list, and follow the directives that its line names.
+
+- Read [Digital product development](../../references/digital-product-development.md), and follow each directive from Digital product development.
 
 ## Inputs
 

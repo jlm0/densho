@@ -36,11 +36,29 @@ Treat a directive as a rule only when its `status` is `accepted`. A generated fi
 ## Skills
 
 If compaction removes a skill, invoke the skill again.
+{% if view.rows %}
 
-{% for skill in view.skills %}
+Each row names an activity and the skill for it.
+
+| Activity | Skill |
+| --- | --- |
+{% for row in view.rows %}
+| {{ row.trigger | table_cell }} | `{{ row.target.id }}` |
+{% endfor %}
+{% endif %}
+{% set named = view.rows | map(attribute="target.id") | list %}
+{% set others = view.skills | rejectattr("link.id", "in", named) | list %}
+{% if others %}
+
+{% if view.rows %}
+These skills have no row:
+
+{% endif %}
+{% for skill in others %}
 - `{{ skill.link.id }}`: {{ skill.description }}{% if skill.invocation == "person" %} Only a person can start this skill.{% endif %}
 
 {% endfor %}
+{% endif %}
 {% endif %}
 {% if view.references %}
 

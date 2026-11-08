@@ -202,7 +202,8 @@ def test_kind_selects_each_pointer_class() -> None:
         ),
         pytest.param(
             f"---\nid: a\nkind: densho:Skill\ntitle: A\n{KNOWLEDGE}description: Use it.\n"
-            "invocation: agent\nuses: [b]\n---\n\n## Directives\n\n- Do it. ^do-it\n"
+            "invocation: agent\nskill_type: system\nuses: [b]\n---\n\n"
+            "## Directives\n\n- Do it. ^do-it\n"
             f"{META}\n\n## Procedure\n\nStep one.\n",
             Skill,
             id="skill",
@@ -759,7 +760,7 @@ def test_a_problem_names_the_file_line_code_and_field() -> None:
         ),
         pytest.param(
             "densho:Skill",
-            "knowledge_type: domain\ndescription: Use it.\ninvocation: agent\n",
+            "knowledge_type: domain\ndescription: Use it.\ninvocation: agent\nskill_type: system\n",
             id="skill",
         ),
     ],
@@ -886,7 +887,7 @@ def test_a_fence_that_hides_the_directives_section_is_reported() -> None:
 def test_a_fence_that_hides_the_definition_section_is_reported() -> None:
     text = (
         f"---\nid: a\nkind: densho:Skill\ntitle: A\n{KNOWLEDGE}description: B.\n"
-        "invocation: agent\nuses: [c]\n---\n\n"
+        "invocation: agent\nskill_type: system\nuses: [c]\n---\n\n"
     )
     text += "```\n## Definition\n\nHidden.\n```\n"
     assert problems_of(text) == [("markdown", line_with(text, "## Definition"))]
@@ -899,7 +900,7 @@ def test_a_fence_in_a_quote_is_not_checked_for_section_names() -> None:
 def test_a_quoted_fence_can_show_a_section_the_file_does_not_have() -> None:
     text = (
         f"---\nid: a\nkind: densho:Skill\ntitle: A\n{KNOWLEDGE}description: B.\n"
-        "invocation: agent\nuses: [c]\n---\n\n"
+        "invocation: agent\nskill_type: system\nuses: [c]\n---\n\n"
     )
     parsed(f"{text}> ```\n> ## Definition\n> ```\n")
 
@@ -1203,7 +1204,8 @@ def test_parse_tree_reports_a_missing_folder(tmp_path: Path) -> None:
 
 SKILL = (
     f"---\nid: review\nkind: densho:Skill\ntitle: Review\n{KNOWLEDGE}description: Use it.\n"
-    f"invocation: agent\nuses: [b]\n---\n\n## Directives\n\n- Do it. ^do-it\n{META}\n"
+    "invocation: agent\nskill_type: system\nuses: [b]\n---\n\n"
+    f"## Directives\n\n- Do it. ^do-it\n{META}\n"
 )
 
 

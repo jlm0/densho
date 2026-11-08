@@ -92,10 +92,6 @@ The design of how people understand and operate a product. It covers how informa
 
 ## References
 
-- A screen, a component, or a flow needs an accessibility check. Use the skill `audit-accessibility`.
-- You design or change a settings screen. Use the skill `design-settings-interface`.
-- A screen design is ready for review. Use the skill `review-screen-hierarchy`.
-- A flow is ready for a usability review. Use the skill `review-usability`.
 - You build a control, a form, a text style, a color choice, or media. Read [Accessibility](accessibility.md).
 - You build or use the tokens and the components of a design system. Read [Design systems](design-systems.md).
 - You organize or name the content of a product. Read [Information architecture](information-architecture.md).

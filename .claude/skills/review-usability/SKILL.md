@@ -1,6 +1,6 @@
 ---
 name: review-usability
-description: "Review a flow against the usability heuristics, the size and position of its targets, and its choices. Use when a flow is ready for a usability review."
+description: "Review a flow against the usability heuristics, the size and position of its targets, and its choices. Use when a person asks for a usability review of a flow."
 ---
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Review the usability of a flow

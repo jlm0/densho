@@ -75,8 +75,9 @@ From [Information hierarchy](information-hierarchy.md):
 - Limit the text on each screen to `3` sizes. ^limit-text-sizes
 - Make the most important element on each screen the biggest element. ^make-most-important-biggest
 - Mark the preferred button in a set of choices with a prominent style, not a larger size. ^mark-preferred-with-style
-- Give each screen one primary action. ^one-primary-action
+- Give each screen one primary action, unless the screen is a settings screen. ^one-primary-action
 - Use a bright color only for the primary action or the primary content of a screen. ^reserve-bright-color
+- If a screen is a settings screen, give each control on it the same rank. ^settings-controls-same-rank
 
 ## Definition
 

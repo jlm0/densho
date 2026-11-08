@@ -5,8 +5,9 @@ title: Audit the accessibility of an interface
 status: proposed
 origin: template
 knowledge_type: domain
-description: Check an interface against the WCAG `2.2` success criteria of level A and AA. Use when a screen, a component, or a flow needs an accessibility check.
+description: Check an interface against the WCAG `2.2` success criteria of level A and AA. Use when a person asks for an accessibility check of an interface.
 invocation: agent
+skill_type: lens
 uses:
   - accessibility
 applies:

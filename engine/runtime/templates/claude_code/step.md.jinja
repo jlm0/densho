@@ -1,0 +1,48 @@
+{% set place = "step" %}
+{% include "_title.md.jinja" %}
+
+This file is step {{ node.number }} of {{ node.total }} of the skill `{{ node.flow }}`. If compaction cuts this file, read it again.
+
+{% include "_directives.md.jinja" %}
+{% include "_reads.md.jinja" %}
+
+## Inputs
+
+{{ node.source.section("Inputs") }}
+{% if node.comes_from %}
+
+The output of each node in this list is an input of this step:
+
+{% for source in node.comes_from %}
+- [{{ source.title | link_text }}]({{ step_href(source) }})
+{% endfor %}
+{% endif %}
+
+## Procedure
+
+{{ node.source.section("Procedure") }}
+
+## Output
+
+{{ node.source.section("Output") }}
+{% if node.goes_to %}
+
+The output of this step is an input of each node in this list:
+
+{% for target in node.goes_to %}
+- [{{ target.title | link_text }}]({{ step_href(target) }})
+{% endfor %}
+{% endif %}
+
+## Exit gate
+
+{{ node.source.section("Exit gate") }}
+
+## Next step
+
+{% if node.following %}
+Read [{{ node.following.title | link_text }}]({{ step_href(node.following) }}).
+{% else %}
+This step is the last step of the skill.
+{% endif %}
+{% include "_references.md.jinja" %}

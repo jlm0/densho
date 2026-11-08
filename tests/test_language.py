@@ -77,7 +77,12 @@ def node_source(
     if broader:
         lines.append(f"broader: {json.dumps(list(broader))}")
     if description is not None:
-        lines += [f"description: {json.dumps(description)}", "invocation: agent", "uses: [other]"]
+        lines += [
+            f"description: {json.dumps(description)}",
+            "invocation: agent",
+            "skill_type: system",
+            "uses: [other]",
+        ]
     if triggers:
         lines.append("pointers:")
     for trigger in triggers:

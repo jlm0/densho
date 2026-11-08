@@ -28,12 +28,22 @@ class Script:
     executable: bool
 
 
+@dataclass(frozen=True, slots=True, order=True)
+class StepFile:
+    id: str
+    sections: tuple[tuple[str, str], ...]
+
+    def section(self, name: str) -> str:
+        return dict(self.sections)[name]
+
+
 @dataclass(frozen=True, slots=True)
 class ParsedNode:
     path: Path
     node: Node
     locations: Mapping[FieldPath, int]
     scripts: tuple[Script, ...] = ()
+    step_files: tuple[StepFile, ...] = ()
 
     def line_of(self, field_path: FieldPath) -> int:
         return line_of(self.locations, field_path)

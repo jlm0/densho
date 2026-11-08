@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-A project that [installs the template](template-packaging.md) receives this knowledge. It is ordinary content: one domain, fourteen domain skills, and a few language terms, and it goes through the same checks and the same workflow as anything a project adds. Each install also gets the three preset skills of the [improvement loop](improvement-loop.md) and the [eval](evaluation.md) skill, which aren't part of any discipline, and the eval tasks of the disciplines it takes. Nothing in it binds an agent until a person accepts it.
+A project that [installs the template](template-packaging.md) receives this knowledge. It is ordinary content: one domain, twelve domain skills, and a few language terms, and it goes through the same checks and the same workflow as anything a project adds. Each install also gets the three preset skills of the [improvement loop](improvement-loop.md) and the [eval](evaluation.md) skill, which aren't part of any discipline, and the eval tasks of the disciplines it takes. Nothing in it binds an agent until a person accepts it.
 
 ## What ships
 
@@ -186,30 +186,38 @@ None of these edges carries a directive. A practice area whose rules apply acros
 
 ## The skills
 
-| Skill                       | Use it when                                                     | What it draws on                                                                                                                 |
-| --------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `design-settings-interface` | You design or change a settings screen                          | Progressive disclosure, Information hierarchy, Visual grouping, Brand design, and Responsive design                              |
-| `review-screen-hierarchy`   | A screen design is ready for review                             | Information hierarchy, Visual grouping, and Visual communication                                                                 |
-| `review-usability`          | A flow is ready for a usability review                          | Usability heuristics, Fitts's law, Hick's law, Navigation, and Platform conventions                                              |
-| `audit-accessibility`       | A screen, a component, or a flow needs an accessibility check   | Accessibility, and the Consistent Navigation rule through `applies`                                                              |
-| `review-code-change`        | A change is ready for review                                    | Code review, Test pyramid, Software security, Access control, and Injection                                                      |
-| `write-decision-record`     | You make or change a decision about the structure of a system   | Architecture decision record                                                                                                     |
-| `write-strategy`            | You write the strategy of a product, a team, or a company       | Strategy formulation and Kernel of a strategy                                                                                    |
-| `map-opportunities`         | A team chooses the next customer need that it works on          | Opportunity solution tree, Jobs to be done, and Assumption testing                                                               |
-| `write-positioning`         | You write or change the positioning of a product                | Product positioning and Components of positioning                                                                                |
-| `prioritize-work`           | You set the order of the work of a team                         | Prioritization and RICE scoring                                                                                                  |
-| `define-success-metrics`    | You decide how to measure the success of a product or a feature | Product measurement, HEART framework, North star metric, and Objectives and key results                                          |
-| `define-brand-voice`        | You define or change the voice of a brand                       | Brand voice, Tone of voice dimensions, and Brand identity prism                                                                  |
-| `write-brand-guidelines`    | You write or update brand guidelines                            | Brand strategy, Visual identity, Brand voice, Brand systems, seven of their concepts, and three contrast rules through `applies` |
-| `audit-brand-consistency`   | You review the touchpoints of a brand for consistency           | Visual identity, Logo, Color roles, Type scale, Distinctive brand assets, Brand voice, and Brand guidelines                      |
+Each discipline has one flow skill, and six lens skills review finished work. The skill table in `AGENTS.md` sends each activity to its skill, so an agent starts the right one without a command.
 
-Most accessibility rules reach a skill through their attachments, not through what the skill lists. Accessibility holds 61 rules. The 38 that apply to any screen, such as contrast, focus, and labels, have `subtree` scope: they reach each node of UI/UX design, and each skill that uses one of those nodes carries them. The other 23, such as captions, flashing content, and sign-in, have `node` scope. They reach only a skill that uses Accessibility, Software testing, or Frontend engineering itself, such as `audit-accessibility`. They stay out of `design-settings-interface`, where they have nothing to check on a settings screen. They also stay out of `review-code-change`, which uses Test pyramid in place of Software testing to stay under the size limit for a skill. A skill source names knowledge and does not copy it. Its body holds only the inputs, the procedure, the output, and how to validate the result. The [generated skill file](runtime-files.md#why-a-skill-holds-a-copy) holds the directives in force. To see every rule a skill carries, with each proposal labeled:
+| Skill                     | Type | Use it when                                                                                     | Steps, or what it draws on                                                                                   |
+| ------------------------- | ---- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `plan-product-strategy`   | flow | You decide what a product does, who it is for, or what a team builds next                       | Strategy formulation, Product measurement, Product discovery, Prioritization, and Product positioning        |
+| `research-users`          | flow | You study the people who use a product                                                          | Research planning, Generative research, Research synthesis, and Evaluative research                          |
+| `design-brand`            | flow | You define or change the strategy, the voice, the visual identity, or the guidelines of a brand | Brand strategy, Brand voice, Visual identity, and Brand systems, with three contrast rules through `applies` |
+| `design-content`          | flow | You plan or write the content of a product                                                      | Content strategy, Writing, UX writing, and Content governance                                                |
+| `design-interface`        | flow | You create or change a user interface                                                           | Information architecture, Interaction design, Visual design, and Design systems                              |
+| `engineer-software`       | flow | You write, test, or release software                                                            | The eight practice areas of software engineering, from requirements to operations                            |
+| `review-interface`        | lens | A screen or a flow is ready for review                                                          | UI/UX design, and the next three skills                                                                      |
+| `review-screen-hierarchy` | lens | A person asks for a review of the hierarchy of a screen                                         | Information hierarchy, Visual grouping, and Visual communication                                             |
+| `review-usability`        | lens | A person asks for a usability review of a flow                                                  | Usability heuristics, Fitts's law, Hick's law, Navigation, and Platform conventions                          |
+| `audit-accessibility`     | lens | A person asks for an accessibility check of an interface                                        | Accessibility, and the Consistent Navigation rule through `applies`                                          |
+| `audit-brand-consistency` | lens | You review the touchpoints of a brand for consistency                                           | Visual identity, Logo, Color roles, Type scale, Distinctive brand assets, Brand voice, and Brand guidelines  |
+| `review-code-change`      | lens | A code change is ready for review                                                               | Code review, Test pyramid, Software security, Access control, and Injection                                  |
+
+A flow runs the numbered practice areas of its discipline as steps, in the order of the work. A branch without a number, such as Accessibility or Software security, works beside the steps, so its rules sit in the flow's `SKILL.md` and apply at every step. Each step has a step file with its inputs, its procedure, its output, and its exit gate. The procedures came from the earlier single-purpose skills, such as the strategy kernel for Strategy formulation and the RICE scoring for Prioritization. A step with no source for its procedure says so in its file:
+
+- Every step of `research-users` and `design-content`
+- Information architecture and Design systems in `design-interface`. Interaction design and Visual design have part of a procedure, from the earlier settings skill.
+- Six steps of `engineer-software`. Software architecture has the procedure of a decision record, and Software quality runs `review-code-change`, but the rest of each is missing too.
+
+Accessibility holds 61 rules. The 38 that apply to any screen, such as contrast, focus, and labels, have `subtree` scope: they reach each node of UI/UX design, and each skill that uses one of those nodes carries them. The other 23, such as captions, flashing content, and sign-in, have `node` scope. They reach only a skill that uses Accessibility, Software testing, or Frontend engineering itself, such as `audit-accessibility`. `review-code-change` uses Test pyramid in place of Software testing to stay under the size limit for a skill.
+
+A skill source names knowledge and does not copy it. A lens or a system skill holds its inputs, procedure, output, and validation in its body, and a flow holds them in its step files. The [generated files](runtime-files.md#copies-and-required-reads) hold the directives in force, and they link the page of each rule from another branch as a required read. To see every rule that reaches a skill, with each proposal labeled:
 
 ```sh
-uv run densho directives --at design-settings-interface
+uv run densho directives --at review-usability
 ```
 
-`design-settings-interface` also steps out of one inherited rule, because a settings screen has no single primary action. That [exception](directive-semantics.md#stepping-out) is a proposal too, so a reviewer decides whether it stands.
+A settings screen used to step out of the rule that gives each screen one primary action. That rule now names the case itself, and a second rule gives each control on a settings screen the same rank. Both are proposals, so a reviewer decides whether they stand.
 
 ## Accept what you received
 
@@ -278,7 +286,7 @@ Each directive also states its `basis`, the kind of source behind it. In the dom
 | `standard`     | 237        | WCAG 2.2, the Design Tokens Format Module, the OWASP Top 10 and ASVS, Conventional Commits, Semantic Versioning, the ISTQB syllabi, and SWEBOK                                                                                                                                                                                                                                                               |
 | `research`     | 83         | The Gestalt grouping research, Fitts's law, and Hick's law, mostly through Nielsen Norman Group articles, the DORA research, the HEART paper from Google, the papers on QuickCheck, mutation testing, code coverage, and flaky tests, and the Ehrenberg-Bass Institute's research on distinctive brand assets                                                                                                |
 | `practitioner` | 466        | Named methods and authors: Nielsen Norman Group, WCAG-EM, Apple, Android and Material Components, Brad Frost, MDN, an OWASP cheat sheet, martinfowler.com, Kent Beck, Gerard Meszaros, NIST SP 800-142, the Pact docs, Anthropic, Google, Paul Hammant, Simon Brown, Michael Nygard, Adam Wiggins, the voice guides of Mailchimp, Atlassian, and Microsoft, and the product strategy and brand authors above |
-| `judgment`     | 29         | No source                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `judgment`     | 30         | No source                                                                                                                                                                                                                                                                                                                                                                                                    |
 
 Every governance directive is `judgment`, because the policies come from this project's own design and cite nothing.
 

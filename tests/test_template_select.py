@@ -188,6 +188,7 @@ origin: template
 knowledge_type: domain
 description: Review an alpha sample. Use when an alpha sample needs a review.
 invocation: agent
+skill_type: system
 uses:
   - alpha-concept
 ---
@@ -201,6 +202,7 @@ origin: template
 knowledge_type: domain
 description: Review a mixed sample. Use when a mixed sample needs a review.
 invocation: agent
+skill_type: system
 uses:
   - alpha-concept
   - beta-concept
@@ -215,6 +217,7 @@ origin: template
 knowledge_type: domain
 description: Check a beta sample. Use when a beta sample needs a check.
 invocation: agent
+skill_type: system
 applies:
   - beta-rule
 ---
@@ -228,6 +231,7 @@ origin: template
 knowledge_type: domain
 description: Check the graph. Use when a graph needs a check.
 invocation: person
+skill_type: system
 uses:
   - domain
 ---

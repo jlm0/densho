@@ -9,7 +9,7 @@
 @prefix pav: <http://purl.org/pav/> .
 dcterms:source a owl:DatatypeProperty ;
 	rdfs:label "sources" ;
-	rdfs:range _:c14n98 ;
+	rdfs:range _:c14n102 ;
 	skos:definition "The URLs, repository paths, or citations that support the entity." ;
 	skos:inScheme densho:metamodel .
 rdf:type a owl:DatatypeProperty ;
@@ -19,7 +19,7 @@ rdf:type a owl:DatatypeProperty ;
 	skos:inScheme densho:metamodel .
 skos:Concept a owl:Class ;
 	rdfs:label "TaxonomyNode" ;
-	rdfs:subClassOf densho:KnowledgeNode , _:c14n102 , _:c14n86 , _:c14n90 ;
+	rdfs:subClassOf densho:KnowledgeNode , _:c14n106 , _:c14n90 , _:c14n94 ;
 	skos:definition "A node in the classification from domain to concept." ;
 	skos:exactMatch densho:TaxonomyNode ;
 	skos:inScheme densho:metamodel .
@@ -31,12 +31,12 @@ skos:broader a owl:ObjectProperty ;
 	skos:inScheme densho:metamodel .
 skos:definition a owl:DatatypeProperty ;
 	rdfs:label "definition" ;
-	rdfs:range _:c14n106 ;
+	rdfs:range _:c14n110 ;
 	skos:definition "The meaning of the node." ;
 	skos:inScheme densho:metamodel .
 skos:prefLabel a owl:DatatypeProperty ;
 	rdfs:label "title" ;
-	rdfs:range _:c14n63 ;
+	rdfs:range _:c14n67 ;
 	skos:definition "The preferred name of the node." ;
 	skos:inScheme densho:metamodel .
 skos:related a owl:ObjectProperty , owl:SymmetricProperty ;
@@ -68,7 +68,7 @@ densho:Basis\#standard a owl:Class ;
 	skos:definition "A published standard or a versioned specification." .
 densho:Basis a owl:Class ;
 	rdfs:label "Basis" ;
-	owl:unionOf _:c14n51 ;
+	owl:unionOf _:c14n55 ;
 	skos:definition "The kinds of source that support a directive." ;
 	skos:inScheme densho:metamodel ;
 	linkml:permissible_values densho:Basis\#judgment , densho:Basis\#practitioner , densho:Basis\#research , densho:Basis\#standard .
@@ -82,23 +82,23 @@ densho:CompiledResult\#proposals a owl:Class ;
 	skos:definition "The graph also holds the proposed directives and exceptions, which are not in force." .
 densho:CompiledResult a owl:Class ;
 	rdfs:label "CompiledResult" ;
-	owl:unionOf _:c14n94 ;
+	owl:unionOf _:c14n98 ;
 	skos:definition "The kinds of compiled graph." ;
 	skos:inScheme densho:metamodel ;
 	linkml:permissible_values densho:CompiledResult\#in_force , densho:CompiledResult\#proposals .
 densho:Concept a owl:Class ;
 	rdfs:label "Concept" ;
-	rdfs:subClassOf skos:Concept , _:c14n103 , _:c14n27 ;
+	rdfs:subClassOf skos:Concept , _:c14n107 , _:c14n28 ;
 	skos:definition "A principle, a technique, or a body of knowledge." ;
 	skos:inScheme densho:metamodel .
 densho:Directive a owl:Class ;
 	rdfs:label "Directive" ;
-	rdfs:subClassOf densho:GovernedEntity , _:c14n13 , _:c14n16 , _:c14n18 , _:c14n91 ;
+	rdfs:subClassOf densho:GovernedEntity , _:c14n14 , _:c14n17 , _:c14n19 , _:c14n95 ;
 	skos:definition "An atomic instruction with its own identity. A directive lives in the file of one node." ;
 	skos:inScheme densho:metamodel .
 densho:DirectiveException a owl:Class ;
 	rdfs:label "DirectiveException" ;
-	rdfs:subClassOf _:c14n25 , _:c14n34 , _:c14n55 , _:c14n66 , _:c14n74 , _:c14n81 ;
+	rdfs:subClassOf _:c14n26 , _:c14n36 , _:c14n59 , _:c14n70 , _:c14n78 , _:c14n85 ;
 	skos:definition "A statement that a node steps out of a directive that it would otherwise inherit. Only an accepted exception stops the directive." ;
 	skos:inScheme densho:metamodel .
 densho:DirectiveScope\#node a owl:Class ;
@@ -111,13 +111,13 @@ densho:DirectiveScope\#subtree a owl:Class ;
 	skos:definition "The directive applies to the attached nodes and to each node under them. Each node is under the root. A skill is under each node that it uses." .
 densho:DirectiveScope a owl:Class ;
 	rdfs:label "DirectiveScope" ;
-	owl:unionOf _:c14n87 ;
+	owl:unionOf _:c14n91 ;
 	skos:definition "The nodes that a directive applies to." ;
 	skos:inScheme densho:metamodel ;
 	linkml:permissible_values densho:DirectiveScope\#node , densho:DirectiveScope\#subtree .
 densho:Discipline a owl:Class ;
 	rdfs:label "Discipline" ;
-	rdfs:subClassOf skos:Concept , _:c14n7 , _:c14n97 ;
+	rdfs:subClassOf skos:Concept , _:c14n101 , _:c14n8 ;
 	skos:definition "A field of work in a domain." ;
 	skos:inScheme densho:metamodel .
 densho:Domain a owl:Class ;
@@ -127,7 +127,7 @@ densho:Domain a owl:Class ;
 	skos:inScheme densho:metamodel .
 densho:GovernedEntity a owl:Class ;
 	rdfs:label "GovernedEntity" ;
-	rdfs:subClassOf _:c14n11 , _:c14n23 , _:c14n28 , _:c14n38 , _:c14n41 , _:c14n45 , _:c14n52 , _:c14n85 ;
+	rdfs:subClassOf _:c14n12 , _:c14n24 , _:c14n29 , _:c14n40 , _:c14n43 , _:c14n48 , _:c14n56 , _:c14n89 ;
 	skos:definition "An addressable entity that governance tracks." ;
 	skos:inScheme densho:metamodel .
 densho:Invocation\#agent a owl:Class ;
@@ -140,18 +140,18 @@ densho:Invocation\#person a owl:Class ;
 	skos:definition "Only a person starts the skill. The agent does not start it by itself." .
 densho:Invocation a owl:Class ;
 	rdfs:label "Invocation" ;
-	owl:unionOf _:c14n56 ;
+	owl:unionOf _:c14n60 ;
 	skos:definition "The actors that can start a skill." ;
 	skos:inScheme densho:metamodel ;
 	linkml:permissible_values densho:Invocation\#agent , densho:Invocation\#person .
 densho:KnowledgeGraph a owl:Class ;
 	rdfs:label "KnowledgeGraph" ;
-	rdfs:subClassOf _:c14n105 , _:c14n46 , _:c14n6 ;
+	rdfs:subClassOf _:c14n109 , _:c14n50 , _:c14n7 ;
 	skos:definition "The root and the knowledge nodes of one repository. A graph has exactly one root." ;
 	skos:inScheme densho:metamodel .
 densho:KnowledgeNode a owl:Class ;
 	rdfs:label "KnowledgeNode" ;
-	rdfs:subClassOf densho:Node , _:c14n37 , _:c14n50 ;
+	rdfs:subClassOf densho:Node , _:c14n39 , _:c14n54 ;
 	skos:definition "A node that holds domain knowledge or workspace knowledge." ;
 	skos:inScheme densho:metamodel .
 densho:KnowledgeType\#domain a owl:Class ;
@@ -164,13 +164,13 @@ densho:KnowledgeType\#workspace a owl:Class ;
 	skos:definition "Knowledge that is specific to one project." .
 densho:KnowledgeType a owl:Class ;
 	rdfs:label "KnowledgeType" ;
-	owl:unionOf _:c14n44 ;
+	owl:unionOf _:c14n47 ;
 	skos:definition "The kinds of knowledge." ;
 	skos:inScheme densho:metamodel ;
 	linkml:permissible_values densho:KnowledgeType\#domain , densho:KnowledgeType\#workspace .
 densho:Node a owl:Class ;
 	rdfs:label "Node" ;
-	rdfs:subClassOf densho:GovernedEntity , _:c14n0 , _:c14n101 , _:c14n19 , _:c14n68 , _:c14n75 , _:c14n96 ;
+	rdfs:subClassOf densho:GovernedEntity , _:c14n0 , _:c14n100 , _:c14n105 , _:c14n20 , _:c14n72 , _:c14n79 ;
 	skos:definition "One file in the graph. A node holds its knowledge, its directives, and its pointers." ;
 	skos:inScheme densho:metamodel .
 densho:Origin\#project a owl:Class ;
@@ -183,40 +183,58 @@ densho:Origin\#template a owl:Class ;
 	skos:definition "The template supplied the entity." .
 densho:Origin a owl:Class ;
 	rdfs:label "Origin" ;
-	owl:unionOf _:c14n21 ;
+	owl:unionOf _:c14n22 ;
 	skos:definition "The sources of an entity." ;
 	skos:inScheme densho:metamodel ;
 	linkml:permissible_values densho:Origin\#project , densho:Origin\#template .
 densho:PathPointer a owl:Class ;
 	rdfs:label "PathPointer" ;
-	rdfs:subClassOf densho:Pointer , _:c14n42 , _:c14n49 ;
+	rdfs:subClassOf densho:Pointer , _:c14n45 , _:c14n53 ;
 	skos:definition "A pointer to a node that the harness loads when the agent opens a matching file." ;
 	skos:inScheme densho:metamodel .
 densho:Pointer a owl:Class ;
 	rdfs:label "Pointer" ;
-	rdfs:subClassOf _:c14n17 , _:c14n22 , _:c14n24 , _:c14n47 , _:c14n57 ;
+	rdfs:subClassOf _:c14n18 , _:c14n23 , _:c14n25 , _:c14n51 , _:c14n61 ;
 	skos:definition "A route that tells an agent when and how to load a node." ;
 	skos:inScheme densho:metamodel .
 densho:PracticeArea a owl:Class ;
 	rdfs:label "PracticeArea" ;
-	rdfs:subClassOf skos:Concept , _:c14n59 , _:c14n80 ;
+	rdfs:subClassOf skos:Concept , _:c14n63 , _:c14n84 ;
 	skos:definition "A narrower area of work." ;
 	skos:inScheme densho:metamodel .
 densho:Root a owl:Class ;
 	rdfs:label "Root" ;
-	rdfs:subClassOf densho:Node , _:c14n31 ;
+	rdfs:subClassOf densho:Node , _:c14n32 ;
 	skos:definition "The top node of the graph. Agents load the root first." ;
 	skos:inScheme densho:metamodel .
 densho:Skill a owl:Class ;
 	rdfs:label "Skill" ;
-	rdfs:subClassOf densho:KnowledgeNode , _:c14n1 , _:c14n12 , _:c14n71 ;
+	rdfs:subClassOf densho:KnowledgeNode , _:c14n1 , _:c14n13 , _:c14n44 , _:c14n75 ;
 	skos:definition "A reusable capability that composes knowledge from any branch of the taxonomy." ;
 	skos:inScheme densho:metamodel .
 densho:SkillPointer a owl:Class ;
 	rdfs:label "SkillPointer" ;
-	rdfs:subClassOf densho:Pointer , _:c14n62 , _:c14n8 ;
+	rdfs:subClassOf densho:Pointer , _:c14n66 , _:c14n9 ;
 	skos:definition "A pointer to a skill that the agent selects from the skill listing." ;
 	skos:inScheme densho:metamodel .
+densho:SkillType\#flow a owl:Class ;
+	rdfs:label "flow" ;
+	rdfs:subClassOf densho:SkillType ;
+	skos:definition "The skill runs the steps of a discipline in their order. Each step has a step file." .
+densho:SkillType\#lens a owl:Class ;
+	rdfs:label "lens" ;
+	rdfs:subClassOf densho:SkillType ;
+	skos:definition "The skill reviews work from one angle, or runs other lens skills." .
+densho:SkillType\#system a owl:Class ;
+	rdfs:label "system" ;
+	rdfs:subClassOf densho:SkillType ;
+	skos:definition "The skill runs an operation of Densho on the graph." .
+densho:SkillType a owl:Class ;
+	rdfs:label "SkillType" ;
+	owl:unionOf _:c14n4 ;
+	skos:definition "The kinds of skill." ;
+	skos:inScheme densho:metamodel ;
+	linkml:permissible_values densho:SkillType\#flow , densho:SkillType\#lens , densho:SkillType\#system .
 densho:Status\#accepted a owl:Class ;
 	rdfs:label "accepted" ;
 	rdfs:subClassOf densho:Status ;
@@ -235,7 +253,7 @@ densho:Status\#rejected a owl:Class ;
 	skos:definition "A person rejected the proposal. A rejected entity is not in force, and no generated file holds it." .
 densho:Status a owl:Class ;
 	rdfs:label "Status" ;
-	owl:unionOf _:c14n30 ;
+	owl:unionOf _:c14n31 ;
 	skos:definition "The lifecycle states." ;
 	skos:inScheme densho:metamodel ;
 	linkml:permissible_values densho:Status\#accepted , densho:Status\#deprecated , densho:Status\#proposed , densho:Status\#rejected .
@@ -262,7 +280,7 @@ densho:basis a owl:ObjectProperty ;
 	skos:inScheme densho:metamodel .
 densho:body a owl:DatatypeProperty ;
 	rdfs:label "body" ;
-	rdfs:range _:c14n99 ;
+	rdfs:range _:c14n103 ;
 	skos:definition "The supporting prose of the node." ;
 	skos:inScheme densho:metamodel .
 densho:conflicts_with a owl:ObjectProperty , owl:SymmetricProperty ;
@@ -278,7 +296,7 @@ densho:depends_on a owl:ObjectProperty ;
 	skos:inScheme densho:metamodel .
 densho:description a owl:DatatypeProperty ;
 	rdfs:label "description" ;
-	rdfs:range _:c14n36 ;
+	rdfs:range _:c14n38 ;
 	skos:definition "The text that an agent reads to select the skill." ;
 	skos:inScheme densho:metamodel .
 densho:directive a owl:ObjectProperty ;
@@ -309,7 +327,7 @@ densho:governs a owl:ObjectProperty ;
 	skos:inScheme densho:metamodel .
 densho:id a owl:DatatypeProperty ;
 	rdfs:label "id" ;
-	rdfs:range _:c14n4 ;
+	rdfs:range _:c14n5 ;
 	skos:definition "The stable identifier. The identifier does not change when a file moves." ;
 	skos:inScheme densho:metamodel .
 densho:implements a owl:ObjectProperty ;
@@ -351,7 +369,7 @@ densho:origin a owl:ObjectProperty ;
 	skos:inScheme densho:metamodel .
 densho:paths a owl:DatatypeProperty ;
 	rdfs:label "paths" ;
-	rdfs:range _:c14n5 ;
+	rdfs:range _:c14n6 ;
 	skos:definition "The file patterns that load the target." ;
 	skos:inScheme densho:metamodel .
 densho:pointers a owl:ObjectProperty ;
@@ -361,7 +379,7 @@ densho:pointers a owl:ObjectProperty ;
 	skos:inScheme densho:metamodel .
 densho:reason a owl:DatatypeProperty ;
 	rdfs:label "reason" ;
-	rdfs:range _:c14n43 ;
+	rdfs:range _:c14n46 ;
 	skos:definition "The reason that the directive does not apply at this node." ;
 	skos:inScheme densho:metamodel .
 densho:refines a owl:ObjectProperty ;
@@ -371,7 +389,7 @@ densho:refines a owl:ObjectProperty ;
 	skos:inScheme densho:metamodel .
 densho:rejection_reason a owl:DatatypeProperty ;
 	rdfs:label "rejection_reason" ;
-	rdfs:range _:c14n70 ;
+	rdfs:range _:c14n74 ;
 	skos:definition "The reason that a person rejected the entity." ;
 	skos:inScheme densho:metamodel .
 densho:result a owl:ObjectProperty ;
@@ -389,10 +407,21 @@ densho:scope a owl:ObjectProperty ;
 	rdfs:range densho:DirectiveScope ;
 	skos:definition "The nodes that the directive applies to. This field has no default, because inheritance is explicit." ;
 	skos:inScheme densho:metamodel .
+densho:skill_type a owl:ObjectProperty ;
+	rdfs:label "skill_type" ;
+	rdfs:range densho:SkillType ;
+	skos:definition "The kind of work that the skill does." ;
+	skos:inScheme densho:metamodel .
 densho:status a owl:ObjectProperty ;
 	rdfs:label "status" ;
 	rdfs:range densho:Status ;
 	skos:definition "The lifecycle state." ;
+	skos:inScheme densho:metamodel .
+densho:steps a owl:ObjectProperty ;
+	rdfs:label "steps" ;
+	rdfs:range skos:Concept ;
+	rdfs:subPropertyOf densho:edge ;
+	skos:definition "The steps of a flow skill, in their order. Each step is a node under the node that the flow uses." ;
 	skos:inScheme densho:metamodel .
 densho:target a owl:ObjectProperty ;
 	rdfs:label "target" ;
@@ -401,12 +430,12 @@ densho:target a owl:ObjectProperty ;
 	skos:inScheme densho:metamodel .
 densho:text a owl:DatatypeProperty ;
 	rdfs:label "text" ;
-	rdfs:range _:c14n95 ;
+	rdfs:range _:c14n99 ;
 	skos:definition "The instruction." ;
 	skos:inScheme densho:metamodel .
 densho:trigger a owl:DatatypeProperty ;
 	rdfs:label "trigger" ;
-	rdfs:range _:c14n79 ;
+	rdfs:range _:c14n83 ;
 	skos:definition "The condition that tells an agent to follow the pointer." ;
 	skos:inScheme densho:metamodel .
 densho:uses a owl:ObjectProperty ;
@@ -415,102 +444,103 @@ densho:uses a owl:ObjectProperty ;
 	rdfs:subPropertyOf densho:edge ;
 	skos:definition "The knowledge that the skill composes." ;
 	skos:inScheme densho:metamodel .
-_:c14n0 owl:unionOf _:c14n54 .
+_:c14n0 owl:unionOf _:c14n58 .
 _:c14n1 a owl:Restriction ;
-	owl:allValuesFrom _:c14n139 ;
+	owl:allValuesFrom _:c14n137 ;
 	owl:onProperty densho:description .
-_:c14n10 rdf:first densho:Status\#accepted ;
-	rdf:rest _:c14n40 .
-_:c14n100 rdf:first densho:DirectiveScope\#subtree ;
-	rdf:rest rdf:nil .
+_:c14n10 rdf:first densho:AlwaysPointer ;
+	rdf:rest _:c14n27 .
+_:c14n100 a owl:Restriction ;
+	owl:allValuesFrom _:c14n167 ;
+	owl:onProperty skos:prefLabel .
 _:c14n101 a owl:Restriction ;
+	owl:allValuesFrom densho:Domain ;
+	owl:onProperty skos:broader .
+_:c14n102 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n153 .
+_:c14n103 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n174 .
+_:c14n104 rdf:first densho:DirectiveScope\#subtree ;
+	rdf:rest rdf:nil .
+_:c14n105 a owl:Restriction ;
 	owl:maxCardinality 1 ;
 	owl:onProperty densho:body .
-_:c14n102 owl:unionOf _:c14n104 .
-_:c14n103 a owl:Restriction ;
+_:c14n106 owl:unionOf _:c14n108 .
+_:c14n107 a owl:Restriction ;
 	owl:minCardinality 1 ;
 	owl:onProperty skos:broader .
-_:c14n104 rdf:first densho:Concept ;
-	rdf:rest _:c14n107 .
-_:c14n105 a owl:Restriction ;
+_:c14n108 rdf:first densho:Concept ;
+	rdf:rest _:c14n111 .
+_:c14n109 a owl:Restriction ;
 	owl:minCardinality 1 ;
 	owl:onProperty densho:nodes .
-_:c14n106 a rdfs:Datatype ;
+_:c14n11 rdf:first densho:Status\#accepted ;
+	rdf:rest _:c14n42 .
+_:c14n110 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n171 .
-_:c14n107 rdf:first densho:Discipline ;
-	rdf:rest _:c14n15 .
-_:c14n108 rdf:first densho:Discipline ;
-	rdf:rest _:c14n92 .
-_:c14n109 rdf:first densho:Domain ;
-	rdf:rest _:c14n108 .
-_:c14n11 a owl:Restriction ;
-	owl:cardinality 1 ;
-	owl:onProperty densho:id .
-_:c14n110 owl:unionOf _:c14n109 .
-_:c14n111 rdf:first _:c14n110 ;
-	rdf:rest _:c14n113 .
-_:c14n112 owl:intersectionOf _:c14n111 .
-_:c14n113 rdf:first skos:Concept ;
+	owl:withRestrictions _:c14n169 .
+_:c14n111 rdf:first densho:Discipline ;
+	rdf:rest _:c14n16 .
+_:c14n112 rdf:first densho:Discipline ;
+	rdf:rest _:c14n118 .
+_:c14n113 rdf:first densho:Domain ;
+	rdf:rest _:c14n112 .
+_:c14n114 owl:unionOf _:c14n113 .
+_:c14n115 rdf:first _:c14n114 ;
+	rdf:rest _:c14n117 .
+_:c14n116 owl:intersectionOf _:c14n115 .
+_:c14n117 rdf:first skos:Concept ;
 	rdf:rest rdf:nil .
-_:c14n114 rdf:first densho:Discipline ;
-	rdf:rest _:c14n120 .
-_:c14n115 rdf:first densho:Domain ;
-	rdf:rest _:c14n114 .
-_:c14n116 owl:unionOf _:c14n115 .
-_:c14n117 rdf:first _:c14n116 ;
-	rdf:rest _:c14n119 .
-_:c14n118 owl:intersectionOf _:c14n117 .
-_:c14n119 rdf:first skos:Concept ;
+_:c14n118 rdf:first densho:PracticeArea ;
 	rdf:rest rdf:nil .
+_:c14n119 rdf:first densho:Discipline ;
+	rdf:rest _:c14n96 .
 _:c14n12 a owl:Restriction ;
 	owl:cardinality 1 ;
-	owl:onProperty densho:invocation .
-_:c14n120 rdf:first densho:PracticeArea ;
-	rdf:rest rdf:nil .
-_:c14n121 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+	owl:onProperty densho:id .
+_:c14n120 rdf:first densho:Domain ;
+	rdf:rest _:c14n119 .
+_:c14n121 owl:unionOf _:c14n120 .
 _:c14n122 rdf:first _:c14n121 ;
+	rdf:rest _:c14n124 .
+_:c14n123 owl:intersectionOf _:c14n122 .
+_:c14n124 rdf:first skos:Concept ;
 	rdf:rest rdf:nil .
-_:c14n123 a rdfs:Datatype ;
-	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n122 .
-_:c14n124 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n125 rdf:first _:c14n124 ;
+_:c14n125 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n126 rdf:first _:c14n125 ;
 	rdf:rest rdf:nil .
-_:c14n126 a rdfs:Datatype ;
+_:c14n127 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n125 .
-_:c14n127 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n128 rdf:first _:c14n127 ;
+	owl:withRestrictions _:c14n126 .
+_:c14n128 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n129 rdf:first _:c14n128 ;
 	rdf:rest rdf:nil .
-_:c14n129 a rdfs:Datatype ;
-	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n128 .
 _:c14n13 a owl:Restriction ;
 	owl:cardinality 1 ;
-	owl:onProperty densho:text .
-_:c14n130 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n131 rdf:first _:c14n130 ;
-	rdf:rest rdf:nil .
-_:c14n132 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n133 rdf:first _:c14n132 ;
-	rdf:rest rdf:nil .
-_:c14n134 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n135 rdf:first _:c14n134 ;
-	rdf:rest rdf:nil .
-_:c14n136 a rdfs:Datatype ;
+	owl:onProperty densho:invocation .
+_:c14n130 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n135 .
-_:c14n137 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n138 rdf:first _:c14n137 ;
+	owl:withRestrictions _:c14n129 .
+_:c14n131 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n132 rdf:first _:c14n131 ;
 	rdf:rest rdf:nil .
-_:c14n139 a rdfs:Datatype ;
+_:c14n133 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n134 rdf:first _:c14n133 ;
+	rdf:rest rdf:nil .
+_:c14n135 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n136 rdf:first _:c14n135 ;
+	rdf:rest rdf:nil .
+_:c14n137 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n138 .
+	owl:withRestrictions _:c14n136 .
+_:c14n138 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n139 rdf:first _:c14n138 ;
+	rdf:rest rdf:nil .
 _:c14n14 a owl:Restriction ;
-	rdfs:subClassOf densho:KnowledgeNode ;
-	owl:onProperty rdf:type ;
-	owl:someValuesFrom densho:KnowledgeNode .
+	owl:cardinality 1 ;
+	owl:onProperty densho:text .
 _:c14n140 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
 _:c14n141 rdf:first _:c14n140 ;
 	rdf:rest rdf:nil .
@@ -523,323 +553,331 @@ _:c14n144 rdf:first _:c14n143 ;
 _:c14n145 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
 _:c14n146 rdf:first _:c14n145 ;
 	rdf:rest rdf:nil .
-_:c14n147 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n148 rdf:first _:c14n147 ;
-	rdf:rest rdf:nil .
-_:c14n149 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n15 rdf:first densho:Domain ;
-	rdf:rest _:c14n180 .
-_:c14n150 rdf:first _:c14n149 ;
-	rdf:rest rdf:nil .
-_:c14n151 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n152 rdf:first _:c14n151 ;
-	rdf:rest rdf:nil .
-_:c14n153 a rdfs:Datatype ;
+_:c14n147 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n152 .
+	owl:withRestrictions _:c14n146 .
+_:c14n148 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n149 rdf:first _:c14n148 ;
+	rdf:rest rdf:nil .
+_:c14n15 a owl:Restriction ;
+	rdfs:subClassOf densho:KnowledgeNode ;
+	owl:onProperty rdf:type ;
+	owl:someValuesFrom densho:KnowledgeNode .
+_:c14n150 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n151 rdf:first _:c14n150 ;
+	rdf:rest rdf:nil .
+_:c14n152 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n153 rdf:first _:c14n152 ;
+	rdf:rest rdf:nil .
 _:c14n154 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
 _:c14n155 rdf:first _:c14n154 ;
 	rdf:rest rdf:nil .
-_:c14n156 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n157 rdf:first _:c14n156 ;
-	rdf:rest rdf:nil .
-_:c14n158 a rdfs:Datatype ;
+_:c14n156 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n157 .
-_:c14n159 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n16 a owl:Restriction ;
-	owl:cardinality 1 ;
-	owl:onProperty densho:basis .
-_:c14n160 rdf:first _:c14n159 ;
+	owl:withRestrictions _:c14n155 .
+_:c14n157 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n158 rdf:first _:c14n157 ;
 	rdf:rest rdf:nil .
-_:c14n161 a rdfs:Datatype ;
+_:c14n159 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n160 .
+	owl:withRestrictions _:c14n158 .
+_:c14n16 rdf:first densho:Domain ;
+	rdf:rest _:c14n184 .
+_:c14n160 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n161 rdf:first _:c14n160 ;
+	rdf:rest rdf:nil .
 _:c14n162 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
 _:c14n163 rdf:first _:c14n162 ;
 	rdf:rest rdf:nil .
-_:c14n164 xsd:pattern "\\S" .
-_:c14n165 rdf:first _:c14n164 ;
-	rdf:rest rdf:nil .
-_:c14n166 a rdfs:Datatype ;
+_:c14n164 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n165 .
-_:c14n167 xsd:pattern "\\S" .
-_:c14n168 rdf:first _:c14n167 ;
+	owl:withRestrictions _:c14n163 .
+_:c14n165 xsd:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n166 rdf:first _:c14n165 ;
 	rdf:rest rdf:nil .
-_:c14n169 a rdfs:Datatype ;
+_:c14n167 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n168 .
+	owl:withRestrictions _:c14n166 .
+_:c14n168 xsd:pattern "\\S" .
+_:c14n169 rdf:first _:c14n168 ;
+	rdf:rest rdf:nil .
 _:c14n17 a owl:Restriction ;
 	owl:cardinality 1 ;
-	owl:onProperty densho:target .
+	owl:onProperty densho:basis .
 _:c14n170 xsd:pattern "\\S" .
 _:c14n171 rdf:first _:c14n170 ;
 	rdf:rest rdf:nil .
-_:c14n172 xsd:pattern "\\S" .
-_:c14n173 rdf:first _:c14n172 ;
-	rdf:rest rdf:nil .
-_:c14n174 a rdfs:Datatype ;
+_:c14n172 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n175 .
-_:c14n175 rdf:first _:c14n176 ;
+	owl:withRestrictions _:c14n171 .
+_:c14n173 xsd:pattern "\\S" .
+_:c14n174 rdf:first _:c14n173 ;
 	rdf:rest rdf:nil .
-_:c14n176 xsd:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n177 rdf:first _:c14n178 ;
+_:c14n175 xsd:pattern "\\S" .
+_:c14n176 rdf:first _:c14n175 ;
 	rdf:rest rdf:nil .
-_:c14n178 xsd:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n179 rdf:first skos:Concept ;
+_:c14n177 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n176 .
+_:c14n178 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n179 .
+_:c14n179 rdf:first _:c14n180 ;
 	rdf:rest rdf:nil .
 _:c14n18 a owl:Restriction ;
-	owl:allValuesFrom _:c14n129 ;
-	owl:onProperty densho:text .
-_:c14n180 rdf:first densho:PracticeArea ;
+	owl:cardinality 1 ;
+	owl:onProperty densho:target .
+_:c14n180 xsd:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
+_:c14n181 rdf:first _:c14n182 ;
+	rdf:rest rdf:nil .
+_:c14n182 xsd:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
+_:c14n183 rdf:first skos:Concept ;
+	rdf:rest rdf:nil .
+_:c14n184 rdf:first densho:PracticeArea ;
 	rdf:rest rdf:nil .
 _:c14n19 a owl:Restriction ;
-	owl:cardinality 1 ;
-	owl:onProperty skos:prefLabel .
+	owl:allValuesFrom _:c14n159 ;
+	owl:onProperty densho:text .
 _:c14n2 rdf:first densho:Concept ;
 	rdf:rest rdf:nil .
-_:c14n20 rdf:first densho:Directive ;
-	rdf:rest _:c14n35 .
-_:c14n21 rdf:first densho:Origin\#template ;
-	rdf:rest _:c14n58 .
-_:c14n22 a owl:Restriction ;
-	owl:allValuesFrom _:c14n126 ;
-	owl:onProperty densho:trigger .
-_:c14n23 a owl:Restriction ;
-	owl:allValuesFrom _:c14n161 ;
-	owl:onProperty dcterms:source .
-_:c14n24 a owl:Restriction ;
+_:c14n20 a owl:Restriction ;
 	owl:cardinality 1 ;
+	owl:onProperty skos:prefLabel .
+_:c14n21 rdf:first densho:Directive ;
+	rdf:rest _:c14n37 .
+_:c14n22 rdf:first densho:Origin\#template ;
+	rdf:rest _:c14n62 .
+_:c14n23 a owl:Restriction ;
+	owl:allValuesFrom _:c14n164 ;
 	owl:onProperty densho:trigger .
+_:c14n24 a owl:Restriction ;
+	owl:allValuesFrom _:c14n147 ;
+	owl:onProperty dcterms:source .
 _:c14n25 a owl:Restriction ;
 	owl:cardinality 1 ;
+	owl:onProperty densho:trigger .
+_:c14n26 a owl:Restriction ;
+	owl:cardinality 1 ;
 	owl:onProperty densho:reason .
-_:c14n26 rdf:first densho:PathPointer ;
-	rdf:rest _:c14n64 .
-_:c14n27 a owl:Restriction ;
-	owl:allValuesFrom _:c14n112 ;
-	owl:onProperty skos:broader .
+_:c14n27 rdf:first densho:PathPointer ;
+	rdf:rest _:c14n68 .
 _:c14n28 a owl:Restriction ;
+	owl:allValuesFrom _:c14n123 ;
+	owl:onProperty skos:broader .
+_:c14n29 a owl:Restriction ;
 	owl:cardinality 1 ;
 	owl:onProperty densho:origin .
-_:c14n29 a owl:Restriction ;
+_:c14n3 rdf:first densho:Basis\#research ;
+	rdf:rest _:c14n93 .
+_:c14n30 a owl:Restriction ;
 	rdfs:subClassOf densho:PracticeArea ;
 	owl:onProperty rdf:type ;
 	owl:someValuesFrom densho:PracticeArea .
-_:c14n3 rdf:first densho:Basis\#research ;
-	rdf:rest _:c14n89 .
-_:c14n30 rdf:first densho:Status\#proposed ;
-	rdf:rest _:c14n10 .
-_:c14n31 a owl:Restriction ;
+_:c14n31 rdf:first densho:Status\#proposed ;
+	rdf:rest _:c14n11 .
+_:c14n32 a owl:Restriction ;
 	owl:minCardinality 1 ;
 	owl:onProperty densho:pointers .
-_:c14n32 a owl:Restriction ;
+_:c14n33 rdf:first densho:SkillType\#lens ;
+	rdf:rest _:c14n49 .
+_:c14n34 a owl:Restriction ;
 	rdfs:subClassOf densho:TextPointer ;
 	owl:onProperty rdf:type ;
 	owl:someValuesFrom densho:TextPointer .
-_:c14n33 a owl:Restriction ;
+_:c14n35 a owl:Restriction ;
 	rdfs:subClassOf densho:AlwaysPointer ;
 	owl:onProperty rdf:type ;
 	owl:someValuesFrom densho:AlwaysPointer .
-_:c14n34 a owl:Restriction ;
-	owl:allValuesFrom _:c14n158 ;
+_:c14n36 a owl:Restriction ;
+	owl:allValuesFrom _:c14n142 ;
 	owl:onProperty densho:rejection_reason .
-_:c14n35 rdf:first densho:Node ;
+_:c14n37 rdf:first densho:Node ;
 	rdf:rest rdf:nil .
-_:c14n36 a rdfs:Datatype ;
+_:c14n38 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n148 .
-_:c14n37 owl:unionOf _:c14n60 .
-_:c14n38 a owl:Restriction ;
-	owl:allValuesFrom _:c14n174 ;
+	owl:withRestrictions _:c14n134 .
+_:c14n39 owl:unionOf _:c14n64 .
+_:c14n4 rdf:first densho:SkillType\#flow ;
+	rdf:rest _:c14n33 .
+_:c14n40 a owl:Restriction ;
+	owl:allValuesFrom _:c14n178 ;
 	owl:onProperty densho:id .
-_:c14n39 a owl:Restriction ;
+_:c14n41 a owl:Restriction ;
 	rdfs:subClassOf densho:PathPointer ;
 	owl:onProperty rdf:type ;
 	owl:someValuesFrom densho:PathPointer .
-_:c14n4 a rdfs:Datatype ;
-	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n177 .
-_:c14n40 rdf:first densho:Status\#deprecated ;
-	rdf:rest _:c14n48 .
-_:c14n41 a owl:Restriction ;
+_:c14n42 rdf:first densho:Status\#deprecated ;
+	rdf:rest _:c14n52 .
+_:c14n43 a owl:Restriction ;
 	owl:cardinality 1 ;
 	owl:onProperty densho:status .
-_:c14n42 a owl:Restriction ;
+_:c14n44 a owl:Restriction ;
+	owl:cardinality 1 ;
+	owl:onProperty densho:skill_type .
+_:c14n45 a owl:Restriction ;
 	owl:minCardinality 1 ;
 	owl:onProperty densho:paths .
-_:c14n43 a rdfs:Datatype ;
+_:c14n46 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n163 .
-_:c14n44 rdf:first densho:KnowledgeType\#domain ;
-	rdf:rest _:c14n73 .
-_:c14n45 owl:unionOf _:c14n20 .
-_:c14n46 a owl:Restriction ;
-	owl:cardinality 1 ;
-	owl:onProperty densho:root .
-_:c14n47 owl:unionOf _:c14n9 .
-_:c14n48 rdf:first densho:Status\#rejected ;
+	owl:withRestrictions _:c14n149 .
+_:c14n47 rdf:first densho:KnowledgeType\#domain ;
+	rdf:rest _:c14n77 .
+_:c14n48 owl:unionOf _:c14n21 .
+_:c14n49 rdf:first densho:SkillType\#system ;
 	rdf:rest rdf:nil .
-_:c14n49 a owl:Restriction ;
-	owl:allValuesFrom _:c14n142 ;
-	owl:onProperty densho:paths .
 _:c14n5 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n150 .
+	owl:withRestrictions _:c14n181 .
 _:c14n50 a owl:Restriction ;
 	owl:cardinality 1 ;
+	owl:onProperty densho:root .
+_:c14n51 owl:unionOf _:c14n10 .
+_:c14n52 rdf:first densho:Status\#rejected ;
+	rdf:rest rdf:nil .
+_:c14n53 a owl:Restriction ;
+	owl:allValuesFrom _:c14n130 ;
+	owl:onProperty densho:paths .
+_:c14n54 a owl:Restriction ;
+	owl:cardinality 1 ;
 	owl:onProperty densho:knowledge_type .
-_:c14n51 rdf:first densho:Basis\#standard ;
+_:c14n55 rdf:first densho:Basis\#standard ;
 	rdf:rest _:c14n3 .
-_:c14n52 a owl:Restriction ;
+_:c14n56 a owl:Restriction ;
 	owl:maxCardinality 1 ;
 	owl:onProperty densho:rejection_reason .
-_:c14n53 rdf:first densho:Basis\#judgment ;
+_:c14n57 rdf:first densho:Basis\#judgment ;
 	rdf:rest rdf:nil .
-_:c14n54 rdf:first densho:KnowledgeNode ;
-	rdf:rest _:c14n72 .
-_:c14n55 a owl:Restriction ;
+_:c14n58 rdf:first densho:KnowledgeNode ;
+	rdf:rest _:c14n76 .
+_:c14n59 a owl:Restriction ;
 	owl:cardinality 1 ;
 	owl:onProperty densho:directive .
-_:c14n56 rdf:first densho:Invocation\#agent ;
-	rdf:rest _:c14n83 .
-_:c14n57 a owl:Restriction ;
+_:c14n6 a rdfs:Datatype ;
+	owl:onDatatype xsd:string ;
+	owl:withRestrictions _:c14n139 .
+_:c14n60 rdf:first densho:Invocation\#agent ;
+	rdf:rest _:c14n87 .
+_:c14n61 a owl:Restriction ;
 	owl:cardinality 1 ;
 	owl:onProperty rdf:type .
-_:c14n58 rdf:first densho:Origin\#project ;
+_:c14n62 rdf:first densho:Origin\#project ;
 	rdf:rest rdf:nil .
-_:c14n59 a owl:Restriction ;
-	owl:allValuesFrom _:c14n118 ;
+_:c14n63 a owl:Restriction ;
+	owl:allValuesFrom _:c14n116 ;
 	owl:onProperty skos:broader .
-_:c14n6 a owl:Restriction ;
-	owl:maxCardinality 1 ;
-	owl:onProperty densho:result .
-_:c14n60 rdf:first densho:Skill ;
-	rdf:rest _:c14n179 .
-_:c14n61 a owl:Restriction ;
+_:c14n64 rdf:first densho:Skill ;
+	rdf:rest _:c14n183 .
+_:c14n65 a owl:Restriction ;
 	rdfs:subClassOf densho:Pointer ;
 	owl:onProperty rdf:type ;
 	owl:someValuesFrom densho:Pointer .
-_:c14n62 a owl:Restriction ;
+_:c14n66 a owl:Restriction ;
 	owl:cardinality 1 ;
 	owl:onProperty densho:target .
-_:c14n63 a rdfs:Datatype ;
+_:c14n67 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
 	owl:withRestrictions _:c14n144 .
-_:c14n64 rdf:first densho:SkillPointer ;
-	rdf:rest _:c14n76 .
-_:c14n65 rdf:first densho:CompiledResult\#proposals ;
+_:c14n68 rdf:first densho:SkillPointer ;
+	rdf:rest _:c14n80 .
+_:c14n69 rdf:first densho:CompiledResult\#proposals ;
 	rdf:rest rdf:nil .
-_:c14n66 a owl:Restriction ;
-	owl:allValuesFrom _:c14n136 ;
+_:c14n7 a owl:Restriction ;
+	owl:maxCardinality 1 ;
+	owl:onProperty densho:result .
+_:c14n70 a owl:Restriction ;
+	owl:allValuesFrom _:c14n156 ;
 	owl:onProperty densho:reason .
-_:c14n67 a owl:Restriction ;
+_:c14n71 a owl:Restriction ;
 	rdfs:subClassOf densho:SkillPointer ;
 	owl:onProperty rdf:type ;
 	owl:someValuesFrom densho:SkillPointer .
-_:c14n68 a owl:Restriction ;
+_:c14n72 a owl:Restriction ;
 	owl:cardinality 1 ;
 	owl:onProperty rdf:type .
-_:c14n69 a owl:Restriction ;
+_:c14n73 a owl:Restriction ;
 	rdfs:subClassOf densho:Root ;
 	owl:onProperty rdf:type ;
 	owl:someValuesFrom densho:Root .
-_:c14n7 a owl:Restriction ;
-	owl:minCardinality 1 ;
-	owl:onProperty skos:broader .
-_:c14n70 a rdfs:Datatype ;
+_:c14n74 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n131 .
-_:c14n71 a owl:Restriction ;
+	owl:withRestrictions _:c14n132 .
+_:c14n75 a owl:Restriction ;
 	owl:cardinality 1 ;
 	owl:onProperty densho:description .
-_:c14n72 rdf:first densho:Root ;
+_:c14n76 rdf:first densho:Root ;
 	rdf:rest rdf:nil .
-_:c14n73 rdf:first densho:KnowledgeType\#workspace ;
+_:c14n77 rdf:first densho:KnowledgeType\#workspace ;
 	rdf:rest rdf:nil .
-_:c14n74 a owl:Restriction ;
+_:c14n78 a owl:Restriction ;
 	owl:maxCardinality 1 ;
 	owl:onProperty densho:rejection_reason .
-_:c14n75 a owl:Restriction ;
-	owl:allValuesFrom _:c14n169 ;
+_:c14n79 a owl:Restriction ;
+	owl:allValuesFrom _:c14n177 ;
 	owl:onProperty densho:body .
-_:c14n76 rdf:first densho:TextPointer ;
+_:c14n8 a owl:Restriction ;
+	owl:minCardinality 1 ;
+	owl:onProperty skos:broader .
+_:c14n80 rdf:first densho:TextPointer ;
 	rdf:rest rdf:nil .
-_:c14n77 a owl:Restriction ;
+_:c14n81 a owl:Restriction ;
 	rdfs:subClassOf skos:Concept ;
 	owl:onProperty rdf:type ;
 	owl:someValuesFrom skos:Concept .
-_:c14n78 a owl:Restriction ;
+_:c14n82 a owl:Restriction ;
 	rdfs:subClassOf densho:Concept ;
 	owl:onProperty rdf:type ;
 	owl:someValuesFrom densho:Concept .
-_:c14n79 a rdfs:Datatype ;
+_:c14n83 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n133 .
-_:c14n8 a owl:Restriction ;
-	owl:allValuesFrom densho:Skill ;
-	owl:onProperty densho:target .
-_:c14n80 a owl:Restriction ;
+	owl:withRestrictions _:c14n151 .
+_:c14n84 a owl:Restriction ;
 	owl:minCardinality 1 ;
 	owl:onProperty skos:broader .
-_:c14n81 a owl:Restriction ;
+_:c14n85 a owl:Restriction ;
 	owl:cardinality 1 ;
 	owl:onProperty densho:status .
-_:c14n82 a owl:Restriction ;
+_:c14n86 a owl:Restriction ;
 	rdfs:subClassOf densho:Node ;
 	owl:onProperty rdf:type ;
 	owl:someValuesFrom densho:Node .
-_:c14n83 rdf:first densho:Invocation\#person ;
+_:c14n87 rdf:first densho:Invocation\#person ;
 	rdf:rest rdf:nil .
-_:c14n84 a owl:Restriction ;
+_:c14n88 a owl:Restriction ;
 	rdfs:subClassOf densho:Skill ;
 	owl:onProperty rdf:type ;
 	owl:someValuesFrom densho:Skill .
-_:c14n85 a owl:Restriction ;
-	owl:allValuesFrom _:c14n123 ;
+_:c14n89 a owl:Restriction ;
+	owl:allValuesFrom _:c14n127 ;
 	owl:onProperty densho:rejection_reason .
-_:c14n86 a owl:Restriction ;
-	owl:allValuesFrom _:c14n166 ;
+_:c14n9 a owl:Restriction ;
+	owl:allValuesFrom densho:Skill ;
+	owl:onProperty densho:target .
+_:c14n90 a owl:Restriction ;
+	owl:allValuesFrom _:c14n172 ;
 	owl:onProperty skos:definition .
-_:c14n87 rdf:first densho:DirectiveScope\#node ;
-	rdf:rest _:c14n100 .
-_:c14n88 a owl:Restriction ;
+_:c14n91 rdf:first densho:DirectiveScope\#node ;
+	rdf:rest _:c14n104 .
+_:c14n92 a owl:Restriction ;
 	rdfs:subClassOf densho:Discipline ;
 	owl:onProperty rdf:type ;
 	owl:someValuesFrom densho:Discipline .
-_:c14n89 rdf:first densho:Basis\#practitioner ;
-	rdf:rest _:c14n53 .
-_:c14n9 rdf:first densho:AlwaysPointer ;
-	rdf:rest _:c14n26 .
-_:c14n90 a owl:Restriction ;
+_:c14n93 rdf:first densho:Basis\#practitioner ;
+	rdf:rest _:c14n57 .
+_:c14n94 a owl:Restriction ;
 	owl:cardinality 1 ;
 	owl:onProperty skos:definition .
-_:c14n91 a owl:Restriction ;
+_:c14n95 a owl:Restriction ;
 	owl:cardinality 1 ;
 	owl:onProperty densho:scope .
-_:c14n92 rdf:first densho:PracticeArea ;
+_:c14n96 rdf:first densho:PracticeArea ;
 	rdf:rest _:c14n2 .
-_:c14n93 a owl:Restriction ;
+_:c14n97 a owl:Restriction ;
 	rdfs:subClassOf densho:Domain ;
 	owl:onProperty rdf:type ;
 	owl:someValuesFrom densho:Domain .
-_:c14n94 rdf:first densho:CompiledResult\#in_force ;
-	rdf:rest _:c14n65 .
-_:c14n95 a rdfs:Datatype ;
-	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n146 .
-_:c14n96 a owl:Restriction ;
-	owl:allValuesFrom _:c14n153 ;
-	owl:onProperty skos:prefLabel .
-_:c14n97 a owl:Restriction ;
-	owl:allValuesFrom densho:Domain ;
-	owl:onProperty skos:broader .
-_:c14n98 a rdfs:Datatype ;
-	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n155 .
+_:c14n98 rdf:first densho:CompiledResult\#in_force ;
+	rdf:rest _:c14n69 .
 _:c14n99 a rdfs:Datatype ;
 	owl:onDatatype xsd:string ;
-	owl:withRestrictions _:c14n173 .
+	owl:withRestrictions _:c14n161 .
 

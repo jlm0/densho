@@ -22,7 +22,7 @@ if TYPE_CHECKING:
         DirectiveException,
         Node,
     )
-    from engine.parser.result import ParsedNode, Script
+    from engine.parser.result import ParsedNode, Script, StepFile
 
 
 @dataclass(frozen=True, slots=True)
@@ -33,6 +33,7 @@ class CompiledGraph:
     applied: Mapping[str, tuple[AppliedDirective, ...]]
     left_out: Mapping[str, int]
     scripts: Mapping[str, tuple[Script, ...]]
+    step_files: Mapping[str, tuple[StepFile, ...]]
 
     @property
     def directives(self) -> dict[str, Directive]:
@@ -87,11 +88,16 @@ def _list_key(entry: object) -> tuple[str, str]:
     return str(entity_id), json.dumps(entry, sort_keys=True)
 
 
+ORDERED_FIELDS = frozenset({"steps"})
+
+
 def normal_form(value: object) -> object:
     if isinstance(value, dict):
         fields = cast("dict[str, object]", value)
         return {
-            field: normal_form(fields[field]) for field in sorted(fields) if fields[field] != []
+            field: fields[field] if field in ORDERED_FIELDS else normal_form(fields[field])
+            for field in sorted(fields)
+            if fields[field] != []
         }
     if isinstance(value, list):
         entries = [normal_form(entry) for entry in cast("list[object]", value)]
@@ -152,4 +158,5 @@ def compile_items(
             "exceptions": exception_count - kept_exceptions,
         },
         scripts={item.node.id: item.scripts for item in ordered if item.scripts},
+        step_files={item.node.id: item.step_files for item in ordered if item.step_files},
     )

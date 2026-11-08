@@ -5,8 +5,9 @@ title: Review the usability of a flow
 status: proposed
 origin: template
 knowledge_type: domain
-description: Review a flow against the usability heuristics, the size and position of its targets, and its choices. Use when a flow is ready for a usability review.
+description: Review a flow against the usability heuristics, the size and position of its targets, and its choices. Use when a person asks for a usability review of a flow.
 invocation: agent
+skill_type: lens
 uses:
   - usability-heuristics
   - fitts-law

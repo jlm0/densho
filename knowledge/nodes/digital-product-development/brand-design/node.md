@@ -20,15 +20,6 @@ pointers:
   - kind: densho:TextPointer
     target: brand-systems
     trigger: You write brand guidelines, store brand values as tokens, or relate the brands of a company.
-  - kind: densho:SkillPointer
-    target: define-brand-voice
-    trigger: You define or change the voice of a brand.
-  - kind: densho:SkillPointer
-    target: write-brand-guidelines
-    trigger: You write or update the brand guidelines of a product or a company.
-  - kind: densho:SkillPointer
-    target: audit-brand-consistency
-    trigger: You review the touchpoints of a brand for consistency.
 ---
 
 ## Definition

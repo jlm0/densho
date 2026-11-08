@@ -1,6 +1,6 @@
 ---
 name: review-screen-hierarchy
-description: "Review a screen for its hierarchy, its grouping, and its use of prose. Use when a screen design is ready for review."
+description: "Review a screen for its hierarchy, its grouping, and its use of prose. Use when a person asks for a review of the hierarchy of a screen."
 ---
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Review the hierarchy of a screen
@@ -8,10 +8,6 @@ description: "Review a screen for its hierarchy, its grouping, and its use of pr
 If compaction cuts this skill, invoke the skill again.
 
 ## Directives
-
-From [Digital product development](../../references/digital-product-development.md):
-
-- Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
 From [Accessibility](../../references/accessibility.md):
 
@@ -99,8 +95,9 @@ From [Information hierarchy](../../references/information-hierarchy.md):
 - Limit the text on each screen to `3` sizes. ^limit-text-sizes
 - Make the most important element on each screen the biggest element. ^make-most-important-biggest
 - Mark the preferred button in a set of choices with a prominent style, not a larger size. ^mark-preferred-with-style
-- Give each screen one primary action. ^one-primary-action
+- Give each screen one primary action, unless the screen is a settings screen. ^one-primary-action
 - Use a bright color only for the primary action or the primary content of a screen. ^reserve-bright-color
+- If a screen is a settings screen, give each control on it the same rank. ^settings-controls-same-rank
 
 From [Visual communication](../../references/visual-communication.md):
 
@@ -109,6 +106,12 @@ From [Visual communication](../../references/visual-communication.md):
 - Do not use one glyph for two different functions. ^no-shared-glyph
 - If a glyph, an image, or a grouping states the same information as a sentence, replace the sentence with it. ^prefer-visual-form
 - Test each new glyph with users for recognition before you use it. ^test-new-glyphs
+
+## Required reads
+
+Read each file in this list, and follow the directives that its line names.
+
+- Read [Digital product development](../../references/digital-product-development.md), and follow each directive from Digital product development.
 
 ## Inputs
 

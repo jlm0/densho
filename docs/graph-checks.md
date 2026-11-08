@@ -26,6 +26,8 @@ An empty tree passes, so a project can remove what it received and still start c
 | References   | `reference`    | An edge, a pointer, an exception, or a directive field such as `also_attached_to` names an ID that does not exist                                    |
 | Types        | `type`         | A reference names a kind the [schema](schema.md) does not allow, such as a `broader` target of the wrong rank, or a non-skill behind a skill pointer |
 | Skills       | `skill`        | A skill has neither `uses` nor `applies`, or its ID is `synced` or `anthropic-skills`, which Claude Code reserves                                    |
+| Skill table  | `skill`        | A flow or a lens skill has no row in the skill table, or can't start by itself, or a description leaves out the activity of its row                  |
+| Steps        | `step`         | The `steps` of a flow skill don't match its discipline or its step files, or a skill that is not a flow has steps                                    |
 | Ownership    | `implements`   | `implements` starts from a node that is not workspace knowledge                                                                                      |
 | Associations | `association`  | `related` joins a node to one in its own `broader` chain, up or down                                                                                 |
 | Cycles       | `cycle`        | A chain of `broader` edges, or a chain of `depends_on` edges, leads back to its start                                                                |
@@ -44,6 +46,28 @@ The kind of a node sets where its file goes:
 - Every other node goes under `knowledge/nodes/`.
 
 These checks do not need a `knowledge/governance/` folder, and a project can delete the policies it received. Inside those folders the path is free. It stays a navigation aid, so a file can move without changing what it means.
+
+## Skills and steps
+
+Each skill has a `skill_type`:
+
+| Type     | What it does                                                        | Needs                                          |
+| -------- | ------------------------------------------------------------------- | ---------------------------------------------- |
+| `flow`   | Runs the work of one discipline, step by step                       | `invocation: agent`, a row, `steps`, and files |
+| `lens`   | Reviews work from one angle, alone or inside another skill          | `invocation: agent` and a row                  |
+| `system` | Runs Densho itself, such as a proposal or a review of the proposals | Nothing more                                   |
+
+A row is a `densho:SkillPointer` on the root. Its trigger is the activity, and [`AGENTS.md`](runtime-files.md#the-skill-table) shows it in the skill table. The description of the skill must hold that activity in its `Use when` sentence, with a lowercase first letter and no final period, so the listing and the table say the same thing. `You create or change a user interface.` needs `Use when you create or change a user interface.`
+
+A flow skill uses exactly one node, its discipline, and names its steps in order. The check fails with `step` when:
+
+- `uses` doesn't name exactly one node
+- `steps` is empty, or names a step twice
+- a step's `broader` doesn't name the discipline
+- a step informs a step that comes before it
+- a step has no [step file](node-format.md#step-files), or a step file has no entry in `steps`
+
+A lens or a system skill with `steps`, or with a `steps/` folder, fails too.
 
 ## Reachability and depth
 
@@ -69,7 +93,7 @@ The checks run in an order that keeps the report free of noise:
 2. The identity, placement, skill, and ownership checks always run.
 3. A duplicate ID stops the rest, because each ID must name one thing.
 4. The reference, association, and cycle checks run next.
-5. A broken reference or a wrong number of roots stops the type, reachability, and depth checks.
+5. A broken reference or a wrong number of roots stops the type, reachability, depth, skill table, and step checks.
 
 The type check uses SHACL, with shapes generated from the [schema](schema.md), so each range lives in one place. networkx handles cycles, reachability, and depth. The rules the schema does not state are plain Python.
 

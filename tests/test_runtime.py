@@ -3,6 +3,7 @@ import posixpath
 import re
 import shutil
 import subprocess
+from dataclasses import replace
 from io import StringIO
 from pathlib import Path, PurePosixPath
 from typing import TYPE_CHECKING, Any, cast
@@ -13,8 +14,10 @@ from typer.testing import CliRunner
 
 from engine.cli import app
 from engine.compiler import compile_items, compile_tree
+from engine.generated.metamodel import Skill
 from engine.governance import pending_entities
 from engine.parser import ParsedNode, parse_source
+from engine.parser.result import StepFile
 from engine.runtime import (
     MARKER,
     REVIEW_FOLDER,
@@ -38,10 +41,13 @@ from engine.runtime.claude_code import (
     state_sentence,
 )
 from engine.runtime.files import apply_files
-from engine.runtime.view import DirectiveCounts
+from engine.runtime.placement import Tree
+from engine.runtime.view import DirectiveCounts, NodeView, StepView
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    from collections.abc import Iterable, Mapping, Sequence
+
+    from engine.directives import AppliedDirective
 
 REPO = Path(__file__).resolve().parents[1]
 ENGINE = REPO / "engine/runtime"
@@ -107,7 +113,7 @@ def pointers(*entries: str) -> str:
 
 SKILL_FRONT = (
     "description: Review a sample. Use when a sample needs a review.\n"
-    "invocation: agent\nuses: [gamma]\n"
+    "invocation: agent\nskill_type: system\nuses: [gamma]\n"
 )
 SAMPLE = {
     "knowledge/node.md": node(
@@ -550,7 +556,8 @@ def test_a_pointer_line_follows_its_mechanism() -> None:
     )
     lifecycle = "[lifecycle](.claude/rules/knowledge/lifecycle.md) is always loaded.\n"
     assert f"- You need lifecycle. {lifecycle}" in references
-    assert "- You need review. Use the skill `review`.\n" in references
+    assert "| You need review. | `review` |\n" in references
+    assert "Use the skill `review`" not in references
     assert "- You need gamma. Read [gamma](.claude/references/gamma.md).\n" in references
 
 
@@ -759,7 +766,7 @@ def test_the_runtime_writes_the_flow_of_a_checked_tree(tmp_path: Path) -> None:
 def test_a_skill_links_each_node_that_it_uses() -> None:
     front = (
         "description: Review a sample. Use when a sample needs a review.\n"
-        "invocation: agent\nuses: [gamma, beta]\n"
+        "invocation: agent\nskill_type: system\nuses: [gamma, beta]\n"
     )
     sources = {
         **SAMPLE,
@@ -839,7 +846,7 @@ def test_a_template_expression_in_a_node_stays_literal() -> None:
 
 def test_a_description_that_breaks_plain_yaml_stays_one_string() -> None:
     description = "'Review: \"a\" sample, #1. Use when\n  a sample: needs a review.'"
-    front = f"description: {description}\ninvocation: agent\nuses: [gamma]\n"
+    front = f"description: {description}\ninvocation: agent\nskill_type: system\nuses: [gamma]\n"
     sources = {
         **SAMPLE,
         "knowledge/skills/review/node.md": node("review", "densho:Skill", front=front),
@@ -854,7 +861,7 @@ def test_a_description_that_breaks_plain_yaml_stays_one_string() -> None:
 def test_a_description_keeps_each_character_that_is_not_ascii() -> None:
     front = (
         "description: Review a café sample. Use when a sample needs a review.\n"
-        "invocation: agent\nuses: [gamma]\n"
+        "invocation: agent\nskill_type: system\nuses: [gamma]\n"
     )
     sources = {
         **SAMPLE,
@@ -1730,8 +1737,10 @@ def test_the_real_root_names_the_domains_the_governance_and_each_skill() -> None
     assert "[Governance](.claude/rules/knowledge/governance.md) loads by itself." in text
     for policy in ("lifecycle", "approval", "change-rules", "language-rules", "schema-rules"):
         assert f"(.claude/references/{policy}.md)" in text
-    for skill in ("design-settings-interface", "review-screen-hierarchy"):
-        assert f"- `{skill}`: " in text
+    for skill in ("design-interface", "review-screen-hierarchy"):
+        assert f" | `{skill}` |\n" in text
+    assert "- `propose-knowledge`: " in text
+    for skill in ("design-interface", "review-screen-hierarchy", "propose-knowledge"):
         assert f"]({skill}" not in text
         assert f"skills/{skill}" not in text
     assert "node.md)" not in text
@@ -1777,21 +1786,52 @@ def test_the_directive_search_skips_only_an_example_in_a_code_block() -> None:
     assert "(proposed)" in outside_code_blocks("Run grep '^<id> (proposed)'.\n")
 
 
-def test_the_review_result_of_the_real_seed_holds_each_applied_directive() -> None:
+def placed_ids(
+    view: NodeView | StepView, applied: Mapping[str, Sequence[AppliedDirective]]
+) -> list[str]:
+    ids = [line.id for group in view.groups for line in group.directives]
+    for read in view.reads:
+        ids += list(read.directives) or [
+            entry.directive.id
+            for entry in applied[read.holder.id]
+            if entry.holder == read.holder.id
+        ]
+    return ids
+
+
+def test_the_review_result_of_the_real_seed_places_each_applied_directive_once() -> None:
     report = compile_tree(REPO, proposals=True)
     assert report.compiled is not None
     compiled = report.compiled
-    files = {entry.path.as_posix(): entry for entry in render_files(build_view(compiled))}
-    skill = files[f"{REVIEW}/claude/skills/design-settings-interface/SKILL.proposals.md"]
-    expected = {entry.directive.id for entry in compiled.applied["design-settings-interface"]}
-    assert expected
-    found = set(re.findall(r" \^([a-z0-9-]+) \(proposed\)$", skill.text, re.MULTILINE))
-    assert found == expected
-    assert "one-primary-action" not in found
-    assert "- `one-primary-action` does not apply at this node." in skill.text
-    assert skill.limit is not None
-    assert len(skill.whole_part) <= skill.limit
+    view = build_view(compiled)
+    tree = Tree([compiled.graph.root, *compiled.graph.nodes])
+    for skill in view.skills:
+        if not skill.steps:
+            placed = placed_ids(skill, compiled.applied)
+            assert sorted(placed) == sorted(
+                {entry.directive.id for entry in compiled.applied[skill.link.id]}
+            )
+            continue
+        (discipline,) = next(
+            node.uses or []
+            for node in compiled.graph.nodes
+            if node.id == skill.link.id and isinstance(node, Skill)
+        )
+        expected = {
+            entry.directive.id
+            for node_id in [skill.link.id, *tree.subtree(discipline)]
+            for entry in compiled.applied.get(node_id, ())
+        }
+        placed = placed_ids(skill, compiled.applied)
+        assert len(placed) == len(set(placed)), skill.link.id
+        in_steps = {item for step in skill.steps for item in placed_ids(step, compiled.applied)}
+        assert not in_steps & set(placed), skill.link.id
+        assert set(placed) | in_steps == expected, skill.link.id
+    files = {entry.path.as_posix(): entry for entry in render_files(view)}
     assert all(entry.text.count("NOT IN FORCE") == 1 for entry in files.values())
+    assert all(
+        entry.limit is None or len(entry.whole_part) <= entry.limit for entry in files.values()
+    )
 
 
 def test_the_real_review_result_lists_directives_at_a_leaf_with_its_inherited_ones() -> None:
@@ -1933,7 +1973,12 @@ def test_a_removed_scripts_folder_removes_each_copy_and_the_folder(tmp_path: Pat
 
 
 def test_a_removed_skill_removes_its_copied_scripts(tmp_path: Path) -> None:
-    tool = node("tool", "densho:Skill", front=SKILL_FRONT, rules=[rule("tool-rule", scope="node")])
+    tool = node(
+        "tool",
+        "densho:Skill",
+        front=SKILL_FRONT.replace("Use when a sample needs a review.", "Use when you need tool."),
+        rules=[rule("tool-rule", scope="node")],
+    )
     with_tool = {
         **SAMPLE,
         "knowledge/node.md": node(
@@ -2135,3 +2180,331 @@ def test_the_command_prints_no_count_after_a_failed_compile(tmp_path: Path) -> N
     result = RUNNER.invoke(app, ["runtime", str(tmp_path)])
     assert result.exit_code == 1
     assert "wait for review" not in result.output
+
+
+FLOW_ROW = "  - kind: densho:SkillPointer\n    target: flow\n    trigger: You change the area.\n"
+FLOW_FRONT = (
+    "description: Run the area flow. Use when you change the area.\n"
+    "invocation: agent\nskill_type: flow\nuses: [disc]\nsteps: [one, two]\n"
+    "exceptions:\n  - directive: disc-stopped\n    reason: The flow skips it.\n"
+    "    status: accepted\n"
+)
+FLOW_SAMPLE = {
+    "knowledge/node.md": node(
+        "root",
+        "densho:Root",
+        front=pointers(pointer("TextPointer", "area"), pointer("TextPointer", "other")) + FLOW_ROW,
+    ),
+    "knowledge/nodes/area/node.md": node(
+        "area",
+        front=pointers(pointer("TextPointer", "disc")),
+        rules=[rule("area-rule")],
+    ),
+    "knowledge/nodes/area/disc/node.md": node(
+        "disc",
+        "densho:Discipline",
+        front="broader: [area]\n"
+        + pointers(
+            pointer("TextPointer", "one"),
+            pointer("TextPointer", "two"),
+            pointer("TextPointer", "side"),
+        ),
+        rules=[rule("disc-rule"), rule("disc-stopped")],
+    ),
+    "knowledge/nodes/area/disc/one/node.md": node(
+        "one",
+        "densho:PracticeArea",
+        front="broader: [disc]\ninforms: [two, out]\n" + pointers(pointer("TextPointer", "one-c")),
+        rules=[rule("one-own", scope="node")],
+    ),
+    "knowledge/nodes/area/disc/one/one-c/node.md": node(
+        "one-c", "densho:Concept", front="broader: [one]\n", rules=[rule("one-concept")]
+    ),
+    "knowledge/nodes/area/disc/two/node.md": node(
+        "two",
+        "densho:PracticeArea",
+        front="broader: [disc]\n" + pointers(pointer("TextPointer", "two-c")),
+    ),
+    "knowledge/nodes/area/disc/two/two-c/node.md": node(
+        "two-c",
+        "densho:Concept",
+        front="broader: [two]\n",
+        rules=[rule("two-concept")],
+    ),
+    "knowledge/nodes/area/disc/side/node.md": node(
+        "side", "densho:PracticeArea", front="broader: [disc]\n", rules=[rule("side-rule")]
+    ),
+    "knowledge/nodes/other/node.md": node(
+        "other",
+        front=pointers(
+            pointer("TextPointer", "far"),
+            pointer("TextPointer", "near"),
+            pointer("TextPointer", "out"),
+        ),
+    ),
+    "knowledge/nodes/other/far/node.md": node(
+        "far",
+        "densho:Discipline",
+        front="broader: [other]\n",
+        rules=[
+            rule("far-kept", scope="node").replace(
+                "  - origin: template\n", "  - origin: template\n  - also_attached_to: one-c\n"
+            ),
+            rule("far-alone", scope="node"),
+        ],
+    ),
+    "knowledge/nodes/other/near/node.md": node(
+        "near",
+        "densho:Discipline",
+        front="broader: [other]\n",
+        rules=[
+            rule("near-all", scope="node").replace(
+                "  - origin: template\n", "  - origin: template\n  - also_attached_to: two-c\n"
+            )
+        ],
+    ),
+    "knowledge/nodes/other/out/node.md": node(
+        "out", "densho:Discipline", front="broader: [other]\n"
+    ),
+    "knowledge/skills/flow/node.md": node("flow", "densho:Skill", front=FLOW_FRONT),
+}
+STEP_SOURCE = (
+    "## Inputs\n\n- The {0} input\n\n## Procedure\n\n1. Run {0}.\n\n## Output\n\n"
+    "The {0} output.\n\n## Exit gate\n\nThe {0} gate holds.\n"
+)
+
+
+def flow_step_files() -> tuple[StepFile, ...]:
+    return tuple(
+        StepFile(
+            step,
+            (
+                ("Inputs", f"- The {step} input"),
+                ("Procedure", f"1. Run {step}."),
+                ("Output", f"The {step} output."),
+                ("Exit gate", f"The {step} gate holds."),
+            ),
+        )
+        for step in ("one", "two")
+    )
+
+
+def flow_files(sources: dict[str, str] | None = None) -> dict[str, RenderedFile]:
+    items = [
+        replace(item, step_files=flow_step_files()) if item.node.id == "flow" else item
+        for item in parsed(FLOW_SAMPLE if sources is None else sources)
+    ]
+    view = build_view(compile_items(items, Path()))
+    return {entry.path.as_posix(): entry for entry in render_files(view)}
+
+
+FLOW_SKILL = ".claude/skills/flow/SKILL.md"
+STEP_ONE = ".claude/skills/flow/steps/one.md"
+STEP_TWO = ".claude/skills/flow/steps/two.md"
+
+
+def test_a_flow_puts_each_directive_in_one_file() -> None:
+    files = flow_files()
+    assert listed_directives(files[FLOW_SKILL].text) == {"disc-rule", "one-own", "side-rule"}
+    assert listed_directives(files[STEP_ONE].text) == {"one-concept"}
+    assert listed_directives(files[STEP_TWO].text) == {"two-concept"}
+
+
+def test_a_flow_links_each_directive_from_another_branch_as_a_required_read() -> None:
+    files = flow_files()
+    assert (
+        "- Read [area](../../references/area.md), and follow each directive from area.\n"
+        in files[FLOW_SKILL].text
+    )
+    assert (
+        "- Read [far](../../../references/far.md), and follow these directives from it: "
+        "`far-kept`.\n" in files[STEP_ONE].text
+    )
+    assert (
+        "- Read [near](../../../references/near.md), and follow each directive from near.\n"
+        in files[STEP_TWO].text
+    )
+    assert "Required reads" not in files[FLOW_SKILL].text.split("## Steps")[1]
+
+
+def test_an_exception_of_the_flow_stops_its_directive_in_each_file() -> None:
+    files = flow_files()
+    assert all("disc-stopped" not in entry.text for path, entry in files.items() if "steps" in path)
+    assert "disc-stopped" not in listed_directives(files[FLOW_SKILL].text)
+    assert "- `disc-stopped` does not apply at this node. The flow skips it.\n" in (
+        files[FLOW_SKILL].text
+    )
+
+
+def test_a_flow_lists_its_steps_in_their_order() -> None:
+    text = flow_files()[FLOW_SKILL].text
+    assert "1. [one](steps/one.md)\n2. [two](steps/two.md)\n" in text
+    assert "4. Go to the next step only after the exit gate of the step passes.\n" in text
+    assert "## References" not in text
+
+
+def test_a_step_file_holds_its_place_its_sections_and_its_links() -> None:
+    files = flow_files()
+    one = files[STEP_ONE].text
+    assert "This file is step 1 of 2 of the skill `flow`." in one
+    assert "## Inputs\n\n- The one input\n" in one
+    assert "## Procedure\n\n1. Run one.\n" in one
+    assert "## Exit gate\n\nThe one gate holds.\n" in one
+    assert "- [out](../../../references/out.md)\n- [two](two.md)\n" in one
+    assert "## Next step\n\nRead [two](two.md).\n" in one
+    assert "- You need one-c. Read [one-c](../../../references/one-c.md).\n" in one
+    two = files[STEP_TWO].text
+    assert "This file is step 2 of 2 of the skill `flow`." in two
+    assert (
+        "The output of each node in this list is an input of this step:\n\n- [one](one.md)\n" in two
+    )
+    assert "This step is the last step of the skill.\n" in two
+    assert "The output of this step is an input" not in two
+
+
+def test_a_step_file_names_its_source_for_a_problem() -> None:
+    files = flow_files()
+    assert files[STEP_ONE].node_path == "knowledge/skills/flow/steps/one.md"
+    assert files[STEP_ONE].limit == claude_code.STEP_CHARACTERS
+    assert files[STEP_ONE].line_limit is None
+
+
+def test_a_step_file_can_hold_one_read_call_and_no_more() -> None:
+    assert claude_code.STEP_CHARACTERS == 25_000 * LOW_CHARACTERS_PER_TOKEN
+    text = "x" * (claude_code.STEP_CHARACTERS + 1)
+    entry = RenderedFile(
+        PurePosixPath(STEP_ONE),
+        text,
+        "knowledge/skills/flow/steps/one.md",
+        text,
+        claude_code.STEP_CHARACTERS,
+    )
+    (problem,) = size_problems([entry], Path("/repo"))
+    assert (problem.path, problem.code) == (
+        Path("/repo/knowledge/skills/flow/steps/one.md"),
+        "size",
+    )
+    fits = replace(entry, text=text[1:], whole_part=text[1:])
+    assert size_problems([fits], Path("/repo")) == []
+
+
+def test_the_review_copy_renames_each_step_file() -> None:
+    items = [
+        replace(item, step_files=flow_step_files()) if item.node.id == "flow" else item
+        for item in parsed(FLOW_SAMPLE)
+    ]
+    view = build_view(compile_items(items, Path(), proposals=True))
+    paths = {entry.path.as_posix() for entry in render_files(view)}
+    assert f"{REVIEW}/claude/skills/flow/steps/one.proposals.md" in paths
+    text = next(e.text for e in render_files(view) if e.path.name == "one.proposals.md")
+    assert "Read [two](two.proposals.md)." in text
+
+
+def test_the_root_holds_a_row_for_each_skill_pointer_on_the_root() -> None:
+    text = flow_files()["AGENTS.md"].text
+    assert "| Activity | Skill |\n| --- | --- |\n| You change the area. | `flow` |\n" in text
+    assert "These skills have no row" not in text
+    assert "- `flow`:" not in text
+    assert "Use the skill `flow`." not in text
+
+
+def test_a_row_escapes_a_pipe_in_its_activity() -> None:
+    sources = {
+        **FLOW_SAMPLE,
+        "knowledge/node.md": FLOW_SAMPLE["knowledge/node.md"].replace(
+            "You change the area.", "You change a | b."
+        ),
+    }
+    assert "| You change a \\| b. | `flow` |\n" in flow_files(sources)["AGENTS.md"].text
+
+
+def test_a_skill_without_a_row_sits_under_the_table() -> None:
+    sources = {
+        **FLOW_SAMPLE,
+        "knowledge/skills/review/node.md": node(
+            "review",
+            "densho:Skill",
+            front=SKILL_FRONT.replace("gamma", "area"),
+            body=SKILL_BODY,
+        ),
+    }
+    text = flow_files(sources)["AGENTS.md"].text
+    assert "These skills have no row:\n\n- `review`: Review a sample." in text
+
+
+def test_a_run_writes_each_step_file_and_removes_a_stale_one(tmp_path: Path) -> None:
+    write_tree(tmp_path, FLOW_SAMPLE)
+    steps = tmp_path / "knowledge/skills/flow/steps"
+    steps.mkdir()
+    for step in ("one", "two"):
+        (steps / f"{step}.md").write_text(STEP_SOURCE.format(step), encoding="utf-8")
+    report = generate_runtime(tmp_path)
+    assert report.problems == []
+    assert (tmp_path / STEP_TWO).read_text(encoding="utf-8").startswith(MARKER)
+    stale = tmp_path / ".claude/skills/flow/steps/old.md"
+    stale.write_text((tmp_path / STEP_TWO).read_text(encoding="utf-8"), encoding="utf-8")
+    again = generate_runtime(tmp_path)
+    assert again.removed == (PurePosixPath(".claude/skills/flow/steps/old.md"),)
+    assert not stale.exists()
+
+
+LENS_SAMPLE = {
+    **FLOW_SAMPLE,
+    "knowledge/nodes/area/disc2/node.md": node(
+        "disc2",
+        "densho:Discipline",
+        front="broader: [area]\n",
+        rules=[
+            rule("sib-rule", scope="node").replace(
+                "  - origin: template\n", "  - origin: template\n  - also_attached_to: one-c\n"
+            )
+        ],
+    ),
+    "knowledge/skills/lens/node.md": node(
+        "lens",
+        "densho:Skill",
+        front=(
+            "description: Review the area. Use when you review the area.\n"
+            "invocation: agent\nskill_type: lens\nuses: [one-c]\n"
+        ),
+    ),
+    "knowledge/skills/wide/node.md": node(
+        "wide",
+        "densho:Skill",
+        front=(
+            "description: Review the area. Use when you review all of it.\n"
+            "invocation: agent\nskill_type: lens\nuses: [area]\n"
+        ),
+    ),
+}
+
+
+def test_a_lens_copies_its_discipline_and_reads_the_rest() -> None:
+    text = flow_files(LENS_SAMPLE)[".claude/skills/lens/SKILL.md"].text
+    assert listed_directives(text) == {"one-concept", "disc-rule", "disc-stopped"}
+    assert "- Read [area](../../references/area.md), and follow each directive from area.\n" in (
+        text
+    )
+    assert (
+        "- Read [disc2](../../references/disc2.md), and follow each directive from disc2.\n" in text
+    )
+
+
+def test_a_skill_that_uses_a_domain_copies_the_domain() -> None:
+    text = flow_files(LENS_SAMPLE)[".claude/skills/wide/SKILL.md"].text
+    assert listed_directives(text) == {"area-rule"}
+    assert "## Required reads" not in text
+
+
+def test_the_compiled_graph_keeps_the_order_of_steps() -> None:
+    sources = {
+        **FLOW_SAMPLE,
+        "knowledge/skills/flow/node.md": FLOW_SAMPLE["knowledge/skills/flow/node.md"].replace(
+            "steps: [one, two]", "steps: [two, one]"
+        ),
+    }
+    text = flow_files(sources)[FLOW_SKILL].text
+    assert "1. [two](steps/two.md)\n2. [one](steps/one.md)\n" in text
+    two = flow_files(sources)[STEP_TWO].text
+    assert "This file is step 1 of 2 of the skill `flow`." in two
+    assert "Read [one](one.md)." in two

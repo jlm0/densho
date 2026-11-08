@@ -20,7 +20,7 @@ GovernedEntity            id, status, origin, sources, rejection_reason
 │     │  ├─ Discipline
 │     │  ├─ PracticeArea
 │     │  └─ Concept
-│     └─ Skill            description, invocation, uses, applies
+│     └─ Skill            description, invocation, skill_type, uses, applies, steps
 └─ Directive              text, scope, basis, also_attached_to, refines, conflicts_with
 
 DirectiveException        directive, reason, status, rejection_reason
@@ -59,6 +59,7 @@ A node's `kind` selects its class. The value is the class name with the `densho:
 | `scope`          | `node`, `subtree`                                  | A directive applies to the nodes it attaches to, or also to every node under them     |
 | `basis`          | `standard`, `research`, `practitioner`, `judgment` | The kind of source behind a directive. See [below](#directives).                      |
 | `invocation`     | `agent`, `person`                                  | Whether an agent can start the skill by itself, or only a person can                  |
+| `skill_type`     | `flow`, `lens`, `system`                           | Whether a skill runs the steps of a discipline, reviews work, or runs Densho itself   |
 | `result`         | `in_force`, `proposals`                            | What a [compiled graph](compiled-outputs.md) holds. A source graph has no value.      |
 
 A `rejected` entity also needs `rejection_reason`, one line that records why a person turned it down. The [governance workflow](governance-workflow.md#the-lifecycle) has the rules.
@@ -79,8 +80,11 @@ An edge states a relationship. Each edge is a field on the node that holds it, a
 | `implements` | This workspace node gives project values for a domain node | Taxonomy nodes                    |
 | `uses`       | Knowledge that the skill composes                          | Skill                             |
 | `applies`    | Directives that the skill applies                          | Skill                             |
+| `steps`      | The steps of a flow skill, in their order                  | Skill                             |
 
 `informs` is the flow edge. Use it for each handoff from one step to the next, whether the two steps sit in one discipline or in two: product positioning informs brand strategy, for example. `depends_on` is stronger. It means the node makes no sense without the other, the way an error budget needs a service level objective, so a handoff never uses it. Each reference page lists the flow both ways, in its [Comes from and Goes to](runtime-files.md#the-flow-of-a-node) sections.
+
+`steps` is the one list that keeps its order. Every other list is a set, and the compiled graph sorts it. A flow skill names the practice areas of its discipline in `steps`, and each step needs a [step file](node-format.md#step-files).
 
 ## Pointers
 
@@ -123,6 +127,8 @@ The models read one node at a time and hold each reference as a plain string, so
 - a `broader` target has an allowed kind
 - a skill pointer's target is a skill
 - a skill has at least one of `uses` or `applies`
+- a flow or a lens skill has `invocation: agent` and a row in the skill table
+- the steps of a flow sit under its one discipline, in the order of their `informs` edges, and each one has a step file
 - `implements` starts from a workspace node
 - `related` does not join a node to one in its own `broader` chain
 - `refines`, `conflicts_with`, and an exception each name a directive, not a node

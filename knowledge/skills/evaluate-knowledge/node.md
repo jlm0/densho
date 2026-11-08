@@ -7,6 +7,7 @@ origin: template
 knowledge_type: domain
 description: Run the eval tasks of a discipline with and without its directives, and propose deprecations. Use when a person asks whether the directives of a discipline help.
 invocation: person
+skill_type: system
 uses:
   - lifecycle
   - change-rules

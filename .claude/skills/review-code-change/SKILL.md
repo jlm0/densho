@@ -1,6 +1,6 @@
 ---
 name: review-code-change
-description: "Review a code change for its design, its behavior, its tests, and its security. Use when a change is ready for review."
+description: "Review a code change for its design, its behavior, its tests, and its security. Use when a code change is ready for review."
 ---
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Review a code change

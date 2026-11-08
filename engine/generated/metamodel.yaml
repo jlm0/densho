@@ -117,8 +117,10 @@ classes:
     slots:
       - description
       - invocation
+      - skill_type
       - uses
       - applies
+      - steps
 
   Directive:
     description: An atomic instruction with its own identity. A directive lives in the file of one node.
@@ -258,6 +260,10 @@ slots:
     description: The actor that starts the skill.
     range: Invocation
     required: true
+  skill_type:
+    description: The kind of work that the skill does.
+    range: SkillType
+    required: true
   text:
     description: The instruction.
     required: true
@@ -346,6 +352,11 @@ slots:
     is_a: edge
     range: Directive
     multivalued: true
+  steps:
+    description: The steps of a flow skill, in their order. Each step is a node under the node that the flow uses.
+    is_a: edge
+    range: TaxonomyNode
+    multivalued: true
 
 enums:
   CompiledResult:
@@ -387,6 +398,15 @@ enums:
         description: The agent can start the skill by itself.
       person:
         description: Only a person starts the skill. The agent does not start it by itself.
+  SkillType:
+    description: The kinds of skill.
+    permissible_values:
+      flow:
+        description: The skill runs the steps of a discipline in their order. Each step has a step file.
+      lens:
+        description: The skill reviews work from one angle, or runs other lens skills.
+      system:
+        description: The skill runs an operation of Densho on the graph.
   Basis:
     description: The kinds of source that support a directive.
     permissible_values:

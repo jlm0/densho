@@ -28,6 +28,7 @@ from engine.parser.scripts import (
     read_scripts,
     script_folders,
 )
+from engine.parser.steps import STEPS_FOLDER_NAME, read_step_files
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
@@ -139,24 +140,36 @@ def _read_folder(root: Path, nodes: list[ParsedNode], problems: list[Problem]) -
         problems.append(Problem(root, 1, "read", str(error)))
 
     found = sorted(_walk(root, report_error))
-    node_files = (path for path in found if path.name == NODE_FILE_NAME)
-    folders = script_folders(node_files, root / SKILLS_IN_KNOWLEDGE)
+    node_files = [path for path in found if path.name == NODE_FILE_NAME]
+    skills = root / SKILLS_IN_KNOWLEDGE
+    folders = script_folders(node_files, skills)
+    step_folders = script_folders(node_files, skills, STEPS_FOLDER_NAME)
     in_scripts: dict[Path, list[Path]] = {folder: [] for folder in folders}
+    in_steps: dict[Path, list[Path]] = {folder: [] for folder in step_folders}
     first = len(nodes)
     for path in found:
         folder = folder_of(path, folders)
+        step_folder = folder_of(path, step_folders)
         if path.is_symlink():
             problems.append(Problem(path, 1, "symlink", "Replace the symbolic link with a file."))
         elif folder is not None:
             in_scripts[folder].append(path)
+        elif step_folder is not None:
+            in_steps[step_folder].append(path)
         elif path.suffix.casefold() in MARKDOWN_SUFFIXES:
             _read_node_file(path, nodes, problems)
     scripts = read_scripts(root, in_scripts, problems)
     by_node = {folders[folder]: found_scripts for folder, found_scripts in scripts.items()}
+    steps = read_step_files(root, in_steps, problems)
+    steps_by_node = {step_folders[folder]: files for folder, files in steps.items()}
     for index in range(first, len(nodes)):
         item = nodes[index]
-        if by_node.get(item.path):
-            nodes[index] = replace(item, scripts=by_node[item.path])
+        if by_node.get(item.path) or steps_by_node.get(item.path):
+            nodes[index] = replace(
+                item,
+                scripts=by_node.get(item.path, ()),
+                step_files=steps_by_node.get(item.path, ()),
+            )
 
 
 def _read_node_file(path: Path, nodes: list[ParsedNode], problems: list[Problem]) -> None:

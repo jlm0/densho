@@ -38,6 +38,7 @@ From [Architecture decision record](architecture-decision-record.md):
 - Do not change the context, the decision, or the consequences of an accepted decision record. ^keep-accepted-records
 - List each positive, negative, and neutral consequence in a decision record. ^list-each-consequence
 - Mark a replaced decision record as superseded, with a link to its replacement. ^mark-superseded-record
+- Set the status of a new decision record to `proposed`. ^new-record-is-proposed
 - Give each decision record the next unused number. ^number-decision-records
 - Record each architecturally significant decision in a decision record in the repository. ^record-each-decision
 

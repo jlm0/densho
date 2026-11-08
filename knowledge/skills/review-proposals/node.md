@@ -7,6 +7,7 @@ origin: template
 knowledge_type: domain
 description: Show the knowledge proposals branch by branch, with the effect and the conflicts of each one. Use when a person reviews the proposals.
 invocation: person
+skill_type: system
 uses:
   - approval
   - lifecycle

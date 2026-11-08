@@ -9,17 +9,9 @@ If compaction cuts this skill, invoke the skill again.
 
 ## Directives
 
-From [Digital product development](../../references/digital-product-development.md):
-
-- Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
-
 From [Brand systems](../../references/brand-systems.md):
 
 - Store the brand colors, typefaces, and type scale in design token files. ^brand-values-as-tokens
-
-From [Accessibility](../../references/accessibility.md):
-
-- Do not use color as the only visual mark of information, an action, or a state. ^no-color-only
 
 From [Brand design](../../references/brand-design.md):
 
@@ -82,6 +74,13 @@ From [Type scale](../../references/type-scale.md):
 From [Visual identity](../../references/visual-identity.md):
 
 - Remove each variant of a color, a typeface, or a logo that the brand guidelines do not list. ^remove-unlisted-variants
+
+## Required reads
+
+Read each file in this list, and follow the directives that its line names.
+
+- Read [Digital product development](../../references/digital-product-development.md), and follow each directive from Digital product development.
+- Read [Accessibility](../../references/accessibility.md), and follow these directives from it: `no-color-only`.
 
 ## Inputs
 

@@ -59,6 +59,12 @@ A short text file in the repository that records one architecturally significant
   - status: proposed
   - origin: template
   - sources: https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions
+- Set the status of a new decision record to `proposed`. ^new-record-is-proposed
+  - scope: node
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions
 
 ## Sections
 

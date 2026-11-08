@@ -7,6 +7,7 @@ origin: template
 knowledge_type: domain
 description: Convert a correction or a repeated note into one small knowledge proposal. Use when a person corrects your work.
 invocation: agent
+skill_type: system
 uses:
   - lifecycle
   - change-rules

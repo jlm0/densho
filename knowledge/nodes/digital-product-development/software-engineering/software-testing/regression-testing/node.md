@@ -27,7 +27,7 @@ Testing that confirms that a change causes no adverse effect on the parts of the
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=30
-- If the risk of a defect fix is high, add tests for each change that the fix needed. ^test-the-changes-of-a-fix
+- Add tests for each change that a defect fix needed, unless no time or budget remains. ^test-the-changes-of-a-fix
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -95,13 +95,13 @@ Testing that confirms that a change causes no adverse effect on the parts of the
   - status: proposed
   - origin: template
   - sources: https://mir.cs.illinois.edu/lamyaa/publications/fse14.pdf#page=2
-- Build the starting state of each test from scratch, unless the build is too slow. ^isolated-test-state
+- Build the starting state of each test from scratch, unless the state needs a database with preloaded data. ^isolated-test-state
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/nonDeterminism.html#LackOfIsolation
-- If a rebuild of the starting state is too slow, reset each shared state after each test. ^clean-shared-state
+- If the starting state needs a database with preloaded data, reset each shared state after each test. ^clean-shared-state
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -134,7 +134,7 @@ Testing that confirms that a change causes no adverse effect on the parts of the
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/nonDeterminism.html#AsynchronousBehavior
-- If you suspect a resource leak, limit each pool to `1` resource, with an error for an empty pool. ^expose-resource-leaks
+- If different tests fail at random, limit each resource pool to `1` resource, with an error for an empty pool. ^expose-resource-leaks
   - scope: subtree
   - basis: practitioner
   - status: proposed

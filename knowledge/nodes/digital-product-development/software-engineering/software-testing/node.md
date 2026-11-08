@@ -126,13 +126,16 @@ The dynamic validation that a system under test gives the expected behavior on a
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch12.html#strive_for_unchanging_tests
   - sources: https://martinfowler.com/bliki/TestPyramid.html
-- Test each unit through its public interface, not through its private methods. ^test-public-interface
+- Test each unit through its public interface, unless a property checks the invariant of its representation. ^test-public-interface
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#WhatToTest
   - sources: https://abseil.io/resources/swe-book/html/ch12.html#test_via_public_apis
+  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=18
+  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=39
+  - sources: https://research.chalmers.se/publication/517894/file/517894_Fulltext.pdf#page=23
 - Run static analysis of the source code before the dynamic tests. ^static-analysis-first
   - scope: node
   - basis: standard
@@ -183,13 +186,13 @@ The dynamic validation that a system under test gives the expected behavior on a
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=18
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=39
-- If the budget allows, combine the black-box test techniques with code coverage, not only one kind. ^combine-functional-and-structural
+- Combine the black-box test techniques with code coverage. ^combine-functional-and-structural
   - scope: node
   - basis: standard
   - status: proposed
   - origin: template
   - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=132
-- Do not write a test for code with no logic, such as a plain getter or setter. ^skip-trivial-code
+- Do not write a test for code without conditional logic, such as a plain getter or setter. ^skip-trivial-code
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -207,12 +210,13 @@ The dynamic validation that a system under test gives the expected behavior on a
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=18
-- Do not put a conditional or a loop in a test. ^no-logic-in-tests
+- Do not put a conditional or a loop in an example-based test, unless the loop polls for an asynchronous result. ^no-logic-in-tests
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch12.html#donapostrophet_put_logic_in_tests
+  - sources: https://abseil.io/resources/swe-book/html/ch14.html#speeding_up_tests
 - Do not treat an automatic rerun of a flaky test as a fix of its cause. ^no-rerun-for-flaky-test
   - scope: subtree
   - basis: practitioner

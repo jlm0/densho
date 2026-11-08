@@ -98,20 +98,20 @@ A test of an AI system: the test gives the system an input, and applies grading 
   - status: proposed
   - origin: template
   - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#how-to-think-about-non-determinism-in-evaluations-for-agents
-- If `1` success in `k` attempts is enough for the product, measure `pass@k`. ^pass-at-k-for-one-success
+- If the product accepts `1` success in `k` attempts, measure `pass@k`. ^pass-at-k-for-one-success
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#how-to-think-about-non-determinism-in-evaluations-for-agents
-- Use a code-based grader for each eval result, unless the grade needs a complex judgment. ^code-graders-first
+- Use a code-based grader for each eval result, unless the result has valid variations that no code check matches. ^code-graders-first
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests#grade-your-evaluations
   - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#design-the-eval-harness-and-graders
-- If the grade of an eval result needs a complex judgment, use an LLM grader, not a human grader. ^llm-grader-for-complex-judgment
+- If an eval result has valid variations that no code check matches, use an LLM grader, not a human grader. ^llm-grader-for-complex-judgment
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -136,7 +136,7 @@ A test of an AI system: the test gives the system an input, and applies grading 
   - status: proposed
   - origin: template
   - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#design-the-eval-harness-and-graders
-- Give each LLM grader a detailed rubric and a fixed scale, such as `correct` or `incorrect`. ^rubrics-for-llm-graders
+- Give each LLM grader a rubric that states each pass condition, and a fixed scale, such as `correct` or `incorrect`. ^rubrics-for-llm-graders
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -197,7 +197,7 @@ A test of an AI system: the test gives the system an input, and applies grading 
   - status: proposed
   - origin: template
   - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#collect-tasks-for-the-initial-eval-dataset
-- If the grading is unfair or the task is ambiguous, change the eval. ^fix-unfair-evals
+- If a grader rejects a valid solution or `2` domain experts disagree on a task verdict, change the eval. ^fix-unfair-evals
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -216,13 +216,13 @@ A test of an AI system: the test gives the system an input, and applies grading 
   - origin: template
   - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#capability-vs-regression-evals
   - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#why-build-evaluations
-- Require a pass rate near `100%` from each regression eval. ^regression-eval-pass-rate
+- Treat each decrease in the pass rate of a regression eval as a defect. ^regression-eval-pass-rate
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#capability-vs-regression-evals
-- After the agent launches, move each capability eval with a high pass rate into the regression suite. ^graduate-capability-evals
+- After the agent launches, move each capability eval that reaches a `100%` pass rate into the regression suite. ^graduate-capability-evals
   - scope: subtree
   - basis: practitioner
   - status: proposed

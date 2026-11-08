@@ -1,7 +1,7 @@
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Content strategy
 
-This file is step 1 of 4 of the skill `design-content`. If compaction cuts this file, read it again.
+This file is step 1 of 4 of the skill `design-content`.
 
 ## Directives
 

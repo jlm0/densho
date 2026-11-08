@@ -1,7 +1,7 @@
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Software construction
 
-This file is step 5 of 8 of the skill `engineer-software`. If compaction cuts this file, read it again.
+This file is step 5 of 8 of the skill `engineer-software`.
 
 ## Directives
 

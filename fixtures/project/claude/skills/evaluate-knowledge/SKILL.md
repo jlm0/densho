@@ -6,8 +6,6 @@ disable-model-invocation: true
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Evaluate knowledge
 
-If compaction cuts this skill, ask the person to invoke the skill again.
-
 ## Directives
 
 From [Governance](../../rules/knowledge/governance.md):

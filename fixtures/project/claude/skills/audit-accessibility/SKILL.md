@@ -5,8 +5,6 @@ description: "Check an interface against the WCAG `2.2` success criteria of leve
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Audit the accessibility of an interface
 
-If compaction cuts this skill, invoke the skill again.
-
 ## Directives
 
 From [Responsive design](../../references/responsive-design.md):

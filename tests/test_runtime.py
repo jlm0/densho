@@ -63,6 +63,11 @@ SKILL_LINES = 500
 USAGE_ERROR = 2
 FENCED_BLOCK = re.compile(r"^```[^\n]*\n.*?^```$", re.MULTILINE | re.DOTALL)
 DIRECTIVE_ID = re.compile(r" \^([a-z0-9-]+)(?: \(\w+\))?$", re.MULTILINE)
+COMPACTION_SENTENCE = re.compile(r"\bIf compaction (?:cuts|removes)\b")
+ROOT_COMPACTION_LINE = (
+    "If compaction cuts or removes a skill, invoke the skill again. "
+    "If only a person can start that skill, ask the person to invoke it again."
+)
 RULE_LINE = (
     "- Run the {0} check. ^{0}\n  - scope: {1}\n  - basis: judgment\n  - status: {2}\n"
     "  - origin: template\n"
@@ -812,11 +817,6 @@ def test_a_skill_file_names_itself_and_keeps_its_description() -> None:
         "description": "Review a sample. Use when a sample needs a review.",
     }
     assert text.startswith("---\n")
-
-
-def test_the_skill_states_that_an_agent_can_invoke_it_again() -> None:
-    text = text_of(".claude/skills/review/SKILL.md")
-    assert text.index("invoke the skill again") < text.index("## Directives")
 
 
 def test_a_title_makes_no_link() -> None:
@@ -1863,7 +1863,6 @@ def test_a_person_skill_turns_off_the_model_invocation() -> None:
         "description": "Review a sample. Use when a sample needs a review.",
         "disable-model-invocation": True,
     }
-    assert text.index("ask the person to invoke the skill again") < text.index("## Directives")
     assert (
         f"- `review`: Review a sample. Use when a sample needs a review. {PERSON_LINE}\n"
         in files["AGENTS.md"].text
@@ -2289,12 +2288,14 @@ def flow_step_files() -> tuple[StepFile, ...]:
     )
 
 
-def flow_files(sources: dict[str, str] | None = None) -> dict[str, RenderedFile]:
+def flow_files(
+    sources: dict[str, str] | None = None, *, proposals: bool = False
+) -> dict[str, RenderedFile]:
     items = [
         replace(item, step_files=flow_step_files()) if item.node.id == "flow" else item
         for item in parsed(FLOW_SAMPLE if sources is None else sources)
     ]
-    view = build_view(compile_items(items, Path()))
+    view = build_view(compile_items(items, Path(), proposals=proposals))
     return {entry.path.as_posix(): entry for entry in render_files(view)}
 
 
@@ -2360,6 +2361,53 @@ def test_a_step_file_holds_its_place_its_sections_and_its_links() -> None:
     )
     assert "This step is the last step of the skill.\n" in two
     assert "The output of this step is an input" not in two
+
+
+def test_no_generated_skill_file_holds_a_compaction_line() -> None:
+    skill = ".claude/skills/review/SKILL.md"
+    texts = {
+        "agent skill": rendered()[skill].text,
+        "person skill": rendered(PERSON_SAMPLE)[skill].text,
+        "person review copy": rendered(PERSON_SAMPLE, proposals=True)[
+            f"{REVIEW}/{review_path(PurePosixPath(skill)).as_posix()}"
+        ].text,
+        "flow skill": flow_files()[FLOW_SKILL].text,
+        "step file": flow_files()[STEP_ONE].text,
+        "last step file": flow_files()[STEP_TWO].text,
+        "step review copy": flow_files(proposals=True)[
+            f"{REVIEW}/{review_path(PurePosixPath(STEP_ONE)).as_posix()}"
+        ].text,
+    }
+    for name, text in texts.items():
+        assert "## Directives" in text, name
+        assert not COMPACTION_SENTENCE.search(text), name
+
+
+def test_no_committed_skill_file_holds_a_compaction_line() -> None:
+    folders = (REPO / ".claude/skills", REPO / "fixtures/project/claude/skills")
+    paths = [
+        path
+        for folder in folders
+        for path in sorted(folder.rglob("*.md"))
+        if is_generated(path.read_bytes())
+    ]
+    for folder in folders:
+        assert any(path.is_relative_to(folder) and path.name == "SKILL.md" for path in paths)
+        assert any(path.is_relative_to(folder) and path.parent.name == "steps" for path in paths)
+    for path in paths:
+        assert not COMPACTION_SENTENCE.search(path.read_text(encoding="utf-8")), path
+
+
+def test_the_root_tells_the_agent_to_invoke_a_skill_again_after_a_compaction() -> None:
+    roots = {
+        "sample": rendered(PERSON_SAMPLE)["AGENTS.md"].text,
+        "repo": (REPO / "AGENTS.md").read_text(encoding="utf-8"),
+        "fixture": (REPO / "fixtures/project/AGENTS.fixture.md").read_text(encoding="utf-8"),
+    }
+    for name, text in roots.items():
+        section = text.partition("\n## Skills\n\n")[2]
+        assert section.startswith(f"{ROOT_COMPACTION_LINE}\n\n"), name
+        assert text.count(ROOT_COMPACTION_LINE) == 1, name
 
 
 def test_a_step_file_names_its_source_for_a_problem() -> None:

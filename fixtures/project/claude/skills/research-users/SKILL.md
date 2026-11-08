@@ -5,8 +5,6 @@ description: "Run a study of the people who use a product, from its questions to
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Research the users of a product
 
-If compaction cuts this skill, invoke the skill again.
-
 ## Directives
 
 No directive is in force at this node.

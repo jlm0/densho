@@ -5,8 +5,6 @@ description: "Check the touchpoints of a brand against its guidelines, and list 
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Audit brand consistency
 
-If compaction cuts this skill, invoke the skill again.
-
 ## Directives
 
 From [Brand systems](../../references/brand-systems.md):

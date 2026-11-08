@@ -1,7 +1,7 @@
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Brand voice
 
-This file is step 2 of 4 of the skill `design-brand`. If compaction cuts this file, read it again.
+This file is step 2 of 4 of the skill `design-brand`.
 
 ## Directives
 

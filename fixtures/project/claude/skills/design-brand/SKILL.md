@@ -5,8 +5,6 @@ description: "Define the strategy, the voice, the visual identity, and the guide
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Design a brand
 
-If compaction cuts this skill, invoke the skill again.
-
 ## Directives
 
 From [Brand design](../../references/brand-design.md):

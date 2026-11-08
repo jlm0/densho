@@ -7,12 +7,6 @@ disable-model-invocation: true
 ---
 {% include "_title.md.jinja" %}
 
-{% if node.invocation == "person" %}
-If compaction cuts this skill, ask the person to invoke the skill again.
-{% else %}
-If compaction cuts this skill, invoke the skill again.
-{% endif %}
-
 {% include "_directives.md.jinja" %}
 {% include "_reads.md.jinja" %}
 {% if node.steps %}

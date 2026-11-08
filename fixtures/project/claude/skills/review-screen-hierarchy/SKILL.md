@@ -5,8 +5,6 @@ description: "Review a screen for its hierarchy, its grouping, and its use of pr
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Review the hierarchy of a screen
 
-If compaction cuts this skill, invoke the skill again.
-
 ## Directives
 
 From [Accessibility](../../references/accessibility.md):

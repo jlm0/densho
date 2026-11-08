@@ -5,8 +5,6 @@ description: "Review an interface for its hierarchy, its usability, and its acce
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Review an interface
 
-If compaction cuts this skill, invoke the skill again.
-
 ## Directives
 
 No directive is in force at this node.

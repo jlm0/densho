@@ -188,4 +188,4 @@ The agent that followed the text in those runs also wrote it, and it had a conve
 - That an agent with only the skill, and no knowledge of how it was written, reaches the same result.
 - That the `CLAUDE.md` line loads the moved root. This rests on the Claude Code docs.
 - How well the questions work with a person who answers them live.
-- What compaction keeps of a long job. The steps come before the references, and the skill says to invoke it again if it goes, but only a real session shows when that happens.
+- What compaction keeps of a long job. The steps come before the references, and `migrate-project` says to invoke it again if it goes. `sync-template` says nothing about compaction, and the root `AGENTS.md` of the project tells the agent to ask you to invoke it again. Only a real session shows when that happens.

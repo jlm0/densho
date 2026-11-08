@@ -5,8 +5,6 @@ description: "Build software, from its requirements to its operation. Use when y
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Engineer software
 
-If compaction cuts this skill, invoke the skill again.
-
 ## Directives
 
 From [Software engineering](../../references/software-engineering.md):

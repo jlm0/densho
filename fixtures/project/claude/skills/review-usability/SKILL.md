@@ -5,8 +5,6 @@ description: "Review a flow against the usability heuristics, the size and posit
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Review the usability of a flow
 
-If compaction cuts this skill, invoke the skill again.
-
 ## Directives
 
 From [Accessibility](../../references/accessibility.md):

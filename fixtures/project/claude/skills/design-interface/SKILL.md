@@ -5,8 +5,6 @@ description: "Create or change a user interface, from its information architectu
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Design a user interface
 
-If compaction cuts this skill, invoke the skill again.
-
 ## Directives
 
 From [Accessibility](../../references/accessibility.md):

@@ -39,7 +39,7 @@ From [Densho](AGENTS.fixture.md):
 
 ## Skills
 
-If compaction removes a skill, invoke the skill again.
+If compaction cuts or removes a skill, invoke the skill again. If only a person can start that skill, ask the person to invoke it again.
 
 Each row names an activity and the skill for it.
 

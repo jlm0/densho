@@ -1,7 +1,7 @@
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Design systems
 
-This file is step 4 of 4 of the skill `design-interface`. If compaction cuts this file, read it again.
+This file is step 4 of 4 of the skill `design-interface`.
 
 ## Directives
 

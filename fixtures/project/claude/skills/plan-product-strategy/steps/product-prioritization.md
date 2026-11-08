@@ -1,7 +1,7 @@
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Prioritization
 
-This file is step 4 of 5 of the skill `plan-product-strategy`. If compaction cuts this file, read it again.
+This file is step 4 of 5 of the skill `plan-product-strategy`.
 
 ## Directives
 

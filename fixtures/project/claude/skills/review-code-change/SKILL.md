@@ -5,8 +5,6 @@ description: "Review a code change for its design, its behavior, its tests, and 
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Review a code change
 
-If compaction cuts this skill, invoke the skill again.
-
 ## Directives
 
 From [Software supply chain](../../references/software-supply-chain.md):

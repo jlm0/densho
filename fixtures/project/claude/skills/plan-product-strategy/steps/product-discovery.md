@@ -1,7 +1,7 @@
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Product discovery
 
-This file is step 3 of 5 of the skill `plan-product-strategy`. If compaction cuts this file, read it again.
+This file is step 3 of 5 of the skill `plan-product-strategy`.
 
 ## Directives
 

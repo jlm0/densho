@@ -5,8 +5,6 @@ description: "Convert a correction or a repeated note into one small knowledge p
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Propose knowledge
 
-If compaction cuts this skill, invoke the skill again.
-
 ## Directives
 
 No directive is in force at this node.

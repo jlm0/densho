@@ -5,8 +5,6 @@ description: "Write the content of a product, from its strategy to the text of i
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Design the content of a product
 
-If compaction cuts this skill, invoke the skill again.
-
 ## Directives
 
 No directive is in force at this node.

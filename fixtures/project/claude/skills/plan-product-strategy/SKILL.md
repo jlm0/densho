@@ -5,8 +5,6 @@ description: "Define the strategy, the metrics, the opportunities, the order of 
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
 # Plan the strategy of a product
 
-If compaction cuts this skill, invoke the skill again.
-
 ## Directives
 
 From [Product strategy](../../references/product-strategy.md):

@@ -43,12 +43,6 @@ An object that replaces a production object in a test. Gerard Meszaros named the
   - origin: template
   - sources: http://xunitpatterns.com/Test%20Spy.html
   - sources: http://xunitpatterns.com/Mock%20Object.html
-- Use a fake for a slow or unavailable dependency whose needed behavior is too complex for stubs and mocks. ^fake-for-slow-dependencies
-  - scope: subtree
-  - basis: practitioner
-  - status: proposed
-  - origin: template
-  - sources: http://xunitpatterns.com/Fake%20Object.html
 - Name each test double by its kind: dummy, stub, spy, mock, or fake. ^name-the-double-kind
   - scope: subtree
   - basis: practitioner
@@ -68,12 +62,14 @@ An object that replaces a production object in a test. Gerard Meszaros named the
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#how_to_decide_when_to_use_a_real_implem
-- If the real implementation is slow, nondeterministic, or hard to construct, use a fake, unless no fake exists. ^prefer-fakes
+- If the real implementation is unavailable, slow, nondeterministic, or hard to construct, use a fake, unless no fake exists. ^prefer-fakes
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#tlsemicolondrs-id00116
+  - sources: https://abseil.io/resources/swe-book/html/ch13.html#faking-id00043
+  - sources: http://xunitpatterns.com/Fake%20Object.html
 - Replace a dependency on the system clock with a test double that returns a fixed time. ^double-the-clock
   - scope: subtree
   - basis: practitioner
@@ -104,13 +100,13 @@ An object that replaces a production object in a test. Gerard Meszaros named the
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#when_should_fakes_be_writtenquestion_ma
-- Write each fake for the API that does not fit in tests, not for each class that calls the API. ^fake-at-the-root-api
+- Write each fake for the API whose real implementation does not fit the tests, not for its callers. ^fake-at-the-root-api
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#when_should_fakes_be_writtenquestion_ma
-- Give a fake the same outputs and state changes as the real implementation, for each input of the API contract. ^fake-fidelity
+- Give a fake the same outputs and state changes as the real implementation, for each input that it supports. ^fake-fidelity
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -153,7 +149,7 @@ An object that replaces a production object in a test. Gerard Meszaros named the
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#prefer_state_testing_over_interaction_t
   - sources: https://martinfowler.com/articles/mocksArentStubs.html#TheDifferenceBetweenMocksAndStubs
-- Limit interaction testing to call counts, call orders, and dependencies that have no usable real implementation or fake. ^when-to-test-interactions
+- Limit interaction testing to call counts, call orders, and dependencies with no real implementation or fake that fits the test. ^when-to-test-interactions
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -200,6 +196,6 @@ The 5 kinds differ by what the test does with the double:
 - A mock holds the expected calls before the action, and fails when a call does not match. It is an observation point for the indirect outputs.
 - A fake has a working implementation, usually with a shortcut that makes it unfit for production, such as an in-memory database.
 
-State verification checks the state or the return value after the action. Behavior verification, or interaction testing, checks the calls that the code made to its dependencies. Martin Fowler names 2 styles of test-driven development after this choice: the classical style uses real objects where it can, and the mockist style uses a mock for each object with interesting behavior. The default tree follows the classical style of Software Engineering at Google: a real implementation first, a fake next, and a stub or a mock last. A mock couples the test to the implementation, so a refactor can break the test.
+State verification checks the state or the return value after the action. Behavior verification, or interaction testing, checks the calls that the code made to its dependencies. Martin Fowler names 2 styles of test-driven development after this choice: the classical style uses real objects where it can, and the mockist style uses a mock for each object with interesting behavior. The default tree follows the classical style of Software Engineering at Google: a real implementation first, a fake next, and a stub or a mock last. A mock couples the test to the implementation, so a refactor can break the test. A real implementation fits a test when it is fast, deterministic, and simple to construct. A test double fits a test when it supports each call that the test makes.
 
 The fidelity of a double is how closely it follows the real dependency. A double with low fidelity lets a test pass while the real code fails. Contract testing checks the fidelity of a double against the real service. The test pyramid sets where doubles go: each small test replaces the dependencies that leave its process.

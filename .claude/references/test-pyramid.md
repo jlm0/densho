@@ -24,4 +24,6 @@ Software Engineering at Google adds a second dimension. The size of a test is th
 
 2 shapes show a suite that drifts from the pyramid. An ice cream cone holds many end-to-end tests and few unit tests. An hourglass holds many unit tests and many end-to-end tests, with few integration tests between them.
 
+A broad test is a test above the unit level. Martin Fowler names 1 exception to the pyramid: if the high-level tests are fast, reliable, and cheap to modify, the lower-level tests are not necessary. The rules of this concept call broad tests cheap when they are as fast, as reliable, and as cheap to change as the unit tests of the same behavior.
+
 This concept sets the level of each test that test-driven development writes. Performance testing is one kind of large test.

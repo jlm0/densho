@@ -55,7 +55,7 @@ A test that checks whether parts that are developed separately work correctly wh
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#IntegrationTests
-- In a narrow integration test, run each external dependency locally, such as a local database or a fake service. ^local-integration-dependencies
+- In a narrow integration test, run each external dependency locally, unless it is a third-party service with no local version. ^local-integration-dependencies
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -67,12 +67,13 @@ A test that checks whether parts that are developed separately work correctly wh
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#IntegrationTests
-- Run each integration test on `1` machine, with network calls only to localhost, unless it needs a remote system. ^one-machine-integration-tests
+- In a narrow integration test, limit the network calls to localhost, unless a third-party service has no local version. ^one-machine-integration-tests
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch11.html#medium_tests
+  - sources: https://martinfowler.com/articles/practical-test-pyramid.html#IntegrationTests
 - If a suite holds only broad integration tests, add narrow integration tests. ^add-narrow-integration-tests
   - scope: subtree
   - basis: practitioner
@@ -85,7 +86,7 @@ A test that checks whether parts that are developed separately work correctly wh
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=29
-- Do not run automated tests against production, unless a contract test has no test instance to target. ^no-tests-against-production
+- Do not run an integration test against production, unless a contract test has no test instance to target. ^no-tests-against-production
   - scope: subtree
   - basis: practitioner
   - status: proposed

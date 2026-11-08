@@ -21,7 +21,7 @@ A model for the mix of automated tests in a suite, by the level of each test. Mi
 
 ## Directives
 
-- Write most automated tests as unit tests, unless the high-level tests are fast, reliable, and cheap to change. ^mostly-unit-tests
+- Write most automated tests as unit tests, unless broad tests are cheap. ^mostly-unit-tests
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -33,13 +33,14 @@ A model for the mix of automated tests in a suite, by the level of each test. Mi
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#ContractTests
-- Limit end-to-end tests to the key steps of the user journeys that give the product its core value. ^end-to-end-core-journeys
+- Limit end-to-end tests to the user journeys that define the core value of the product, unless broad tests are cheap. ^end-to-end-core-journeys
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#End-to-endTests
-- In a single page application, test each user interface behavior with frontend unit tests and a backend test double. ^unit-test-ui-behavior
+  - sources: https://martinfowler.com/bliki/TestPyramid.html
+- In a single page application, test each user interface behavior with frontend unit tests, unless broad tests are cheap. ^unit-test-ui-behavior
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -57,12 +58,13 @@ A model for the mix of automated tests in a suite, by the level of each test. Mi
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#TheConfusionAboutTestingTerminology
-- Test each behavior at the lowest level of the pyramid that detects its failure. ^test-at-lowest-level
+- Test each behavior at the lowest level of the pyramid that detects its failure, unless broad tests are cheap. ^test-at-lowest-level
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#AvoidTestDuplication
+  - sources: https://martinfowler.com/bliki/TestPyramid.html
 - Write each test at the smallest size that checks its behavior, by its use of processes and machines. ^smallest-test-size
   - scope: subtree
   - basis: practitioner
@@ -81,7 +83,7 @@ A model for the mix of automated tests in a suite, by the level of each test. Mi
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#AvoidTestDuplication
-- If a broad test fails and no unit test fails, add a unit test for the fault. ^add-missing-unit-test
+- If only a broad test finds a fault, add a unit test for it, unless broad tests are cheap. ^add-missing-unit-test
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -94,7 +96,7 @@ A model for the mix of automated tests in a suite, by the level of each test. Mi
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#AvoidTestDuplication
-- If the high-level tests of a behavior are fast, reliable, and cheap to change, skip its lower-level tests. ^skip-low-tests-for-cheap-high-tests
+- If broad tests are cheap, skip the lower-level tests of the behaviors that they cover. ^skip-low-tests-for-cheap-high-tests
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -106,31 +108,35 @@ A model for the mix of automated tests in a suite, by the level of each test. Mi
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/bliki/TestPyramid.html
-- Do not use large tests as the main way to find bugs. ^large-tests-are-not-the-net
+- Do not use large tests as the main way to find bugs, unless broad tests are cheap. ^large-tests-are-not-the-net
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch11.html#test_scope
-- If a suite holds more end-to-end tests than unit tests, move its checks down the pyramid. ^fix-ice-cream-cone
+  - sources: https://martinfowler.com/bliki/TestPyramid.html
+- If end-to-end tests outnumber unit tests, move their checks down the pyramid, unless broad tests are cheap. ^fix-ice-cream-cone
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch11.html#test_scope
-- If a suite holds unit tests and end-to-end tests but few integration tests, add integration tests. ^fix-test-hourglass
+  - sources: https://martinfowler.com/bliki/TestPyramid.html
+- If a suite holds fewer integration tests than end-to-end tests, add integration tests, unless broad tests are cheap. ^fix-test-hourglass
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch11.html#test_scope
-- Check that each layer of the suite holds fewer tests than the layer below it. ^check-pyramid-shape
+  - sources: https://martinfowler.com/bliki/TestPyramid.html
+- Check that each layer of the suite holds fewer tests than the layer below it, unless broad tests are cheap. ^check-pyramid-shape
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#TheTestPyramid
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=50
+  - sources: https://martinfowler.com/bliki/TestPyramid.html
 
 ## Notes
 
@@ -146,5 +152,7 @@ The names differ from source to source, so a team states its own. A UI test is n
 Software Engineering at Google adds a second dimension. The size of a test is the resource that it uses: a small test runs in one process, a medium test on one machine, and a large test across machines. The scope of a test is the amount of code that it validates. Narrow scope and small size go together often, but not always. Google gives a rough mix of `80%` unit tests, `15%` integration tests, and `5%` end-to-end tests, by count. The mix of each team varies.
 
 2 shapes show a suite that drifts from the pyramid. An ice cream cone holds many end-to-end tests and few unit tests. An hourglass holds many unit tests and many end-to-end tests, with few integration tests between them.
+
+A broad test is a test above the unit level. Martin Fowler names 1 exception to the pyramid: if the high-level tests are fast, reliable, and cheap to modify, the lower-level tests are not necessary. The rules of this concept call broad tests cheap when they are as fast, as reliable, and as cheap to change as the unit tests of the same behavior.
 
 This concept sets the level of each test that test-driven development writes. Performance testing is one kind of large test.

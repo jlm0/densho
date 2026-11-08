@@ -40,13 +40,13 @@ A test that checks one unit of the code in isolation from the rest of the system
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch12.html#structure_tests_to_emphasize_behaviors
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#WritingCleanTestCode
-- Test each non-trivial code path of a unit, including the happy path and each edge case. ^unit-test-each-code-path
+- Test each code path of a unit with conditional logic, including the happy path and each edge case. ^unit-test-each-code-path
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#WhatToTest
-- Test the response of a unit to the common errors that its dependencies return. ^unit-test-each-error
+- Test the response of a unit to each error that the interface of its dependency declares. ^unit-test-each-error
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -107,13 +107,13 @@ A test that checks one unit of the code in isolation from the rest of the system
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch12.html#tests_and_code_sharing_dampcomma_not_dr
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#WritingCleanTestCode
-- Change an existing unit test only when the required behavior of the system changes. ^change-tests-only-for-behavior
+- Change an existing unit test only when the required behavior of the system changes, unless a pure refactor breaks it. ^change-tests-only-for-behavior
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch12.html#strive_for_unchanging_tests
-- If a private method needs its own test, move it into a new class with a public interface. ^extract-private-method
+- If a test targets a private method, move the method into a new class with a public interface. ^extract-private-method
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -150,6 +150,6 @@ A test that checks one unit of the code in isolation from the rest of the system
 
 The Practical Test Pyramid names 2 kinds of unit test. A solitary unit test replaces each collaborator of the unit with a test double. A sociable unit test keeps the real collaborators. The default tree prefers real collaborators, and the test doubles concept holds that rule.
 
-Software Engineering at Google separates the size of a test from its scope. A small test runs in one process, and most unit tests are small. The rules for clear unit tests follow from one goal: a test that never changes unless the requirements change. A pure refactor, a new feature, and a bug fix leave the existing tests as they are. Only a change of the required behavior changes a test.
+Software Engineering at Google separates the size of a test from its scope. A small test runs in one process, and most unit tests are small. The rules for clear unit tests follow from one goal: a test that never changes unless the requirements change. A pure refactor, a new feature, and a bug fix leave the existing tests as they are. Only a change of the required behavior changes a test. If a pure refactor breaks a test, the test does not use the public API, and the fix changes the test to use it.
 
 Each test has a given part, a when part, and a then part. The practice area holds the rule for this structure, the rule to test through the public interface, and the rule against logic in tests, so that each test level applies them. Test-driven development writes unit tests one at a time.

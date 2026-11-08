@@ -23,7 +23,7 @@ A test that checks that a test double still behaves like the external service th
 
 ## Directives
 
-- Write each HTTP contract as a set of interactions, each with an expected request and a minimal expected response. ^contract-as-interactions
+- Write each HTTP contract as interactions, each with an expected request and the response parts that the consumer uses. ^contract-as-interactions
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -42,13 +42,13 @@ A test that checks that a test double still behaves like the external service th
   - origin: template
   - sources: https://martinfowler.com/articles/consumerDrivenContracts.html#ConsumerContracts
   - sources: https://docs.pact.io/#consumer-driven-contracts
-- Build the contract of a provider from the union of the expectations of its consumers. ^provider-contract-from-consumers
+- Build the contract of a provider from each consumer expectation inside its business function, unless its consumers are unknown. ^provider-contract-from-consumers
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/consumerDrivenContracts.html#Consumer-drivenContracts
-- Check with a contract test that each call to a test double returns the same result as the real service. ^double-matches-the-service
+- Check with contract tests that each test double gives the results of the real service, unless it holds a snapshot. ^double-matches-the-service
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -66,7 +66,7 @@ A test that checks that a test double still behaves like the external service th
   - status: proposed
   - origin: template
   - sources: https://docs.pact.io/consumer#ensure-all-calls-to-the-provider-go-through-classesfunctions-that-have-been-tested-with-pact
-- Verify each contract against a local instance of the provider, not against a deployed instance. ^verify-against-local-provider
+- In the build of the provider, verify each contract against a local instance of the provider, not a deployed instance. ^verify-against-local-provider
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -116,7 +116,13 @@ A test that checks that a test double still behaves like the external service th
   - status: proposed
   - origin: template
   - sources: https://docs.pact.io/consumer#only-make-assertions-about-things-that-will-affect-the-consumer-if-they-change
-- Use exact matching for each response field whose content the consumer depends on, and type matching for the others. ^loose-response-matching
+- Match each response field that the consumer uses by its type, unless the consumer depends on its content. ^loose-response-matching
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://docs.pact.io/consumer#choose-the-right-type-of-matching-for-the-situation
+- If the consumer depends on the content of a response field, match the content exactly. ^exact-match-for-used-content
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -146,7 +152,7 @@ A test that checks that a test double still behaves like the external service th
   - status: proposed
   - origin: template
   - sources: https://docs.pact.io/consumer#beware-of-garbage-in-garbage-out-with-putpostpatch
-- Run the contract tests of an external service at the pace of its changes, such as once a day. ^external-contract-test-pace
+- Run the contract tests of an external service once a day. ^external-contract-test-pace
   - scope: subtree
   - basis: practitioner
   - status: proposed

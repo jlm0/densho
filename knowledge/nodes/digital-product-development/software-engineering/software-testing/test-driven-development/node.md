@@ -70,7 +70,7 @@ A way to write code in which a test comes before the code that makes it pass. Ke
   - origin: template
   - sources: https://martinfowler.com/bliki/TestDrivenDevelopment.html
   - sources: https://tidyfirst.substack.com/p/canon-tdd
-- Write production code only to make a failing test pass. ^code-only-for-a-failing-test
+- Write production code only to make a failing test pass, unless you refactor the code after a test passes. ^code-only-for-a-failing-test
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -125,25 +125,23 @@ A way to write code in which a test comes before the code that makes it pass. Ke
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/bliki/TestDrivenDevelopment.html
-- Do not refactor beyond the needs of the current test list. ^limit-the-refactor
+- Do not refactor beyond the current test list. ^limit-the-refactor
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://tidyfirst.substack.com/p/canon-tdd
-- Treat a duplication as a hint to abstract, not as a command. ^duplication-is-a-hint
+- Do not extract a duplication into an abstraction in the refactor step, unless it has `3` or more copies. ^duplication-is-a-hint
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://tidyfirst.substack.com/p/canon-tdd
-- Choose as the next test the one that leads fastest to a key point of the design. ^choose-the-next-test
+- If a duplication has `3` or more copies, extract it into an abstraction in the refactor step. ^abstract-at-three-copies
   - scope: subtree
-  - basis: practitioner
+  - basis: judgment
   - status: proposed
   - origin: template
-  - sources: https://martinfowler.com/bliki/TestDrivenDevelopment.html
-  - sources: https://tidyfirst.substack.com/p/canon-tdd
 - Repeat the cycle from the second step until the test list is empty. ^repeat-until-the-list-is-empty
   - scope: subtree
   - basis: practitioner
@@ -166,6 +164,8 @@ The cycle has 5 steps, and each step has its own failure mode that Kent Beck nam
 3. The code changes until each test passes. The mistakes are a deleted assertion, an expected value copied from the code, and a refactor mixed into this step.
 4. An optional refactor improves the implementation design. The mistakes are a refactor beyond the session and an abstraction that comes too soon.
 5. The cycle repeats until the list is empty.
+
+Kent Beck calls the choice of the next test a skill that comes only with experience, so this concept holds no rule for the order of the tests. This concept counts an abstraction as too soon while the duplication has fewer than `3` copies.
 
 Red, green, refactor names steps 2 to 4: the new test fails, the code makes it pass, and the refactor cleans the code. Martin Fowler names 2 benefits: self-testing code, and a focus on the interface before the implementation. He names the skipped refactor as the most common way to fail at the practice.
 

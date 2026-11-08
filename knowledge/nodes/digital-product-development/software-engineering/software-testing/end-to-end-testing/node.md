@@ -39,12 +39,26 @@ A test that checks the whole system, with each of its parts integrated, through 
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch14.html#configuration_issues
-- Run each large test against a hermetic system under test, not against a shared staging environment. ^hermetic-large-tests
+- Run each large test hermetically, unless it is a prober or a backend has no runnable copy. ^hermetic-large-tests
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch14.html#the_benefits_of_hermetic_suts
+  - sources: https://abseil.io/resources/swe-book/html/ch14.html#the_system_under_test
+  - sources: https://abseil.io/resources/swe-book/html/ch14.html#probers_and_canary_analysis
+- If a backend has no runnable copy, limit the shared parts of the system under test to that backend. ^hybrid-system-under-test
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://abseil.io/resources/swe-book/html/ch14.html#the_system_under_test
+- Run each prober against production with deterministic read-only actions. ^probers-against-production
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://abseil.io/resources/swe-book/html/ch14.html#probers_and_canary_analysis
 - Run each usability test on the complete system in a representative test environment. ^representative-system-test-environment
   - scope: subtree
   - basis: standard
@@ -106,6 +120,6 @@ Software Engineering at Google names the gaps that unit tests leave, and each ga
 - An input or a behavior that the author of the unit tests did not expect.
 - An emergent behavior of the whole system.
 
-A large test has 4 parts: the system under test, the seeded data, the actions, and the verification. A hermetic system under test runs in isolation from production and from a shared staging environment, so other users do not change its results. A system under test with fewer parts is faster and less flaky. A test that drives both the user interface and the backend is costly to keep. Software Engineering at Google splits such a test at the boundary between the user interface and the public API.
+A large test has 4 parts: the system under test, the seeded data, the actions, and the verification. A hermetic system under test runs in isolation from production and from a shared staging environment, so other users do not change its results. A hybrid system under test runs the tested part and shares each backend that has no runnable copy. A prober is a large test that runs against production as a form of monitoring. It uses deterministic read-only actions, so its assertions hold while the production data changes. A system under test with fewer parts is faster and less flaky. A test that drives both the user interface and the backend is costly to keep. Software Engineering at Google splits such a test at the boundary between the user interface and the public API.
 
 End-to-end tests are slow, and they fail for reasons outside the code, such as timing and browser quirks. The test pyramid limits them to the core user journeys. Performance testing and acceptance testing also run against the whole system. Performance testing holds the rules for load. Regression testing holds the rules for waits and for flaky tests. Acceptance testing in software quality holds the rules that check the requirements of the users.

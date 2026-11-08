@@ -31,6 +31,10 @@ VENDORED_DIGEST = "fff04bf85c1e8bd8dc69dcedc63a5d88ed513dfa24e505f9cb8318a4596c9
 HARNESS_ENTRY_CAP = 1536
 LISTING_BUDGET = 8000
 GOOD_DESCRIPTION = "Review a pull request. Use when a pull request changes code."
+PREFER_MESSAGE = (
+    "Do not start a rule with Prefer. Write the rule, and write the other case with unless "
+    "or as a second rule."
+)
 
 
 def base_only(folder: str, names: list[str]) -> list[str]:
@@ -130,11 +134,13 @@ def words(count: int) -> str:
         "If a test fails, stop the release.",
         "If a test, a lint, or a build fails, stop the run.",
         "If a test fails, do not merge the branch.",
-        "If a fixture is slow, prefer a small fixture.",
+        "If a fixture is slow, use a small fixture.",
+        "Use a small fixture, unless the test reads a database.",
+        "Use the format that the users prefer.",
+        "If a fixture is slow, use the fixture that the users prefer.",
         "When the build fails, report the first error.",
         "In `tests/`, use a fixture for each database.",
         "For each public function, write a test.",
-        "Prefer a small fixture over a large mock.",
         "Delete the temporary folder after the run.",
         "Before you merge a branch, run the tests.",
         "After a deploy, check the health endpoint.",
@@ -228,6 +234,9 @@ def test_a_good_directive_passes(text: str) -> None:
         ("If a test fails, the release stops.", "opening"),
         ("In `tests/`, a fixture is small.", "opening"),
         ("If a test fails, do not ever push.", "opening"),
+        ("Prefer a small fixture over a large mock.", "opening"),
+        ("If a fixture is slow, prefer a small fixture.", "opening"),
+        ("In `tests/`, prefer a small fixture.", "opening"),
         ("Test files pass.", "imperative"),
         ("Review comments stay open.", "imperative"),
         ("Review the diff and run the suite.", "second-directive"),
@@ -345,21 +354,42 @@ def test_a_literal_message_drops_the_trailing_period() -> None:
         (
             "Tests pass.",
             (
-                "Start the rule with an approved verb, Do not, Prefer, a condition, or a scope. "
+                "Start the rule with an approved verb, Do not, a condition, or a scope. "
                 "The vocabulary does not approve 'tests'."
             ),
         ),
         ("If a test fails stop the release.", "Put a comma after the condition or the scope."),
         (
             "If a test fails, the release stops.",
-            "After the comma, start the directive with an approved verb, Do not, or Prefer.",
+            "After the comma, start the directive with an approved verb or Do not.",
         ),
+        ("Prefer a small fixture over a large mock.", PREFER_MESSAGE),
+        ("If a fixture is slow, prefer a small fixture.", PREFER_MESSAGE),
+        ("In `tests/`, prefer a small fixture.", PREFER_MESSAGE),
+        ("If a test, a lint, or a build fails, prefer a rerun.", PREFER_MESSAGE),
     ],
 )
 def test_an_opening_problem_says_what_to_change(text: str, message: str) -> None:
     assert [problem.message for problem in problems_of(node_source(directives=(text,)))] == [
         message
     ]
+
+
+def test_a_comma_inside_a_condition_does_not_start_a_second_action() -> None:
+    assert "second-directive" not in directive_codes(
+        "If a test fails, a lint fails, run the suite."
+    )
+
+
+@pytest.mark.parametrize(
+    "text", ["Prefer a small fixture.", "If a fixture is slow, prefer a small fixture."]
+)
+def test_a_vocabulary_that_approves_prefer_still_rejects_a_prefer_rule(text: str) -> None:
+    verbs = (*PROFILE.vocabulary.approved_verbs, "prefer")
+    vocabulary = Vocabulary(approved_verbs=verbs, prohibited=PROFILE.vocabulary.prohibited)
+    source = node_source(directives=(text,))
+    problems = problems_of(source, replace(PROFILE, vocabulary=vocabulary))
+    assert [problem.message for problem in problems] == [PREFER_MESSAGE]
 
 
 def test_each_code_span_counts_as_one_word() -> None:

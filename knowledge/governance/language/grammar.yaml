@@ -19,7 +19,7 @@ directive_rules:
     checks: [sentence]
   - text: Write each rule in `20` words or fewer.
     checks: [word-count]
-  - text: Start each rule with a verb, `Do not`, `Prefer`, a condition, or a scope.
+  - text: Start each rule with a verb, `Do not`, a condition, or a scope.
     checks: [opening, imperative]
   - text: After a condition or a scope, put a comma before the directive.
     checks: [opening]
@@ -46,7 +46,11 @@ directive_rules:
   - text: Put each command, path, and literal value in backticks.
     checks: [literal]
     review: true
-  - text: Use `Prefer` only for a default that allows a deviation.
+  - text: Do not start a rule with `Prefer`.
+    checks: [opening]
+  - text: Give the reader exactly `1` action in each case of a rule.
+    review: true
+  - text: Write each other case as an `unless` clause or as a second rule with a condition.
     review: true
   - text: Do not repeat a rule.
     checks: [duplicate-rule]

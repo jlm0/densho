@@ -20,6 +20,13 @@ class _SteFinding(TypedDict):
 USE_WHEN = "Use when "
 DO_NOT = ["do", "not"]
 PREFER = "prefer"
+PREFER_FINDING: Finding = (
+    "opening",
+    (
+        "Do not start a rule with Prefer. Write the rule, and write the other case with unless "
+        "or as a second rule."
+    ),
+)
 UNLESS = "unless"
 DESCRIPTION_SENTENCES = 2
 INTERIOR_END = re.compile(r"[.!?](?=\s+\S)")
@@ -72,10 +79,24 @@ def _ste(text: str) -> list[Finding]:
 def _starts_directive(words: list[str], terms: Terms) -> bool:
     if words[:2] == DO_NOT:
         return len(words) > len(DO_NOT) and words[len(DO_NOT)] in terms.verbs
-    return bool(words) and (words[0] == PREFER or words[0] in terms.verbs)
+    return bool(words) and words[0] in terms.verbs
+
+
+def _opens_with_prefer(text: str, grammar: Grammar) -> bool:
+    head, *tails = text.split(",")
+    words = words_of(head)
+    if words and words[0] in {*grammar.conditions, *grammar.scopes}:
+        return any(words_of(tail)[:1] == [PREFER] for tail in tails)
+    return words[:1] == [PREFER]
 
 
 def _opening(text: str, grammar: Grammar, terms: Terms) -> list[Finding]:
+    if _opens_with_prefer(text, grammar):
+        return [PREFER_FINDING]
+    return _approved_opening(text, grammar, terms)
+
+
+def _approved_opening(text: str, grammar: Grammar, terms: Terms) -> list[Finding]:
     head, *tails = text.split(",")
     words = words_of(head)
     if words and words[0] in {*grammar.conditions, *grammar.scopes}:
@@ -83,7 +104,7 @@ def _opening(text: str, grammar: Grammar, terms: Terms) -> list[Finding]:
             return [("opening", "Put a comma after the condition or the scope.")]
         if any(_starts_directive(words_of(tail), terms) for tail in tails):
             return []
-        message = "After the comma, start the directive with an approved verb, Do not, or Prefer."
+        message = "After the comma, start the directive with an approved verb or Do not."
         return [("opening", message)]
     if _starts_directive(words_of(text), terms):
         return []
@@ -91,7 +112,7 @@ def _opening(text: str, grammar: Grammar, terms: Terms) -> list[Finding]:
         return [("opening", "Follow Do not with a verb from the approved list.")]
     first = words[0] if words else ""
     message = (
-        f"Start the rule with an approved verb, Do not, Prefer, a condition, or a scope. "
+        f"Start the rule with an approved verb, Do not, a condition, or a scope. "
         f"The vocabulary does not approve {first!a}."
     )
     return [("opening", message)]

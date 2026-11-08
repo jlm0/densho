@@ -27,13 +27,30 @@ Run `pytest` before you commit.
 Do not commit a secret.
 If a test fails, stop the release.
 In `tests/`, use a fixture for each database.
-Prefer a small fixture over a large mock.
 ```
+
+A directive leaves nothing to judgment. In each case, the agent that reads it has exactly one action, so it never has to decide whether the rule applies. When a rule doesn't hold in every case, name the other case and say what to do there, just as strictly. That gives four forms:
+
+| Form                     | Shape             | Use it when                                        |
+| ------------------------ | ----------------- | -------------------------------------------------- |
+| A rule                   | `Do X.`           | The rule holds in every case                       |
+| A rule with a condition  | `If A, do X.`     | The rule holds only in case A                      |
+| A rule with an exception | `Do X, unless A.` | The rule holds in every case except A              |
+| An alternative rule      | `If A, do Y.`     | Case A needs its own action, in a second directive |
+
+An exception and an alternative often come as a pair. The first rule leaves a case out, and the second says what to do in it:
+
+```text
+Use a fake for each database, unless the test checks a query.
+If a test checks a query, use a real database.
+```
+
+Knowledge often arrives hedged. A source says "usually" or "prefer" and leaves the other case open. Turn the hedge into a rule: take the case the source names, or define one, and write its rule as well. `Prefer` can't open a directive, because it leaves the reader to decide when to deviate.
 
 The grammar has these rules:
 
 - Write each rule as one sentence that ends with a period, in 20 words or fewer. A code span counts as one word.
-- Start with an approved verb, `Do not`, `Prefer`, a condition, or a scope. Follow `Do not` with an approved verb.
+- Start with an approved verb, `Do not`, a condition, or a scope. Follow `Do not` with an approved verb. Do not start with `Prefer`, even after a condition or a scope.
 - After a condition or a scope, put a comma before the directive.
 - Write one directive, with at most one condition and one `unless`.
 - Do not use a modal, a hedge, a vague qualifier, or a reason marker. The [vocabulary](#vocabularies) lists them.
@@ -132,7 +149,8 @@ A check can decide form. It cannot decide meaning. Each rule in `knowledge/gover
 | Do not repeat a rule                         | Exact repeats                     | The same rule in other words                          |
 | No violation of ASD-STE100                   | The hard findings of the linter   | Whether the text follows the standard's intent        |
 | An observable condition, a concrete object   | Nothing                           | All of it                                             |
-| `Prefer` only for a default with a deviation | Nothing                           | All of it                                             |
+| One action in each case                      | Nothing                           | All of it                                             |
+| Each other case in `unless` or a second rule | Nothing                           | All of it                                             |
 
 ## How it works
 

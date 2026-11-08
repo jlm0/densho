@@ -1,7 +1,7 @@
 from functools import cache
 from typing import TYPE_CHECKING, cast
 
-from engine.language.form import DO_NOT, PREFER, USE_WHEN, Finding, description_parts
+from engine.language.form import DO_NOT, USE_WHEN, Finding, description_parts
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping
@@ -129,11 +129,7 @@ def _directive_verb(doc: Doc, grammar: Grammar, terms: Terms) -> Token:
     starts = [doc[0]]
     if doc[0].lower_ in {*grammar.conditions, *grammar.scopes}:
         starts = [token.nbor(1) for token in doc[:-1] if token.text == ","]
-    openings = [
-        verb
-        for verb in map(_past_do_not, starts)
-        if verb.lower_ in terms.verbs or verb.lower_ == PREFER
-    ]
+    openings = [verb for verb in map(_past_do_not, starts) if verb.lower_ in terms.verbs]
     if root in openings or not openings:
         return root
     return openings[0]

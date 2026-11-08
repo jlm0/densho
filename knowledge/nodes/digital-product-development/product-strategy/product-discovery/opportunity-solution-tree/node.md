@@ -25,7 +25,7 @@ A visual map, from Teresa Torres, of the paths that a team can take to reach a d
   - status: proposed
   - origin: template
   - sources: https://www.producttalk.org/opportunity-solution-trees/
-- Prefer a product outcome over a business outcome or a traction metric at the root of a tree. ^prefer-a-product-outcome
+- Put a product outcome at the root of each tree, not a business outcome or a traction metric. ^prefer-a-product-outcome
   - scope: subtree
   - basis: practitioner
   - status: proposed

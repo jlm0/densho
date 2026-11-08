@@ -57,7 +57,13 @@ Max Wertheimer described proximity, similarity, and common fate in 1923. Common 
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/gestalt-proximity/
-- Prefer whitespace over a divider between two groups. ^prefer-space-over-divider
+- Separate two groups with whitespace, not with a divider line, unless the space between them is fixed. ^prefer-space-over-divider
+  - scope: subtree
+  - basis: research
+  - status: proposed
+  - origin: template
+  - sources: https://www.nngroup.com/articles/common-region/
+- If the space between two groups is fixed, put each group inside a border or a background. ^boundary-for-fixed-space
   - scope: subtree
   - basis: research
   - status: proposed

@@ -19,7 +19,7 @@ Using glyphs, images, and spatial composition to say what prose would otherwise 
 
 ## Directives
 
-- Prefer a glyph, an image, or a grouping over prose when it states the same information. ^prefer-visual-form
+- If a glyph, an image, or a grouping states the same information as a sentence, replace the sentence with it. ^prefer-visual-form
   - scope: subtree
   - basis: judgment
   - status: proposed

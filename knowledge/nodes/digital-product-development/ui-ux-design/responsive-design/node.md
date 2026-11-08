@@ -41,7 +41,7 @@ Designing a layout that adapts to each screen size and resolution and stays usab
   - also_attached_to: ui-ux-design
   - also_attached_to: frontend-engineering
   - sources: https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design
-- Prefer a single-column base layout over a multi-column base layout. ^single-column-base
+- Build each base layout as a single column. ^single-column-base
   - scope: subtree
   - basis: practitioner
   - status: proposed

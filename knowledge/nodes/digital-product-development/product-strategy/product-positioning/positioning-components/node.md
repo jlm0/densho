@@ -51,7 +51,7 @@ The five parts of positioning in April Dunford's method. Competitive alternative
   - status: proposed
   - origin: template
   - sources: https://www.aprildunford.com/post/a-quickstart-guide-to-positioning
-- Prefer an existing market category over a new category. ^prefer-an-existing-category
+- Choose an existing market category for the product, not a new category. ^prefer-an-existing-category
   - scope: subtree
   - basis: practitioner
   - status: proposed

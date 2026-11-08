@@ -51,7 +51,7 @@ A target value or range for a service level indicator (SLI). An SLI is a measure
   - status: proposed
   - origin: template
   - sources: https://sre.google/sre-book/service-level-objectives/
-- Prefer a rolling window of `4` weeks for an SLO. ^four-week-window
+- Measure each SLO over a rolling window of `4` weeks. ^four-week-window
   - scope: subtree
   - basis: practitioner
   - status: proposed

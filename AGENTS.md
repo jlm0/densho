@@ -5,7 +5,7 @@ A build generates this file from the node files. Change a node file, not this fi
 
 ## Directives
 
-No directive is in force. The graph holds 847 directives and 1 exception that are not in force.
+No directive is in force. The graph holds 850 directives and 1 exception that are not in force.
 
 Treat a directive as a rule only when its `status` is `accepted`. A generated file lists only the directives that apply at its own node.
 

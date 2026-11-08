@@ -20,12 +20,17 @@ A goal-setting system from Andy Grove at Intel, which John Doerr brought to Goog
 
 ## Directives
 
-- Prefer `3` to `5` key results for each objective. ^three-to-five-key-results
+- Write `3` to `5` key results for each objective. ^three-to-five-key-results
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://www.whatmatters.com/faqs/okr-meaning-definition-example
+- If a score of `1.0` on `5` key results does not achieve an objective, split the objective. ^split-large-objectives
+  - scope: subtree
+  - basis: judgment
+  - status: proposed
+  - origin: template
 - Write each key result as a measured outcome, not as an activity. ^outcome-key-results
   - scope: subtree
   - basis: practitioner

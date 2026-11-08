@@ -55,7 +55,7 @@ The release, the monitoring, and the running of software in production. SWEBOK `
   - status: proposed
   - origin: template
   - sources: https://sre.google/sre-book/monitoring-distributed-systems/
-- Prefer an alert on a symptom that users see over an alert on its cause. ^alert-on-symptoms
+- Make each alert detect a symptom that users see, not its cause, unless the cause is definite and imminent. ^alert-on-symptoms
   - scope: subtree
   - basis: practitioner
   - status: proposed

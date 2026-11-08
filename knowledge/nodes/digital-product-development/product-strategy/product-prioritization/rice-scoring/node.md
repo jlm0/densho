@@ -24,7 +24,13 @@ A prioritization score from Intercom, described by Sean McBride. Reach is the nu
   - status: proposed
   - origin: template
   - sources: https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/
-- Prefer reach figures from product metrics over estimates. ^reach-from-metrics
+- Take the reach of each item from product metrics, unless no product metric measures it. ^reach-from-metrics
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/
+- If no product metric measures the reach of an item, set its confidence below `100%`. ^estimated-reach-confidence
   - scope: subtree
   - basis: practitioner
   - status: proposed

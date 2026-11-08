@@ -24,4 +24,4 @@ Software Engineering at Google adds a second dimension. The size of a test is th
 
 2 shapes show a suite that drifts from the pyramid. An ice cream cone holds many end-to-end tests and few unit tests. An hourglass holds many unit tests and many end-to-end tests, with few integration tests between them.
 
-Test-driven development writes most of the unit tests. Performance testing is one kind of large test.
+This concept sets the level of each test that test-driven development writes. Performance testing is one kind of large test.

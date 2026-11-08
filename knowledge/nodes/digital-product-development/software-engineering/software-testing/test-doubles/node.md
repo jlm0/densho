@@ -36,14 +36,14 @@ An object that replaces a production object in a test. Gerard Meszaros named the
   - origin: template
   - sources: http://xunitpatterns.com/Test%20Stub.html
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#when_is_stubbing_appropriatequestion_ma
-- If no state verification observes an indirect output, verify it with a spy or a mock. ^spy-or-mock-for-indirect-outputs
+- If no state verification observes an indirect output, verify it with a spy. ^spy-or-mock-for-indirect-outputs
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: http://xunitpatterns.com/Mock%20Object.html
   - sources: http://xunitpatterns.com/Test%20Spy.html
-- Use a fake for a slow or unavailable dependency when a test needs behavior too complex for a stub. ^fake-for-slow-dependencies
+  - sources: http://xunitpatterns.com/Mock%20Object.html
+- Use a fake for a slow or unavailable dependency whose needed behavior is too complex for stubs and mocks. ^fake-for-slow-dependencies
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -56,7 +56,7 @@ An object that replaces a production object in a test. Gerard Meszaros named the
   - origin: template
   - sources: https://martinfowler.com/bliki/TestDouble.html
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#MockingAndStubbing
-- Prefer a real implementation over a test double. ^prefer-real-implementations
+- Use a real implementation in place of a test double, unless it is slow, nondeterministic, or hard to construct. ^prefer-real-implementations
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -68,7 +68,7 @@ An object that replaces a production object in a test. Gerard Meszaros named the
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#how_to_decide_when_to_use_a_real_implem
-- If a test does not fit the real implementation, prefer a fake over a stub or a mock. ^prefer-fakes
+- If the real implementation is slow, nondeterministic, or hard to construct, use a fake, unless no fake exists. ^prefer-fakes
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -80,7 +80,13 @@ An object that replaces a production object in a test. Gerard Meszaros named the
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#determinism
-- Replace a dependency on an external server with a test double or a hermetic server that the test controls. ^double-external-servers
+- Replace a dependency on an external server with a test double, unless no test double fits the test. ^double-external-servers
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://abseil.io/resources/swe-book/html/ch13.html#determinism
+- If no test double fits a dependency on an external server, use a hermetic server that the test controls. ^hermetic-server-fallback
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -128,7 +134,7 @@ An object that replaces a production object in a test. Gerard Meszaros named the
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#what_to_do_if_a_fake_is_not_available
-- If the API owners write no fake, prefer a fake of `1` wrapper class over a fake of the API. ^wrap-and-fake
+- If the API owners write no fake, write a fake of `1` class that wraps each call to the API. ^wrap-and-fake
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -140,7 +146,7 @@ An object that replaces a production object in a test. Gerard Meszaros named the
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#when_is_stubbing_appropriatequestion_ma
-- Prefer state testing over interaction testing. ^prefer-state-testing
+- Use state testing, unless the behavior is a call count or order, or no real implementation or fake fits. ^prefer-state-testing
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -153,7 +159,7 @@ An object that replaces a production object in a test. Gerard Meszaros named the
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#when_is_interaction_testing_appropriate
-- Prefer interaction checks of state-changing functions over interaction checks of functions without side effects. ^verify-state-changing-calls
+- In an interaction test, verify only the calls to state-changing functions, unless the test verifies a call count or order. ^verify-state-changing-calls
   - scope: subtree
   - basis: practitioner
   - status: proposed

@@ -39,13 +39,13 @@ A test that checks the whole system, with each of its parts integrated, through 
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch14.html#configuration_issues
-- Prefer a hermetic system under test over a shared staging environment for a large test. ^hermetic-large-tests
+- Run each large test against a hermetic system under test, not against a shared staging environment. ^hermetic-large-tests
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch14.html#the_benefits_of_hermetic_suts
-- For a non-functional characteristic such as usability, prefer a test of the complete system in a representative test environment. ^representative-system-test-environment
+- Run each usability test on the complete system in a representative test environment. ^representative-system-test-environment
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -65,7 +65,7 @@ A test that checks the whole system, with each of its parts integrated, through 
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch14.html#speeding_up_tests
-- If a large test is slow, prefer a test with a smaller scope or smaller tests that run in parallel. ^split-slow-large-tests
+- If a large test is slow, split it into smaller tests that run in parallel. ^split-slow-large-tests
   - scope: subtree
   - basis: practitioner
   - status: proposed

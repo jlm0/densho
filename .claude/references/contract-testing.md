@@ -19,8 +19,8 @@ Ian Robinson names 3 kinds of contract:
 - A consumer contract is open and incomplete. It lists only what one consumer uses, and there is one for each consumer.
 - A consumer-driven contract is the union of the consumer contracts. It is complete for the current consumers, but not authoritative.
 
-Robinson states the limits of the pattern: it works inside one company or a closed group of known services, it does not remove coupling, and it shows the coupling that was hidden.
+Robinson states the limits of the pattern: it works inside one company or a closed group of known services, it does not always reduce the coupling, and it shows the coupling that was hidden.
 
-Martin Fowler first used contract tests for an external service that another team owns. Those tests run on the schedule of the external service, and a failure starts a task and need not break the build. The Pact docs use the same name for tests between services in one system, and these run in the build of each side.
+Martin Fowler describes contract tests for an external service that a different team maintains. Those tests run on the schedule of the external service, and a failure starts a task and need not break the build. The Pact docs use the same name for tests between 2 services that communicate, and these run in the build of each side.
 
 The interface contract of software design describes the whole API, such as an OpenAPI description. A consumer contract checks the part that a consumer uses, by example. Test doubles are what a contract test keeps faithful. The test pyramid places contract tests next to the narrow integration tests that use those doubles.

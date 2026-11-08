@@ -11,7 +11,7 @@ A test that checks whether parts that are developed separately work correctly wh
 
 ## Notes
 
-The name integration test has more than one meaning, so a team states which one it uses. Martin Fowler lists 3 uses:
+The name integration test has more than one meaning, so Martin Fowler looks for the context of each use. Martin Fowler lists 3 uses:
 
 - A narrow integration test runs the code of one service that talks to a database, a file system, a queue, or another service. It uses a test double of the other service, and it often runs in the same test framework as the unit tests.
 - A broad integration test runs live versions of each service and exercises code paths through each of them. Martin Fowler prefers the name system test or end-to-end test for it.

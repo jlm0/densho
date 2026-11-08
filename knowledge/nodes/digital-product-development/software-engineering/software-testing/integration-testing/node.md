@@ -67,7 +67,7 @@ A test that checks whether parts that are developed separately work correctly wh
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#IntegrationTests
-- Prefer integration tests that run on `1` machine, with network calls only to localhost. ^one-machine-integration-tests
+- Run each integration test on `1` machine, with network calls only to localhost, unless it needs a remote system. ^one-machine-integration-tests
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -79,18 +79,19 @@ A test that checks whether parts that are developed separately work correctly wh
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/bliki/IntegrationTest.html
-- Prefer an environment similar to the operational environment for the system integration tests. ^system-integration-environment
+- Run the system integration tests in an environment similar to the operational environment. ^system-integration-environment
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=29
-- Do not run an automated test against the production system of another team. ^no-tests-against-production
+- Do not run automated tests against production, unless a contract test has no test instance to target. ^no-tests-against-production
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#IntegrationTests
+  - sources: https://martinfowler.com/bliki/ContractTest.html
 - Add a contract test for each test double of a service that a narrow integration test uses. ^pair-narrow-test-with-contract
   - scope: subtree
   - basis: practitioner
@@ -100,7 +101,7 @@ A test that checks whether parts that are developed separately work correctly wh
 
 ## Notes
 
-The name integration test has more than one meaning, so a team states which one it uses. Martin Fowler lists 3 uses:
+The name integration test has more than one meaning, so Martin Fowler looks for the context of each use. Martin Fowler lists 3 uses:
 
 - A narrow integration test runs the code of one service that talks to a database, a file system, a queue, or another service. It uses a test double of the other service, and it often runs in the same test framework as the unit tests.
 - A broad integration test runs live versions of each service and exercises code paths through each of them. Martin Fowler prefers the name system test or end-to-end test for it.

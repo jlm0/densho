@@ -41,7 +41,7 @@ A test that checks that a test double still behaves like the external service th
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/consumerDrivenContracts.html#ConsumerContracts
-  - sources: https://docs.pact.io/
+  - sources: https://docs.pact.io/#consumer-driven-contracts
 - Build the contract of a provider from the union of the expectations of its consumers. ^provider-contract-from-consumers
   - scope: subtree
   - basis: practitioner
@@ -116,7 +116,7 @@ A test that checks that a test double still behaves like the external service th
   - status: proposed
   - origin: template
   - sources: https://docs.pact.io/consumer#only-make-assertions-about-things-that-will-affect-the-consumer-if-they-change
-- Prefer type matching over exact matching for the fields of a response. ^loose-response-matching
+- Use exact matching for each response field whose content the consumer depends on, and type matching for the others. ^loose-response-matching
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -134,7 +134,13 @@ A test that checks that a test double still behaves like the external service th
   - status: proposed
   - origin: template
   - sources: https://docs.pact.io/consumer#avoid-using-pact-for-tests-that-involve-the-ui
-- In a write interaction, prefer the updated resource in the response over a fixture shared with a read. ^expect-written-values-back
+- In a write interaction, require the updated resource in the response, unless the provider does not return it. ^expect-written-values-back
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://docs.pact.io/consumer#beware-of-garbage-in-garbage-out-with-putpostpatch
+- If the provider returns no updated resource, use a shared fixture for the write request and the read response. ^shared-fixture-for-writes
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -146,7 +152,13 @@ A test that checks that a test double still behaves like the external service th
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/bliki/ContractTest.html
-- Prefer the test instance of an external service over its production instance for the contract tests. ^external-contract-test-instance
+- Run the contract tests of an external service against its test instance, unless it has no test instance. ^external-contract-test-instance
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://martinfowler.com/bliki/ContractTest.html
+- If an external service has no test instance, tell its owners about each contract test against its production instance. ^production-contract-tests-with-owners
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -183,7 +195,7 @@ A test that checks that a test double still behaves like the external service th
   - status: proposed
   - origin: template
   - sources: https://docs.pact.io/faq/convinceme#but-i-use-swaggeropenapi
-- In the broader tests of the consumer, use the contract or shared fixtures as the stubs of the provider. ^stub-from-the-contract
+- In the broader tests of the consumer, use the generated contract as the stubs of the provider. ^stub-from-the-contract
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -200,8 +212,8 @@ Ian Robinson names 3 kinds of contract:
 - A consumer contract is open and incomplete. It lists only what one consumer uses, and there is one for each consumer.
 - A consumer-driven contract is the union of the consumer contracts. It is complete for the current consumers, but not authoritative.
 
-Robinson states the limits of the pattern: it works inside one company or a closed group of known services, it does not remove coupling, and it shows the coupling that was hidden.
+Robinson states the limits of the pattern: it works inside one company or a closed group of known services, it does not always reduce the coupling, and it shows the coupling that was hidden.
 
-Martin Fowler first used contract tests for an external service that another team owns. Those tests run on the schedule of the external service, and a failure starts a task and need not break the build. The Pact docs use the same name for tests between services in one system, and these run in the build of each side.
+Martin Fowler describes contract tests for an external service that a different team maintains. Those tests run on the schedule of the external service, and a failure starts a task and need not break the build. The Pact docs use the same name for tests between 2 services that communicate, and these run in the build of each side.
 
 The interface contract of software design describes the whole API, such as an OpenAPI description. A consumer contract checks the part that a consumer uses, by example. Test doubles are what a contract test keeps faithful. The test pyramid places contract tests next to the narrow integration tests that use those doubles.

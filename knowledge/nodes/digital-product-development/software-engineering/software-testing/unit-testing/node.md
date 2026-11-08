@@ -100,7 +100,7 @@ A test that checks one unit of the code in isolation from the rest of the system
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch12.html#write_clear_failure_messages
-- Prefer duplication in a test over shared code that hides what the test does. ^damp-over-dry
+- Do not move a step of a test into shared code that hides what the test does. ^damp-over-dry
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -152,4 +152,4 @@ The Practical Test Pyramid names 2 kinds of unit test. A solitary unit test repl
 
 Software Engineering at Google separates the size of a test from its scope. A small test runs in one process, and most unit tests are small. The rules for clear unit tests follow from one goal: a test that never changes unless the requirements change. A pure refactor, a new feature, and a bug fix leave the existing tests as they are. Only a change of the required behavior changes a test.
 
-Each test has a given part, a when part, and a then part. The practice area holds the rule for this structure, the rule to test through the public interface, and the rule against logic in tests, so that each test level applies them. Test-driven development writes most unit tests, one at a time.
+Each test has a given part, a when part, and a then part. The practice area holds the rule for this structure, the rule to test through the public interface, and the rule against logic in tests, so that each test level applies them. Test-driven development writes unit tests one at a time.

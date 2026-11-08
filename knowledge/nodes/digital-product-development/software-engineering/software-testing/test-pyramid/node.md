@@ -21,7 +21,7 @@ A model for the mix of automated tests in a suite, by the level of each test. Mi
 
 ## Directives
 
-- Write most automated tests as unit tests. ^mostly-unit-tests
+- Write most automated tests as unit tests, unless the high-level tests are fast, reliable, and cheap to change. ^mostly-unit-tests
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -39,13 +39,18 @@ A model for the mix of automated tests in a suite, by the level of each test. Mi
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#End-to-endTests
-- In a single page application, test the user interface behavior with frontend unit tests and a backend test double. ^unit-test-ui-behavior
+- In a single page application, test each user interface behavior with frontend unit tests and a backend test double. ^unit-test-ui-behavior
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#UiTests
   - sources: https://martinfowler.com/bliki/TestPyramid.html
+- If a single page application behavior needs the real backend, test the backend part through its API. ^ui-backend-part-through-api
+  - scope: subtree
+  - basis: judgment
+  - status: proposed
+  - origin: template
 - Define in the team the name and the scope of each kind of test. ^agree-on-test-names
   - scope: subtree
   - basis: practitioner
@@ -95,7 +100,7 @@ A model for the mix of automated tests in a suite, by the level of each test. Mi
   - status: proposed
   - origin: template
   - sources: https://martinfowler.com/bliki/TestPyramid.html
-- Do not keep a recorded test as recorded, unless you edit it as code. ^no-record-playback-tests
+- Use the output of a record-playback tool only as a script fragment that you edit as code. ^no-record-playback-tests
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -142,4 +147,4 @@ Software Engineering at Google adds a second dimension. The size of a test is th
 
 2 shapes show a suite that drifts from the pyramid. An ice cream cone holds many end-to-end tests and few unit tests. An hourglass holds many unit tests and many end-to-end tests, with few integration tests between them.
 
-Test-driven development writes most of the unit tests. Performance testing is one kind of large test.
+This concept sets the level of each test that test-driven development writes. Performance testing is one kind of large test.

@@ -32,9 +32,9 @@ Techniques that select test cases from the specified behavior of the test object
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=39
   - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=126
-- Prefer partitions from the specification over partitions from evenly spaced points of a value range. ^partitions-from-the-specification
+- Define the partitions of a value range from the specification, not from evenly spaced points of the range. ^partitions-from-the-specification
   - scope: subtree
-  - basis: research
+  - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-142.pdf#page=25
@@ -70,7 +70,7 @@ Techniques that select test cases from the specified behavior of the test object
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=40
   - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=127
-- Prefer boundary value analysis with `3` values, which also tests the inner neighbor, over analysis with `2` values. ^prefer-three-value-boundaries
+- For each boundary, test the boundary value and both of its neighbors. ^prefer-three-value-boundaries
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -108,13 +108,13 @@ Techniques that select test cases from the specified behavior of the test object
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=41
-- Test each feasible column of the decision table. ^test-each-column
+- Test each feasible column of the decision table, unless the test budget covers only part of the table. ^test-each-column
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=41
-- If the test budget covers only part of a decision table, use a minimized table or risk-based choice of columns. ^choose-columns-by-risk
+- If the test budget covers only part of a decision table, test the minimized table in order of risk. ^choose-columns-by-risk
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -126,7 +126,7 @@ Techniques that select test cases from the specified behavior of the test object
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=41
-- If the behavior of the test object depends on earlier events, write a table of its states and transitions. ^state-table-for-history
+- If events move the test object between states, write a state table of its states and transitions. ^state-table-for-history
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -153,33 +153,33 @@ Techniques that select test cases from the specified behavior of the test object
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=42
 - If an exhaustive test is too costly, test at least each pair of values with a covering array. ^pairwise-covering-array
   - scope: subtree
-  - basis: research
+  - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-142.pdf#page=7
   - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=127
 - In mission-critical software, do not limit the combinatorial tests to pairs of values. ^beyond-pairs-for-critical-software
   - scope: subtree
-  - basis: research
+  - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-142.pdf#page=7
   - sources: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-142.pdf#page=11
 - Limit each parameter of a combinatorial test to `10` values or fewer. ^limit-values-per-parameter
   - scope: subtree
-  - basis: research
+  - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-142.pdf#page=26
 - Define each invalid combination of values as a constraint of the covering array. ^constraints-for-invalid-combinations
   - scope: subtree
-  - basis: research
+  - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-142.pdf#page=22
 - Do not delete a test with an invalid combination from a covering array, unless other tests cover its valid combinations. ^keep-covering-array-tests
   - scope: subtree
-  - basis: research
+  - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-142.pdf#page=22
@@ -211,6 +211,6 @@ Each technique has its own coverage items:
 
 The ISTQB syllabus ranks the state transition criteria. Valid transitions coverage is the most widely used, and it implies all states coverage. All transitions coverage implies both, and the syllabus sets it as the minimum for mission-critical and safety-critical software. 3-value boundary analysis can find defects that 2-value analysis misses, such as `x = 10` in place of `x <= 10`.
 
-NIST SP 800-142 states the interaction rule from fault studies: most failures come from 1 parameter or the interaction of 2, and fewer come from 3 or more. In the studies, tests of all 4-way to 6-way combinations found each fault. Pairwise testing can miss `10%` to `40%` or more of the faults of a system. A covering array holds each `t`-way combination in few tests. A constraint keeps an invalid combination out of the array, and the tool then adds tests for each combination that a deletion would lose.
+NIST SP 800-142 states the interaction rule from fault studies: most failures come from 1 parameter or the interaction of 2, and fewer come from 3 or more. In the studies, tests of all 4-way to 6-way combinations found each fault. Pairwise testing can miss `10%` to `40%` or more of the faults of a system. A covering array holds each `t`-way combination in few tests. A constraint keeps an invalid combination out of the array. The tool still covers each valid combination that a deletion of tests would lose.
 
 Black-box tests do not depend on the code, so they stay useful when the implementation changes and the required behavior stays the same. White-box tests check the structure, and code coverage holds their rules. The 2 kinds find different defects. Property-based testing generates the input values at random, and model-based testing generates the tests from a model, such as a state machine.

@@ -52,7 +52,7 @@ A way to test code by stating general properties that the code must hold, and by
   - origin: template
   - sources: https://research.chalmers.se/publication/517894/file/517894_Fulltext.pdf#page=11
   - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=131
-- If time is limited, prefer model-based properties, together with validity properties, over the other kinds of property. ^model-based-properties-first
+- If time is limited, write model-based and validity properties first, unless the model is costly or resembles the implementation. ^model-based-properties-first
   - scope: subtree
   - basis: research
   - status: proposed

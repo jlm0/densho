@@ -28,7 +28,7 @@ A fault-based technique that measures how well a test set detects faults. Jia an
   - status: proposed
   - origin: template
   - sources: https://web.eecs.umich.edu/~weimerw/2020-481F/readings/mutation-testing.pdf#page=3
-- Use a small set of mutation operators, such as AOR, LCR, ROR, and UOI. ^selective-mutation-operators
+- Use only the AOR, LCR, ROR, and UOI mutation operators. ^selective-mutation-operators
   - scope: subtree
   - basis: research
   - status: proposed
@@ -71,7 +71,7 @@ A fault-based technique that measures how well a test set detects faults. Jia an
   - basis: research
   - status: proposed
   - origin: template
-  - sources: https://arxiv.org/pdf/2102.11378#page=1
+  - sources: https://arxiv.org/pdf/2102.11378#page=2
   - sources: https://web.eecs.umich.edu/~weimerw/2020-481F/readings/mutation-testing.pdf#page=4
 - Do not add a test for an unproductive mutant, such as a changed initial capacity of a collection. ^skip-unproductive-mutants
   - scope: subtree
@@ -91,7 +91,7 @@ A fault-based technique that measures how well a test set detects faults. Jia an
   - status: proposed
   - origin: template
   - sources: https://web.eecs.umich.edu/~weimerw/2020-481F/readings/mutation-testing.pdf#page=4
-- Prefer the surviving mutants of each change over a mutation score of the whole code base. ^prefer-change-mutants
+- Report the surviving mutants of each change, not a mutation score of the whole code base. ^prefer-change-mutants
   - scope: subtree
   - basis: research
   - status: proposed
@@ -122,7 +122,7 @@ A full mutation analysis is costly in machines and in human attention. Selective
 
 - It mutates only the changed lines that the tests cover, during code review.
 - It generates at most 1 mutant for each line.
-- It suppresses mutants in arid code, which tests do not usually check.
+- It skips arid code, where each mutant would be unproductive.
 
 An unproductive mutant is equivalent to the original, or a test that kills it does not improve the suite. At Google, developers first marked `85%` of the shown mutants as unproductive. Suppression based on their feedback raised the share of productive mutants from `15%` to `89%`.
 

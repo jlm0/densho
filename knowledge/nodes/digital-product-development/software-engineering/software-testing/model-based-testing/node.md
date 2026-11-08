@@ -31,7 +31,7 @@ A way to test that derives the test cases from a model of the system under test 
   - status: proposed
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=24
-- Prefer `2` focused models over `1` model that covers each aspect of the system. ^focused-models
+- Write a separate model for each aspect that the test objectives need, not `1` model for the whole system. ^focused-models
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -100,12 +100,17 @@ A way to test that derives the test cases from a model of the system under test 
   - status: proposed
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=34
-- If only the interface of the test object changes, update only the test adaptation layer. ^interface-change-in-adapter
+- If only the interface of the test object changes, update only the test adaptation layer, unless no adaptation layer exists. ^interface-change-in-adapter
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=34
+- If only the interface of the test object changes and no adaptation layer exists, update the model. ^interface-change-without-adapter
+  - scope: subtree
+  - basis: judgment
+  - status: proposed
+  - origin: template
 - If generated test scripts run in a chain, set the precondition of each script before its execution. ^set-script-preconditions
   - scope: subtree
   - basis: standard
@@ -125,7 +130,7 @@ A way to test that derives the test cases from a model of the system under test 
   - status: proposed
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-MBT_-_Syllabus_Version_v1.1.pdf#page=15
-- Do not use model-based testing in place of the black-box test techniques. ^model-based-testing-complements
+- Do not use model-based testing in place of the other test techniques. ^model-based-testing-complements
   - scope: subtree
   - basis: standard
   - status: proposed

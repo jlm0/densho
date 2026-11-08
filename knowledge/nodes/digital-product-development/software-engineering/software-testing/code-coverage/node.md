@@ -17,17 +17,17 @@ broader:
 
 ## Definition
 
-A measure of the degree to which a test suite exercises the code of a system. Ivanković and colleagues give this definition in "Code Coverage at Google". The ISTQB Foundation Level syllabus treats it as the target of the white-box test techniques: statement coverage is the share of the executable statements that the tests exercise, and branch coverage is the share of the branches. SWEBOK v4 names stronger criteria, such as condition, MC/DC, path, and data flow coverage.
+A measure of the degree to which a test suite exercises the code of a system. Ivanković and colleagues give this definition in "Code Coverage at Google". The ISTQB Foundation Level syllabus treats it as the target of the white-box test techniques: statement coverage is the share of the executable statements that the tests exercise, and branch coverage is the share of the branches. SWEBOK v4 names further criteria, such as condition, MC/DC, path, and data flow coverage.
 
 ## Directives
 
-- Prefer branch coverage over statement coverage. ^prefer-branch-coverage
+- Measure branch coverage, not only statement coverage. ^prefer-branch-coverage
   - scope: subtree
   - basis: standard
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=43
-- If safety-critical code needs more thorough coverage, use a criterion stronger than branch coverage, such as `MC/DC`. ^stronger-criteria-for-critical-code
+- In safety-critical or mission-critical code, use a coverage criterion more rigorous than branch coverage. ^stronger-criteria-for-critical-code
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -71,7 +71,7 @@ A measure of the degree to which a test suite exercises the code of a system. Iv
   - status: proposed
   - origin: template
   - sources: https://testing.googleblog.com/2020/08/code-coverage-best-practices.html
-- Prefer a coverage target for each commit over a project-wide target above `90%`. ^prefer-per-commit-targets
+- Set a coverage goal for each commit in place of a project-wide goal above `90%`. ^prefer-per-commit-targets
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -131,7 +131,7 @@ A measure of the degree to which a test suite exercises the code of a system. Iv
 
 ## Notes
 
-The coverage criteria form a ladder. Branch coverage subsumes statement coverage: a test set with `100%` branch coverage also has `100%` statement coverage, but not the other way round. SWEBOK v4 names stronger control flow criteria, such as condition, decision, and MC/DC coverage, and path coverage at the top. Loops make full path coverage infeasible, so the weaker criteria limit the loop iterations. Data flow criteria follow each variable from its definition to its use.
+Branch coverage subsumes statement coverage: a test set with `100%` branch coverage also has `100%` statement coverage, but not the other way round. SWEBOK v4 also names condition, decision, and MC/DC coverage, and calls path coverage the strongest control flow criterion. Loops make full path coverage infeasible, so the less stringent criteria limit the loop iterations. Data flow criteria follow each variable from its definition to its use.
 
 Coverage shows which code ran, not whether a test checked its result. A test can execute a line without an assertion on it. A statement with a data-dependent defect, such as a division by zero, can run without a failure. Code that does not implement a requirement has no line to cover, so white-box testing can miss defects of omission. Mutation testing checks whether the tests detect a change in the covered code.
 

@@ -35,7 +35,7 @@ The coverage of this practice area follows 2 anchors: the ISTQB Certified Tester
 - Test management stays out: planning, estimation, monitoring, roles, and staffing. The tree holds no node for it.
 - Experience-based techniques, such as error guessing and checklists, stay with exploratory testing in software quality.
 - The non-functional types other than performance stay out. The sources give no rules that an agent can apply alone.
-- Syntax testing, cause-effect graphing, domain-specific testing, and test tools stay out. Decision tables cover the logic of cause-effect graphs.
+- Syntax testing, cause-effect graphing, domain-specific testing, and test tools stay out. SWEBOK names cause-effect graphing as a technique related to decision tables.
 
 ## Comes from
 

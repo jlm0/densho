@@ -17,7 +17,7 @@ broader:
 
 ## Definition
 
-Testing that confirms that a change causes no adverse effect on the parts of the system that worked before. The ISTQB Foundation Level syllabus gives this definition, and pairs it with confirmation testing, which confirms that a fix removed the original defect. SWEBOK v4 calls regression testing the selective retesting of the system under test after a change, and adds the selection, the minimization, and the prioritization of the tests. A regression suite works only when its tests are deterministic. Luo and colleagues call a test with a non-deterministic outcome a flaky test.
+Testing that confirms that a change causes no adverse effect on the parts of the system that worked before. The ISTQB Foundation Level syllabus gives this definition, and pairs it with confirmation testing, which confirms that a fix removed the original defect. SWEBOK v4 calls regression testing the selective retesting of the system under test after a change, and adds the selection, the minimization, and the prioritization of the tests. Martin Fowler warns that a non-deterministic test can ruin the whole regression suite. Luo and colleagues call a test with a non-deterministic outcome a flaky test.
 
 ## Directives
 
@@ -76,7 +76,7 @@ Testing that confirms that a change causes no adverse effect on the parts of the
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=31
-- Order the regression tests by risk, by coverage, or by the priority of their requirements. ^order-tests-by-priority
+- Order the regression tests by the product risks that they cover. ^order-tests-by-priority
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -95,45 +95,51 @@ Testing that confirms that a change causes no adverse effect on the parts of the
   - status: proposed
   - origin: template
   - sources: https://mir.cs.illinois.edu/lamyaa/publications/fse14.pdf#page=2
-- Prefer a rebuild of the starting state of each test over a clean-up after each test. ^isolated-test-state
+- Build the starting state of each test from scratch, unless the build is too slow. ^isolated-test-state
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://martinfowler.com/articles/nonDeterminism.html
+  - sources: https://martinfowler.com/articles/nonDeterminism.html#LackOfIsolation
 - If a rebuild of the starting state is too slow, reset each shared state after each test. ^clean-shared-state
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://martinfowler.com/articles/nonDeterminism.html
+  - sources: https://martinfowler.com/articles/nonDeterminism.html#LackOfIsolation
   - sources: https://mir.cs.illinois.edu/lamyaa/publications/fse14.pdf#page=2
-- Wait for an asynchronous result with a callback or a polling loop with a timeout, not with a fixed sleep. ^wait-by-polling
+- Wait for an asynchronous result with a callback, unless the service has no callback. ^wait-by-callback
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://martinfowler.com/articles/nonDeterminism.html
-  - sources: https://mir.cs.illinois.edu/lamyaa/publications/fse14.pdf#page=2
+  - sources: https://martinfowler.com/articles/nonDeterminism.html#AsynchronousBehavior
   - sources: https://abseil.io/resources/swe-book/html/ch14.html#driving_out_flakiness
+- If an asynchronous service has no callback, wait for its result in a polling loop with a wait limit. ^wait-by-polling
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://martinfowler.com/articles/nonDeterminism.html#AsynchronousBehavior
+  - sources: https://mir.cs.illinois.edu/lamyaa/publications/fse14.pdf#page=2
 - Set each wait limit of a test from `1` shared setting, not as a literal value. ^shared-wait-limits
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://martinfowler.com/articles/nonDeterminism.html
+  - sources: https://martinfowler.com/articles/nonDeterminism.html#AsynchronousBehavior
 - Raise a distinct timeout error when a test reaches its wait limit. ^distinct-timeout-error
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://martinfowler.com/articles/nonDeterminism.html
+  - sources: https://martinfowler.com/articles/nonDeterminism.html#AsynchronousBehavior
 - If you suspect a resource leak, limit each pool to `1` resource, with an error for an empty pool. ^expose-resource-leaks
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://martinfowler.com/articles/nonDeterminism.html
+  - sources: https://martinfowler.com/articles/nonDeterminism.html#ResourceLeaks
 - Track the flaky results of each test over time. ^track-flakiness
   - scope: subtree
   - basis: practitioner
@@ -154,7 +160,7 @@ Testing that confirms that a change causes no adverse effect on the parts of the
   - origin: template
   - sources: https://testing.googleblog.com/2016/05/flaky-tests-at-google-and-how-we.html
   - sources: https://martinfowler.com/articles/nonDeterminism.html#Quarantine
-- Limit the quarantine by a count of tests or by a time, such as `1` week for each test. ^limit-the-quarantine
+- Limit the time of each test in quarantine to `1` week. ^limit-the-quarantine
   - scope: subtree
   - basis: practitioner
   - status: proposed

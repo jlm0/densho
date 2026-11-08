@@ -15,7 +15,7 @@ Anthropic names 3 types of grader:
 
 - A code-based grader is the fastest and the most reliable, and it scales. It includes string matches, binary tests, static analysis, and checks of the tool calls. It is brittle to valid variations of an answer.
 - A model-based grader, or LLM grader, is fast, flexible, and suitable for complex judgment. It needs calibration with human graders.
-- A human grader is the most flexible and gives high quality, but it is slow and expensive. Anthropic keeps systematic human studies for the calibration of LLM graders.
+- A human grader is the most flexible and gives high quality, but it is slow and expensive. Anthropic uses human graders to calibrate LLM graders.
 
 A task can combine graders. Its score can be weighted, binary, or a hybrid of the 2.
 

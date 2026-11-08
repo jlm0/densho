@@ -110,7 +110,7 @@ Testing that checks the performance of a system or a component under different v
   - status: proposed
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=46
-- Prefer a performance test environment that matches production in its data, its hardware, and its software. ^production-like-environment
+- Make the performance test environment match production in data, hardware, software, and network, unless no match is possible. ^production-like-environment
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -164,7 +164,7 @@ Testing that checks the performance of a system or a component under different v
   - status: proposed
   - origin: template
   - sources: https://www.istqb.org/wp-content/uploads/2024/11/ISTQB-CT-PT_Syllabus_v1.0_2018.pdf#page=11
-- Set each response time goal at a percentile, such as the `90th`, not at the average. ^percentile-response-goals
+- Set each response time goal at the `90th` percentile. ^percentile-response-goals
   - scope: subtree
   - basis: standard
   - status: proposed

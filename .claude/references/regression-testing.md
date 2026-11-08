@@ -7,7 +7,7 @@ No directive is in force at this node.
 
 ## Definition
 
-Testing that confirms that a change causes no adverse effect on the parts of the system that worked before. The ISTQB Foundation Level syllabus gives this definition, and pairs it with confirmation testing, which confirms that a fix removed the original defect. SWEBOK v4 calls regression testing the selective retesting of the system under test after a change, and adds the selection, the minimization, and the prioritization of the tests. A regression suite works only when its tests are deterministic. Luo and colleagues call a test with a non-deterministic outcome a flaky test.
+Testing that confirms that a change causes no adverse effect on the parts of the system that worked before. The ISTQB Foundation Level syllabus gives this definition, and pairs it with confirmation testing, which confirms that a fix removed the original defect. SWEBOK v4 calls regression testing the selective retesting of the system under test after a change, and adds the selection, the minimization, and the prioritization of the tests. Martin Fowler warns that a non-deterministic test can ruin the whole regression suite. Luo and colleagues call a test with a non-deterministic outcome a flaky test.
 
 ## Notes
 

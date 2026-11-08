@@ -98,20 +98,33 @@ A test of an AI system: the test gives the system an input, and applies grading 
   - status: proposed
   - origin: template
   - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#how-to-think-about-non-determinism-in-evaluations-for-agents
-- Prefer a code-based grader over an LLM grader, and an LLM grader over a human grader. ^code-graders-first
+- If `1` success in `k` attempts is enough for the product, measure `pass@k`. ^pass-at-k-for-one-success
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#how-to-think-about-non-determinism-in-evaluations-for-agents
+- Use a code-based grader for each eval result, unless the grade needs a complex judgment. ^code-graders-first
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests#grade-your-evaluations
   - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#design-the-eval-harness-and-graders
-- Prefer more test cases with automated grading over fewer test cases with human grading. ^volume-over-hand-grading
+- If the grade of an eval result needs a complex judgment, use an LLM grader, not a human grader. ^llm-grader-for-complex-judgment
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests#grade-your-evaluations
+  - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#design-the-eval-harness-and-graders
+- Choose more test cases with automated grading, not fewer test cases with human grading. ^volume-over-hand-grading
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests#eval-design-principles
-- Prefer a check of the outcome of each trial over a check of the order of its tool calls. ^check-the-outcome
+- Check the outcome of each trial, not the order of its tool calls. ^check-the-outcome
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -129,7 +142,7 @@ A test of an AI system: the test gives the system an input, and applies grading 
   - status: proposed
   - origin: template
   - sources: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests#tips-for-llm-based-grading
-- Prefer a separate LLM grader for each dimension of a task. ^one-llm-grader-per-dimension
+- Use a separate LLM grader for each dimension of a task. ^one-llm-grader-per-dimension
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -166,7 +179,7 @@ A test of an AI system: the test gives the system an input, and applies grading 
   - status: proposed
   - origin: template
   - sources: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents#design-the-eval-harness-and-graders
-- In an eval of a coding agent, check the generated code with its tests and an LLM rubric. ^tests-for-coding-agents
+- In an eval of a coding agent, check correctness with unit tests and code quality with an LLM rubric. ^tests-for-coding-agents
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -265,7 +278,7 @@ Anthropic names 3 types of grader:
 
 - A code-based grader is the fastest and the most reliable, and it scales. It includes string matches, binary tests, static analysis, and checks of the tool calls. It is brittle to valid variations of an answer.
 - A model-based grader, or LLM grader, is fast, flexible, and suitable for complex judgment. It needs calibration with human graders.
-- A human grader is the most flexible and gives high quality, but it is slow and expensive. Anthropic keeps systematic human studies for the calibration of LLM graders.
+- A human grader is the most flexible and gives high quality, but it is slow and expensive. Anthropic uses human graders to calibrate LLM graders.
 
 A task can combine graders. Its score can be weighted, binary, or a hybrid of the 2.
 

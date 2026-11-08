@@ -87,13 +87,13 @@ The dynamic validation that a system under test gives the expected behavior on a
   - origin: template
   - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=121
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=19
-- Review each requirement and each design contract for ambiguity, gaps, and contradictions before you write its tests. ^review-the-test-basis
+- Review the specification for ambiguities, gaps, and contradictions before you write its tests. ^review-the-test-basis
   - scope: node
   - basis: standard
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=27
-- Check the testability of each requirement and each contract during test analysis. ^check-testability
+- During test analysis, check the testability of the test basis and the test object. ^check-testability
   - scope: node
   - basis: standard
   - status: proposed
@@ -105,7 +105,7 @@ The dynamic validation that a system under test gives the expected behavior on a
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=20
-- Link each test to the requirement, the contract, or the risk that it covers. ^trace-tests-to-the-basis
+- Link each test case to each element of the test basis that it covers. ^trace-tests-to-the-basis
   - scope: node
   - basis: standard
   - status: proposed
@@ -133,7 +133,7 @@ The dynamic validation that a system under test gives the expected behavior on a
   - origin: template
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#WhatToTest
   - sources: https://abseil.io/resources/swe-book/html/ch12.html#test_via_public_apis
-- Run static analysis of the source code before the dynamic tests, or as part of an automated process. ^static-analysis-first
+- Run static analysis of the source code before the dynamic tests. ^static-analysis-first
   - scope: node
   - basis: standard
   - status: proposed
@@ -225,7 +225,7 @@ The dynamic validation that a system under test gives the expected behavior on a
   - status: proposed
   - origin: template
   - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=121
-- Write a defect report for each failure that a test finds. ^report-each-defect
+- Write a defect report for each anomaly of a test run after you analyze its cause. ^report-each-defect
   - scope: node
   - basis: standard
   - status: proposed
@@ -296,4 +296,4 @@ The coverage of this practice area follows 2 anchors: the ISTQB Certified Tester
 - Test management stays out: planning, estimation, monitoring, roles, and staffing. The tree holds no node for it.
 - Experience-based techniques, such as error guessing and checklists, stay with exploratory testing in software quality.
 - The non-functional types other than performance stay out. The sources give no rules that an agent can apply alone.
-- Syntax testing, cause-effect graphing, domain-specific testing, and test tools stay out. Decision tables cover the logic of cause-effect graphs.
+- Syntax testing, cause-effect graphing, domain-specific testing, and test tools stay out. SWEBOK names cause-effect graphing as a technique related to decision tables.

@@ -12,7 +12,7 @@ This file is step 5 of 5 of the skill `design-interface`.
 
 ## Directives
 
-- Use a design token, not a raw value, for each color, size, and space in a component. ^use-tokens-not-values
+- Use a design token, not a hard-coded value, for each color and each space in a component. ^use-tokens-not-values
 - Build each new organism from the atoms and molecules that the system holds. ^compose-from-the-system
 - Give each molecule one job. ^one-job-per-molecule
 - State the image sizes and the text lengths that each template accepts. ^state-content-limits

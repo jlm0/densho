@@ -61,12 +61,6 @@ The ten general principles for interaction design that Jakob Nielsen published i
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/visibility-system-status/
-- Use the words of the users in each label and message, not internal terms. ^use-the-words-of-users
-  - scope: subtree
-  - basis: practitioner
-  - status: proposed
-  - origin: template
-  - sources: https://www.nngroup.com/articles/ten-usability-heuristics/
 - Give each modal view and each multi-step process a visible control that exits it. ^visible-exit
   - scope: subtree
   - basis: practitioner
@@ -75,24 +69,6 @@ The ten general principles for interaction design that Jakob Nielsen published i
   - sources: https://www.nngroup.com/articles/ten-usability-heuristics/
   - sources: https://www.nngroup.com/articles/user-control-and-freedom/
   - sources: https://developer.apple.com/design/human-interface-guidelines/modality
-- Make each back control return to the previous screen, not to the start of the flow. ^back-one-step
-  - scope: subtree
-  - basis: practitioner
-  - status: proposed
-  - origin: template
-  - sources: https://www.nngroup.com/articles/user-control-and-freedom/
-- Do not disable the back button of the browser. ^keep-browser-back
-  - scope: subtree
-  - basis: practitioner
-  - status: proposed
-  - origin: template
-  - sources: https://www.nngroup.com/articles/user-control-and-freedom/
-- Make the back button close a full-screen overlay. ^back-closes-overlay
-  - scope: subtree
-  - basis: practitioner
-  - status: proposed
-  - origin: template
-  - sources: https://www.nngroup.com/articles/user-control-and-freedom/
 - Give an undo for each change that a user makes to their content or settings. ^undo-each-change
   - scope: subtree
   - basis: practitioner
@@ -170,6 +146,7 @@ The ten general principles for interaction design that Jakob Nielsen published i
   - basis: practitioner
   - status: proposed
   - origin: template
+  - also_attached_to: error-messages
   - sources: https://www.nngroup.com/articles/ten-usability-heuristics/
   - sources: https://www.nngroup.com/articles/error-message-guidelines/
 - Show each error message next to the element that caused it. ^error-near-source
@@ -177,30 +154,35 @@ The ten general principles for interaction design that Jakob Nielsen published i
   - basis: practitioner
   - status: proposed
   - origin: template
+  - also_attached_to: error-messages
   - sources: https://www.nngroup.com/articles/error-message-guidelines/
 - Keep the input of the user in each field that shows an error. ^keep-input-after-error
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
+  - also_attached_to: error-messages
   - sources: https://www.nngroup.com/articles/error-message-guidelines/
 - Do not show an error for an empty field before the user submits the form. ^no-early-error
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
+  - also_attached_to: error-messages
   - sources: https://www.nngroup.com/articles/error-message-guidelines/
 - Do not use words that blame the user, such as `invalid` or `illegal`, in an error message. ^no-blame-in-errors
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
+  - also_attached_to: error-messages
   - sources: https://www.nngroup.com/articles/error-message-guidelines/
 - Show a warning that does not block the task in a different style from an error. ^warning-differs-from-error
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
+  - also_attached_to: error-messages
   - sources: https://www.nngroup.com/articles/error-message-guidelines/
 - Put each help text next to the field or the step that it explains. ^help-in-context
   - scope: subtree

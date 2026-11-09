@@ -7,11 +7,15 @@ No directive is in force at this node.
 
 ## Definition
 
-Deciding the order in which a team works on items when it cannot build everything at once. Here, the team orders the items with RICE: the total impact of each item for each unit of work. Assumption tests set the confidence of each item, and the outcome from product measurement is the measure of reach and impact. Marty Cagan warns that a roadmap of features tells a team what to build without the problem that each feature solves.
+Deciding the order in which a team works on items when it cannot build everything at once.
 
 ## Notes
 
+Marty Cagan warns that a roadmap of features tells a team what to build without the problem that each feature solves.
+
 Cagan keeps two needs that a roadmap serves: work on the most valuable items first, and dates that the business needs. Prioritized business objectives for each team meet the first need. A high-integrity commitment meets the second, for the few cases that need a date.
+
+RICE scoring is the concept of this area: the total impact of each item for each unit of work. Assumption tests set the confidence of each item. The outcome from product measurement is the measure of reach and impact.
 
 ## Comes from
 

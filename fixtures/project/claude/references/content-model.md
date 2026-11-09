@@ -7,6 +7,10 @@ From [Digital product development](digital-product-development.md):
 
 - Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
+From [Brand design](brand-design.md):
+
+- Write each message to a user in the voice of the brand definition. ^write-in-brand-voice
+
 ## Definition
 
 A document of all the types of content of a project. In the words of Rachel Lovinger, it holds detailed definitions of the elements of each content type and of the relationships between the types.

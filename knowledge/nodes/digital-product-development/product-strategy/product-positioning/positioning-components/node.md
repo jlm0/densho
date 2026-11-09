@@ -51,7 +51,19 @@ The five parts of positioning in April Dunford's method. Competitive alternative
   - status: proposed
   - origin: template
   - sources: https://www.aprildunford.com/post/a-quickstart-guide-to-positioning
-- Choose an existing market category for the product, not a new category. ^prefer-an-existing-category
+- Choose an existing market category for the product, unless the company decides to create a new category. ^choose-existing-category
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://www.aprildunford.com/post/a-quickstart-guide-to-positioning
+- If the product beats the category leaders only for one kind of buyer, add that niche to the category name. ^name-category-niche
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://www.aprildunford.com/post/a-quickstart-guide-to-positioning
+- If the company creates a new market category, explain the category to customers as the first step of its positioning. ^define-new-category
   - scope: subtree
   - basis: practitioner
   - status: proposed

@@ -18,7 +18,7 @@ From [Brand design](brand-design.md):
 
 From [Brand systems](brand-systems.md):
 
-- Store the brand colors, typefaces, and type scale in design token files. ^brand-values-as-tokens
+- Store the colors and the typography of the brand as a set of design tokens, the brand theme. ^brand-values-as-tokens
 
 From [Brand architecture](brand-architecture.md):
 

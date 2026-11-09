@@ -8,8 +8,8 @@ From [Governance](../rules/knowledge/governance.md):
 - Set `basis` to `judgment` on each directive that names no source. ^judgment-without-a-source
 - Do not use `--no-verify` on a commit. ^keep-the-hook
 - Do not write the name or the email of a person in a node or a test. ^no-personal-data
-- Apply one workflow to domain knowledge and to workspace knowledge. ^one-workflow
-- Run each hook in `.pre-commit-config.yaml` on each file before each commit. ^run-checks-before-commit
+- Run the same checks and the same review on workspace knowledge as on domain knowledge. ^one-workflow
+- Run each hook in `.pre-commit-config.yaml` on each staged file before each commit. ^run-checks-before-commit
 
 From [Change rules](change-rules.md):
 

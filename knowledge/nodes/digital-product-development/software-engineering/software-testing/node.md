@@ -110,6 +110,7 @@ The dynamic validation that a system under test gives the expected behavior on a
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: requirements-traceability
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=20
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=21
 - Write the tests of each behavior before construction writes its code. ^tests-before-code
@@ -117,6 +118,7 @@ The dynamic validation that a system under test gives the expected behavior on a
   - basis: standard
   - status: proposed
   - origin: template
+  - refines: test-each-behavior-change
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=26
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=27
 - Include a test that reproduces the bug in each bug fix. ^test-before-bug-fix
@@ -142,12 +144,13 @@ The dynamic validation that a system under test gives the expected behavior on a
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=27
-- Run the automated component tests on each commit in continuous integration. ^tests-in-continuous-integration
+- Run the automated component tests and the automated regression tests on each commit in continuous integration. ^tests-in-continuous-integration
   - scope: node
   - basis: standard
   - status: proposed
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=27
+  - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=31
 - Commit the automated tests with the source code that they test. ^commit-tests-with-code
   - scope: node
   - basis: standard
@@ -266,6 +269,7 @@ The dynamic validation that a system under test gives the expected behavior on a
   - basis: standard
   - status: proposed
   - origin: template
+  - also_attached_to: definition-of-done
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=49
 - After test completion, add a backlog item for each unresolved defect. ^backlog-item-for-open-defects
   - scope: node

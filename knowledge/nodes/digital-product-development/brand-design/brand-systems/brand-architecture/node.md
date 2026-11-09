@@ -28,13 +28,13 @@ Most large companies mix the types.
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://catalogimages.wiley.com/images/db/pdf/9781118980828.excerpt.pdf
+  - sources: https://catalogimages.wiley.com/images/db/pdf/9781118980828.excerpt.pdf#page=23
 - In a monolithic brand architecture, name each product with the parent brand and a generic descriptor. ^monolithic-descriptors
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://catalogimages.wiley.com/images/db/pdf/9781118980828.excerpt.pdf
+  - sources: https://catalogimages.wiley.com/images/db/pdf/9781118980828.excerpt.pdf#page=23
 
 ## Notes
 

@@ -25,7 +25,7 @@ A flaw that lets untrusted input reach an interpreter, such as a database, a she
   - origin: template
   - also_attached_to: software-construction
   - also_attached_to: software-quality
-  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x10-V1-Encoding-and-Sanitization.md
+  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x10-V1-Encoding-and-Sanitization.md#v12-injection-prevention
   - sources: https://top10.owasp.org/2025/A05_2025-Injection/
 - Pass each argument of an operating system command as a separate parameter, not through a shell string. ^no-shell-string
   - scope: subtree
@@ -34,7 +34,7 @@ A flaw that lets untrusted input reach an interpreter, such as a database, a she
   - origin: template
   - also_attached_to: software-construction
   - also_attached_to: software-quality
-  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x10-V1-Encoding-and-Sanitization.md
+  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x10-V1-Encoding-and-Sanitization.md#v12-injection-prevention
   - sources: https://top10.owasp.org/2025/A05_2025-Injection/
 - Do not use `eval` or another feature that runs dynamic code. ^no-dynamic-code
   - scope: subtree
@@ -43,7 +43,7 @@ A flaw that lets untrusted input reach an interpreter, such as a database, a she
   - origin: template
   - also_attached_to: software-construction
   - also_attached_to: software-quality
-  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x10-V1-Encoding-and-Sanitization.md
+  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x10-V1-Encoding-and-Sanitization.md#v13-sanitization
 - Validate each input on the server against an allow list of values, patterns, or ranges. ^validate-input-on-server
   - scope: subtree
   - basis: standard
@@ -52,7 +52,7 @@ A flaw that lets untrusted input reach an interpreter, such as a database, a she
   - also_attached_to: software-architecture
   - also_attached_to: software-construction
   - also_attached_to: software-quality
-  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x11-V2-Validation-and-Business-Logic.md
+  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x11-V2-Validation-and-Business-Logic.md#v22-input-validation
   - sources: https://top10.owasp.org/2025/A05_2025-Injection/
 - Encode each untrusted value for the context where the output uses it. ^encode-output-for-context
   - scope: subtree
@@ -61,7 +61,7 @@ A flaw that lets untrusted input reach an interpreter, such as a database, a she
   - origin: template
   - also_attached_to: software-construction
   - also_attached_to: software-quality
-  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x10-V1-Encoding-and-Sanitization.md
+  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x10-V1-Encoding-and-Sanitization.md#v12-injection-prevention
 
 ## Notes
 

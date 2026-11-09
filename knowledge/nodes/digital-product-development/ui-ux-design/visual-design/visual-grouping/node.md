@@ -57,7 +57,7 @@ Max Wertheimer described proximity, similarity, and common fate in 1923. Common 
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/gestalt-proximity/
-- Separate two groups with whitespace, not with a divider line, unless the space between them is fixed. ^prefer-space-over-divider
+- Separate two groups with whitespace, not with a divider line, unless the space between them is fixed. ^space-not-divider
   - scope: subtree
   - basis: research
   - status: proposed

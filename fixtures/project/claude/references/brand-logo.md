@@ -27,7 +27,7 @@ From [Logo](brand-logo.md):
 - Give each logo a version for light backgrounds and a version for dark backgrounds. ^logo-color-versions
 - State a minimum size for each logo in print and on screens. ^logo-minimum-size
 - Name each lockup of the logo and the layouts that it serves. ^name-each-lockup
-- Do not place a logo on a busy or complex background. ^no-busy-logo-background
+- Place a logo only where each part of it has the contrast ratio that text of its size needs. ^no-busy-logo-background
 - Do not add a shadow, an outline, or a gradient to a logo. ^no-logo-effects
 - Do not place type, photos, or graphics inside the clear space of a logo. ^nothing-in-clear-space
 

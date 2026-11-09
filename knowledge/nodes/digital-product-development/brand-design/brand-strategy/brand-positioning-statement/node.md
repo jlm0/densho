@@ -32,7 +32,7 @@ The team uses the statement to align each decision that customers see, such as t
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://catalogimages.wiley.com/images/db/pdf/9781119533184.excerpt.pdf
+  - sources: https://catalogimages.wiley.com/images/db/pdf/9781119533184.excerpt.pdf#page=4
 - Take the target, the frame of reference, and the point of difference from the positioning components of the product. ^statement-from-components
   - scope: subtree
   - basis: practitioner
@@ -44,37 +44,38 @@ The team uses the statement to align each decision that customers see, such as t
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://catalogimages.wiley.com/images/db/pdf/9781119533184.excerpt.pdf
+  - refines: positioning-statement-parts
+  - sources: https://catalogimages.wiley.com/images/db/pdf/9781119533184.excerpt.pdf#page=7
 - Name the points of parity that the brand shares with its frame of reference. ^name-points-of-parity
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://catalogimages.wiley.com/images/db/pdf/9781119533184.excerpt.pdf
+  - sources: https://catalogimages.wiley.com/images/db/pdf/9781119533184.excerpt.pdf#page=6
 - Do not choose a reason to believe that weakens another claim of the statement. ^no-conflicting-reason
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://catalogimages.wiley.com/images/db/pdf/9781119533184.excerpt.pdf
+  - sources: https://catalogimages.wiley.com/images/db/pdf/9781119533184.excerpt.pdf#page=10
 - If a positioning statement stays true with the name of a competitor in it, replace the point of difference. ^competitor-name-test
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://catalogimages.wiley.com/images/db/pdf/9781119533184.excerpt.pdf
+  - sources: https://catalogimages.wiley.com/images/db/pdf/9781119533184.excerpt.pdf#page=11
 - Test each positioning statement with people outside the company for clarity and belief. ^test-statement-outside
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://catalogimages.wiley.com/images/db/pdf/9781119533184.excerpt.pdf
+  - sources: https://catalogimages.wiley.com/images/db/pdf/9781119533184.excerpt.pdf#page=11
 - Do not publish a positioning statement as copy for customers. ^statement-is-internal
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://catalogimages.wiley.com/images/db/pdf/9781119533184.excerpt.pdf
+  - sources: https://catalogimages.wiley.com/images/db/pdf/9781119533184.excerpt.pdf#page=4
 
 ## Notes
 

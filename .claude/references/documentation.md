@@ -7,7 +7,11 @@ No directive is in force at this node.
 
 ## Definition
 
-The docs of a product and its developer interfaces. Here, each doc follows one of the four forms of Diátaxis.
+The docs of a product and its developer interfaces.
+
+## Notes
+
+Diátaxis is the concept of this area. It names four forms of a doc: a tutorial, a how-to guide, a reference, and an explanation.
 
 ## Comes from
 

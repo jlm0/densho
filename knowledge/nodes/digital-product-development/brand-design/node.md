@@ -39,6 +39,7 @@ The identity that a product presents: its name, voice, logo, color, typography, 
   - basis: practitioner
   - status: proposed
   - origin: template
+  - also_attached_to: content-design
   - sources: https://styleguide.mailchimp.com/voice-and-tone/
   - sources: https://learn.microsoft.com/en-us/style-guide/brand-voice-above-all-simple-human
 

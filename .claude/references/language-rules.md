@@ -7,4 +7,4 @@ No directive is in force at this node.
 
 ## Definition
 
-The controlled language of each directive, trigger, and skill description. The rules live in the grammar file, next to the checks that enforce them.
+The controlled language of each directive, trigger, and skill description, and the rules for the sources of a directive. The grammar file holds the language rules, next to the checks that enforce them.

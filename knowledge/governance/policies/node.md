@@ -37,7 +37,7 @@ The rules that set how knowledge enters the graph and how it changes. They cover
 
 ## Directives
 
-- Run each hook in `.pre-commit-config.yaml` on each file before each commit. ^run-checks-before-commit
+- Run each hook in `.pre-commit-config.yaml` on each staged file before each commit. ^run-checks-before-commit
   - scope: subtree
   - basis: judgment
   - status: proposed
@@ -47,7 +47,7 @@ The rules that set how knowledge enters the graph and how it changes. They cover
   - basis: judgment
   - status: proposed
   - origin: template
-- Apply one workflow to domain knowledge and to workspace knowledge. ^one-workflow
+- Run the same checks and the same review on workspace knowledge as on domain knowledge. ^one-workflow
   - scope: subtree
   - basis: judgment
   - status: proposed

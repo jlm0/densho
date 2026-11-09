@@ -30,17 +30,18 @@ Pages:
 Directives:
 
 - Give each screen one primary action, unless the screen is a settings screen. ^one-primary-action
-- Make the most important element on each screen the biggest element. ^make-most-important-biggest
+- Make the primary action or the primary content of each screen its biggest element. ^make-most-important-biggest
 - Limit each screen to `2` elements at the largest size. ^limit-largest-elements
 - Limit the text on each screen to `3` sizes. ^limit-text-sizes
-- Limit each screen to `3` contrast levels. ^limit-contrast-levels
-- Use a bright color only for the primary action or the primary content of a screen. ^reserve-bright-color
+- Use at most `3` contrast treatments of text on each screen, such as for headers, subheaders, and body text. ^limit-contrast-levels
+- Use a bright color that is not warm only for the primary action or the primary content of a screen. ^reserve-bright-color
+- Use a warm bright color, such as red, only for a warning or an error. ^reserve-warm-bright-color
 - Do not give a secondary button the color of the primary button. ^distinct-primary-button-color
 - Mark the preferred button in a set of choices with a prominent style, not a larger size. ^mark-preferred-with-style
 - Place related elements closer to each other than to other elements. ^place-related-elements-close
 - Do not group unrelated controls. ^no-unrelated-group
 - Place each heading closer to the text below it than to the text above it. ^heading-near-its-section
-- Separate two groups with whitespace, not with a divider line, unless the space between them is fixed. ^prefer-space-over-divider
+- Separate two groups with whitespace, not with a divider line, unless the space between them is fixed. ^space-not-divider
 - If the space between two groups is fixed, put each group inside a border or a background. ^boundary-for-fixed-space
 - Give elements with the same function the same visual style. ^same-style-same-function
 - Give each text link in an interface the same color. ^one-link-color
@@ -50,7 +51,7 @@ Directives:
 - Do not hide a glyph label behind a hover. ^no-hover-labels
 - Do not use one glyph for two different functions. ^no-shared-glyph
 - Use the standard glyph of the platform for each standard action, such as share or delete. ^platform-glyphs
-- If a glyph, an image, or a grouping states the same information as a sentence, replace the sentence with it. ^prefer-visual-form
+- If a glyph, an image, or a grouping states the same information as a sentence, replace the sentence with it. ^replace-text-with-visual
 - Do not add a sentence that repeats what a heading, a label, or a value states. ^no-repeated-text
 
 ### If the screen holds a form

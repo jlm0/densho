@@ -65,7 +65,7 @@ From [UI/UX design](ui-ux-design.md):
 
 From [Design systems](design-systems.md):
 
-- Use a design token, not a raw value, for each color, size, and space in a component. ^use-tokens-not-values
+- Use a design token, not a hard-coded value, for each color and each space in a component. ^use-tokens-not-values
 
 From [Atomic design](atomic-design.md):
 

@@ -7,9 +7,17 @@ From [Digital product development](digital-product-development.md):
 
 - Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
+From [Brand design](brand-design.md):
+
+- Write each message to a user in the voice of the brand definition. ^write-in-brand-voice
+
 ## Definition
 
-The docs of a product and its developer interfaces. Here, each doc follows one of the four forms of Diátaxis.
+The docs of a product and its developer interfaces.
+
+## Notes
+
+Diátaxis is the concept of this area. It names four forms of a doc: a tutorial, a how-to guide, a reference, and an explanation.
 
 ## Comes from
 

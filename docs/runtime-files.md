@@ -111,7 +111,7 @@ The root ends with a table that sends each kind of activity to one skill, so the
 
 Each row is a `densho:SkillPointer` on the root, with the activity as its trigger. The [graph checks](graph-checks.md#skills-and-steps) make each task and lens skill have a row, and make its description hold the activity, so the table and the skill listing agree. Rows sort by skill ID.
 
-Three root directives in the section Use a skill make the table binding: run the skill of a matching row first, follow each directive, required read, and procedure step of the skill, and after a compaction read the current step file and its required reads again. They are proposals for now, like every seed directive.
+Three root directives in the section Use a skill make the table binding: run the skill of a matching row first, follow each procedure step of the skill and each directive that it points to, and after a compaction read the file of the current step and each page that it names again. They are proposals for now, like every seed directive.
 
 ## Task skills
 

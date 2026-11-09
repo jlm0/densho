@@ -7,7 +7,11 @@ No directive is in force at this node.
 
 ## Definition
 
-The writing of the content of a product so that its readers find, understand, and use it. Here, plain language comes first, and the most important information leads.
+The writing of the content of a product so that its readers find, understand, and use it.
+
+## Notes
+
+The concepts of this area are plain language and the inverted pyramid. Plain language covers the words of each text. The inverted pyramid puts the most important information first.
 
 ## Comes from
 

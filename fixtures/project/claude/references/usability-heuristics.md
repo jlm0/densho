@@ -72,15 +72,12 @@ From [Usability heuristics](usability-heuristics.md):
 
 - Give each frequent action an accelerator, such as a keyboard shortcut. ^accelerators-for-frequent-actions
 - Label each button of a confirmation dialog with its action, not with `Yes`, `No`, or `OK`. ^action-labels-in-dialogs
-- Make the back button close a full-screen overlay. ^back-closes-overlay
-- Make each back control return to the previous screen, not to the start of the flow. ^back-one-step
 - Ask for confirmation before an action that destroys user work and has no undo. ^confirm-destructive-action
 - Ask for confirmation before a view with unsaved changes closes. ^confirm-unsaved-close
 - Show each error message next to the element that caused it. ^error-near-source
 - Do not remove an item that a user saved without a message that states why. ^explain-removed-items
 - Put each help text next to the field or the step that it explains. ^help-in-context
 - Write each help topic as a list of concrete steps. ^help-lists-steps
-- Do not disable the back button of the browser. ^keep-browser-back
 - Keep the input of the user in each field that shows an error. ^keep-input-after-error
 - Do not use words that blame the user, such as `invalid` or `illegal`, in an error message. ^no-blame-in-errors
 - Do not make a destructive button the default button of a dialog. ^no-destructive-default
@@ -95,7 +92,6 @@ From [Usability heuristics](usability-heuristics.md):
 - Give a visible control to stop each operation that takes more than `10` seconds. ^stop-long-operation
 - Tell the user before the product takes an action with consequences for them. ^tell-before-consequences
 - Give an undo for each change that a user makes to their content or settings. ^undo-each-change
-- Use the words of the users in each label and message, not internal terms. ^use-the-words-of-users
 - Give each modal view and each multi-step process a visible control that exits it. ^visible-exit
 - Give a visible control for each action that a shortcut or a gesture starts. ^visible-path-for-shortcuts
 - Show a warning that does not block the task in a different style from an error. ^warning-differs-from-error

@@ -18,7 +18,6 @@ pages:
 directives:
   - show-what-the-task-needs
   - card-sort-new-categories
-  - name-categories-for-users
   - review-card-sort-names
   - define-controlled-vocabulary
   - one-word-one-meaning

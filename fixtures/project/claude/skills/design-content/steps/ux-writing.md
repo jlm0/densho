@@ -7,6 +7,13 @@ This file is step 3 of 4 of the skill `design-content`.
 
 No directive is in force at this step.
 
+## Required reads
+
+Read each file in this list, and follow the directives that its line names.
+
+- Read [Usability heuristics](../../../references/usability-heuristics.md), and follow these directives from it: `error-near-source`, `keep-input-after-error`, `no-blame-in-errors`, `no-early-error`, `plain-error-message`, `warning-differs-from-error`.
+- Read [Brand voice](../../../references/brand-voice.md), and follow these directives from it: `no-joke-in-errors`.
+
 ## Inputs
 
 - The screens and the flows of the interface

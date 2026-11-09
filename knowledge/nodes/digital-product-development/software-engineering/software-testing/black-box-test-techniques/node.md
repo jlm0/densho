@@ -70,7 +70,7 @@ Techniques that select test cases from the specified behavior of the test object
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=40
   - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=127
-- For each boundary, test the boundary value and both of its neighbors. ^prefer-three-value-boundaries
+- For each boundary, test the boundary value and both of its neighbors. ^three-value-boundaries
   - scope: subtree
   - basis: standard
   - status: proposed

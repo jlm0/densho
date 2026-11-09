@@ -7,7 +7,11 @@ No directive is in force at this node.
 
 ## Definition
 
-The discovery, the specification, and the validation of what a system must do, before the team builds it. SWEBOK `v4` makes software requirements its first knowledge area. ISO/IEC/IEEE 29148 is the standard for requirements engineering in the life cycle of systems and software. Here, each requirement becomes a set of examples, and each example becomes a test.
+The discovery, the specification, and the validation of what a system must do, before the team builds it. SWEBOK `v4` makes software requirements its first knowledge area. ISO/IEC/IEEE 29148 is the standard for requirements engineering in the life cycle of systems and software.
+
+## Notes
+
+In specification by example, each requirement becomes a set of examples, and each example becomes a test.
 
 ## Comes from
 

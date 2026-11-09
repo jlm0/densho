@@ -26,7 +26,7 @@ The control of each secret over its whole life: its creation, its storage, its a
   - also_attached_to: software-architecture
   - also_attached_to: software-construction
   - also_attached_to: software-quality
-  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x22-V13-Configuration.md
+  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x22-V13-Configuration.md#v133-secret-management
 - Give each secret only the permissions that its use needs. ^least-privilege-secret
   - scope: subtree
   - basis: standard
@@ -34,7 +34,7 @@ The control of each secret over its whole life: its creation, its storage, its a
   - origin: template
   - also_attached_to: software-construction
   - also_attached_to: software-quality
-  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x22-V13-Configuration.md
+  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x22-V13-Configuration.md#v133-secret-management
   - sources: https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html
 - Do not write a secret, a password, or a session token to a log. ^no-secret-in-log
   - scope: subtree
@@ -43,7 +43,7 @@ The control of each secret over its whole life: its creation, its storage, its a
   - origin: template
   - also_attached_to: software-construction
   - also_attached_to: software-quality
-  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md
+  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md#v162-general-logging
   - sources: https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html
 - Run a secret scanner in the pre-commit hook of each repository. ^scan-for-secrets-before-commit
   - scope: subtree
@@ -52,6 +52,20 @@ The control of each secret over its whole life: its creation, its storage, its a
   - origin: template
   - also_attached_to: software-construction
   - also_attached_to: software-quality
+  - sources: https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html
+- Do not commit a secret to a repository. ^no-secret-in-repository
+  - scope: subtree
+  - basis: standard
+  - status: proposed
+  - origin: template
+  - also_attached_to: software-engineering
+  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x22-V13-Configuration.md#v133-secret-management
+- If a secret reaches a repository, revoke the secret. ^revoke-exposed-secret
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - also_attached_to: software-engineering
   - sources: https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html
 
 ## Notes

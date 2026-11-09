@@ -17,10 +17,9 @@ From [Opportunity solution tree](opportunity-solution-tree.md):
 - Compare `3` solutions for the target opportunity before you choose one. ^compare-three-solutions
 - Do not use effort to choose a target opportunity. ^no-effort-in-opportunity-choice
 - Give each opportunity solution tree one outcome at its root. ^one-outcome-at-the-root
-- Set one outcome for each product team. ^one-outcome-per-team
 - Take each opportunity from a customer interview, not from the ideas of the team. ^opportunities-from-interviews
 - Write each opportunity as a need, a pain point, or a desire of the customer. ^opportunity-is-a-need
-- Put a product outcome at the root of each tree, not a business outcome or a traction metric. ^prefer-a-product-outcome
+- Put a product outcome at the root of each tree, not a business outcome or a traction metric. ^product-outcome-at-root
 - If an opportunity has only one possible solution, replace it with the need behind that solution. ^solution-in-disguise
 - Generate solutions for the target opportunity only, not across the whole tree. ^solutions-for-the-target
 

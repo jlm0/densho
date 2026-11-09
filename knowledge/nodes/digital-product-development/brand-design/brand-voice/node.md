@@ -66,6 +66,7 @@ Voice is the personality of a brand in words, and it stays the same wherever the
   - basis: practitioner
   - status: proposed
   - origin: template
+  - also_attached_to: voice-and-tone-in-context
   - sources: https://atlassian.design/foundations/content/voice-tone
 - Remove each joke that makes a message less clear. ^clarity-over-jokes
   - scope: subtree

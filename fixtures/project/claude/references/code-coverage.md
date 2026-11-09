@@ -7,11 +7,14 @@ From [Digital product development](digital-product-development.md):
 
 - Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
-From [Software engineering](software-engineering.md):
+From [Secrets management](secrets-management.md):
 
 - Do not commit a secret to a repository. ^no-secret-in-repository
 - If a secret reaches a repository, revoke the secret. ^revoke-exposed-secret
-- Write a test for each change in behavior. ^test-each-behavior-change
+
+From [Software engineering](software-engineering.md):
+
+- Write a test for each change in behavior, unless the changed code has no conditional logic. ^test-each-behavior-change
 
 From [Accessibility](accessibility.md):
 
@@ -72,15 +75,14 @@ From [Code coverage](code-coverage.md):
 - Do not treat full code coverage as proof that the code implements each requirement. ^coverage-misses-omissions
 - Exclude each infeasible path from the target of path coverage. ^exclude-infeasible-paths
 - Use the coverage report to find the code that no test executes. ^find-untested-code
-- Measure the coverage automatically for each change in code review and for each project once a day. ^measure-coverage-automatically
+- Measure branch coverage, not only statement coverage. ^measure-branch-coverage
+- Measure the coverage automatically for each change in code review and for each project. ^measure-coverage-automatically
 - Do not add a copied test or a test without an assertion only to reach a coverage target. ^no-tests-for-the-number
 - If the team sets a coverage goal for each commit, set its lower threshold at `90%` or more. ^per-commit-coverage-floor
-- Measure branch coverage, not only statement coverage. ^prefer-branch-coverage
-- Set a coverage goal for each commit in place of a project-wide goal above `90%`. ^prefer-per-commit-targets
 - When you change a file with coverage below the target of its code base, raise its coverage. ^raise-coverage-on-change
 - In a code review, review the risk of each changed line that no test executes. ^review-uncovered-lines
 - In safety-critical or mission-critical code, use a coverage criterion more rigorous than branch coverage. ^stronger-criteria-for-critical-code
-- Set the coverage target of a code base by its business impact, its rate of change, and its expected life. ^target-by-impact-and-change
+- Set the coverage target of a code base at `90%` or less, by its business impact, change rate, and lifetime. ^target-by-impact-and-change
 - Treat a coverage target as a floor, not as a ceiling. ^target-is-a-floor
 
 ## Definition

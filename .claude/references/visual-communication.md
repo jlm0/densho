@@ -12,3 +12,5 @@ Using glyphs, images, and spatial composition to say what prose would otherwise 
 ## Notes
 
 These rules work together. A glyph can replace a sentence, but it keeps a short label unless its meaning is universal.
+
+`replace-text-with-visual` has `basis: judgment`, because no source that the template cites states it. The rule comes from the definition of this node: a glyph, an image, or a grouping says what prose would otherwise say.

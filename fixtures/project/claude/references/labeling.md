@@ -63,9 +63,10 @@ From [UI/UX design](ui-ux-design.md):
 - Use one word for one meaning in each interface. ^one-word-one-meaning
 - Show only the content and the controls that the current task needs. ^show-what-the-task-needs
 
-From [Information architecture](information-architecture.md):
+From [Labeling](labeling.md):
 
 - Define a controlled vocabulary for the content of each product. ^define-controlled-vocabulary
+- Use the words of the users in each label and message, not internal terms. ^use-the-words-of-users
 
 ## Definition
 

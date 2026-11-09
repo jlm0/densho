@@ -7,7 +7,11 @@ No directive is in force at this node.
 
 ## Definition
 
-The writing of code that resists attack. Here, it holds four concerns: access control, injection, secrets management, and the software supply chain. The OWASP Application Security Verification Standard gives the security requirements for the design, the development, and the testing of web applications and web services.
+The writing of code that resists attack. The OWASP Application Security Verification Standard gives the security requirements for the design, the development, and the testing of web applications and web services.
+
+## Notes
+
+This area holds four concepts: access control, injection, secrets management, and the software supply chain.
 
 ## Comes from
 

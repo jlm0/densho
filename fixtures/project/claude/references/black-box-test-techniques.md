@@ -7,11 +7,14 @@ From [Digital product development](digital-product-development.md):
 
 - Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
-From [Software engineering](software-engineering.md):
+From [Secrets management](secrets-management.md):
 
 - Do not commit a secret to a repository. ^no-secret-in-repository
 - If a secret reaches a repository, revoke the secret. ^revoke-exposed-secret
-- Write a test for each change in behavior. ^test-each-behavior-change
+
+From [Software engineering](software-engineering.md):
+
+- Write a test for each change in behavior, unless the changed code has no conditional logic. ^test-each-behavior-change
 
 From [Accessibility](accessibility.md):
 
@@ -83,7 +86,6 @@ From [Black-box test techniques](black-box-test-techniques.md):
 - In a combinatorial test, test at least each pair of parameter values with a covering array. ^pairwise-covering-array
 - Define the partitions of a value range from the specification, not from evenly spaced points of the range. ^partitions-from-the-specification
 - Make the partitions of each data element non-empty and without overlap. ^partitions-without-overlap
-- For each boundary, test the boundary value and both of its neighbors. ^prefer-three-value-boundaries
 - Record each gap and each contradiction in the requirements that the decision table shows. ^record-requirement-gaps
 - Measure the coverage of each technique as the percent of its coverage items that the tests exercise. ^record-technique-coverage
 - If events move the test object between states, write a state table of its states and transitions. ^state-table-for-history
@@ -92,6 +94,7 @@ From [Black-box test techniques](black-box-test-techniques.md):
 - Test at least `1` value from each equivalence partition, including each invalid partition. ^test-each-partition
 - When you test the robustness of a program, include values outside its input domain in the boundary tests. ^test-outside-the-domain
 - Build each black-box test from the specified behavior of the test object, not from its code. ^test-the-specified-behavior
+- For each boundary, test the boundary value and both of its neighbors. ^three-value-boundaries
 - Test each valid transition of the state table at least once. ^valid-transitions-coverage
 
 ## Definition

@@ -7,11 +7,15 @@ From [Digital product development](digital-product-development.md):
 
 - Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
-From [Software engineering](software-engineering.md):
+From [Secrets management](secrets-management.md):
 
 - Do not commit a secret to a repository. ^no-secret-in-repository
 - If a secret reaches a repository, revoke the secret. ^revoke-exposed-secret
-- Write a test for each change in behavior. ^test-each-behavior-change
+- Store each backend secret in a secrets manager, such as a key vault. ^use-a-secrets-manager
+
+From [Software engineering](software-engineering.md):
+
+- Write a test for each change in behavior, unless the changed code has no conditional logic. ^test-each-behavior-change
 
 From [Access control](access-control.md):
 
@@ -22,10 +26,6 @@ From [Software security](software-security.md):
 
 - Do not put an API key or a session token in a URL. ^no-secret-in-url
 - Use TLS for each connection between a client and an external service. ^tls-for-external-connections
-
-From [Secrets management](secrets-management.md):
-
-- Store each backend secret in a secrets manager, such as a key vault. ^use-a-secrets-manager
 
 From [Injection](injection.md):
 

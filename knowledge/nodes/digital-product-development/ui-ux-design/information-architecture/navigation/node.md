@@ -31,3 +31,21 @@ The interface components that let people move between the parts of a product. Na
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/ten-usability-heuristics/
+- Make each back control return to the previous screen, not to the start of the flow. ^back-one-step
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://www.nngroup.com/articles/user-control-and-freedom/
+- Do not disable the back button of the browser. ^keep-browser-back
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://www.nngroup.com/articles/user-control-and-freedom/
+- Make the back button close a full-screen overlay. ^back-closes-overlay
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://www.nngroup.com/articles/user-control-and-freedom/

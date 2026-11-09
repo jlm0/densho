@@ -14,12 +14,13 @@ directives:
   - limit-text-sizes
   - limit-contrast-levels
   - reserve-bright-color
+  - reserve-warm-bright-color
   - distinct-primary-button-color
   - mark-preferred-with-style
   - place-related-elements-close
   - no-unrelated-group
   - heading-near-its-section
-  - prefer-space-over-divider
+  - space-not-divider
   - boundary-for-fixed-space
   - same-style-same-function
   - one-link-color
@@ -29,7 +30,7 @@ directives:
   - no-hover-labels
   - no-shared-glyph
   - platform-glyphs
-  - prefer-visual-form
+  - replace-text-with-visual
   - no-repeated-text
 branches:
   - condition: If the screen holds a form

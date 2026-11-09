@@ -63,10 +63,6 @@ From [UI/UX design](ui-ux-design.md):
 - Use one word for one meaning in each interface. ^one-word-one-meaning
 - Show only the content and the controls that the current task needs. ^show-what-the-task-needs
 
-From [Information architecture](information-architecture.md):
-
-- Define a controlled vocabulary for the content of each product. ^define-controlled-vocabulary
-
 ## Definition
 
 The part of a product that finds content for a query that a person types. Rosenfeld, Morville, and Arango first ask whether a product needs search at all. A search system chooses what to index, matches each query to the content with an algorithm, presents the results, and supports a person who revises a query or gets stuck.

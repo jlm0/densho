@@ -82,12 +82,12 @@ create_a_rule:
   - basis: judgment
   - status: proposed
   - origin: template
-- Follow each directive, each required read, and each procedure step of a skill that you run. ^follow-triggered-skill
+- Follow each procedure step of a skill that you run, and each directive that the skill tells you to follow. ^follow-triggered-skill
   - scope: node
   - basis: judgment
   - status: proposed
   - origin: template
-- After a compaction, read the current step file and each required read of your skill again. ^read-skill-after-compaction
+- After a compaction, read the step file of your current step again, and each page that it names. ^read-skill-after-compaction
   - scope: node
   - basis: judgment
   - status: proposed
@@ -102,7 +102,7 @@ create_a_rule:
   - basis: judgment
   - status: proposed
   - origin: template
-- In a project, put each new directive in workspace knowledge. ^new-rules-in-workspace
+- In a project, put each new directive in workspace knowledge, unless the directive covers each task in the project. ^new-rules-in-workspace
   - scope: node
   - basis: judgment
   - status: proposed

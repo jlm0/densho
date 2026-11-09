@@ -7,7 +7,11 @@ No directive is in force at this node.
 
 ## Definition
 
-The iOS and Android clients of a product, built with the tools of each platform. Here, the native lane follows the platform conventions from UI/UX design and the review rules of each app store.
+The iOS and Android clients of a product, built with the tools of each platform.
+
+## Notes
+
+This lane takes the platform conventions from UI/UX design. Its concept is the review guidelines of each app store.
 
 ## Comes from
 

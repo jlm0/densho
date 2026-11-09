@@ -7,11 +7,18 @@ From [Digital product development](digital-product-development.md):
 
 - Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
-From [Software engineering](software-engineering.md):
+From [Secrets management](secrets-management.md):
 
 - Do not commit a secret to a repository. ^no-secret-in-repository
 - If a secret reaches a repository, revoke the secret. ^revoke-exposed-secret
-- Write a test for each change in behavior. ^test-each-behavior-change
+- Give each secret only the permissions that its use needs. ^least-privilege-secret
+- Do not write a secret, a password, or a session token to a log. ^no-secret-in-log
+- Run a secret scanner in the pre-commit hook of each repository. ^scan-for-secrets-before-commit
+- Store each backend secret in a secrets manager, such as a key vault. ^use-a-secrets-manager
+
+From [Software engineering](software-engineering.md):
+
+- Write a test for each change in behavior, unless the changed code has no conditional logic. ^test-each-behavior-change
 
 From [Access control](access-control.md):
 
@@ -48,19 +55,11 @@ From [Software security](software-security.md):
 - Generate each token and each secret with a cryptographically secure random number generator. ^secure-random-for-secrets
 - Use TLS for each connection between a client and an external service. ^tls-for-external-connections
 
-From [Secrets management](secrets-management.md):
-
-- Give each secret only the permissions that its use needs. ^least-privilege-secret
-- Do not write a secret, a password, or a session token to a log. ^no-secret-in-log
-- Run a secret scanner in the pre-commit hook of each repository. ^scan-for-secrets-before-commit
-- Store each backend secret in a secrets manager, such as a key vault. ^use-a-secrets-manager
-
 From [Code review](code-review.md):
 
 - Approve a change once it improves the overall health of the code, unless it adds an unwanted feature. ^approve-on-improvement
 - When a reviewer asks what code does, make the code clearer instead of replying only in the review. ^clarify-the-code
 - Write each review comment about the code, not about its author. ^comment-on-the-code
-- Write each code comment to explain why the code exists, not what it does. ^comments-explain-why
 - State the problem and the reason for the approach in each change description. ^explain-each-change
 - State the reason for each review comment. ^explain-each-comment
 - Write the first line of each change description as a short imperative sentence. ^imperative-first-line
@@ -72,6 +71,10 @@ From [Code review](code-review.md):
 - Split a change of `1000` or more changed lines, unless a tool generated it. ^split-large-change
 - Check that each test in a change fails when the code under test breaks. ^tests-fail-on-breakage
 - When a change affects how to build, test, or release the code, update the docs in the same change. ^update-docs-with-change
+
+From [Software construction](software-construction.md):
+
+- Write each code comment to explain why the code exists, not what it does. ^comments-explain-why
 
 ## Definition
 

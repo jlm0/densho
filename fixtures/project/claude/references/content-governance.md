@@ -7,6 +7,10 @@ From [Digital product development](digital-product-development.md):
 
 - Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
+From [Brand design](brand-design.md):
+
+- Write each message to a user in the voice of the brand definition. ^write-in-brand-voice
+
 ## Definition
 
 The rules and the work that keep content consistent and up to date after it is published. Kristina Halvorson names governance as one of the three things that a content strategy plans, with creation and publication.

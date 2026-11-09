@@ -7,6 +7,10 @@ From [Digital product development](digital-product-development.md):
 
 - Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
+From [Brand design](brand-design.md):
+
+- Write each message to a user in the voice of the brand definition. ^write-in-brand-voice
+
 ## Definition
 
 The design of the content of a product, from the need that it meets to the words on the screen. GOV.UK content design starts from a user need and meets it in the best way possible.

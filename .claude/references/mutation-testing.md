@@ -15,7 +15,7 @@ Mutation testing rests on 2 hypotheses that Jia and Harman describe. The compete
 
 The process has 4 steps: generate the mutants with mutation operators, run the tests on the original program, run the tests on each mutant, and add tests for the mutants that survive. An equivalent mutant changes the code but not its behavior, so no test can kill it. The detection of equivalent mutants is undecidable in general, and it costs human effort.
 
-A full mutation analysis is costly in machines and in human attention. Selective mutation uses a few operators: the 5 key operators of Offutt and colleagues kept a mutation score of `99.5%`. Google makes the technique practical at scale with 3 limits:
+A full mutation analysis is costly in machines and in human attention. Selective mutation uses a few operators: the 5 key operators of Offutt and colleagues kept a mutation score of `99.5%`. Google implements AOR, LCR, ROR, SBR, and UOI. It leaves out ABS, because ABS acted on values that are never negative in its code, and it states that this reason does not apply in general. Google makes the technique practical at scale with 3 limits:
 
 - It mutates only the changed lines that the tests cover, during code review.
 - It generates at most 1 mutant for each line.

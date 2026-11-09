@@ -22,14 +22,16 @@ directives:
   - limit-text-sizes
   - limit-contrast-levels
   - reserve-bright-color
+  - reserve-warm-bright-color
   - distinct-primary-button-color
   - mark-preferred-with-style
   - limit-color-palette
+  - vary-colors-in-large-palette
   - sizes-from-the-scale
   - place-related-elements-close
   - no-unrelated-group
   - heading-near-its-section
-  - prefer-space-over-divider
+  - space-not-divider
   - boundary-for-fixed-space
   - same-style-same-function
   - one-link-color
@@ -39,7 +41,7 @@ directives:
   - no-hover-labels
   - no-shared-glyph
   - platform-glyphs
-  - prefer-visual-form
+  - replace-text-with-visual
   - no-repeated-text
   - contrast-regular-text
   - contrast-large-text
@@ -54,6 +56,9 @@ directives:
   - reflow-at-narrow-width
   - keep-groups-at-each-width
 branches:
+  - condition: If the project has a brand definition
+    directives:
+      - use-brand-definition
   - condition: If the screen holds a form
     directives:
       - group-related-fields

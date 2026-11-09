@@ -45,22 +45,11 @@ The design, construction, testing, and operation of software. It turns product a
 
 ## Directives
 
-- Do not commit a secret to a repository. ^no-secret-in-repository
-  - scope: subtree
-  - basis: standard
-  - status: proposed
-  - origin: template
-  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x22-V13-Configuration.md
-- If a secret reaches a repository, revoke the secret. ^revoke-exposed-secret
-  - scope: subtree
-  - basis: practitioner
-  - status: proposed
-  - origin: template
-  - sources: https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html
-- Write a test for each change in behavior. ^test-each-behavior-change
+- Write a test for each change in behavior, unless the changed code has no conditional logic. ^test-each-behavior-change
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://google.github.io/eng-practices/review/developer/small-cls.html
   - sources: https://abseil.io/resources/swe-book/html/ch11.html
+  - sources: https://martinfowler.com/articles/practical-test-pyramid.html#WhatToTest

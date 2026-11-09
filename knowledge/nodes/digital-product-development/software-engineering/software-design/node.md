@@ -22,4 +22,8 @@ pointers:
 
 ## Definition
 
-The definition of the parts of a system and of the interfaces between them, at a level of detail that lets a team build and test each part on its own. SWEBOK `v4` makes software design a knowledge area next to software architecture. Here, design writes the contracts that the tests and the code follow: the interface contract of each API and the UI contract of each component.
+The definition of the parts of a system and of the interfaces between them, at a level of detail that lets a team build and test each part on its own. SWEBOK `v4` makes software design a knowledge area next to software architecture.
+
+## Notes
+
+The output of this area is a set of contracts: the interface contract of each API and the UI contract of each component. Software testing and software construction take the contracts as their input.

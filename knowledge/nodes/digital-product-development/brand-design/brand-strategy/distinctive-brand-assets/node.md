@@ -30,7 +30,7 @@ A brand element, such as a color, a shape, a logo, a typeface, a character, or a
   - status: proposed
   - origin: template
   - sources: https://marketingscience.info/news-and-insights/brands-of-distinction
-- When you choose a brand element to build, choose by uniqueness first and by fame second. ^prefer-unique-assets
+- When you choose a brand element to build, choose by uniqueness first and by fame second. ^uniqueness-before-fame
   - scope: subtree
   - basis: research
   - status: proposed

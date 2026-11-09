@@ -69,7 +69,6 @@ From [Black-box test techniques](../../../references/black-box-test-techniques.m
 - In a combinatorial test, test at least each pair of parameter values with a covering array. ^pairwise-covering-array
 - Define the partitions of a value range from the specification, not from evenly spaced points of the range. ^partitions-from-the-specification
 - Make the partitions of each data element non-empty and without overlap. ^partitions-without-overlap
-- For each boundary, test the boundary value and both of its neighbors. ^prefer-three-value-boundaries
 - Record each gap and each contradiction in the requirements that the decision table shows. ^record-requirement-gaps
 - Measure the coverage of each technique as the percent of its coverage items that the tests exercise. ^record-technique-coverage
 - If events move the test object between states, write a state table of its states and transitions. ^state-table-for-history
@@ -78,6 +77,7 @@ From [Black-box test techniques](../../../references/black-box-test-techniques.m
 - Test at least `1` value from each equivalence partition, including each invalid partition. ^test-each-partition
 - When you test the robustness of a program, include values outside its input domain in the boundary tests. ^test-outside-the-domain
 - Build each black-box test from the specified behavior of the test object, not from its code. ^test-the-specified-behavior
+- For each boundary, test the boundary value and both of its neighbors. ^three-value-boundaries
 - Test each valid transition of the state table at least once. ^valid-transitions-coverage
 
 From [Code coverage](../../../references/code-coverage.md):
@@ -89,15 +89,14 @@ From [Code coverage](../../../references/code-coverage.md):
 - Do not treat full code coverage as proof that the code implements each requirement. ^coverage-misses-omissions
 - Exclude each infeasible path from the target of path coverage. ^exclude-infeasible-paths
 - Use the coverage report to find the code that no test executes. ^find-untested-code
-- Measure the coverage automatically for each change in code review and for each project once a day. ^measure-coverage-automatically
+- Measure branch coverage, not only statement coverage. ^measure-branch-coverage
+- Measure the coverage automatically for each change in code review and for each project. ^measure-coverage-automatically
 - Do not add a copied test or a test without an assertion only to reach a coverage target. ^no-tests-for-the-number
 - If the team sets a coverage goal for each commit, set its lower threshold at `90%` or more. ^per-commit-coverage-floor
-- Measure branch coverage, not only statement coverage. ^prefer-branch-coverage
-- Set a coverage goal for each commit in place of a project-wide goal above `90%`. ^prefer-per-commit-targets
 - When you change a file with coverage below the target of its code base, raise its coverage. ^raise-coverage-on-change
 - In a code review, review the risk of each changed line that no test executes. ^review-uncovered-lines
 - In safety-critical or mission-critical code, use a coverage criterion more rigorous than branch coverage. ^stronger-criteria-for-critical-code
-- Set the coverage target of a code base by its business impact, its rate of change, and its expected life. ^target-by-impact-and-change
+- Set the coverage target of a code base at `90%` or less, by its business impact, change rate, and lifetime. ^target-by-impact-and-change
 - Treat a coverage target as a floor, not as a ceiling. ^target-is-a-floor
 
 From [Contract testing](../../../references/contract-testing.md):
@@ -197,8 +196,8 @@ From [Mutation testing](../../../references/mutation-testing.md):
 - Use mutation testing to check whether the tests assert on the code that coverage marks as covered. ^mutation-after-coverage
 - Make each mutant with `1` small syntactic change to the program. ^one-change-per-mutant
 - Generate at most `1` mutant for each line. ^one-mutant-per-line
-- Report the surviving mutants of each change, not a mutation score of the whole code base. ^prefer-change-mutants
-- Use only the AOR, LCR, ROR, and UOI mutation operators. ^selective-mutation-operators
+- Report the surviving mutants of each change, not a mutation score of the whole code base. ^report-change-mutants
+- Use only the ABS, AOR, LCR, ROR, and UOI mutation operators. ^selective-mutation-operators
 - Do not generate mutants in logging code, test code, or code that controls only non-functional properties, such as memory reservation. ^skip-arid-code
 - Do not add a test that kills a mutant through an assertion on an implementation detail, not on the specification. ^skip-unproductive-mutants
 - Use the feedback of the developers on each shown mutant to suppress the kinds that they mark as not useful. ^suppress-by-feedback
@@ -283,7 +282,6 @@ From [Regression testing](../../../references/regression-testing.md):
 - After the confirmation tests pass, run the regression tests on the changed system. ^regression-after-confirmation
 - Run the regression tests at each test level where a change or a fix happens. ^regression-at-each-level
 - Run the regression suite after integration testing and before each deployment to production. ^regression-before-deployment
-- If the team uses continuous integration, run the automated regression tests in it. ^regression-in-continuous-integration
 - Set each wait limit of a test from `1` shared setting, not as a literal value. ^shared-wait-limits
 - Open a task to fix each test that goes into quarantine. ^task-for-each-quarantined-test
 - When the system moves to a new operational environment, test the changed system in that environment. ^test-environment-migrations
@@ -303,20 +301,19 @@ From [Test doubles](../../../references/test-doubles.md):
 - Write each fake for the API whose real implementation does not fit the tests, not for its callers. ^fake-at-the-root-api
 - Make a fake raise an error when a test reaches a path that the fake does not support. ^fake-fails-fast
 - Give a fake the same outputs and state changes as the real implementation, for each input that it supports. ^fake-fidelity
+- If the real implementation is unavailable, slow, nondeterministic, or hard to construct, use a fake, unless no fake exists. ^fake-for-unusable-real
 - If no test double fits a dependency on an external server, use a hermetic server that the test controls. ^hermetic-server-fallback
 - Name each test double by its kind: dummy, stub, spy, mock, or fake. ^name-the-double-kind
 - In an interaction test, verify only the calls and the arguments that the tested behavior needs. ^no-overspecified-interactions
 - Keep at least `1` test that runs the code under test without test doubles. ^one-test-without-doubles
 - Assign the fake of an API to the team that owns the real implementation. ^owner-writes-the-fake
-- If the real implementation is unavailable, slow, nondeterministic, or hard to construct, use a fake, unless no fake exists. ^prefer-fakes
-- Use a real implementation in place of a test double, unless it is slow, nondeterministic, or hard to construct. ^prefer-real-implementations
-- Use state testing, unless the behavior is a call count or order, or no real implementation or fake fits. ^prefer-state-testing
 - Build the objects of a test with the factory or the dependency injection of the production code. ^production-construction-in-tests
-- Use the real implementation of each dependency that is fast, deterministic, and simple to construct, such as a value object. ^real-value-objects
 - If no state verification observes an indirect output, verify it with a spy. ^spy-or-mock-for-indirect-outputs
 - Use a stub only to feed the indirect inputs that put the code under test into a needed state. ^stub-for-indirect-inputs
 - Limit the stubs of a test to the functions that its assertions depend on. ^stub-only-for-assertions
 - Give each fake its own tests, such as contract tests that also run against the real implementation. ^test-each-fake
+- Use a real implementation in place of a test double, unless it is slow, nondeterministic, or hard to construct. ^use-real-implementations
+- Use state testing, unless the behavior is a call count or order, or no real implementation or fake fits. ^use-state-testing
 - In an interaction test, verify only the calls to state-changing functions, unless the test verifies a call count or order. ^verify-state-changing-calls
 - Limit interaction testing to call counts, call orders, and dependencies with no real implementation or fake that fits the test. ^when-to-test-interactions
 - If the API owners write no fake, write a fake of `1` class that wraps each call to the API. ^wrap-and-fake
@@ -376,7 +373,6 @@ From [Unit testing](../../../references/unit-testing.md):
 - Do not move a step of a test into shared code that hides what the test does. ^damp-over-dry
 - If a test targets a private method, move the method into a new class with a public interface. ^extract-private-method
 - Name each unit test after the action that it takes and the outcome that it requires. ^name-after-the-behavior
-- Limit each unit test to `1` behavior. ^one-behavior-per-test
 - Limit each validation helper to `1` conceptual fact about its inputs. ^one-fact-per-validation-helper
 - Make the result of each unit test independent of the order in which the tests run. ^order-independent-tests
 - If a pure refactor breaks a unit test, make the test verify state through the public API. ^refactor-breaks-test

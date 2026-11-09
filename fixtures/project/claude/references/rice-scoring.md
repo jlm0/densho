@@ -12,16 +12,14 @@ From [Product strategy](product-strategy.md):
 - State the user problem of each feature in one sentence. ^state-user-problem
 - Write the success measure of each feature before you build the feature. ^write-success-measure
 
-From [Prioritization](product-prioritization.md):
-
-- Give each product team business objectives with key results, not a list of features to build. ^objectives-not-feature-lists
-
 From [RICE scoring](rice-scoring.md):
 
 - Set confidence to `100%`, `80%`, or `50%`. ^confidence-scale
+- If an item blocks another item or a customer requires it before a sale, put it first in the order. ^dependencies-first
 - State effort in person-months for the whole team, with `0.5` as the minimum. ^effort-in-person-months
 - If no product metric measures the reach of an item, set its confidence below `100%`. ^estimated-reach-confidence
 - Set impact to `3`, `2`, `1`, `0.5`, or `0.25`. ^impact-scale
+- Order the items by RICE score, unless an item blocks another item or a customer requires it before a sale. ^order-by-rice-score
 - Take the reach of each item from product metrics, unless no product metric measures it. ^reach-from-metrics
 - Measure reach as the number of people or events in one fixed period. ^reach-per-period
 - Compute the RICE score as reach times impact times confidence, divided by effort. ^rice-formula

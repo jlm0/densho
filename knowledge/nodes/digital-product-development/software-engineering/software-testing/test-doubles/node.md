@@ -50,19 +50,14 @@ An object that replaces a production object in a test. Gerard Meszaros named the
   - origin: template
   - sources: https://martinfowler.com/bliki/TestDouble.html
   - sources: https://martinfowler.com/articles/practical-test-pyramid.html#MockingAndStubbing
-- Use a real implementation in place of a test double, unless it is slow, nondeterministic, or hard to construct. ^prefer-real-implementations
+- Use a real implementation in place of a test double, unless it is slow, nondeterministic, or hard to construct. ^use-real-implementations
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#prefer_realism_over_isolation
-- Use the real implementation of each dependency that is fast, deterministic, and simple to construct, such as a value object. ^real-value-objects
-  - scope: subtree
-  - basis: practitioner
-  - status: proposed
-  - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#how_to_decide_when_to_use_a_real_implem
-- If the real implementation is unavailable, slow, nondeterministic, or hard to construct, use a fake, unless no fake exists. ^prefer-fakes
+- If the real implementation is unavailable, slow, nondeterministic, or hard to construct, use a fake, unless no fake exists. ^fake-for-unusable-real
   - scope: subtree
   - basis: practitioner
   - status: proposed
@@ -142,7 +137,7 @@ An object that replaces a production object in a test. Gerard Meszaros named the
   - status: proposed
   - origin: template
   - sources: https://abseil.io/resources/swe-book/html/ch13.html#when_is_stubbing_appropriatequestion_ma
-- Use state testing, unless the behavior is a call count or order, or no real implementation or fake fits. ^prefer-state-testing
+- Use state testing, unless the behavior is a call count or order, or no real implementation or fake fits. ^use-state-testing
   - scope: subtree
   - basis: practitioner
   - status: proposed

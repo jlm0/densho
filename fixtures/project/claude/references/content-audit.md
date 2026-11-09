@@ -7,6 +7,10 @@ From [Digital product development](digital-product-development.md):
 
 - Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
+From [Brand design](brand-design.md):
+
+- Write each message to a user in the voice of the brand definition. ^write-in-brand-voice
+
 ## Definition
 
 An evaluation of the content that a product already has. Nielsen Norman Group pairs it with a content inventory, which lists each item of content, and does both before a team develops a content strategy.

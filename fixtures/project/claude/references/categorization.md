@@ -63,14 +63,9 @@ From [UI/UX design](ui-ux-design.md):
 - Use one word for one meaning in each interface. ^one-word-one-meaning
 - Show only the content and the controls that the current task needs. ^show-what-the-task-needs
 
-From [Information architecture](information-architecture.md):
-
-- Define a controlled vocabulary for the content of each product. ^define-controlled-vocabulary
-
 From [Organization](categorization.md):
 
 - Run a card sort with users before you choose the categories of a new structure. ^card-sort-new-categories
-- Name each category in words that users recognize. ^name-categories-for-users
 - Review each category name from a card sort before you use it as a label. ^review-card-sort-names
 
 ## Definition

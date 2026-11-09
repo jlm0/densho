@@ -7,11 +7,14 @@ From [Digital product development](digital-product-development.md):
 
 - Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
-From [Software engineering](software-engineering.md):
+From [Secrets management](secrets-management.md):
 
 - Do not commit a secret to a repository. ^no-secret-in-repository
 - If a secret reaches a repository, revoke the secret. ^revoke-exposed-secret
-- Write a test for each change in behavior. ^test-each-behavior-change
+
+From [Software engineering](software-engineering.md):
+
+- Write a test for each change in behavior, unless the changed code has no conditional logic. ^test-each-behavior-change
 
 From [Accessibility](accessibility.md):
 
@@ -82,7 +85,6 @@ From [Regression testing](regression-testing.md):
 - After the confirmation tests pass, run the regression tests on the changed system. ^regression-after-confirmation
 - Run the regression tests at each test level where a change or a fix happens. ^regression-at-each-level
 - Run the regression suite after integration testing and before each deployment to production. ^regression-before-deployment
-- If the team uses continuous integration, run the automated regression tests in it. ^regression-in-continuous-integration
 - Set each wait limit of a test from `1` shared setting, not as a literal value. ^shared-wait-limits
 - Open a task to fix each test that goes into quarantine. ^task-for-each-quarantined-test
 - When the system moves to a new operational environment, test the changed system in that environment. ^test-environment-migrations

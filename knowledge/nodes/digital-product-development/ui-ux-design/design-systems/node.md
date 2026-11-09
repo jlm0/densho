@@ -8,6 +8,8 @@ knowledge_type: domain
 sources:
   - https://atomicdesign.bradfrost.com/chapter-2/
   - https://www.designtokens.org/glossary/
+  - https://v1.lightningdesignsystem.com/design-tokens/
+  - https://atlassian.design/components/eslint-plugin-design-system/ensure-design-token-usage/usage
 broader:
   - ui-ux-design
 informs:
@@ -27,9 +29,10 @@ A shared set of design decisions, components, and patterns, with the rules for t
 
 ## Directives
 
-- Use a design token, not a raw value, for each color, size, and space in a component. ^use-tokens-not-values
+- Use a design token, not a hard-coded value, for each color and each space in a component. ^use-tokens-not-values
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://www.designtokens.org/glossary/
+  - sources: https://v1.lightningdesignsystem.com/design-tokens/
+  - sources: https://atlassian.design/components/eslint-plugin-design-system/ensure-design-token-usage/usage

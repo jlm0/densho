@@ -22,7 +22,7 @@ From [Distinctive brand assets](distinctive-brand-assets.md):
 - Measure the fame and the uniqueness of a brand element before you treat it as a distinctive asset. ^measure-asset-strength
 - Do not replace a distinctive asset before you measure its fame and its uniqueness. ^measure-before-replacing
 - Do not choose a brand element that is famous but not unique. ^no-famous-shared-elements
-- When you choose a brand element to build, choose by uniqueness first and by fame second. ^prefer-unique-assets
+- When you choose a brand element to build, choose by uniqueness first and by fame second. ^uniqueness-before-fame
 
 ## Definition
 

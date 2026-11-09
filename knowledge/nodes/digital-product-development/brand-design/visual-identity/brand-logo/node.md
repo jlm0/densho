@@ -55,13 +55,13 @@ The mark that signs a brand. Alina Wheeler names its parts. The brandmark is the
   - status: proposed
   - origin: template
   - sources: https://brand.github.com/foundations/logo
-- Do not place a logo on a busy or complex background. ^no-busy-logo-background
+- Place a logo only where each part of it has the contrast ratio that text of its size needs. ^no-busy-logo-background
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://atlassian.design/foundations/logos
   - sources: https://brand.github.com/foundations/logo
+  - sources: https://atlassian.design/foundations/logos
 - Give each logo a version for light backgrounds and a version for dark backgrounds. ^logo-color-versions
   - scope: subtree
   - basis: practitioner
@@ -73,7 +73,7 @@ The mark that signs a brand. Alina Wheeler names its parts. The brandmark is the
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://catalogimages.wiley.com/images/db/pdf/9781118980828.excerpt.pdf
+  - sources: https://catalogimages.wiley.com/images/db/pdf/9781118980828.excerpt.pdf#page=54
   - sources: https://brand.github.com/foundations/logo
 
 ## Notes

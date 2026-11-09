@@ -24,4 +24,8 @@ pointers:
 
 ## Definition
 
-The work that turns the notes of a study into findings that a team acts on. Nielsen Norman Group describes thematic analysis: the researcher codes the observations, then groups the codes into themes. Here, the findings become the opportunities of product discovery.
+The work that turns the notes of a study into findings that a team acts on. Nielsen Norman Group describes thematic analysis: the researcher codes the observations, then groups the codes into themes.
+
+## Notes
+
+The findings of this area go to product discovery as opportunities, and to evaluative research.

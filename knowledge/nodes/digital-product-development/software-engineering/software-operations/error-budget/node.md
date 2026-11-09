@@ -31,18 +31,18 @@ The amount of unreliability that a service can have in a period and still meet i
   - origin: template
   - sources: https://sre.google/workbook/implementing-slos/
   - sources: https://sre.google/workbook/error-budget-policy/
-- When a service exceeds its error budget, release only fixes for `P0` issues and security fixes. ^freeze-on-spent-budget
+- When a service exceeds its error budget, release only `P0` and security fixes, unless its error budget policy differs. ^freeze-on-spent-budget
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://sre.google/workbook/error-budget-policy/
-- If one incident uses more than `20%` of the error budget in `4` weeks, write a postmortem for it. ^postmortem-for-large-incident
+  - sources: https://sre.google/workbook/error-budget-policy/#slo-miss-policy
+- Write a postmortem when an incident uses over `20%` of a `4`-week error budget, unless the error budget policy differs. ^postmortem-for-large-incident
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://sre.google/workbook/error-budget-policy/
+  - sources: https://sre.google/workbook/error-budget-policy/#outage-policy
 
 ## Notes
 

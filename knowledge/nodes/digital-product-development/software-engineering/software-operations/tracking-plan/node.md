@@ -11,7 +11,7 @@ sources:
 broader:
   - software-operations
 informs:
-  - service-level-objective
+  - product-measurement
 ---
 
 ## Definition

@@ -74,6 +74,18 @@ A goal-setting system from Andy Grove at Intel, which John Doerr brought to Goog
   - status: proposed
   - origin: template
   - sources: https://www.whatmatters.com/resources/google-okr-playbook
+- Set one outcome for each product team. ^one-outcome-per-team
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://www.producttalk.org/opportunity-solution-trees/
+- Give each product team business objectives with key results, not a list of features to build. ^objectives-not-feature-lists
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://www.svpg.com/the-alternative-to-roadmaps/
 
 ## Notes
 

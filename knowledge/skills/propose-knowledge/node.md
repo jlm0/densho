@@ -37,7 +37,7 @@ uses:
   - basis: judgment
   - status: proposed
   - origin: template
-- Keep a personal preference in auto memory. ^keep-personal-preferences
+- Write a personal preference as a note in the auto memory folder of Claude Code, not in a node file. ^keep-personal-preferences
   - scope: node
   - basis: judgment
   - status: proposed

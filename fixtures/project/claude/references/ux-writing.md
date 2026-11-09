@@ -7,6 +7,10 @@ From [Digital product development](digital-product-development.md):
 
 - Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
+From [Brand design](brand-design.md):
+
+- Write each message to a user in the voice of the brand definition. ^write-in-brand-voice
+
 ## Definition
 
 The writing of the text in an interface: labels, instructions, messages, and other microcopy. Nielsen Norman Group describes UX writers as the people who create concise copy that guides users through an experience. Content strategy, by contrast, plans the content across all formats and channels.

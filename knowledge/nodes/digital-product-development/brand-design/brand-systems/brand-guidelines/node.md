@@ -32,19 +32,34 @@ Alina Wheeler describes the shift from a static PDF to an online brand center th
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://catalogimages.wiley.com/images/db/pdf/9781118980828.excerpt.pdf
+  - sources: https://catalogimages.wiley.com/images/db/pdf/9781118980828.excerpt.pdf#page=9
+- Label an element of the brand guidelines `sacred` if the guidelines allow no change to it. ^sacred-element
+  - scope: subtree
+  - basis: judgment
+  - status: proposed
+  - origin: template
+- Label an element of the brand guidelines `interpretive` if the guidelines allow a change to it within a stated range. ^interpretive-element
+  - scope: subtree
+  - basis: judgment
+  - status: proposed
+  - origin: template
+- Label an element of the brand guidelines `customizable` if the guidelines allow each team to change it. ^customizable-element
+  - scope: subtree
+  - basis: judgment
+  - status: proposed
+  - origin: template
 - Publish the brand guidelines and the asset files in one online source. ^one-online-source
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://catalogimages.wiley.com/images/db/pdf/9781118980828.excerpt.pdf
+  - sources: https://catalogimages.wiley.com/images/db/pdf/9781118980828.excerpt.pdf#page=9
 - Write a section of the brand guidelines for each group of users, such as designers, writers, and partners. ^guidelines-per-audience
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://catalogimages.wiley.com/images/db/pdf/9781118980828.excerpt.pdf
+  - sources: https://catalogimages.wiley.com/images/db/pdf/9781118980828.excerpt.pdf#page=9
 - Show each logo rule with a correct example and an incorrect example. ^do-and-dont-examples
   - scope: subtree
   - basis: practitioner

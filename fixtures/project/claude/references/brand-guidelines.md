@@ -18,14 +18,17 @@ From [Brand design](brand-design.md):
 
 From [Brand systems](brand-systems.md):
 
-- Store the brand colors, typefaces, and type scale in design token files. ^brand-values-as-tokens
+- Store the colors and the typography of the brand as a set of design tokens, the brand theme. ^brand-values-as-tokens
 
 From [Brand guidelines](brand-guidelines.md):
 
+- Label an element of the brand guidelines `customizable` if the guidelines allow each team to change it. ^customizable-element
 - Show each logo rule with a correct example and an incorrect example. ^do-and-dont-examples
 - Write a section of the brand guidelines for each group of users, such as designers, writers, and partners. ^guidelines-per-audience
+- Label an element of the brand guidelines `interpretive` if the guidelines allow a change to it within a stated range. ^interpretive-element
 - Label each element of the brand guidelines as `sacred`, `interpretive`, or `customizable`. ^label-element-freedom
 - Publish the brand guidelines and the asset files in one online source. ^one-online-source
+- Label an element of the brand guidelines `sacred` if the guidelines allow no change to it. ^sacred-element
 
 ## Definition
 

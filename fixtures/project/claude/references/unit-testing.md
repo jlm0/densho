@@ -7,11 +7,14 @@ From [Digital product development](digital-product-development.md):
 
 - Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
-From [Software engineering](software-engineering.md):
+From [Secrets management](secrets-management.md):
 
 - Do not commit a secret to a repository. ^no-secret-in-repository
 - If a secret reaches a repository, revoke the secret. ^revoke-exposed-secret
-- Write a test for each change in behavior. ^test-each-behavior-change
+
+From [Software engineering](software-engineering.md):
+
+- Write a test for each change in behavior, unless the changed code has no conditional logic. ^test-each-behavior-change
 
 From [Accessibility](accessibility.md):
 
@@ -72,7 +75,6 @@ From [Unit testing](unit-testing.md):
 - Do not move a step of a test into shared code that hides what the test does. ^damp-over-dry
 - If a test targets a private method, move the method into a new class with a public interface. ^extract-private-method
 - Name each unit test after the action that it takes and the outcome that it requires. ^name-after-the-behavior
-- Limit each unit test to `1` behavior. ^one-behavior-per-test
 - Limit each validation helper to `1` conceptual fact about its inputs. ^one-fact-per-validation-helper
 - Make the result of each unit test independent of the order in which the tests run. ^order-independent-tests
 - If a pure refactor breaks a unit test, make the test verify state through the public API. ^refactor-breaks-test

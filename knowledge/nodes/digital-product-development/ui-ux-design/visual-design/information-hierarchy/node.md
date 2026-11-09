@@ -17,12 +17,12 @@ The organization of design elements so that the eye takes them in the order of t
 
 ## Directives
 
-- Make the most important element on each screen the biggest element. ^make-most-important-biggest
+- Make the primary action or the primary content of each screen its biggest element. ^make-most-important-biggest
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/
+  - sources: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/#toc-2-scale-2
 - Limit the text on each screen to `3` sizes. ^limit-text-sizes
   - scope: subtree
   - basis: practitioner
@@ -35,18 +35,24 @@ The organization of design elements so that the eye takes them in the order of t
   - status: proposed
   - origin: template
   - sources: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/
-- Limit each screen to `3` contrast levels. ^limit-contrast-levels
+- Use at most `3` contrast treatments of text on each screen, such as for headers, subheaders, and body text. ^limit-contrast-levels
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/
-- Use a bright color only for the primary action or the primary content of a screen. ^reserve-bright-color
+  - sources: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/#toc-1-color-and-contrast-1
+- Use a bright color that is not warm only for the primary action or the primary content of a screen. ^reserve-bright-color
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/
+  - sources: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/#toc-1-color-and-contrast-1
+- Use a warm bright color, such as red, only for a warning or an error. ^reserve-warm-bright-color
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/#toc-1-color-and-contrast-1
 - Mark the preferred button in a set of choices with a prominent style, not a larger size. ^mark-preferred-with-style
   - scope: subtree
   - basis: practitioner

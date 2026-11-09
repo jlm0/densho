@@ -29,13 +29,12 @@ A fault-based technique that measures how well a test set detects faults. Jia an
   - status: proposed
   - origin: template
   - sources: https://web.eecs.umich.edu/~weimerw/2020-481F/readings/mutation-testing.pdf#page=3
-- Use only the AOR, LCR, ROR, and UOI mutation operators. ^selective-mutation-operators
+- Use only the ABS, AOR, LCR, ROR, and UOI mutation operators. ^selective-mutation-operators
   - scope: subtree
   - basis: research
   - status: proposed
   - origin: template
   - sources: https://web.eecs.umich.edu/~weimerw/2020-481F/readings/mutation-testing.pdf#page=6
-  - sources: https://storage.googleapis.com/gweb-research2023-media/pubtools/4203.pdf#page=3
 - Before you run the mutants, check that each test passes on the original program. ^tests-pass-before-mutation
   - scope: subtree
   - basis: research
@@ -92,7 +91,7 @@ A fault-based technique that measures how well a test set detects faults. Jia an
   - status: proposed
   - origin: template
   - sources: https://web.eecs.umich.edu/~weimerw/2020-481F/readings/mutation-testing.pdf#page=4
-- Report the surviving mutants of each change, not a mutation score of the whole code base. ^prefer-change-mutants
+- Report the surviving mutants of each change, not a mutation score of the whole code base. ^report-change-mutants
   - scope: subtree
   - basis: research
   - status: proposed
@@ -119,7 +118,7 @@ Mutation testing rests on 2 hypotheses that Jia and Harman describe. The compete
 
 The process has 4 steps: generate the mutants with mutation operators, run the tests on the original program, run the tests on each mutant, and add tests for the mutants that survive. An equivalent mutant changes the code but not its behavior, so no test can kill it. The detection of equivalent mutants is undecidable in general, and it costs human effort.
 
-A full mutation analysis is costly in machines and in human attention. Selective mutation uses a few operators: the 5 key operators of Offutt and colleagues kept a mutation score of `99.5%`. Google makes the technique practical at scale with 3 limits:
+A full mutation analysis is costly in machines and in human attention. Selective mutation uses a few operators: the 5 key operators of Offutt and colleagues kept a mutation score of `99.5%`. Google implements AOR, LCR, ROR, SBR, and UOI. It leaves out ABS, because ABS acted on values that are never negative in its code, and it states that this reason does not apply in general. Google makes the technique practical at scale with 3 limits:
 
 - It mutates only the changed lines that the tests cover, during code review.
 - It generates at most 1 mutant for each line.

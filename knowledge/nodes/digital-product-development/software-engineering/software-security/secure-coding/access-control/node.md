@@ -26,7 +26,7 @@ The rules that limit each user to the functions and the data that the user has p
   - also_attached_to: software-architecture
   - also_attached_to: software-construction
   - also_attached_to: software-quality
-  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x17-V8-Authorization.md
+  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x17-V8-Authorization.md#v83-operation-level-authorization
   - sources: https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/
 - Block access to each resource by default, unless the resource is public. ^deny-by-default
   - scope: subtree
@@ -37,7 +37,7 @@ The rules that limit each user to the functions and the data that the user has p
   - also_attached_to: software-construction
   - also_attached_to: software-quality
   - sources: https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/
-  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x17-V8-Authorization.md
+  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x17-V8-Authorization.md#v82-general-authorization-design
 - Check the permission of the user for each record that a request reads or changes. ^check-each-record
   - scope: subtree
   - basis: standard
@@ -45,7 +45,7 @@ The rules that limit each user to the functions and the data that the user has p
   - origin: template
   - also_attached_to: software-construction
   - also_attached_to: software-quality
-  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x17-V8-Authorization.md
+  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x17-V8-Authorization.md#v82-general-authorization-design
   - sources: https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/
 - Add a test for each access control rule. ^test-access-control
   - scope: subtree
@@ -63,4 +63,4 @@ The rules that limit each user to the functions and the data that the user has p
   - also_attached_to: software-construction
   - also_attached_to: software-quality
   - sources: https://top10.owasp.org/2025/A01_2025-Broken_Access_Control/
-  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md
+  - sources: https://github.com/OWASP/ASVS/blob/v5.0.0/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md#v163-security-events

@@ -35,13 +35,13 @@ Choosing the goals, the metrics, and the targets that show whether a product or 
   - basis: research
   - status: proposed
   - origin: template
-  - sources: https://research.google.com/pubs/archive/36299.pdf
-- Normalize each raw count to a ratio, a percentage, or an average for each user, unless it counts new users. ^prefer-normalized-metrics
+  - sources: https://research.google.com/pubs/archive/36299.pdf#page=3
+- Normalize each raw count to a ratio, a percentage, or an average for each user, unless it counts new users. ^normalize-raw-counts
   - scope: subtree
   - basis: research
   - status: proposed
   - origin: template
-  - sources: https://research.google.com/pubs/archive/36299.pdf
+  - sources: https://research.google.com/pubs/archive/36299.pdf#page=4
 
 ## Notes
 

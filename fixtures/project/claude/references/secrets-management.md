@@ -9,9 +9,7 @@ From [Digital product development](digital-product-development.md):
 
 From [Software engineering](software-engineering.md):
 
-- Do not commit a secret to a repository. ^no-secret-in-repository
-- If a secret reaches a repository, revoke the secret. ^revoke-exposed-secret
-- Write a test for each change in behavior. ^test-each-behavior-change
+- Write a test for each change in behavior, unless the changed code has no conditional logic. ^test-each-behavior-change
 
 From [Software security](software-security.md):
 
@@ -29,6 +27,8 @@ From [Secrets management](secrets-management.md):
 
 - Give each secret only the permissions that its use needs. ^least-privilege-secret
 - Do not write a secret, a password, or a session token to a log. ^no-secret-in-log
+- Do not commit a secret to a repository. ^no-secret-in-repository
+- If a secret reaches a repository, revoke the secret. ^revoke-exposed-secret
 - Run a secret scanner in the pre-commit hook of each repository. ^scan-for-secrets-before-commit
 - Store each backend secret in a secrets manager, such as a key vault. ^use-a-secrets-manager
 

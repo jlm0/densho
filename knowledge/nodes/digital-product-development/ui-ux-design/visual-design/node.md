@@ -27,9 +27,15 @@ The visual form of an interface: its layout, type, color, imagery, and spacing. 
 
 ## Directives
 
-- Limit each interface to `2` primary colors and `2` secondary colors. ^limit-color-palette
+- Use at most `2` primary and `2` secondary colors in an interface, unless the brand guidelines set a larger palette. ^limit-color-palette
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/
+  - sources: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/#toc-1-color-and-contrast-1
+- If an interface uses more than `2` primary and `2` secondary colors, give each color a different value or saturation. ^vary-colors-in-large-palette
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/#toc-1-color-and-contrast-1

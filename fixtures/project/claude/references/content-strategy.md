@@ -7,6 +7,10 @@ From [Digital product development](digital-product-development.md):
 
 - Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
+From [Brand design](brand-design.md):
+
+- Write each message to a user in the voice of the brand definition. ^write-in-brand-voice
+
 ## Definition
 
 The plan for the creation, the publication, and the governance of useful, usable content, in the words of Kristina Halvorson. A detailed audit and an analysis of the existing content come before the strategy.

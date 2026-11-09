@@ -7,11 +7,14 @@ From [Digital product development](digital-product-development.md):
 
 - Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
-From [Software engineering](software-engineering.md):
+From [Secrets management](secrets-management.md):
 
 - Do not commit a secret to a repository. ^no-secret-in-repository
 - If a secret reaches a repository, revoke the secret. ^revoke-exposed-secret
-- Write a test for each change in behavior. ^test-each-behavior-change
+
+From [Software engineering](software-engineering.md):
+
+- Write a test for each change in behavior, unless the changed code has no conditional logic. ^test-each-behavior-change
 
 From [Accessibility](accessibility.md):
 
@@ -74,20 +77,19 @@ From [Test doubles](test-doubles.md):
 - Write each fake for the API whose real implementation does not fit the tests, not for its callers. ^fake-at-the-root-api
 - Make a fake raise an error when a test reaches a path that the fake does not support. ^fake-fails-fast
 - Give a fake the same outputs and state changes as the real implementation, for each input that it supports. ^fake-fidelity
+- If the real implementation is unavailable, slow, nondeterministic, or hard to construct, use a fake, unless no fake exists. ^fake-for-unusable-real
 - If no test double fits a dependency on an external server, use a hermetic server that the test controls. ^hermetic-server-fallback
 - Name each test double by its kind: dummy, stub, spy, mock, or fake. ^name-the-double-kind
 - In an interaction test, verify only the calls and the arguments that the tested behavior needs. ^no-overspecified-interactions
 - Keep at least `1` test that runs the code under test without test doubles. ^one-test-without-doubles
 - Assign the fake of an API to the team that owns the real implementation. ^owner-writes-the-fake
-- If the real implementation is unavailable, slow, nondeterministic, or hard to construct, use a fake, unless no fake exists. ^prefer-fakes
-- Use a real implementation in place of a test double, unless it is slow, nondeterministic, or hard to construct. ^prefer-real-implementations
-- Use state testing, unless the behavior is a call count or order, or no real implementation or fake fits. ^prefer-state-testing
 - Build the objects of a test with the factory or the dependency injection of the production code. ^production-construction-in-tests
-- Use the real implementation of each dependency that is fast, deterministic, and simple to construct, such as a value object. ^real-value-objects
 - If no state verification observes an indirect output, verify it with a spy. ^spy-or-mock-for-indirect-outputs
 - Use a stub only to feed the indirect inputs that put the code under test into a needed state. ^stub-for-indirect-inputs
 - Limit the stubs of a test to the functions that its assertions depend on. ^stub-only-for-assertions
 - Give each fake its own tests, such as contract tests that also run against the real implementation. ^test-each-fake
+- Use a real implementation in place of a test double, unless it is slow, nondeterministic, or hard to construct. ^use-real-implementations
+- Use state testing, unless the behavior is a call count or order, or no real implementation or fake fits. ^use-state-testing
 - In an interaction test, verify only the calls to state-changing functions, unless the test verifies a call count or order. ^verify-state-changing-calls
 - Limit interaction testing to call counts, call orders, and dependencies with no real implementation or fake that fits the test. ^when-to-test-interactions
 - If the API owners write no fake, write a fake of `1` class that wraps each call to the API. ^wrap-and-fake

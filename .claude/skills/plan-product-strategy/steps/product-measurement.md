@@ -17,6 +17,7 @@ The output of each node in this list is an input of this step:
 
 - [Software operations](../../../references/software-operations.md)
 - [Strategy formulation](strategy-formulation.md)
+- [Tracking plan](../../../references/tracking-plan.md)
 
 ## Procedure
 

@@ -15,7 +15,7 @@ From [Product strategy](product-strategy.md):
 From [Product measurement](product-measurement.md):
 
 - Link each metric to the goal that it tracks. ^metric-tracks-a-goal
-- Normalize each raw count to a ratio, a percentage, or an average for each user, unless it counts new users. ^prefer-normalized-metrics
+- Normalize each raw count to a ratio, a percentage, or an average for each user, unless it counts new users. ^normalize-raw-counts
 
 From [HEART framework](heart-framework.md):
 

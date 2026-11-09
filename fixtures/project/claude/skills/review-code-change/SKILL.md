@@ -18,6 +18,8 @@ From [Secrets management](../../references/secrets-management.md):
 
 - Give each secret only the permissions that its use needs. ^least-privilege-secret
 - Do not write a secret, a password, or a session token to a log. ^no-secret-in-log
+- Do not commit a secret to a repository. ^no-secret-in-repository
+- If a secret reaches a repository, revoke the secret. ^revoke-exposed-secret
 - Run a secret scanner in the pre-commit hook of each repository. ^scan-for-secrets-before-commit
 - Store each backend secret in a secrets manager, such as a key vault. ^use-a-secrets-manager
 
@@ -32,9 +34,7 @@ From [Software testing](../../references/software-testing.md):
 
 From [Software engineering](../../references/software-engineering.md):
 
-- Do not commit a secret to a repository. ^no-secret-in-repository
-- If a secret reaches a repository, revoke the secret. ^revoke-exposed-secret
-- Write a test for each change in behavior. ^test-each-behavior-change
+- Write a test for each change in behavior, unless the changed code has no conditional logic. ^test-each-behavior-change
 
 From [Test pyramid](../../references/test-pyramid.md):
 
@@ -62,7 +62,6 @@ From [Code review](../../references/code-review.md):
 - Approve a change once it improves the overall health of the code, unless it adds an unwanted feature. ^approve-on-improvement
 - When a reviewer asks what code does, make the code clearer instead of replying only in the review. ^clarify-the-code
 - Write each review comment about the code, not about its author. ^comment-on-the-code
-- Write each code comment to explain why the code exists, not what it does. ^comments-explain-why
 - State the problem and the reason for the approach in each change description. ^explain-each-change
 - State the reason for each review comment. ^explain-each-comment
 - Write the first line of each change description as a short imperative sentence. ^imperative-first-line
@@ -82,6 +81,10 @@ From [Access control](../../references/access-control.md):
 - Block access to each resource by default, unless the resource is public. ^deny-by-default
 - Log each failed access control check. ^log-access-failures
 - Add a test for each access control rule. ^test-access-control
+
+From [Software construction](../../references/software-construction.md):
+
+- Write each code comment to explain why the code exists, not what it does. ^comments-explain-why
 
 From [Injection](../../references/injection.md):
 

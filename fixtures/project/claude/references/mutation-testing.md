@@ -7,11 +7,14 @@ From [Digital product development](digital-product-development.md):
 
 - Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
-From [Software engineering](software-engineering.md):
+From [Secrets management](secrets-management.md):
 
 - Do not commit a secret to a repository. ^no-secret-in-repository
 - If a secret reaches a repository, revoke the secret. ^revoke-exposed-secret
-- Write a test for each change in behavior. ^test-each-behavior-change
+
+From [Software engineering](software-engineering.md):
+
+- Write a test for each change in behavior, unless the changed code has no conditional logic. ^test-each-behavior-change
 
 From [Accessibility](accessibility.md):
 
@@ -73,8 +76,8 @@ From [Mutation testing](mutation-testing.md):
 - Use mutation testing to check whether the tests assert on the code that coverage marks as covered. ^mutation-after-coverage
 - Make each mutant with `1` small syntactic change to the program. ^one-change-per-mutant
 - Generate at most `1` mutant for each line. ^one-mutant-per-line
-- Report the surviving mutants of each change, not a mutation score of the whole code base. ^prefer-change-mutants
-- Use only the AOR, LCR, ROR, and UOI mutation operators. ^selective-mutation-operators
+- Report the surviving mutants of each change, not a mutation score of the whole code base. ^report-change-mutants
+- Use only the ABS, AOR, LCR, ROR, and UOI mutation operators. ^selective-mutation-operators
 - Do not generate mutants in logging code, test code, or code that controls only non-functional properties, such as memory reservation. ^skip-arid-code
 - Do not add a test that kills a mutant through an assertion on an implementation detail, not on the specification. ^skip-unproductive-mutants
 - Use the feedback of the developers on each shown mutant to suppress the kinds that they mark as not useful. ^suppress-by-feedback
@@ -90,7 +93,7 @@ Mutation testing rests on 2 hypotheses that Jia and Harman describe. The compete
 
 The process has 4 steps: generate the mutants with mutation operators, run the tests on the original program, run the tests on each mutant, and add tests for the mutants that survive. An equivalent mutant changes the code but not its behavior, so no test can kill it. The detection of equivalent mutants is undecidable in general, and it costs human effort.
 
-A full mutation analysis is costly in machines and in human attention. Selective mutation uses a few operators: the 5 key operators of Offutt and colleagues kept a mutation score of `99.5%`. Google makes the technique practical at scale with 3 limits:
+A full mutation analysis is costly in machines and in human attention. Selective mutation uses a few operators: the 5 key operators of Offutt and colleagues kept a mutation score of `99.5%`. Google implements AOR, LCR, ROR, SBR, and UOI. It leaves out ABS, because ABS acted on values that are never negative in its code, and it states that this reason does not apply in general. Google makes the technique practical at scale with 3 limits:
 
 - It mutates only the changed lines that the tests cover, during code review.
 - It generates at most 1 mutant for each line.

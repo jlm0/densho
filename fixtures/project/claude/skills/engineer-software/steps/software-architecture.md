@@ -14,7 +14,7 @@ From [Architecture decision record](../../../references/architecture-decision-re
 - Mark a replaced decision record as superseded, with a link to its replacement. ^mark-superseded-record
 - Set the status of a new decision record to `proposed`. ^new-record-is-proposed
 - Give each decision record the next unused number. ^number-decision-records
-- Record each architecturally significant decision in a decision record in the repository. ^record-each-decision
+- Record each decision that affects structure, non-functional characteristics, dependencies, interfaces, or construction techniques in a decision record in the repository. ^record-each-decision
 
 From [C4 model](../../../references/c4-model.md):
 

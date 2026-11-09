@@ -7,7 +7,11 @@ No directive is in force at this node.
 
 ## Definition
 
-The detailed creation of working software through code and its verification. SWEBOK `v4` makes software construction a knowledge area. Here, construction builds to the contracts of software design, in 4 lanes that can run in parallel: infrastructure, backend, frontend, and native.
+The detailed creation of working software through code and its verification. SWEBOK `v4` makes software construction a knowledge area.
+
+## Notes
+
+Construction takes the contracts of software design as its input. It has 4 lanes: infrastructure, backend, frontend, and native. The lanes can run in parallel.
 
 ## Comes from
 

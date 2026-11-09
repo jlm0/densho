@@ -8,6 +8,7 @@ knowledge_type: domain
 sources:
   - https://catalogimages.wiley.com/images/db/pdf/9781118980828.excerpt.pdf
   - https://www.designtokens.org/glossary/
+  - https://clearleft.com/thinking/designing-with-tokens-for-a-flexible-multi-brand-design-system
 broader:
   - brand-design
 related:
@@ -27,15 +28,15 @@ The structures that keep a brand the same across products, teams, and channels. 
 
 ## Directives
 
-- Store the brand colors, typefaces, and type scale in design token files. ^brand-values-as-tokens
+- Store the colors and the typography of the brand as a set of design tokens, the brand theme. ^brand-values-as-tokens
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://www.designtokens.org/glossary/
+  - sources: https://clearleft.com/thinking/designing-with-tokens-for-a-flexible-multi-brand-design-system
 
 ## Notes
 
-The design tokens node holds the rules for the token file and for each alias. The design systems practice area holds the rule that a component uses a token, not a raw value. A brand that stores its values as tokens gives the design system and the brand guidelines one source for each value.
+The design tokens node holds the rules for the token file and for each alias. The design systems practice area holds the rule that a component uses a token, not a hard-coded value. A brand that stores its values as tokens gives the design system and the brand guidelines one source for each value.
 
 Wheeler quotes Hampton Bridwell of Tenet Partners, who describes brand governance as the managed work of behavior, communication, design, legal compliance, process, and measurement that drives the performance of a brand across a company. In Wheeler's account, governance has moved from central approval at the last step to education, self-service, and a role early in the work.

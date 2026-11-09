@@ -23,25 +23,25 @@ Five categories of user-centered metrics from Kerry Rodden, Hilary Hutchinson, a
   - basis: research
   - status: proposed
   - origin: template
-  - sources: https://research.google.com/pubs/archive/36299.pdf
+  - sources: https://research.google.com/pubs/archive/36299.pdf#page=2
 - Write the goal of each HEART category before its signals and its metrics. ^goal-before-metric
   - scope: subtree
   - basis: research
   - status: proposed
   - origin: template
-  - sources: https://research.google.com/pubs/archive/36299.pdf
+  - sources: https://research.google.com/pubs/archive/36299.pdf#page=3
 - Choose signals that change only when the user experience changes. ^specific-signals
   - scope: subtree
   - basis: research
   - status: proposed
   - origin: template
-  - sources: https://research.google.com/pubs/archive/36299.pdf
+  - sources: https://research.google.com/pubs/archive/36299.pdf#page=4
 - Report each engagement metric as an average for each user, not as a total. ^engagement-per-user
   - scope: subtree
   - basis: research
   - status: proposed
   - origin: template
-  - sources: https://research.google.com/pubs/archive/36299.pdf
+  - sources: https://research.google.com/pubs/archive/36299.pdf#page=3
 
 ## Notes
 

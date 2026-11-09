@@ -21,11 +21,7 @@ From [Strategy formulation](../../references/strategy-formulation.md):
 From [Product measurement](../../references/product-measurement.md):
 
 - Link each metric to the goal that it tracks. ^metric-tracks-a-goal
-- Normalize each raw count to a ratio, a percentage, or an average for each user, unless it counts new users. ^prefer-normalized-metrics
-
-From [Prioritization](../../references/product-prioritization.md):
-
-- Give each product team business objectives with key results, not a list of features to build. ^objectives-not-feature-lists
+- Normalize each raw count to a ratio, a percentage, or an average for each user, unless it counts new users. ^normalize-raw-counts
 
 From [Product positioning](../../references/product-positioning.md):
 

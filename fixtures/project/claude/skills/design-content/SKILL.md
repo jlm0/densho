@@ -14,6 +14,7 @@ No directive is in force at this node.
 Read each file in this list, and follow the directives that its line names.
 
 - Read [Digital product development](../../references/digital-product-development.md), and follow each directive from Digital product development.
+- Read [Brand design](../../references/brand-design.md), and follow these directives from it: `write-in-brand-voice`.
 
 ## Steps
 

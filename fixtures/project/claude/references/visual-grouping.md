@@ -65,7 +65,8 @@ From [UI/UX design](ui-ux-design.md):
 
 From [Visual design](visual-design.md):
 
-- Limit each interface to `2` primary colors and `2` secondary colors. ^limit-color-palette
+- Use at most `2` primary and `2` secondary colors in an interface, unless the brand guidelines set a larger palette. ^limit-color-palette
+- If an interface uses more than `2` primary and `2` secondary colors, give each color a different value or saturation. ^vary-colors-in-large-palette
 
 From [Visual grouping](visual-grouping.md):
 
@@ -79,10 +80,10 @@ From [Visual grouping](visual-grouping.md):
 - Give each text link in an interface the same color. ^one-link-color
 - Place each label closer to its field than to any other field. ^place-label-near-field
 - Place related elements closer to each other than to other elements. ^place-related-elements-close
-- Separate two groups with whitespace, not with a divider line, unless the space between them is fixed. ^prefer-space-over-divider
 - Give elements with the same function the same visual style. ^same-style-same-function
 - Give a sticky header a background or a border that separates it from the content under it. ^separate-sticky-header
 - Show part of the next item at the edge of each carousel. ^show-partial-next-item
+- Separate two groups with whitespace, not with a divider line, unless the space between them is fixed. ^space-not-divider
 - Show the selected tab and its panel inside one shared boundary. ^tab-joins-panel
 
 ## Definition

@@ -21,7 +21,7 @@ A measure of the degree to which a test suite exercises the code of a system. Iv
 
 ## Directives
 
-- Measure branch coverage, not only statement coverage. ^prefer-branch-coverage
+- Measure branch coverage, not only statement coverage. ^measure-branch-coverage
   - scope: subtree
   - basis: standard
   - status: proposed
@@ -34,7 +34,7 @@ A measure of the degree to which a test suite exercises the code of a system. Iv
   - origin: template
   - sources: https://istqb.org/wp-content/uploads/2024/11/ISTQB_CTFL_Syllabus_v4.0.1.pdf#page=42
   - sources: https://ieeecs-media.computer.org/media/education/swebok/swebok-v4.pdf#page=129
-- Measure the coverage automatically for each change in code review and for each project once a day. ^measure-coverage-automatically
+- Measure the coverage automatically for each change in code review and for each project. ^measure-coverage-automatically
   - scope: subtree
   - basis: research
   - status: proposed
@@ -60,19 +60,13 @@ A measure of the degree to which a test suite exercises the code of a system. Iv
   - status: proposed
   - origin: template
   - sources: https://testing.googleblog.com/2020/08/code-coverage-best-practices.html
-- Set the coverage target of a code base by its business impact, its rate of change, and its expected life. ^target-by-impact-and-change
+- Set the coverage target of a code base at `90%` or less, by its business impact, change rate, and lifetime. ^target-by-impact-and-change
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
   - sources: https://testing.googleblog.com/2020/08/code-coverage-best-practices.html
 - If the team sets a coverage goal for each commit, set its lower threshold at `90%` or more. ^per-commit-coverage-floor
-  - scope: subtree
-  - basis: practitioner
-  - status: proposed
-  - origin: template
-  - sources: https://testing.googleblog.com/2020/08/code-coverage-best-practices.html
-- Set a coverage goal for each commit in place of a project-wide goal above `90%`. ^prefer-per-commit-targets
   - scope: subtree
   - basis: practitioner
   - status: proposed

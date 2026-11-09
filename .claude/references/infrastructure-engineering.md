@@ -7,7 +7,11 @@ No directive is in force at this node.
 
 ## Definition
 
-The definition and the upkeep of the environments where software runs: servers, networks, and the configuration of each service. Here, the infrastructure lane defines each environment in code and shapes each service so that it deploys the same way in each environment.
+The definition and the upkeep of the environments where software runs: servers, networks, and the configuration of each service.
+
+## Notes
+
+The concepts of this lane are infrastructure as code and the twelve-factor app. Infrastructure as code defines each environment in code. The twelve-factor app shapes a service so that it deploys the same way in each environment.
 
 ## References
 

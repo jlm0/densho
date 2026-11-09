@@ -13,12 +13,6 @@ A target value or range for a service level indicator (SLI). An SLI is a measure
 
 A mean hides the slow tail of a latency distribution. The `99th` percentile shows a likely worst case, and the `50th` percentile shows the typical case. Start with a loose target and tighten it over time, not with a strict target that you relax later.
 
-## Comes from
-
-The output of each node in this list is an input of this node.
-
-- [Tracking plan](tracking-plan.md)
-
 ## Goes to
 
 The output of this node is an input of each node in this list.

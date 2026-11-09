@@ -21,4 +21,8 @@ pointers:
 
 ## Definition
 
-The services, the business logic, and the data stores behind a product. Here, the backend lane models the data of each service and changes a schema or an interface without downtime.
+The services, the business logic, and the data stores behind a product.
+
+## Notes
+
+The concepts of this lane are data modeling and expand and contract. Expand and contract changes a schema or an interface without downtime.

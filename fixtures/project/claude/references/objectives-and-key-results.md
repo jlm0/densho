@@ -15,13 +15,15 @@ From [Product strategy](product-strategy.md):
 From [Product measurement](product-measurement.md):
 
 - Link each metric to the goal that it tracks. ^metric-tracks-a-goal
-- Normalize each raw count to a ratio, a percentage, or an average for each user, unless it counts new users. ^prefer-normalized-metrics
+- Normalize each raw count to a ratio, a percentage, or an average for each user, unless it counts new users. ^normalize-raw-counts
 
 From [Objectives and key results](objectives-and-key-results.md):
 
 - Mark each OKR as committed or aspirational. ^committed-or-aspirational
 - Name the evidence of completion of each key result. ^key-result-evidence
+- Give each product team business objectives with key results, not a list of features to build. ^objectives-not-feature-lists
 - Do not link OKR scores to compensation. ^okrs-apart-from-pay
+- Set one outcome for each product team. ^one-outcome-per-team
 - Write each key result as a measured outcome, not as an activity. ^outcome-key-results
 - Write a postmortem for each committed OKR that ends below `1.0`. ^postmortem-on-missed-commitment
 - Give each key result a score from `0.0` to `1.0` at the end of the cycle. ^score-key-results

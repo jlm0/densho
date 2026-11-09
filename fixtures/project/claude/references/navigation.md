@@ -63,12 +63,11 @@ From [UI/UX design](ui-ux-design.md):
 - Use one word for one meaning in each interface. ^one-word-one-meaning
 - Show only the content and the controls that the current task needs. ^show-what-the-task-needs
 
-From [Information architecture](information-architecture.md):
-
-- Define a controlled vocabulary for the content of each product. ^define-controlled-vocabulary
-
 From [Navigation](navigation.md):
 
+- Make the back button close a full-screen overlay. ^back-closes-overlay
+- Make each back control return to the previous screen, not to the start of the flow. ^back-one-step
+- Do not disable the back button of the browser. ^keep-browser-back
 - Keep repeated navigation elements in the same relative order on each screen. ^keep-navigation-order
 - Show the current location of the user in the navigation. ^show-current-location
 

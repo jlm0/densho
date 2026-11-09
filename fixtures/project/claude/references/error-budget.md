@@ -7,23 +7,19 @@ From [Digital product development](digital-product-development.md):
 
 - Name the user and the task of each feature before you design or build the feature. ^name-user-and-task
 
-From [Software engineering](software-engineering.md):
+From [Secrets management](secrets-management.md):
 
 - Do not commit a secret to a repository. ^no-secret-in-repository
 - If a secret reaches a repository, revoke the secret. ^revoke-exposed-secret
-- Write a test for each change in behavior. ^test-each-behavior-change
 
-From [Software operations](software-operations.md):
+From [Software engineering](software-engineering.md):
 
-- Send a page only for a problem that needs human judgment at once. ^actionable-pages
-- Make each alert detect a symptom that users see, not its cause, unless the cause is definite and imminent. ^alert-on-symptoms
-- Monitor the latency, the traffic, the errors, and the saturation of each user-facing service. ^golden-signals
-- Measure the latency of failed requests apart from the latency of successful requests. ^separate-error-latency
+- Write a test for each change in behavior, unless the changed code has no conditional logic. ^test-each-behavior-change
 
 From [Error budget](error-budget.md):
 
-- When a service exceeds its error budget, release only fixes for `P0` issues and security fixes. ^freeze-on-spent-budget
-- If one incident uses more than `20%` of the error budget in `4` weeks, write a postmortem for it. ^postmortem-for-large-incident
+- When a service exceeds its error budget, release only `P0` and security fixes, unless its error budget policy differs. ^freeze-on-spent-budget
+- Write a postmortem when an incident uses over `20%` of a `4`-week error budget, unless the error budget policy differs. ^postmortem-for-large-incident
 - Write an error budget policy for each service with an SLO. ^write-error-budget-policy
 
 ## Definition

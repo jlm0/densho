@@ -65,14 +65,15 @@ From [UI/UX design](ui-ux-design.md):
 
 From [Visual design](visual-design.md):
 
-- Limit each interface to `2` primary colors and `2` secondary colors. ^limit-color-palette
+- Use at most `2` primary and `2` secondary colors in an interface, unless the brand guidelines set a larger palette. ^limit-color-palette
+- If an interface uses more than `2` primary and `2` secondary colors, give each color a different value or saturation. ^vary-colors-in-large-palette
 
 From [Visual communication](visual-communication.md):
 
 - Add a visible text label to each glyph, unless the glyph means home, print, or search. ^label-glyphs
 - Do not hide a glyph label behind a hover. ^no-hover-labels
 - Do not use one glyph for two different functions. ^no-shared-glyph
-- If a glyph, an image, or a grouping states the same information as a sentence, replace the sentence with it. ^prefer-visual-form
+- If a glyph, an image, or a grouping states the same information as a sentence, replace the sentence with it. ^replace-text-with-visual
 - Test each new glyph with users for recognition before you use it. ^test-new-glyphs
 
 ## Definition
@@ -82,3 +83,5 @@ Using glyphs, images, and spatial composition to say what prose would otherwise 
 ## Notes
 
 These rules work together. A glyph can replace a sentence, but it keeps a short label unless its meaning is universal.
+
+`replace-text-with-visual` has `basis: judgment`, because no source that the template cites states it. The rule comes from the definition of this node: a glyph, an image, or a grouping says what prose would otherwise say.

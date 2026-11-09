@@ -60,6 +60,18 @@ A prioritization score from Intercom, described by Sean McBride. Reach is the nu
   - status: proposed
   - origin: template
   - sources: https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/
+- Order the items by RICE score, unless an item blocks another item or a customer requires it before a sale. ^order-by-rice-score
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/
+- If an item blocks another item or a customer requires it before a sale, put it first in the order. ^dependencies-first
+  - scope: subtree
+  - basis: practitioner
+  - status: proposed
+  - origin: template
+  - sources: https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/
 
 ## Notes
 

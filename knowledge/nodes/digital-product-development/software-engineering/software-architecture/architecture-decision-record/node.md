@@ -17,12 +17,12 @@ A short text file in the repository that records one architecturally significant
 
 ## Directives
 
-- Record each architecturally significant decision in a decision record in the repository. ^record-each-decision
+- Record each decision that affects structure, non-functional characteristics, dependencies, interfaces, or construction techniques in a decision record in the repository. ^record-each-decision
   - scope: subtree
   - basis: practitioner
   - status: proposed
   - origin: template
-  - sources: https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions
+  - sources: https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions#decision
 - Give each decision record the next unused number. ^number-decision-records
   - scope: subtree
   - basis: practitioner

@@ -7,11 +7,18 @@ description: "Build software, from its requirements to its operation. Use when y
 
 ## Directives
 
-From [Software engineering](../../references/software-engineering.md):
+From [Secrets management](../../references/secrets-management.md):
 
 - Do not commit a secret to a repository. ^no-secret-in-repository
 - If a secret reaches a repository, revoke the secret. ^revoke-exposed-secret
-- Write a test for each change in behavior. ^test-each-behavior-change
+- Give each secret only the permissions that its use needs. ^least-privilege-secret
+- Do not write a secret, a password, or a session token to a log. ^no-secret-in-log
+- Run a secret scanner in the pre-commit hook of each repository. ^scan-for-secrets-before-commit
+- Store each backend secret in a secrets manager, such as a key vault. ^use-a-secrets-manager
+
+From [Software engineering](../../references/software-engineering.md):
+
+- Write a test for each change in behavior, unless the changed code has no conditional logic. ^test-each-behavior-change
 
 From [Software security](../../references/software-security.md):
 
@@ -40,13 +47,6 @@ From [Injection](../../references/injection.md):
 - Pass each argument of an operating system command as a separate parameter, not through a shell string. ^no-shell-string
 - Use parameterized queries or an ORM for each database query. ^parameterize-queries
 - Validate each input on the server against an allow list of values, patterns, or ranges. ^validate-input-on-server
-
-From [Secrets management](../../references/secrets-management.md):
-
-- Give each secret only the permissions that its use needs. ^least-privilege-secret
-- Do not write a secret, a password, or a session token to a log. ^no-secret-in-log
-- Run a secret scanner in the pre-commit hook of each repository. ^scan-for-secrets-before-commit
-- Store each backend secret in a secrets manager, such as a key vault. ^use-a-secrets-manager
 
 From [Software supply chain](../../references/software-supply-chain.md):
 
@@ -87,15 +87,12 @@ From [Software testing](../../references/software-testing.md):
 - Include a test that reproduces the bug in each bug fix. ^test-before-bug-fix
 - Test each unit through its public interface, unless a property checks the invariant of its representation. ^test-public-interface
 - Write the tests of each behavior before construction writes its code. ^tests-before-code
-- Run the automated component tests on each commit in continuous integration. ^tests-in-continuous-integration
+- Run the automated component tests and the automated regression tests on each commit in continuous integration. ^tests-in-continuous-integration
 - Link each test case to each element of the test basis that it covers. ^trace-tests-to-the-basis
 
-From [Software operations](../../references/software-operations.md):
+From [Software construction](../../references/software-construction.md):
 
-- Send a page only for a problem that needs human judgment at once. ^actionable-pages
-- Make each alert detect a symptom that users see, not its cause, unless the cause is definite and imminent. ^alert-on-symptoms
-- Monitor the latency, the traffic, the errors, and the saturation of each user-facing service. ^golden-signals
-- Measure the latency of failed requests apart from the latency of successful requests. ^separate-error-latency
+- Write each code comment to explain why the code exists, not what it does. ^comments-explain-why
 
 ## Required reads
 

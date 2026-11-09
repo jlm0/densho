@@ -9,7 +9,7 @@ description: "Check the touchpoints of a brand against its guidelines, and list 
 
 From [Brand systems](../../references/brand-systems.md):
 
-- Store the brand colors, typefaces, and type scale in design token files. ^brand-values-as-tokens
+- Store the colors and the typography of the brand as a set of design tokens, the brand theme. ^brand-values-as-tokens
 
 From [Brand design](../../references/brand-design.md):
 
@@ -37,10 +37,13 @@ From [Brand voice](../../references/brand-voice.md):
 
 From [Brand guidelines](../../references/brand-guidelines.md):
 
+- Label an element of the brand guidelines `customizable` if the guidelines allow each team to change it. ^customizable-element
 - Show each logo rule with a correct example and an incorrect example. ^do-and-dont-examples
 - Write a section of the brand guidelines for each group of users, such as designers, writers, and partners. ^guidelines-per-audience
+- Label an element of the brand guidelines `interpretive` if the guidelines allow a change to it within a stated range. ^interpretive-element
 - Label each element of the brand guidelines as `sacred`, `interpretive`, or `customizable`. ^label-element-freedom
 - Publish the brand guidelines and the asset files in one online source. ^one-online-source
+- Label an element of the brand guidelines `sacred` if the guidelines allow no change to it. ^sacred-element
 
 From [Distinctive brand assets](../../references/distinctive-brand-assets.md):
 
@@ -48,7 +51,7 @@ From [Distinctive brand assets](../../references/distinctive-brand-assets.md):
 - Measure the fame and the uniqueness of a brand element before you treat it as a distinctive asset. ^measure-asset-strength
 - Do not replace a distinctive asset before you measure its fame and its uniqueness. ^measure-before-replacing
 - Do not choose a brand element that is famous but not unique. ^no-famous-shared-elements
-- When you choose a brand element to build, choose by uniqueness first and by fame second. ^prefer-unique-assets
+- When you choose a brand element to build, choose by uniqueness first and by fame second. ^uniqueness-before-fame
 
 From [Logo](../../references/brand-logo.md):
 
@@ -57,7 +60,7 @@ From [Logo](../../references/brand-logo.md):
 - Give each logo a version for light backgrounds and a version for dark backgrounds. ^logo-color-versions
 - State a minimum size for each logo in print and on screens. ^logo-minimum-size
 - Name each lockup of the logo and the layouts that it serves. ^name-each-lockup
-- Do not place a logo on a busy or complex background. ^no-busy-logo-background
+- Place a logo only where each part of it has the contrast ratio that text of its size needs. ^no-busy-logo-background
 - Do not add a shadow, an outline, or a gradient to a logo. ^no-logo-effects
 - Do not place type, photos, or graphics inside the clear space of a logo. ^nothing-in-clear-space
 

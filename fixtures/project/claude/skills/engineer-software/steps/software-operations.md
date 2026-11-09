@@ -7,9 +7,16 @@ This file is step 8 of 8 of the skill `engineer-software`.
 
 From [Error budget](../../../references/error-budget.md):
 
-- When a service exceeds its error budget, release only fixes for `P0` issues and security fixes. ^freeze-on-spent-budget
-- If one incident uses more than `20%` of the error budget in `4` weeks, write a postmortem for it. ^postmortem-for-large-incident
+- When a service exceeds its error budget, release only `P0` and security fixes, unless its error budget policy differs. ^freeze-on-spent-budget
+- Write a postmortem when an incident uses over `20%` of a `4`-week error budget, unless the error budget policy differs. ^postmortem-for-large-incident
 - Write an error budget policy for each service with an SLO. ^write-error-budget-policy
+
+From [Observability](../../../references/observability.md):
+
+- Send a page only for a problem that needs human judgment at once. ^actionable-pages
+- Make each alert detect a symptom that users see, not its cause, unless the cause is definite and imminent. ^alert-on-symptoms
+- Monitor the latency, the traffic, the errors, and the saturation of each user-facing service. ^golden-signals
+- Measure the latency of failed requests apart from the latency of successful requests. ^separate-error-latency
 
 From [Postmortem](../../../references/postmortem.md):
 

@@ -46,16 +46,22 @@ Each row names an activity and the skill for it.
 | --- | --- |
 | A person asks for an accessibility check of an interface. | `audit-accessibility` |
 | You review the touchpoints of a brand for consistency. | `audit-brand-consistency` |
-| You define or change the strategy, the voice, the visual identity, or the guidelines of a brand. | `design-brand` |
+| You define or change the voice of a brand. | `define-brand-voice` |
+| You set a goal, a metric, or a target for a product, a feature, or a team. | `define-success-metrics` |
+| You define or change the strategy, the visual identity, or the guidelines of a brand. | `design-brand` |
 | You plan or write the content of a product. | `design-content` |
 | You create or change a user interface. | `design-interface` |
 | You write, test, or release software. | `engineer-software` |
-| You decide what a product does, who it is for, or what a team builds next. | `plan-product-strategy` |
+| You map customer needs and solutions under a product outcome. | `map-opportunities` |
+| You write or review the strategy of a product, a team, or a company. | `plan-product-strategy` |
+| You set the order of the items in a backlog or a roadmap. | `prioritize-work` |
 | You study the people who use a product. | `research-users` |
 | A code change is ready for review. | `review-code-change` |
 | A screen or a flow is ready for review. | `review-interface` |
 | A person asks for a review of the hierarchy of a screen. | `review-screen-hierarchy` |
 | A person asks for a usability review of a flow. | `review-usability` |
+| You plan or read a test of a product idea. | `test-assumptions` |
+| You write or change the positioning of a product. | `write-positioning` |
 
 These skills have no row:
 

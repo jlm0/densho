@@ -1,0 +1,11 @@
+positive:
+  - Here are notes from 6 customer interviews. Map the opportunities under our retention outcome.
+  - Build an opportunity solution tree for the outcome "more teams active each week".
+  - Which customer need should the team work on next? Use these interview notes.
+negative:
+  - prompt: List the riskiest assumptions of the referral idea and write a test for each.
+    skill: test-assumptions
+  - prompt: Write the guide for 8 interviews with customers who cancelled.
+    skill: research-users
+  - prompt: Score these 12 features with RICE.
+    skill: prioritize-work

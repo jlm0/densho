@@ -1,0 +1,11 @@
+positive:
+  - List the riskiest assumptions of our referral program idea, and write a test for each.
+  - How can we test whether teams pay for the export feature before we build it?
+  - Write assumption tests for these three solutions.
+negative:
+  - prompt: Map the opportunities from these 6 interviews under our retention outcome.
+    skill: map-opportunities
+  - prompt: Run a usability test of the signup prototype with 5 users.
+    skill: research-users
+  - prompt: Measure the effect of the new checkout with an A/B test.
+    skill: null

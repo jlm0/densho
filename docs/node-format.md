@@ -160,7 +160,7 @@ A step file with no front matter keeps the older form. It holds four sections in
 
 Each step ID names a practice area under the skill's discipline, and the [runtime files](runtime-files.md#copies-in-the-tree-form) copy the directives of that area's subtree. A step with no procedure from a source says so in one line, `The procedure of this step is missing.`, and a partial one ends with `The rest of the procedure of this step is missing.`
 
-The skills of the strategy, research, brand, content, and engineering disciplines still use the tree form. The tree form goes away once each of them names its copies.
+The skills of the research, content, and engineering disciplines still use the tree form. The tree form goes away once each of them names its copies.
 
 ### What the parser checks
 

@@ -1,0 +1,11 @@
+positive:
+  - Write the positioning of our product, who it is for and how it differs from the alternatives.
+  - Prospects compare us with spreadsheets. Help us change the positioning of the product.
+  - Which market category is right for our analytics tool?
+negative:
+  - prompt: Write the positioning statement and the identity prism of our brand.
+    skill: design-brand
+  - prompt: Write the headline and the tagline of the launch page.
+    skill: design-content
+  - prompt: Write the strategy of our company for the next two years.
+    skill: plan-product-strategy

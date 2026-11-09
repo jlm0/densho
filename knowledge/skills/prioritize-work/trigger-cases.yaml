@@ -1,0 +1,11 @@
+positive:
+  - Prioritize this backlog of 20 feature requests for next quarter.
+  - Here are 8 projects and a team of 4 engineers. Which project comes first?
+  - Score these roadmap items with RICE, and sort them.
+negative:
+  - prompt: Find the customer need that we work on next, from these interview notes.
+    skill: map-opportunities
+  - prompt: Write the OKRs of the platform team.
+    skill: define-success-metrics
+  - prompt: Split this epic into user stories with acceptance criteria.
+    skill: engineer-software

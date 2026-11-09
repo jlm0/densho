@@ -1,0 +1,9 @@
+positive:
+  - Check our website, our app store page, and our emails against the brand guidelines.
+  - Our sales decks use five different blues. Audit them against the brand.
+  - Do the new packaging designs follow our logo rules?
+negative:
+  - prompt: Add a new accent color to the brand guidelines.
+    skill: design-brand
+  - prompt: Review the checkout screens before we ship them.
+    skill: review-interface

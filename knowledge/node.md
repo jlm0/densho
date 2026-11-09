@@ -15,13 +15,31 @@ pointers:
       - knowledge/**/*
   - kind: densho:SkillPointer
     target: plan-product-strategy
-    trigger: You decide what a product does, who it is for, or what a team builds next.
+    trigger: You write or review the strategy of a product, a team, or a company.
+  - kind: densho:SkillPointer
+    target: define-success-metrics
+    trigger: You set a goal, a metric, or a target for a product, a feature, or a team.
+  - kind: densho:SkillPointer
+    target: map-opportunities
+    trigger: You map customer needs and solutions under a product outcome.
+  - kind: densho:SkillPointer
+    target: test-assumptions
+    trigger: You plan or read a test of a product idea.
+  - kind: densho:SkillPointer
+    target: prioritize-work
+    trigger: You set the order of the items in a backlog or a roadmap.
+  - kind: densho:SkillPointer
+    target: write-positioning
+    trigger: You write or change the positioning of a product.
   - kind: densho:SkillPointer
     target: research-users
     trigger: You study the people who use a product.
   - kind: densho:SkillPointer
     target: design-brand
-    trigger: You define or change the strategy, the voice, the visual identity, or the guidelines of a brand.
+    trigger: You define or change the strategy, the visual identity, or the guidelines of a brand.
+  - kind: densho:SkillPointer
+    target: define-brand-voice
+    trigger: You define or change the voice of a brand.
   - kind: densho:SkillPointer
     target: design-content
     trigger: You plan or write the content of a product.

@@ -1,0 +1,12 @@
+positive:
+  - Define the success metrics for the saved search feature.
+  - What metrics should we track to know whether the new onboarding flow works?
+  - Choose a north star metric for our marketplace app, and the input metrics that drive it.
+  - Write the OKRs of the growth team for next quarter.
+negative:
+  - prompt: Prioritize these 15 backlog items for the third quarter.
+    skill: prioritize-work
+  - prompt: Write the strategy of our product for next year.
+    skill: plan-product-strategy
+  - prompt: Build the dashboard that shows our weekly active users.
+    skill: engineer-software

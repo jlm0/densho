@@ -1,0 +1,12 @@
+positive:
+  - Create the brand of our new budgeting app, with its strategy, its logo, its colors, and its type.
+  - Write the brand guidelines for our company.
+  - Define the color palette and the logo rules of our brand.
+  - Write the positioning statement and the identity prism of our brand.
+negative:
+  - prompt: Define the voice and tone of our brand.
+    skill: define-brand-voice
+  - prompt: Check our website and our emails against the brand guidelines.
+    skill: audit-brand-consistency
+  - prompt: Design the settings screen with our brand colors.
+    skill: design-interface

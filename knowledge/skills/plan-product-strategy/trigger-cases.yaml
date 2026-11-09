@@ -1,0 +1,12 @@
+positive:
+  - Write the strategy for our product for next year.
+  - Our team has ten goals for the quarter and no focus. Help us write a real strategy.
+  - Review the draft strategy of our company and tell me what is missing.
+  - Is "grow revenue by 20 percent" a strategy? Help us turn it into one.
+negative:
+  - prompt: Define the success metrics of the new strategy.
+    skill: define-success-metrics
+  - prompt: Write the positioning of our product against the spreadsheets that customers use today.
+    skill: write-positioning
+  - prompt: Order the items of our roadmap for next quarter.
+    skill: prioritize-work

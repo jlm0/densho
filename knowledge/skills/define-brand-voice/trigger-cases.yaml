@@ -1,0 +1,10 @@
+positive:
+  - Define the voice and tone of our brand.
+  - Our product copy sounds different on each screen. Write a voice guide for the writers.
+  - Choose three voice traits for our banking brand.
+  - Write the tone guidance for our error messages, our onboarding, and our marketing emails.
+negative:
+  - prompt: Write the error messages of the checkout form.
+    skill: design-content
+  - prompt: Define the logo rules and the colors of our brand.
+    skill: design-brand

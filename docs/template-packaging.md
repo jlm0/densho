@@ -61,10 +61,10 @@ A discipline brings its practice areas and concepts, with their directives. A no
 Leaving a discipline out removes:
 
 - Each of its nodes, its branch vocabulary in `knowledge/governance/language/branches/`, and its eval tasks in `knowledge/evals/`.
-- Each skill that uses or applies something you left out. A skill that draws only on what you keep, or only on the governance, arrives. The four preset skills, three of the [improvement loop](improvement-loop.md) and the [eval](evaluation.md) skill, draw only on the governance, so every install has them. A task skill goes with its discipline, and `design-brand` also applies three contrast rules of UI/UX design, so an install without UI/UX design has no brand skill.
+- Each skill that uses or applies something you left out. A skill that draws only on what you keep, or only on the governance, arrives. The four preset skills, three of the [improvement loop](improvement-loop.md) and the [eval](evaluation.md) skill, draw only on the governance, so every install has them. A task skill goes with the discipline of the nodes it uses.
 - Each `informs`, `related`, `also_attached_to`, or `refines` entry, and each pointer, that names something you left out. The node or directive that held it stays.
 - Each entry of the root's `use_a_skill` and `create_a_rule` lists whose directive you left out.
-- Each directive and each page that a [step](node-format.md#the-copy-form) copies from something you left out, and each branch that has no directive left. The skill stays. `design-interface` keeps its steps in an install without brand design, and only loses the rules and the pages of the brand.
+- Each directive and each page that a [step](node-format.md#the-copy-form) copies from something you left out, and each branch that has no directive left. The skill stays. `design-interface` keeps its steps in an install without brand design, and only loses the rules and the pages of the brand. `design-brand` keeps its steps without UI/UX design, and only loses the three contrast rules, the design token rules, and their pages.
 
 If a node you keep `depends_on` a node in another discipline, the install adds that discipline and prints a note. The template has no such link: a handoff from one discipline to the next is an `informs` edge, so `[brand-design]` arrives without product strategy, and the edge from product positioning to brand strategy goes with it.
 

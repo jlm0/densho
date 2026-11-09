@@ -28,7 +28,7 @@ A rule starts when a person states a new rule or corrects your work.
 - If a person states a rule in a session, follow the rule for the rest of that session. ^follow-stated-rule-in-session
 - Write a personal preference as a note in the auto memory folder of Claude Code, not in a node file. ^keep-personal-preferences
 - Set `status` to `proposed` on each new node, directive, and exception. ^start-as-proposed
-- Treat a `proposed` directive as a draft, not as a rule. ^proposed-is-a-draft
+- Treat a `proposed` directive as a draft, not as a rule, unless a person stated it in the current session. ^proposed-is-a-draft
 - Do not set `status` to `accepted` unless a person approves the change. ^person-accepts
 - Write each directive as one sentence that gives exactly `1` action in each case. ^one-action-per-directive
 - Write each other case as an `unless` clause or as a second directive with a condition. ^define-each-other-case

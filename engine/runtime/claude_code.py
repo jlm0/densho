@@ -18,7 +18,14 @@ if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator, Mapping
 
     from engine.parser.result import Script
-    from engine.runtime.view import DirectiveCounts, NodeLink, NodeView, RuntimeView, StepView
+    from engine.runtime.view import (
+        CopyStepView,
+        DirectiveCounts,
+        NodeLink,
+        NodeView,
+        RuntimeView,
+        StepView,
+    )
 
 REVIEW_FOLDER = PurePosixPath("build/runtime-proposals")
 ROOT_FILE = PurePosixPath("AGENTS.md")
@@ -28,7 +35,9 @@ TOOL_FOLDER = ".claude"
 SKILLS_FOLDER = PurePosixPath(".claude/skills")
 SKILL_FILE_NAME = "SKILL.md"
 SKILL_TEMPLATE = "skill.md.jinja"
-STEP_TEMPLATE = "step.md.jinja"
+STEP_TEMPLATE = "step_tree.md.jinja"
+COPY_SKILL_TEMPLATE = "copy_skill.md.jinja"
+COPY_STEP_TEMPLATE = "copy_step.md.jinja"
 REVIEW_MARK = ".proposals"
 IMPORTING_FILES = ("CLAUDE.md", ".claude/CLAUDE.md")
 REPLACING_FILES = (*IMPORTING_FILES, "CLAUDE.local.md")
@@ -144,7 +153,7 @@ def _step_file(flow: str, step: str) -> PurePosixPath:
     return SKILLS_FOLDER / flow / STEPS_FOLDER_NAME / f"{step}{STEP_SUFFIX}"
 
 
-def _step_source(node: NodeView, step: StepView) -> str:
+def _step_source(node: NodeView, step: StepView | CopyStepView) -> str:
     folder = PurePosixPath(node.link.path).parent / STEPS_FOLDER_NAME
     return (folder / f"{step.link.id}{STEP_SUFFIX}").as_posix()
 
@@ -187,7 +196,7 @@ def render_files(view: RuntimeView) -> list[RenderedFile]:
     def render(
         template: str,
         path: PurePosixPath,
-        node: NodeView | StepView,
+        node: NodeView | StepView | CopyStepView,
         steps: Mapping[str, PurePosixPath] | None = None,
     ) -> str:
         folder = location(path).parent.as_posix()
@@ -216,7 +225,38 @@ def render_files(view: RuntimeView) -> list[RenderedFile]:
         text = render(template, path, node)
         return RenderedFile(location(path), text, node.link.path, text, ON_DEMAND_CHARACTERS)
 
+    def copy_skill(node: NodeView) -> list[RenderedFile]:
+        path = _skill_file(node)
+        head = replace(node, body=None, pointers=())
+        steps = {
+            step.link.id: _step_file(node.link.id, step.link.id)
+            for step in node.copy_steps
+            if step.has_file
+        }
+        skill_file = RenderedFile(
+            location(path),
+            render(COPY_SKILL_TEMPLATE, path, node, steps),
+            node.link.path,
+            render(COPY_SKILL_TEMPLATE, path, head, steps),
+            SKILL_KEPT_CHARACTERS,
+            SKILL_LINES,
+        )
+        step_files = [
+            RenderedFile(
+                location(steps[step.link.id]),
+                text := render(COPY_STEP_TEMPLATE, steps[step.link.id], step, steps),
+                _step_source(node, step),
+                text,
+                STEP_CHARACTERS,
+            )
+            for step in node.copy_steps
+            if step.has_file
+        ]
+        return [skill_file, *step_files]
+
     def skill(node: NodeView) -> list[RenderedFile]:
+        if node.copy_steps:
+            return copy_skill(node)
         path = _skill_file(node)
         head = replace(node, body=None, pointers=())
         steps = {step.link.id: _step_file(node.link.id, step.link.id) for step in node.steps}

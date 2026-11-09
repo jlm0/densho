@@ -150,9 +150,9 @@ class SkillType(str, Enum):
     """
     The kinds of skill.
     """
-    flow = "flow"
+    task = "task"
     """
-    The skill runs the steps of a discipline in their order. Each step has a step file.
+    The skill does one task in 1 or more steps, in their order. Each step has a step file.
     """
     lens = "lens"
     """
@@ -345,6 +345,8 @@ class Root(Node):
     """
     The top node of the graph. Agents load the root first.
     """
+    use_a_skill: Optional[list[str]] = Field(default=None, description="""The directives that the section Use a skill of AGENTS.md lists, in their order. The edge does not attach the directive.""")
+    create_a_rule: Optional[list[str]] = Field(default=None, description="""The directives that the section Create a rule of AGENTS.md lists, in their order. The edge does not attach the directive.""")
     kind: Literal["https://github.com/jlm0/densho/schema/Root","densho:Root"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example densho:Concept.""")
     title: str = Field(default=..., description="""The preferred name of the node.""")
     pointers: list[Union[AlwaysPointer,PathPointer,SkillPointer,TextPointer]] = Field(default=..., description="""The routes from this node to other nodes.""", min_length=1)
@@ -1027,7 +1029,7 @@ class Skill(KnowledgeNode):
     skill_type: SkillType = Field(default=..., description="""The kind of work that the skill does.""")
     uses: Optional[list[str]] = Field(default=None, description="""The knowledge that the skill composes.""")
     applies: Optional[list[str]] = Field(default=None, description="""The directives that the skill applies.""")
-    steps: Optional[list[str]] = Field(default=None, description="""The steps of a flow skill, in their order. Each step is a node under the node that the flow uses.""")
+    steps: Optional[list[str]] = Field(default=None, description="""The IDs of the steps of the skill, in their order. Each step has a step file with its ID.""")
     knowledge_type: KnowledgeType = Field(default=..., description="""The kind of knowledge in the node.""")
     exceptions: Optional[list[DirectiveException]] = Field(default=None, description="""The inherited directives that stop at this node.""")
     kind: Literal["https://github.com/jlm0/densho/schema/Skill","densho:Skill"] = Field(default=..., description="""The class of the entity. The value is the class CURIE, for example densho:Concept.""")
@@ -1051,6 +1053,19 @@ class Skill(KnowledgeNode):
                     raise ValueError(err_msg)
         elif isinstance(v, str) and not pattern.search(v):
             err_msg = f"Invalid description format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+    @field_validator('steps')
+    def pattern_steps(cls, v):
+        pattern=re.compile(r"^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\n)$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.search(element):
+                    err_msg = f"Invalid steps format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.search(v):
+            err_msg = f"Invalid steps format: {v}"
             raise ValueError(err_msg)
         return v
 

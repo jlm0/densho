@@ -2,13 +2,62 @@ from collections import defaultdict, deque
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, cast
 
-from engine.generated.metamodel import Discipline, Domain, KnowledgeNode
+from engine.generated.metamodel import Discipline, Domain, KnowledgeNode, TaxonomyNode
+from engine.parser.result import Problem
+from engine.parser.sections import section_problems
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping, Sequence
+    from pathlib import Path
 
     from engine.directives import AppliedDirective
     from engine.generated.metamodel import DirectiveException, Node, Skill
+    from engine.parser.result import FieldPath, ParsedNode
+    from engine.parser.sections import Sections
+
+TREE_SECTIONS = ("Inputs", "Procedure", "Output", "Exit gate")
+
+
+def tree_step_sections(text: str, path: Path) -> Sections | list[Problem]:
+    return section_problems(text, path, TREE_SECTIONS)
+
+
+def _problem(item: ParsedNode, field_path: FieldPath, message: str) -> Problem:
+    return Problem(item.path, item.line_of(field_path), "step", message)
+
+
+def _edge(item: ParsedNode, field: str) -> list[str]:
+    return cast("list[str] | None", getattr(item.node, field, None)) or []
+
+
+def tree_step_problems(
+    item: ParsedNode, skill: Skill, by_id: Mapping[str, ParsedNode]
+) -> list[Problem]:
+    steps = skill.steps or []
+    uses = skill.uses or []
+    problems: list[Problem] = []
+    if len(uses) != 1:
+        message = "A task skill with the copy by tree uses exactly 1 node: its discipline."
+        problems.append(_problem(item, ("uses",), message))
+    home = uses[0] if len(uses) == 1 else None
+    for index, step in enumerate(steps):
+        location = ("steps", index)
+        found = by_id.get(step)
+        if found is None:
+            message = f"No node has the ID {step}. Name a node, or write the step in the copy form."
+            problems.append(_problem(item, location, message))
+            continue
+        if home is not None and (
+            not isinstance(found.node, TaxonomyNode) or home not in _edge(found, "broader")
+        ):
+            message = f"{step} is not under {home}. Name a node whose broader names {home}."
+            problems.append(_problem(item, location, message))
+        earlier = [other for other in steps[:index] if other in _edge(found, "informs")]
+        if earlier:
+            message = f"{step} informs {earlier[0]}, so {step} comes before {earlier[0]} in steps."
+            problems.append(_problem(item, location, message))
+    return problems
+
 
 type Read = tuple[str, tuple[str, ...]]
 type HeldException = tuple[str, DirectiveException]

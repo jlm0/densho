@@ -1,0 +1,9 @@
+positive:
+  - Run a heuristic evaluation of the password reset flow.
+  - Find the usability problems in our checkout flow, and rate their severity.
+  - Is the booking flow easy to use on a phone?
+negative:
+  - prompt: Check the color contrast of the login screen against WCAG.
+    skill: audit-accessibility
+  - prompt: Which element on this screen draws the eye first?
+    skill: review-screen-hierarchy

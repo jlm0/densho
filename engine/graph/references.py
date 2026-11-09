@@ -19,7 +19,8 @@ EDGE_FIELDS = (
     "implements",
     "uses",
     "applies",
-    "steps",
+    "use_a_skill",
+    "create_a_rule",
 )
 DIRECTIVE_REFERENCE_FIELDS = ("also_attached_to", "refines", "conflicts_with")
 

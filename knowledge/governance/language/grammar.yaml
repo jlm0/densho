@@ -78,12 +78,16 @@ trigger_rules:
     review: true
 
 description_rules:
-  - text: Write each skill description as `2` sentences.
+  - text: Write each skill description as `2` or `3` sentences.
     checks: [description-form]
   - text: Start the first sentence of a skill description with an approved verb.
     checks: [description-form, imperative]
   - text: Start the second sentence of a skill description with `Use when` and a trigger.
     checks: [description-form, trigger-form, condition-count]
+  - text: Start the third sentence of a skill description with `Do not use it for`.
+    checks: [description-form]
+  - text: Name each sibling skill of the third sentence in backticks.
+    checks: [description-form]
   - text: Write each sentence of a skill description in `20` words or fewer.
     checks: [word-count]
   - text: Write each skill description in `400` characters or fewer.

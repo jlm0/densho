@@ -1,0 +1,11 @@
+positive:
+  - The new checkout flow is ready. Please review it.
+  - Review these three screens of the admin panel before we ship them.
+  - Do a design review of the onboarding flow.
+negative:
+  - prompt: Check only whether the signup form meets WCAG 2.2 AA.
+    skill: audit-accessibility
+  - prompt: Review this pull request.
+    skill: review-code-change
+  - prompt: Design a new profile screen.
+    skill: design-interface

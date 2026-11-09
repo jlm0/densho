@@ -18,6 +18,7 @@ from engine.generated.metamodel import Skill
 from engine.governance import pending_entities
 from engine.parser import ParsedNode, parse_source
 from engine.parser.result import StepFile
+from engine.parser.steps import read_step_source
 from engine.runtime import (
     MARKER,
     REVIEW_FOLDER,
@@ -41,8 +42,8 @@ from engine.runtime.claude_code import (
     state_sentence,
 )
 from engine.runtime.files import apply_files
-from engine.runtime.placement import Tree
 from engine.runtime.view import DirectiveCounts, NodeView, StepView
+from engine.tree_copies import Tree
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping, Sequence
@@ -359,7 +360,7 @@ def test_a_skill_behind_a_path_pointer_receives_a_rule_and_a_skill_file() -> Non
 def test_a_policy_is_not_a_domain_in_the_root() -> None:
     text = text_of("AGENTS.md")
     domains = text[text.index("## Domains") : text.index("## Governance")]
-    governance = text[text.index("## Governance") : text.index("## Skills")]
+    governance = text[text.index("## Governance") :]
     assert "alpha" in domains
     assert "policies" not in domains
     assert "Read [policies](.claude/references/policies.md)." in governance
@@ -523,7 +524,17 @@ def test_a_group_links_to_the_node_that_holds_the_directive() -> None:
             ".claude/references/alpha.md",
             ["## Directives", "^keep", "## Definition", "## References", "Read [beta]"],
         ),
-        ("AGENTS.md", ["## Directives", "## Architecture", "## Domains", "## Governance"]),
+        (
+            "AGENTS.md",
+            [
+                "## Rules for each task",
+                "## Use a skill",
+                "## Create a rule",
+                "## Skills",
+                "## Domains",
+                "## Governance",
+            ],
+        ),
     ],
 )
 def test_each_file_puts_directives_then_procedures_then_references(
@@ -1068,22 +1079,31 @@ def test_a_skill_file_over_its_line_budget_fails(tmp_path: Path) -> None:
     assert problems[0].path == tmp_path / "knowledge/skills/review/node.md"
 
 
-def root_with_body_lines(count: int) -> dict[str, str]:
-    root = SAMPLE["knowledge/node.md"].rstrip("\n")
-    body = "\n\n## Notes\n\n" + "".join(f"- Note {n}.\n" for n in range(count))
-    return {**SAMPLE, "knowledge/node.md": root + body}
+def root_with_rule_lines(count: int) -> dict[str, str]:
+    root = node(
+        "root",
+        "densho:Root",
+        front=pointers(
+            pointer("TextPointer", "alpha"),
+            pointer("PathPointer", "gamma", "src/**/*"),
+            pointer("AlwaysPointer", "delta"),
+            pointer("TextPointer", "policies"),
+        ),
+        rules=[rule(f"note-{n}", scope="node") for n in range(count)],
+    )
+    return {**SAMPLE, "knowledge/node.md": root}
 
 
 def test_the_root_at_its_line_budget_passes(tmp_path: Path) -> None:
-    lines = len(rendered(root_with_body_lines(1))["AGENTS.md"].text.splitlines())
-    entries = rendered(root_with_body_lines(ROOT_LINES - lines + 1))
+    lines = len(rendered(root_with_rule_lines(1))["AGENTS.md"].text.splitlines())
+    entries = rendered(root_with_rule_lines(ROOT_LINES - lines + 1))
     assert len(entries["AGENTS.md"].text.splitlines()) == ROOT_LINES
     assert not size_problems(entries.values(), tmp_path)
 
 
 def test_the_root_over_its_line_budget_fails(tmp_path: Path) -> None:
-    lines = len(rendered(root_with_body_lines(1))["AGENTS.md"].text.splitlines())
-    entries = rendered(root_with_body_lines(ROOT_LINES - lines + 2))
+    lines = len(rendered(root_with_rule_lines(1))["AGENTS.md"].text.splitlines())
+    entries = rendered(root_with_rule_lines(ROOT_LINES - lines + 2))
     problems = size_problems(entries.values(), tmp_path)
     assert [problem.code for problem in problems] == ["size"]
     assert f"AGENTS.md has {ROOT_LINES + 1} lines, over the budget of {ROOT_LINES}" in (
@@ -1806,6 +1826,8 @@ def test_the_review_result_of_the_real_seed_places_each_applied_directive_once()
     view = build_view(compiled)
     tree = Tree([compiled.graph.root, *compiled.graph.nodes])
     for skill in view.skills:
+        if skill.copy_steps:
+            continue
         if not skill.steps:
             placed = placed_ids(skill, compiled.applied)
             assert sorted(placed) == sorted(
@@ -2184,7 +2206,7 @@ def test_the_command_prints_no_count_after_a_failed_compile(tmp_path: Path) -> N
 FLOW_ROW = "  - kind: densho:SkillPointer\n    target: flow\n    trigger: You change the area.\n"
 FLOW_FRONT = (
     "description: Run the area flow. Use when you change the area.\n"
-    "invocation: agent\nskill_type: flow\nuses: [disc]\nsteps: [one, two]\n"
+    "invocation: agent\nskill_type: task\nuses: [disc]\nsteps: [one, two]\n"
     "exceptions:\n  - directive: disc-stopped\n    reason: The flow skips it.\n"
     "    status: accepted\n"
 )
@@ -2405,8 +2427,8 @@ def test_the_root_tells_the_agent_to_invoke_a_skill_again_after_a_compaction() -
         "fixture": (REPO / "fixtures/project/AGENTS.fixture.md").read_text(encoding="utf-8"),
     }
     for name, text in roots.items():
-        section = text.partition("\n## Skills\n\n")[2]
-        assert section.startswith(f"{ROOT_COMPACTION_LINE}\n\n"), name
+        section = text.partition("\n## Use a skill\n\n")[2].partition("\n## Create a rule\n")[0]
+        assert section.endswith(f"{ROOT_COMPACTION_LINE}\n"), name
         assert text.count(ROOT_COMPACTION_LINE) == 1, name
 
 
@@ -2556,3 +2578,321 @@ def test_the_compiled_graph_keeps_the_order_of_steps() -> None:
     two = flow_files(sources)[STEP_TWO].text
     assert "This file is step 1 of 2 of the skill `flow`." in two
     assert "Read [one](one.md)." in two
+
+
+MAKE_ROW = "  - kind: densho:SkillPointer\n    target: make\n    trigger: You make the area.\n"
+MAKE_BODY = "## Exit checklist\n\n- [ ] Each step has its output.\n\n## Output\n\nThe made area.\n"
+
+
+def make_front(steps: tuple[str, ...], skill_type: str = "task") -> str:
+    return (
+        "description: Run the area work. Use when you make the area.\n"
+        f"invocation: agent\nskill_type: {skill_type}\nuses: [disc]\n"
+        f"steps: [{', '.join(steps)}]\n"
+    )
+
+
+def copy_source(
+    title: str,
+    directives: tuple[str, ...] = (),
+    *,
+    pages: tuple[str, ...] = (),
+    branches: tuple[tuple[str, tuple[str, ...]], ...] = (),
+    missing: tuple[str, ...] = (),
+) -> str:
+    lines = ["---", f"title: {title}"]
+    if pages:
+        lines += ["pages:"]
+        lines += [f"  - target: {page}\n    trigger: You need {page}." for page in pages]
+    if directives:
+        lines += ["directives:", *[f"  - {name}" for name in directives]]
+    if branches:
+        lines += ["branches:"]
+        for condition, names in branches:
+            lines += [f"  - condition: {condition}", "    directives:"]
+            lines += [f"      - {name}" for name in names]
+    if missing:
+        lines += ["missing_rules:", *[f"  - {rule}" for rule in missing]]
+    lines += ["---", "", "## Procedure", "", f"1. Run {title}.", "", "## Output", ""]
+    return "\n".join([*lines, f"The {title} output.", ""])
+
+
+THREE_STEPS = {
+    "first": copy_source("first", ("area-rule", "make-own"), pages=("disc",)),
+    "second": copy_source(
+        "second",
+        ("disc-rule", "one-own"),
+        branches=(("If the area is wide", ("two-concept",)),),
+        missing=("No directive covers a narrow area.",),
+    ),
+    "third": copy_source(
+        "third",
+        ("side-rule", "one-concept", "far-kept", "far-alone", "near-all", "disc-stopped"),
+    ),
+}
+
+
+def copy_files(
+    steps: dict[str, str] | None = None,
+    *,
+    skill_type: str = "task",
+    proposals: bool = False,
+    status: str = "accepted",
+) -> dict[str, RenderedFile]:
+    chosen = THREE_STEPS if steps is None else steps
+    sources = {
+        **FLOW_SAMPLE,
+        "knowledge/node.md": FLOW_SAMPLE["knowledge/node.md"].replace(
+            FLOW_ROW, FLOW_ROW + MAKE_ROW
+        ),
+        "knowledge/skills/make/node.md": node(
+            "make",
+            "densho:Skill",
+            front=make_front(tuple(chosen), skill_type),
+            rules=[rule("make-own", status, "node")],
+            body=MAKE_BODY,
+        ),
+    }
+    folder = Path("knowledge/skills/make/steps")
+    step_files: list[StepFile] = []
+    for name, text in chosen.items():
+        found = read_step_source(text, folder / f"{name}.md")
+        assert isinstance(found, StepFile), found
+        step_files.append(found)
+    items = [
+        replace(item, step_files=flow_step_files())
+        if item.node.id == "flow"
+        else replace(item, step_files=tuple(sorted(step_files)))
+        if item.node.id == "make"
+        else item
+        for item in parsed(sources)
+    ]
+    view = build_view(compile_items(items, Path(), proposals=proposals))
+    return {entry.path.as_posix(): entry for entry in render_files(view)}
+
+
+MAKE_SKILL = ".claude/skills/make/SKILL.md"
+MAKE_STEPS = ".claude/skills/make/steps"
+
+
+def test_a_skill_with_copies_holds_its_run_list_and_its_steps_in_order() -> None:
+    text = copy_files()[MAKE_SKILL].text
+    order = [
+        "# make",
+        "## Run the skill",
+        "1. Run the steps in their order.",
+        "2. If the output of a step exists already, skip the step.",
+        "3. If a step has a step file, read the step file.",
+        "4. Follow each directive of the step.",
+        "5. If a branch heading matches the work, follow each directive under it.",
+        "6. If you need the definition or the notes of a page, read the page.",
+        "7. After each step, check its output against each directive of the step.",
+        "8. Before you start the next step, correct each part of the output that breaks a",
+        "## 1. first",
+        "1. Run first.",
+        "Pages:",
+        "- You need disc. Read [disc](../../references/disc.md).",
+        "Directives:",
+        "- Run the area-rule check. ^area-rule\n",
+        "- Run the make-own check. ^make-own\n",
+        "Output: The first output.",
+        "## 2. second",
+        "Step file: [steps/second.md](steps/second.md)",
+        "1. Run second.",
+        "Missing rule: No directive covers a narrow area.",
+        "Output: The second output.",
+        "## 3. third",
+        "Step file: [steps/third.md](steps/third.md)",
+        "## Exit checklist",
+        "## Output",
+    ]
+    places = [text.index(part) for part in order]
+    assert places == sorted(places)
+    assert "^disc-rule" not in text
+    assert "^two-concept" not in text
+    assert "## Directives" not in text
+
+
+def test_only_a_step_with_a_branch_or_over_five_directives_gets_a_file() -> None:
+    files = copy_files()
+    assert f"{MAKE_STEPS}/first.md" not in files
+    assert f"{MAKE_STEPS}/second.md" in files
+    assert f"{MAKE_STEPS}/third.md" in files
+    five = {**THREE_STEPS, "third": THREE_STEPS["third"].replace("  - disc-stopped\n", "")}
+    assert f"{MAKE_STEPS}/third.md" not in copy_files(five)
+
+
+def test_a_step_file_holds_its_place_its_copies_and_its_way_back() -> None:
+    files = copy_files()
+    second = files[f"{MAKE_STEPS}/second.md"].text
+    order = [
+        "# second",
+        "This file is step 2 of 3 of the skill `make`.",
+        "## Directives",
+        "- Run the disc-rule check. ^disc-rule\n",
+        "- Run the one-own check. ^one-own\n",
+        "## Branches",
+        "If a heading matches the work, follow each directive under it.",
+        "### If the area is wide",
+        "- Run the two-concept check. ^two-concept\n",
+        "## Next step",
+        "Return to step 3 of [the skill](../SKILL.md).",
+    ]
+    places = [second.index(part) for part in order]
+    assert places == sorted(places)
+    third = files[f"{MAKE_STEPS}/third.md"].text
+    assert "Return to the exit checklist of [the skill](../SKILL.md)." in third
+    assert "## Branches" not in third
+    assert "## Pages" not in third
+
+
+def test_a_step_file_lists_its_pages() -> None:
+    steps = {
+        **THREE_STEPS,
+        "second": THREE_STEPS["second"].replace(
+            "title: second\n",
+            "title: second\npages:\n  - target: two\n    trigger: You need two.\n",
+        ),
+    }
+    second = copy_files(steps)[f"{MAKE_STEPS}/second.md"].text
+    assert "## Pages\n\n- You need two. Read [two](../../../references/two.md).\n" in second
+
+
+def test_a_single_step_has_no_number_no_file_and_no_order_lines() -> None:
+    steps = {"only": THREE_STEPS["second"].replace("title: second", "title: only")}
+    steps["only"] = steps["only"].replace("  - one-own\n", "  - one-own\n  - make-own\n")
+    files = copy_files(steps)
+    text = files[MAKE_SKILL].text
+    assert "## only\n" in text
+    assert "## 1. only" not in text
+    assert f"{MAKE_STEPS}/only.md" not in files
+    assert "### If the area is wide\n\n- Run the two-concept check. ^two-concept\n" in text
+    assert "1. Follow each directive of the skill.\n" in text
+    for line in ("Run the steps", "skip the step", "read the step file", "After each step"):
+        assert line not in text
+
+
+def test_a_lens_checks_the_work_against_its_copies() -> None:
+    steps = {"only": THREE_STEPS["second"].replace("  - one-own\n", "  - one-own\n  - make-own\n")}
+    text = copy_files(steps, skill_type="lens")[MAKE_SKILL].text
+    assert "1. Check the work against each directive of the skill.\n" in text
+    assert "2. If a branch heading matches the work, check the work against each directive" in text
+
+
+def test_a_lens_step_file_checks_the_work_in_its_branches() -> None:
+    steps = {
+        "first": THREE_STEPS["first"],
+        "second": THREE_STEPS["second"],
+    }
+    files = copy_files(steps, skill_type="lens")
+    second = files[f"{MAKE_STEPS}/second.md"].text
+    assert (
+        "If a heading matches the work, check the work against each directive under it." in second
+    )
+    text = files[MAKE_SKILL].text
+    assert "After each step" not in text
+    assert "Before you start the next step" not in text
+
+
+def test_a_copy_that_is_not_in_force_drops_out() -> None:
+    in_force = copy_files(status="proposed")[MAKE_SKILL].text
+    assert "^make-own" not in in_force
+    assert "^area-rule" in in_force
+    files = copy_files(status="proposed", proposals=True)
+    review = files[f"{REVIEW}/claude/skills/make/SKILL.proposals.md"].text
+    assert "- Run the make-own check. ^make-own (proposed)\n" in review
+
+
+def test_a_step_with_no_copy_in_force_says_so() -> None:
+    steps = {**THREE_STEPS, "first": copy_source("first", ("make-own",))}
+    text = copy_files(steps, status="proposed")[MAKE_SKILL].text
+    assert "Directives:\n\nNo directive of this step is in force.\n" in text
+
+
+def test_a_skill_with_copies_has_no_directive_section_and_no_uses_links() -> None:
+    text = copy_files()[MAKE_SKILL].text
+    assert "Read [disc](../../references/disc.md)." in text
+    assert "## References" not in text
+    assert "Required reads" not in text
+
+
+def root_with_sections(front: str, statuses: dict[str, str] | None = None) -> dict[str, str]:
+    marks = statuses or {}
+    root = node(
+        "root",
+        "densho:Root",
+        front=pointers(
+            pointer("TextPointer", "alpha"),
+            pointer("PathPointer", "gamma", "src/**/*"),
+            pointer("AlwaysPointer", "delta"),
+            pointer("TextPointer", "policies"),
+        )
+        + front,
+        rules=[
+            rule(name, marks.get(name, "accepted"), "node")
+            for name in ("each-one", "use-one", "rule-one", "rule-two")
+        ],
+        body="## Architecture\n\nA fact that no file shows.\n",
+    )
+    return {**SAMPLE, "knowledge/node.md": root}
+
+
+def section_of(text: str, heading: str) -> str:
+    after = text.partition(f"\n## {heading}\n\n")[2]
+    return after.partition("\n## ")[0]
+
+
+def test_the_root_puts_each_named_directive_in_its_section() -> None:
+    sources = root_with_sections("use_a_skill: [use-one]\ncreate_a_rule: [rule-two, rule-one]\n")
+    text = rendered(sources)["AGENTS.md"].text
+    each = section_of(text, "Rules for each task")
+    assert "^each-one" in each
+    assert "^use-one" not in each
+    assert "^rule-one" not in each
+    use = section_of(text, "Use a skill")
+    assert use.startswith("- Run the use-one check. ^use-one\n\nIf compaction")
+    create = section_of(text, "Create a rule")
+    assert create.index("^rule-two") < create.index("^rule-one")
+    assert create.startswith("A rule starts when a person states a new rule or corrects your work.")
+
+
+def test_a_root_section_can_name_a_directive_of_another_node() -> None:
+    sources = root_with_sections("create_a_rule: [keep]\n")
+    text = rendered(sources)["AGENTS.md"].text
+    assert "- Run the keep check. ^keep\n" in section_of(text, "Create a rule")
+
+
+def test_an_empty_create_a_rule_section_says_so() -> None:
+    sources = root_with_sections("create_a_rule: [rule-one]\n", {"rule-one": "proposed"})
+    text = rendered(sources)["AGENTS.md"].text
+    assert "No directive of this section is in force.\n" in section_of(text, "Create a rule")
+    plain = rendered(root_with_sections(""), proposals=True)
+    review = plain[f"{REVIEW}/AGENTS.proposals.md"].text
+    assert "No directive is in this section.\n" in section_of(review, "Create a rule")
+
+
+def test_the_root_without_a_root_rule_says_how_to_add_one() -> None:
+    text = rendered()["AGENTS.md"].text
+    message = (
+        "No other directive applies to each task. A project adds a rule for each task as a "
+        "directive on the root with `scope: node`."
+    )
+    assert message in section_of(text, "Rules for each task")
+
+
+def test_the_root_leaves_out_its_body() -> None:
+    text = rendered(root_with_sections(""))["AGENTS.md"].text
+    assert "A fact that no file shows." not in text
+    assert "## Architecture" not in text
+
+
+def test_a_root_with_no_skill_has_no_use_a_skill_section() -> None:
+    sources = {
+        "knowledge/node.md": node(
+            "root", "densho:Root", front=pointers(pointer("TextPointer", "lone"))
+        ),
+        "knowledge/nodes/lone/node.md": node("lone"),
+    }
+    text = rendered(sources)["AGENTS.md"].text
+    assert "## Use a skill" not in text
+    assert "## Create a rule" in text

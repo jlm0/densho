@@ -8,6 +8,7 @@ from engine.generated.metamodel import (
     Invocation,
     KnowledgeNode,
     PathPointer,
+    Root,
     Skill,
     SkillPointer,
     SkillType,
@@ -15,7 +16,7 @@ from engine.generated.metamodel import (
     TaxonomyNode,
 )
 from engine.layout import POLICY_FOLDER
-from engine.runtime.placement import Tree, flow_placement, skill_placement
+from engine.tree_copies import Tree, flow_placement, skill_placement
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -24,11 +25,17 @@ if TYPE_CHECKING:
     from engine.directives import AppliedDirective
     from engine.generated.metamodel import (
         CompiledResult,
+        Directive,
         DirectiveException,
         Node,
     )
-    from engine.parser.result import Script, StepFile
-    from engine.runtime.placement import Placement
+    from engine.parser.result import Script, StepCopies, StepFile
+    from engine.tree_copies import Placement
+
+STEP_FILE_DIRECTIVES = 5
+CORRECT_OUTPUT = (
+    "Before you start the next step, correct each part of the output that breaks a directive."
+)
 
 
 class LoadMechanism(StrEnum):
@@ -96,6 +103,30 @@ class StepView:
 
 
 @dataclass(frozen=True, slots=True)
+class BranchView:
+    condition: str
+    directives: tuple[DirectiveLine, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class CopyStepView:
+    link: NodeLink
+    skill: NodeLink
+    skill_type: str
+    number: int
+    total: int
+    has_file: bool
+    pages: tuple[PointerLine, ...]
+    names_directives: bool
+    directives: tuple[DirectiveLine, ...]
+    branches: tuple[BranchView, ...]
+    missing_rules: tuple[str, ...]
+    procedure: str
+    output: str
+    following: int | None
+
+
+@dataclass(frozen=True, slots=True)
 class NodeView:
     link: NodeLink
     groups: tuple[DirectiveGroup, ...]
@@ -111,6 +142,9 @@ class NodeView:
     goes_to: tuple[NodeLink, ...] = ()
     reads: tuple[ReadLine, ...] = ()
     steps: tuple[StepView, ...] = ()
+    copy_steps: tuple[CopyStepView, ...] = ()
+    skill_type: str | None = None
+    run_lines: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -121,10 +155,18 @@ class DirectiveCounts:
 
 
 @dataclass(frozen=True, slots=True)
+class RootSections:
+    each_task: tuple[DirectiveLine, ...]
+    use_a_skill: tuple[DirectiveLine, ...]
+    create_a_rule: tuple[DirectiveLine, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class RuntimeView:
     result: CompiledResult
     counts: DirectiveCounts
     root: NodeView
+    sections: RootSections
     domains: tuple[PointerLine, ...]
     governance: tuple[PointerLine, ...]
     references: tuple[PointerLine, ...]
@@ -153,6 +195,63 @@ def _groups(
         line = DirectiveLine(directive.id, directive.text, Status(directive.status).value)
         grouped.setdefault(entry.holder, []).append(line)
     return tuple(DirectiveGroup(links[holder], tuple(lines)) for holder, lines in grouped.items())
+
+
+def _line(directive: Directive) -> DirectiveLine:
+    return DirectiveLine(directive.id, directive.text, Status(directive.status).value)
+
+
+def _lines(names: Sequence[str], directives: Mapping[str, Directive]) -> tuple[DirectiveLine, ...]:
+    return tuple(_line(directives[name]) for name in names if name in directives)
+
+
+def _root_sections(
+    root: Node, applied: Sequence[AppliedDirective], directives: Mapping[str, Directive]
+) -> RootSections:
+    use_a_skill = (root.use_a_skill or []) if isinstance(root, Root) else []
+    create_a_rule = (root.create_a_rule or []) if isinstance(root, Root) else []
+    named = {*use_a_skill, *create_a_rule}
+    return RootSections(
+        tuple(_line(entry.directive) for entry in applied if entry.directive.id not in named),
+        _lines(use_a_skill, directives),
+        _lines(create_a_rule, directives),
+    )
+
+
+def run_lines(steps: Sequence[CopyStepView], *, lens: bool) -> tuple[str, ...]:
+    several = len(steps) > 1
+    place = "the step" if several else "the skill"
+    act = "check the work against" if lens else "follow"
+    candidates = (
+        (several, "Run the steps in their order."),
+        (several, "If the output of a step exists already, skip the step."),
+        (any(step.has_file for step in steps), "If a step has a step file, read the step file."),
+        (
+            any(step.names_directives for step in steps),
+            f"{act.capitalize()} each directive of {place}.",
+        ),
+        (
+            any(step.branches for step in steps),
+            f"If a branch heading matches the work, {act} each directive under it.",
+        ),
+        (
+            any(step.pages for step in steps),
+            "If you need the definition or the notes of a page, read the page.",
+        ),
+        (
+            several and not lens,
+            "After each step, check its output against each directive of the step.",
+        ),
+        (
+            several and not lens,
+            CORRECT_OUTPUT,
+        ),
+    )
+    return tuple(line for wanted, line in candidates if wanted)
+
+
+def _has_step_file(copies: StepCopies, total: int) -> bool:
+    return total > 1 and (bool(copies.branches) or len(copies.copied()) > STEP_FILE_DIRECTIVES)
 
 
 def _pointers(node: Node, links: Mapping[str, NodeLink]) -> tuple[PointerLine, ...]:
@@ -293,9 +392,58 @@ def build_view(compiled: CompiledGraph) -> RuntimeView:
             for index, step in enumerate(order)
         )
 
+    directives = compiled.directives
+
+    def copy_step_views(skill: Skill) -> tuple[CopyStepView, ...]:
+        sources = {step.id: step for step in compiled.step_files.get(skill.id, ())}
+        order = [sources[step] for step in skill.steps or [] if step in sources]
+        views: list[CopyStepView] = []
+        for index, step in enumerate(order):
+            copies = step.copies
+            if copies is None:
+                continue
+            branches = (
+                BranchView(branch.condition, _lines(branch.directives, directives))
+                for branch in copies.branches
+            )
+            views.append(
+                CopyStepView(
+                    link=NodeLink(step.id, copies.title, links[skill.id].path),
+                    skill=links[skill.id],
+                    skill_type=SkillType(skill.skill_type).value,
+                    number=index + 1,
+                    total=len(order),
+                    has_file=_has_step_file(copies, len(order)),
+                    pages=tuple(
+                        PointerLine(LoadMechanism.TEXT, links[page.target], page.trigger)
+                        for page in copies.pages
+                        if page.target in links
+                    ),
+                    names_directives=bool(copies.directives),
+                    directives=_lines(copies.directives, directives),
+                    branches=tuple(branch for branch in branches if branch.directives),
+                    missing_rules=copies.missing_rules,
+                    procedure=step.section("Procedure"),
+                    output=step.section("Output"),
+                    following=index + 2 if index + 1 < len(order) else None,
+                )
+            )
+        return tuple(views)
+
     def skill_view(node: Skill) -> NodeView:
-        base = view_of(node)
-        if node.skill_type == SkillType.flow:
+        base = replace(view_of(node), skill_type=SkillType(node.skill_type).value)
+        sources = compiled.step_files.get(node.id, ())
+        if sources and all(step.copies is not None for step in sources):
+            copy_steps = copy_step_views(node)
+            return replace(
+                base,
+                groups=(),
+                exceptions=(),
+                pointers=_pointers(node, links),
+                copy_steps=copy_steps,
+                run_lines=run_lines(copy_steps, lens=node.skill_type == SkillType.lens),
+            )
+        if node.skill_type == SkillType.task:
             flow = flow_placement(node, tree, compiled.applied)
             placement = flow.skill
             steps = step_views(node, flow.steps)
@@ -327,6 +475,7 @@ def build_view(compiled: CompiledGraph) -> RuntimeView:
         result=compiled.result,
         counts=_counts(compiled, nodes),
         root=view_of(root),
+        sections=_root_sections(root, compiled.applied[root.id], directives),
         domains=tuple(_entry_lines(subjects, root_lines, links)),
         governance=(
             *_entry_lines(policies, root_lines, links),

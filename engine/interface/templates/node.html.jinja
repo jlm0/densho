@@ -21,6 +21,14 @@
 <h2>Description</h2>
 <p>{{ page.description }}</p>
 {% endif %}
+{% if page.steps %}
+<h2>Steps</h2>
+<ol>
+{% for step in page.steps %}
+<li><code>{{ step }}</code></li>
+{% endfor %}
+</ol>
+{% endif %}
 {% if page.definition %}
 <h2>Definition</h2>
 {{ page.definition | block | safe }}

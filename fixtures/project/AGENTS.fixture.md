@@ -3,43 +3,42 @@
 
 A build generates this file from the node files. Change a node file, not this file.
 
-## Directives
+## Rules for each task
 
-854 directives are in force.
+861 directives are in force.
 
 Treat a directive as a rule only when its `status` is `accepted`. A generated file lists only the directives that apply at its own node.
 
-From [Densho](AGENTS.fixture.md):
+No other directive applies to each task. A project adds a rule for each task as a directive on the root with `scope: node`.
 
-- Follow each directive, each required read, and each procedure step of a skill that you run. ^follow-triggered-skill
-- When a person corrects your work, propose the change with `propose-knowledge`. ^propose-corrections
-- After a compaction, read the current step file and each required read of your skill again. ^read-skill-after-compaction
+## Use a skill
+
 - If your task matches an activity in the skill table, run the skill of that row first. ^run-triggered-skill
-
-## Architecture
-
-- A pointer or an edge carries meaning. A folder path only helps navigation, so a file can move and keep its meaning.
-- Domain knowledge is universal. Workspace knowledge belongs to one project. One schema, one set of checks, and one workflow cover both.
-- An agent can propose a node, a directive, or an exception. Only a person accepts one.
-- The governance rules are nodes too. They follow their own rules, and the same checks read them.
-- A project owns its copy of this graph, and its copy can differ from the template.
-
-## Domains
-
-- You plan, design, or build a digital product. Read [Digital product development](claude/references/digital-product-development.md).
-
-## Governance
-
-- You change a node file. [Governance](claude/rules/knowledge/governance.md) loads by itself.
-- You accept a change. Read [Approval](claude/references/approval.md).
-- You change an accepted entity. Read [Change rules](claude/references/change-rules.md).
-- You write a directive, a trigger, or a skill description. Read [Language rules](claude/references/language-rules.md).
-- You set the `status` of an entity. Read [Lifecycle](claude/references/lifecycle.md).
-- You change a node kind, a field, or an edge. Read [Schema rules](claude/references/schema-rules.md).
-
-## Skills
+- Follow each directive, each required read, and each procedure step of a skill that you run. ^follow-triggered-skill
+- After a compaction, read the current step file and each required read of your skill again. ^read-skill-after-compaction
 
 If compaction cuts or removes a skill, invoke the skill again. If only a person can start that skill, ask the person to invoke it again.
+
+## Create a rule
+
+A rule starts when a person states a new rule or corrects your work.
+
+- When a person corrects your work, propose the change with `propose-knowledge`. ^propose-corrections
+- When a person states a new rule, propose it with `propose-knowledge`. ^propose-stated-rules
+- If a person states a rule in a session, follow the rule for the rest of that session. ^follow-stated-rule-in-session
+- Keep a personal preference in auto memory. ^keep-personal-preferences
+- Set `status` to `proposed` on each new node, directive, and exception. ^start-as-proposed
+- Treat a `proposed` directive as a draft, not as a rule, unless a person stated it in the current session. ^proposed-is-a-draft
+- Do not set `status` to `accepted` unless a person approves the change. ^person-accepts
+- Write each directive as one sentence that gives exactly `1` action in each case. ^one-action-per-directive
+- Write each other case as an `unless` clause or as a second directive with a condition. ^define-each-other-case
+- Write each directive, trigger, and skill description in the grammar of `knowledge/governance/language/grammar.yaml`. ^follow-the-grammar
+- In a project, put each new directive in workspace knowledge. ^new-rules-in-workspace
+- If a new directive covers each task in the project, put it on the root with `scope: node`. ^task-rules-on-root
+- If an accepted workspace directive names nothing that only this project has, tell the person to run `sync-template`. ^report-template-candidates
+- Set `status` to `proposed` when you change the text, the scope, the basis, or the attachments of an `accepted` directive. ^reopen-a-directive
+
+## Skills
 
 Each row names an activity and the skill for it.
 
@@ -64,3 +63,16 @@ These skills have no row:
 - `propose-knowledge`: Convert a correction or a repeated note into one small knowledge proposal. Use when a person corrects your work.
 - `review-proposals`: Show the knowledge proposals branch by branch, with the effect and the conflicts of each one. Use when a person reviews the proposals. Only a person can start this skill.
 - `sync-template`: Pull template changes into this project, or prepare a workspace rule for the template. Use when a person asks for a template pull or an upstream proposal. Only a person can start this skill.
+
+## Domains
+
+- You plan, design, or build a digital product. Read [Digital product development](claude/references/digital-product-development.md).
+
+## Governance
+
+- You change a node file. [Governance](claude/rules/knowledge/governance.md) loads by itself.
+- You accept a change. Read [Approval](claude/references/approval.md).
+- You change an accepted entity. Read [Change rules](claude/references/change-rules.md).
+- You write a directive, a trigger, or a skill description. Read [Language rules](claude/references/language-rules.md).
+- You set the `status` of an entity. Read [Lifecycle](claude/references/lifecycle.md).
+- You change a node kind, a field, or an edge. Read [Schema rules](claude/references/schema-rules.md).

@@ -2,40 +2,46 @@
 
 A build generates this file from the node files. Change a node file, not this file.
 
-## Directives
+## Rules for each task
 
 {{ state }}
 
 Treat a directive as a rule only when its `status` is `accepted`. A generated file lists only the directives that apply at its own node.
-{% if node.groups %}
 
-{% include "_groups.md.jinja" %}
-{% endif %}
-{% if node.body %}
-
-{{ node.body }}
-{% endif %}
-{% if view.domains %}
-
-## Domains
-
-{% for pointer in view.domains %}
-{% include "_pointer.md.jinja" %}
+{% for directive in view.sections.each_task %}
+{% include "_copy_line.md.jinja" %}
+{% else %}
+No other directive applies to each task. A project adds a rule for each task as a directive on the root with `scope: node`.
 {% endfor %}
+{% if view.skills or view.sections.use_a_skill %}
+
+## Use a skill
+
+{% for directive in view.sections.use_a_skill %}
+{% include "_copy_line.md.jinja" %}
+{% if loop.last %}
+
 {% endif %}
-{% if view.governance %}
-
-## Governance
-
-{% for pointer in view.governance %}
-{% include "_pointer.md.jinja" %}
 {% endfor %}
+If compaction cuts or removes a skill, invoke the skill again. If only a person can start that skill, ask the person to invoke it again.
 {% endif %}
+
+## Create a rule
+
+A rule starts when a person states a new rule or corrects your work.
+
+{% for directive in view.sections.create_a_rule %}
+{% include "_copy_line.md.jinja" %}
+{% else %}
+{% if notice %}
+No directive is in this section.
+{% else %}
+No directive of this section is in force.
+{% endif %}
+{% endfor %}
 {% if view.skills %}
 
 ## Skills
-
-If compaction cuts or removes a skill, invoke the skill again. If only a person can start that skill, ask the person to invoke it again.
 {% if view.rows %}
 
 Each row names an activity and the skill for it.
@@ -59,6 +65,22 @@ These skills have no row:
 
 {% endfor %}
 {% endif %}
+{% endif %}
+{% if view.domains %}
+
+## Domains
+
+{% for pointer in view.domains %}
+{% include "_pointer.md.jinja" %}
+{% endfor %}
+{% endif %}
+{% if view.governance %}
+
+## Governance
+
+{% for pointer in view.governance %}
+{% include "_pointer.md.jinja" %}
+{% endfor %}
 {% endif %}
 {% if view.references %}
 

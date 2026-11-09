@@ -263,7 +263,7 @@ LANGUAGE_TRIGGERS = {
 
 
 def language_example_source(example: str) -> str:
-    if example.endswith("changes code."):
+    if " Use when " in example:
         fields = (
             f"knowledge_type: domain\nkind: densho:Skill\ndescription: {example}\n"
             "invocation: agent\nskill_type: system\nuses: [b]\n"
@@ -283,6 +283,7 @@ def language_example_source(example: str) -> str:
 def test_the_language_page_has_examples() -> None:
     assert set(language_examples()) >= LANGUAGE_TRIGGERS
     assert any(example.endswith("changes code.") for example in language_examples())
+    assert any(" Do not use it for " in example for example in language_examples())
     assert "Do not commit a secret." in language_examples()
 
 

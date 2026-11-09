@@ -680,3 +680,189 @@ def test_a_path_that_cannot_be_removed_is_a_problem(tmp_path: Path) -> None:
         (folder / "node.md", "select")
     ]
     assert report.problems[0].message.startswith("The command cannot remove this path:")
+
+
+TASK_ROOT_ROW = """  - kind: densho:SkillPointer
+    target: do-alpha
+    trigger: You do alpha work.
+"""
+TASK_SKILL = """---
+id: do-alpha
+kind: densho:Skill
+title: Do alpha work
+status: proposed
+origin: template
+knowledge_type: domain
+description: Run the alpha work. Use when you do alpha work.
+invocation: agent
+skill_type: task
+uses:
+  - alpha
+steps:
+  - first
+  - second
+---
+
+## Exit checklist
+
+- [ ] Each step has its output.
+
+## Output
+
+The alpha work.
+"""
+FIRST_STEP = """---
+title: Do the first step
+pages:
+  - target: alpha-concept
+    trigger: You need the alpha concept.
+  - target: beta-concept
+    trigger: You need the beta concept.
+directives:
+  - alpha-rule
+branches:
+  - condition: If the sample is beta
+    directives:
+      - beta-rule
+---
+
+## Procedure
+
+1. Run the first check.
+
+## Output
+
+The first result.
+"""
+SECOND_STEP = """---
+title: Do the second step
+directives:
+  - beta-rule
+  - alpha-rule
+missing_rules:
+  - No directive covers an empty sample.
+---
+
+## Procedure
+
+1. Run the second check.
+
+## Output
+
+The second result.
+"""
+STEPS = "knowledge/skills/do-alpha/steps"
+
+
+def write_task(folder: Path, answer: str | None, first: str = FIRST_STEP) -> Path:
+    write_tree(folder, answer)
+    root = folder / "knowledge/node.md"
+    text = text_of(folder, "knowledge/node.md")
+    anchor = "    trigger: You need the domain.\n"
+    root.write_text(text.replace(anchor, anchor + TASK_ROOT_ROW), encoding="utf-8")
+    for relative, text in {
+        "knowledge/skills/do-alpha/node.md": TASK_SKILL,
+        f"{STEPS}/first.md": first,
+        f"{STEPS}/second.md": SECOND_STEP,
+    }.items():
+        (folder / relative).parent.mkdir(parents=True, exist_ok=True)
+        (folder / relative).write_text(text, encoding="utf-8")
+    return folder
+
+
+def test_the_task_fixture_passes_each_check(tmp_path: Path) -> None:
+    write_task(tmp_path, None)
+    assert checked_tree(tmp_path).problems == []
+
+
+def test_a_selection_removes_each_step_copy_and_page_outside_it(tmp_path: Path) -> None:
+    write_task(tmp_path, "disciplines: [alpha]\n")
+    report = select_disciplines(tmp_path)
+    assert report.problems == []
+    assert "do-alpha" in node_ids(tmp_path)
+    assert [entry for entry in report.pruned if entry.startswith("do-alpha/")] == [
+        "do-alpha/first: directive beta-rule",
+        "do-alpha/first: page beta-concept",
+        "do-alpha/second: directive beta-rule",
+    ]
+    assert text_of(tmp_path, f"{STEPS}/first.md") == FIRST_STEP.replace(
+        "  - target: beta-concept\n    trigger: You need the beta concept.\n", ""
+    ).replace(
+        "branches:\n  - condition: If the sample is beta\n    directives:\n      - beta-rule\n", ""
+    )
+    assert text_of(tmp_path, f"{STEPS}/second.md") == SECOND_STEP.replace("  - beta-rule\n", "")
+    assert checked_tree(tmp_path).problems == []
+
+
+def test_a_selection_keeps_a_branch_with_a_copy_left(tmp_path: Path) -> None:
+    first = FIRST_STEP.replace("directives:\n  - alpha-rule\n", "").replace(
+        "      - beta-rule\n", "      - beta-rule\n      - alpha-rule\n"
+    )
+    write_task(tmp_path, "disciplines: [alpha]\n", first)
+    assert select_disciplines(tmp_path).problems == []
+    assert text_of(tmp_path, f"{STEPS}/first.md") == first.replace(
+        "  - target: beta-concept\n    trigger: You need the beta concept.\n", ""
+    ).replace("      - beta-rule\n", "")
+    assert checked_tree(tmp_path).problems == []
+
+
+def test_a_selection_removes_the_list_of_a_step_with_no_entry_left(tmp_path: Path) -> None:
+    first = FIRST_STEP.replace(
+        "  - target: alpha-concept\n    trigger: You need the alpha concept.\n", ""
+    )
+    write_task(tmp_path, "disciplines: [alpha]\n", first)
+    assert select_disciplines(tmp_path).problems == []
+    assert "pages:" not in text_of(tmp_path, f"{STEPS}/first.md")
+    assert checked_tree(tmp_path).problems == []
+
+
+def test_a_selection_keeps_the_entry_after_a_removed_one(tmp_path: Path) -> None:
+    alpha_page = "  - target: alpha-concept\n    trigger: You need the alpha concept.\n"
+    beta_page = "  - target: beta-concept\n    trigger: You need the beta concept.\n"
+    beta_branch = "  - condition: If the sample is beta\n    directives:\n      - beta-rule\n"
+    alpha_branch = "  - condition: If the sample is alpha\n    directives:\n      - alpha-rule\n"
+    first = (
+        FIRST_STEP.replace(alpha_page + beta_page, beta_page + alpha_page)
+        .replace("directives:\n  - alpha-rule\n", "")
+        .replace(beta_branch, beta_branch + alpha_branch)
+    )
+    write_task(tmp_path, "disciplines: [alpha]\n", first)
+    assert select_disciplines(tmp_path).problems == []
+    assert text_of(tmp_path, f"{STEPS}/first.md") == first.replace(beta_page, "").replace(
+        beta_branch, ""
+    )
+    assert checked_tree(tmp_path).problems == []
+
+
+def test_a_step_with_a_flow_list_stops_the_selection(tmp_path: Path) -> None:
+    second = SECOND_STEP.replace(
+        "directives:\n  - beta-rule\n  - alpha-rule\n", "directives: [beta-rule, alpha-rule]\n"
+    )
+    write_task(tmp_path, "disciplines: [alpha]\n")
+    (tmp_path / STEPS / "second.md").write_text(second, encoding="utf-8")
+    before = snapshot(tmp_path)
+    report = select_disciplines(tmp_path)
+    assert [(problem.path, problem.line, problem.code) for problem in report.problems] == [
+        (tmp_path / STEPS / "second.md", 1, "select")
+    ]
+    assert "Write each list entry on its own line" in report.problems[0].message
+    assert snapshot(tmp_path) == before
+
+
+def test_a_step_keeps_its_line_ends(tmp_path: Path) -> None:
+    write_task(tmp_path, "disciplines: [alpha]\n")
+    path = tmp_path / STEPS / "second.md"
+    path.write_bytes(SECOND_STEP.replace("\n", "\r\n").encode())
+    assert select_disciplines(tmp_path).problems == []
+    assert (
+        path.read_bytes()
+        == SECOND_STEP.replace("  - beta-rule\n", "").replace("\n", "\r\n").encode()
+    )
+
+
+def test_a_selection_of_both_disciplines_keeps_each_step(tmp_path: Path) -> None:
+    write_task(tmp_path, "disciplines: [alpha, beta, gamma]\n")
+    before = snapshot(tmp_path)
+    report = select_disciplines(tmp_path)
+    assert report.pruned == ()
+    assert snapshot(tmp_path) == before

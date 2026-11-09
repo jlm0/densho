@@ -1,0 +1,9 @@
+positive:
+  - Check the signup form against WCAG 2.2 AA.
+  - Is our checkout flow accessible to screen reader users?
+  - Run an accessibility audit of the account settings pages.
+negative:
+  - prompt: Review the hierarchy of the account settings page.
+    skill: review-screen-hierarchy
+  - prompt: Design an accessible date picker.
+    skill: design-interface

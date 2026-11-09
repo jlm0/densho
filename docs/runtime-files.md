@@ -4,7 +4,7 @@
 
 **Status:** Built.
 
-This layer generates the files an agent tool loads: the root `AGENTS.md`, a reference page for most nodes, path rules, skills, and the step files of each flow skill. Claude Code is the first target, and no hook injects context, because the tool loads these files with its own mechanisms. The code is in `engine/runtime/`.
+This layer generates the files an agent tool loads: the root `AGENTS.md`, a reference page for most nodes, path rules, skills, and the step files of each task skill. Claude Code is the first target, and no hook injects context, because the tool loads these files with its own mechanisms. The code is in `engine/runtime/`.
 
 The generated files sit in `AGENTS.md` and `.claude/`, and none of them sits in `knowledge/`. They are output, and the repo still commits them, because an agent tool reads them straight from a clone. A node file stays the source, so a change goes in the node and the command writes the file again. A hand edit doesn't survive.
 
@@ -33,14 +33,14 @@ A tree that fails a check leaves the committed files alone, so an agent keeps it
 | -------------------------------------- | ----------------------------------------------- | ----------------------------------------- |
 | The root                               | `AGENTS.md`                                     | At session start                          |
 | A skill                                | `.claude/skills/<id>/SKILL.md`                  | The agent picks it from the skill listing |
-| A step of a flow skill                 | `.claude/skills/<flow>/steps/<step>.md`         | When the flow reaches the step            |
+| A step of a skill                      | `.claude/skills/<skill>/steps/<step>.md`        | When the skill reaches the step           |
 | The target of a `densho:PathPointer`   | `.claude/rules/knowledge/<id>.md` with `paths`  | When the agent touches a matching file    |
 | The target of a `densho:AlwaysPointer` | `.claude/rules/knowledge/<id>.md` without paths | At session start                          |
 | Any other node                         | `.claude/references/<id>.md`                    | When the agent follows a link to it       |
 
 A `densho:TextPointer` adds no file. It becomes a line that holds the trigger and a link, such as `You decide how a screen looks. Read [Visual design](visual-design.md).`, and following that link opens the reference page of the node.
 
-A node file names its pointer targets by ID. The generated files turn each ID into the path of its generated file, so each link in a generated file goes to another generated file, and no link goes to a node file. The root links each domain and the governance, and names each skill with no link. A lens or a system skill also links the page of each node in `uses`. A flow skill links each of its step files instead.
+A node file names its pointer targets by ID. The generated files turn each ID into the path of its generated file, so each link in a generated file goes to another generated file, and no link goes to a node file. The root links each domain and the governance, and names each skill with no link. A skill whose steps name their copies links the pages that its steps name and each of its step files. Any other task skill links its step files, and a lens or a system skill links the page of each node in `uses`.
 
 A skill behind a path or always pointer gets both a skill file and a rule, and a link to it goes to the rule. A path rule also matches its own node file.
 
@@ -50,17 +50,36 @@ A skill with `invocation: person` gets `disable-model-invocation: true` in its f
 
 Each file puts its directives first, then its procedures, then its links to other files.
 
-| File           | Holds                                                                                                                |
-| -------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Root           | The state of the graph, its directives, the body of `knowledge/node.md`, the domains, the governance, and the skills |
-| Skill          | Its directives and exceptions, its required reads, its steps, its body, its pointers, and its `uses` links           |
-| Step file      | Its directives and exceptions, its required reads, its inputs, procedure, output, exit gate, and next step           |
-| Path rule      | Its directives and exceptions, the definition, the body, its [flow](#the-flow-of-a-node), and its pointers           |
-| Reference page | Its directives and exceptions, the definition, the body, its [flow](#the-flow-of-a-node), and its pointers           |
+| File                       | Holds                                                                                                      |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Root                       | The [sections](#the-root) of the root, the skills, the domains, and the governance                         |
+| Skill with copies          | Its run list, then each step with its procedure and output, then its exit checklist, output, and pointers  |
+| Step file with copies      | Its place in the skill, its pages, its directives, its branches, and the way back to the skill             |
+| Skill in the tree form     | Its directives and exceptions, its required reads, its steps, its body, its pointers, and its `uses` links |
+| Step file in the tree form | Its directives and exceptions, its required reads, its inputs, procedure, output, exit gate, and next step |
+| Path rule                  | Its directives and exceptions, the definition, the body, its [flow](#the-flow-of-a-node), and its pointers |
+| Reference page             | Its directives and exceptions, the definition, the body, its [flow](#the-flow-of-a-node), and its pointers |
 
-The root holds only what an agent can't work out from the files. It names each domain, the governance node and its policies, and each skill. A flow or a lens skill sits in the [skill table](#the-skill-table) with the activity that starts it, and each other skill sits under the table with its description, so an agent can still find a skill if the tool drops its description. Setup, paths, and commands stay in the README and in these pages. The architecture facts come from the body of `knowledge/node.md`. A body change needs no review, so a reviewer reads it in the diff.
+The root holds only what an agent can't work out from the files. It names each domain, the governance node and its policies, and each skill. A task or a lens skill sits in the [skill table](#the-skill-table) with the activity that starts it, and each other skill sits under the table with its description, so an agent can still find a skill if the tool drops its description. Setup, paths, and commands stay in the README and in these pages.
 
 A directive list holds what applies at that node and nothing else: inherited directives, attached ones, and `applies`, minus each one an [exception](directive-semantics.md#stepping-out) stops. Each directive keeps its `^id`, and each group links to the generated file of the node that holds it. A list is complete for its own node, so the files for a node and its parent can repeat a line.
+
+## The root
+
+`AGENTS.md` holds these sections, in this order:
+
+| Section             | What it holds                                                                                           |
+| ------------------- | ------------------------------------------------------------------------------------------------------- |
+| Rules for each task | The count of directives in force, and each root directive that no other section names                   |
+| Use a skill         | The directives in the root's `use_a_skill` list, then the [compaction line](#copies-and-required-reads) |
+| Create a rule       | The directives in the root's `create_a_rule` list                                                       |
+| Skills              | The [skill table](#the-skill-table), and each skill that has no row                                     |
+| Domains             | A link to the page of each domain                                                                       |
+| Governance          | A link to the governance rule and to the page of each policy                                            |
+
+`use_a_skill` and `create_a_rule` are ordered lists of directive IDs on the root. They only place a directive in a section, and they don't attach it, so a policy directive such as `start-as-proposed` stays on its policy and still shows in the root. A directive can sit in one section only. Rules for each task and Create a rule say so when they hold no directive.
+
+The body of `knowledge/node.md` holds the architecture facts. It stays in the node file and on the [site](human-interface.md), and `AGENTS.md` leaves it out.
 
 ## The flow of a node
 
@@ -90,21 +109,61 @@ The root ends with a table that sends each kind of activity to one skill, so the
 | A screen or a flow is ready for review. | `review-interface` |
 ```
 
-Each row is a `densho:SkillPointer` on the root, with the activity as its trigger. The [graph checks](graph-checks.md#skills-and-steps) make each flow and lens skill have a row, and make its description hold the activity, so the table and the skill listing agree. Rows sort by skill ID.
+Each row is a `densho:SkillPointer` on the root, with the activity as its trigger. The [graph checks](graph-checks.md#skills-and-steps) make each task and lens skill have a row, and make its description hold the activity, so the table and the skill listing agree. Rows sort by skill ID.
 
-Three root directives make the table binding: run the skill of a matching row first, follow each directive, required read, and procedure step of the skill, and after a compaction read the current step file and its required reads again. They are proposals for now, like every seed directive.
+Three root directives in the section Use a skill make the table binding: run the skill of a matching row first, follow each directive, required read, and procedure step of the skill, and after a compaction read the current step file and its required reads again. They are proposals for now, like every seed directive.
 
-## Flow skills
+## Task skills
 
-A flow skill runs one discipline from start to finish. Its `SKILL.md` lists the steps in order, with a link to each step file, and tells the agent to read the step file and its required reads, skip a step whose output exists already, run the procedure, and move on only after the exit gate passes.
+A task skill does one task in one or more steps. Its steps either name their copies, or they take them from the tree. A lens can have steps too, and then its steps name their copies.
+
+### Steps that name their copies
+
+Each step file in the [copy form](node-format.md#the-copy-form) lists the IDs of the directives it copies, so the author picks what each step carries. The `SKILL.md` of such a skill holds, in this order:
+
+1. The description and the title
+2. `Run the skill`, a short numbered list that tells the agent how to work through the steps
+3. Each step under its number and title: a link to its step file, its procedure, each missing rule, and its output
+4. The exit checklist and the output from the body of the skill node
+5. The pointers of the skill node
+
+A step gets no step file when it is the only step, or when it has no branch and at most five directives. `SKILL.md` then lists its pages, its directives, and its branches right under its procedure. Each other step gets a file with its place in the skill, such as step 3 of 5, its pages, its core directives, and a section for each branch under its condition. The file ends with the way back to the next step in `SKILL.md`.
+
+`design-interface` looks like this:
+
+```text
+## Run the skill
+
+1. Run the steps in their order.
+2. If the output of a step exists already, skip the step.
+3. If a step has a step file, read the step file.
+4. Follow each directive of the step.
+5. If a branch heading matches the work, follow each directive under it.
+6. If you need the definition or the notes of a page, read the page.
+7. After each step, check its output against each directive of the step.
+8. Before you start the next step, correct each part of the output that breaks a directive.
+
+## 1. Frame the task
+
+1. Name the user, the task, and the target platform.
+...
+```
+
+The run list leaves out a line that doesn't fit the skill. A lens checks the work against each directive instead of following it, and a skill with one step has no order to keep.
+
+A file lists only the copies whose directive is in the compiled graph. A copy that isn't `accepted` drops out of the committed files, and the review copy shows it with its status.
+
+### Copies in the tree form
+
+A task skill whose step files have no front matter runs one discipline from start to finish. Its `SKILL.md` lists the steps in order, with a link to each step file, and tells the agent to read the step file and its required reads, skip a step whose output exists already, run the procedure, and move on only after the exit gate passes.
 
 The directives split between the files by where they sit in the discipline:
 
-- `SKILL.md` holds what applies at the flow skill, at the discipline, at each practice area that runs alongside the steps, such as accessibility or software security, and each directive that a step node holds itself.
+- `SKILL.md` holds what applies at the task skill, at the discipline, at each practice area that runs alongside the steps, such as accessibility or software security, and each directive that a step node holds itself.
 - A step file holds each other directive of the step's subtree: the concepts of the step and the practice areas under it.
-- An exception on the flow skill stops its directive in every file of the flow. Each file lists the exceptions of the nodes it collects.
+- An exception on the task skill stops its directive in every file of the skill. Each file lists the exceptions of the nodes it collects.
 
-A step file opens with its place in the flow, such as step 3 of 4, then the directives and the required reads. The source sections follow: `Inputs`, with a link to each node that informs the step, `Procedure`, `Output`, with a link to each node the step informs, and `Exit gate`. A link to another step of the same flow goes to its step file. The file ends with the next step and the pointers of the step node.
+A step file opens with its place in the skill, such as step 3 of 4, then the directives and the required reads. The source sections follow: `Inputs`, with a link to each node that informs the step, `Procedure`, `Output`, with a link to each node the step informs, and `Exit gate`. A link to another step of the same skill goes to its step file. The file ends with the next step and the pointers of the step node.
 
 Only the runtime files show a step file. The [site](human-interface.md) and the [compiled outputs](compiled-outputs.md) leave them out, so a reviewer reads a step file in the diff.
 
@@ -150,9 +209,9 @@ The [review queue](human-interface.md#read-the-knowledge) lists the same effect 
 
 ## Copies and required reads
 
-A skill is an entry point in the middle of the tree, so it has to carry the directives that reach it. Each one reaches the skill file in one of two ways:
+A skill is an entry point in the middle of the tree, so it has to carry the directives that reach it. A skill whose steps name their copies carries what they name. Each other skill gets each directive in one of two ways:
 
-- A **copy** is the directive itself, in the skill file or the step file. A skill copies each directive from its own branch: the subtree of each discipline above a node in `uses`, or of each domain when no discipline is above it. A flow copies the subtree of its discipline.
+- A **copy** is the directive itself, in the skill file or the step file. A skill copies each directive from its own branch: the subtree of each discipline above a node in `uses`, or of each domain when no discipline is above it. A task skill in the tree form copies the subtree of its discipline.
 - A **required read** is a link to the page of the node that holds the directive, with the order to follow it. Each directive inherited or attached from another branch becomes one. The line names each directive that applies, or tells the agent to follow each directive from that node when all of them apply.
 
 ```text
@@ -161,9 +220,9 @@ A skill is an entry point in the middle of the tree, so it has to carry the dire
 
 Compaction decides how much a file can copy. After compaction, Claude Code re-attaches each invoked skill and keeps the first 5,000 tokens, while it restores only a few of the files an agent read. A copy of every branch would push a skill past that, so the copies stay with the skill's own branch, and a root directive tells the agent to read the step file and each required read again after a compaction.
 
-The directives sit directly after the title, so they are the part that compaction keeps. The build fails with `size` if the title, the directives, the required reads, and the steps of a skill take more than 15,000 characters. That is 3 characters for each of the 5,000 tokens, a low estimate on purpose, because the repo has no tokenizer. The procedure comes after the directives, so a long one can still be cut.
+The directives sit directly after the title, so they are the part that compaction keeps. The build fails with `size` if the title, the directives, the required reads, and the steps of a skill take more than 15,000 characters. For a skill whose steps name their copies, the count covers everything before the exit checklist. That is 3 characters for each of the 5,000 tokens, a low estimate on purpose, because the repo has no tokenizer. The procedure comes after the directives, so a long one can still be cut.
 
-A skill file and a step file say nothing about compaction. The skills section of the root `AGENTS.md` starts with this line instead:
+A skill file and a step file say nothing about compaction. The section Use a skill of the root `AGENTS.md` ends with this line instead:
 
 ```text
 If compaction cuts or removes a skill, invoke the skill again. If only a person can start that skill, ask the person to invoke it again.

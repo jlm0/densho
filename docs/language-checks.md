@@ -70,6 +70,8 @@ A file is open.
 
 A trigger does not start with `When` or `If`, and it does not give an instruction. It has no second condition, so `You edit a file when the build fails.` fails. It is one sentence of 20 words or fewer, and it follows the same vocabulary, literal, and STE rules as a directive.
 
+The trigger of each page in a [step file](node-format.md#the-copy-form) follows the same rules, and a problem names its line in the step file.
+
 ## Skill descriptions
 
 An agent reads a description to choose a skill, and the harness may cut it short, so each description has a fixed shape and a length limit:
@@ -79,6 +81,14 @@ Review a pull request for correctness. Use when a pull request changes code.
 ```
 
 The first sentence starts with an approved verb and says what the skill does. The second starts with `Use when` and follows the trigger grammar. Each sentence has at most 20 words.
+
+A third sentence is optional. It starts with `Do not use it for` and names each sibling skill that an agent could pick instead, in backticks:
+
+```text
+Review a flow against the usability heuristics. Use when a person asks for a usability review of a flow. Do not use it for a whole interface (`review-interface`).
+```
+
+The check doesn't test whether a name in backticks is a skill, because a [selection](template-packaging.md) can leave the sibling out of a project. The template's own tests check its names.
 
 Three limits apply:
 
@@ -106,7 +116,7 @@ The 8,000 is an estimate at four characters per token. Claude Code drops the des
 | `duplicate-rule`     | The same rule text as an earlier rule, ignoring case and spacing                 |
 | `ste`                | A hard finding from the STE linter, such as a semicolon or a phrasal verb        |
 | `trigger-form`       | A trigger that is not a present-tense clause that starts with its subject        |
-| `description-form`   | A description without its two sentences, in their order                          |
+| `description-form`   | A description without its two or three sentences, in their order                 |
 | `description-length` | A description over the limit for one description                                 |
 | `listing-budget`     | A listing over the budget. The problem points at the skill that crosses it.      |
 | `vocabulary-branch`  | A branch vocabulary whose file name is not the ID of a node                      |

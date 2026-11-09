@@ -23,7 +23,7 @@ The states of a node, a directive, or an exception. `proposed` means that an aut
   - basis: judgment
   - status: proposed
   - origin: template
-- Treat a `proposed` directive as a draft, not as a rule. ^proposed-is-a-draft
+- Treat a `proposed` directive as a draft, not as a rule, unless a person stated it in the current session. ^proposed-is-a-draft
   - scope: node
   - basis: judgment
   - status: proposed

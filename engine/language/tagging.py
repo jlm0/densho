@@ -267,7 +267,7 @@ class Tagger:
         return _trigger_structure(doc, grammar)
 
     def description(self, masked: str, grammar: Grammar) -> list[Finding]:
-        action, use_when = description_parts(masked)
+        action, use_when, *_ = description_parts(masked)
         return [
             *_imperative(self.tag(action)),
             *_trigger_structure(self.tag(use_when.removeprefix(USE_WHEN)), grammar),

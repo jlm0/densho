@@ -1,0 +1,12 @@
+positive:
+  - Design the settings screen for the notification preferences of our iOS app.
+  - We need a signup flow with an email and a password. Lay out the screens.
+  - Add a filter panel to the product list page.
+  - Change the checkout form so that it fits on a phone.
+negative:
+  - prompt: Review the checkout screens that we built last sprint, and tell me what is wrong.
+    skill: review-interface
+  - prompt: Write the copy for the onboarding emails.
+    skill: design-content
+  - prompt: Define the color palette and the logo rules of our brand.
+    skill: design-brand

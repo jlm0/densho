@@ -274,6 +274,8 @@ class Root(Node):
     kind: Union[str, URIorCURIE] = None
     title: str = None
     pointers: Union[Union[dict, "Pointer"], list[Union[dict, "Pointer"]]] = None
+    use_a_skill: Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]] = empty_list()
+    create_a_rule: Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]] = empty_list()
 
     def __post_init__(self, *_: str, **kwargs: Any):
         if self._is_empty(self.id):
@@ -284,6 +286,14 @@ class Root(Node):
         if self._is_empty(self.pointers):
             self.MissingRequiredField("pointers")
         self._normalize_inlined_as_list(slot_name="pointers", slot_type=Pointer, key_name="kind", keyed=False)
+
+        if not isinstance(self.use_a_skill, list):
+            self.use_a_skill = [self.use_a_skill] if self.use_a_skill is not None else []
+        self.use_a_skill = [v if isinstance(v, DirectiveId) else DirectiveId(v) for v in self.use_a_skill]
+
+        if not isinstance(self.create_a_rule, list):
+            self.create_a_rule = [self.create_a_rule] if self.create_a_rule is not None else []
+        self.create_a_rule = [v if isinstance(v, DirectiveId) else DirectiveId(v) for v in self.create_a_rule]
 
         super().__post_init__(**kwargs)
         if self._is_empty(self.kind):
@@ -554,7 +564,7 @@ class Skill(KnowledgeNode):
     skill_type: Union[str, "SkillType"] = None
     uses: Optional[Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]]] = empty_list()
     applies: Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]] = empty_list()
-    steps: Optional[Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]]] = empty_list()
+    steps: Optional[Union[str, list[str]]] = empty_list()
 
     def __post_init__(self, *_: str, **kwargs: Any):
         if self._is_empty(self.id):
@@ -587,7 +597,7 @@ class Skill(KnowledgeNode):
 
         if not isinstance(self.steps, list):
             self.steps = [self.steps] if self.steps is not None else []
-        self.steps = [v if isinstance(v, TaxonomyNodeId) else TaxonomyNodeId(v) for v in self.steps]
+        self.steps = [v if isinstance(v, str) else str(v) for v in self.steps]
 
         super().__post_init__(**kwargs)
         if self._is_empty(self.kind):
@@ -949,9 +959,9 @@ class SkillType(EnumDefinitionImpl):
     """
     The kinds of skill.
     """
-    flow = PermissibleValue(
-        text="flow",
-        description="The skill runs the steps of a discipline in their order. Each step has a step file.")
+    task = PermissibleValue(
+        text="task",
+        description="The skill does one task in 1 or more steps, in their order. Each step has a step file.")
     lens = PermissibleValue(
         text="lens",
         description="The skill reviews work from one angle, or runs other lens skills.")
@@ -1135,7 +1145,14 @@ slots.applies = Slot(uri=DENSHO.applies, name="applies", curie=DENSHO.curie('app
                    model_uri=DENSHO.applies, domain=None, range=Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]])
 
 slots.steps = Slot(uri=DENSHO.steps, name="steps", curie=DENSHO.curie('steps'),
-                   model_uri=DENSHO.steps, domain=None, range=Optional[Union[Union[str, TaxonomyNodeId], list[Union[str, TaxonomyNodeId]]]])
+                   model_uri=DENSHO.steps, domain=None, range=Optional[Union[str, list[str]]],
+                   pattern=re.compile(r'^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\n)$'))
+
+slots.use_a_skill = Slot(uri=DENSHO.use_a_skill, name="use_a_skill", curie=DENSHO.curie('use_a_skill'),
+                   model_uri=DENSHO.use_a_skill, domain=None, range=Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]])
+
+slots.create_a_rule = Slot(uri=DENSHO.create_a_rule, name="create_a_rule", curie=DENSHO.curie('create_a_rule'),
+                   model_uri=DENSHO.create_a_rule, domain=None, range=Optional[Union[Union[str, DirectiveId], list[Union[str, DirectiveId]]]])
 
 slots.Root_pointers = Slot(uri=DENSHO.pointers, name="Root_pointers", curie=DENSHO.curie('pointers'),
                    model_uri=DENSHO.Root_pointers, domain=Root, range=Union[Union[dict, "Pointer"], list[Union[dict, "Pointer"]]])

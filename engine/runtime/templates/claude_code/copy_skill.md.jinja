@@ -1,0 +1,69 @@
+---
+name: {{ node.link.id }}
+description: {{ node.description | yaml_string }}
+{% if node.invocation == "person" %}
+disable-model-invocation: true
+{% endif %}
+---
+{% include "_title.md.jinja" %}
+{% if node.run_lines %}
+
+## Run the skill
+
+{% for line in node.run_lines %}
+{{ loop.index }}. {{ line }}
+{% endfor %}
+{% endif %}
+{% for step in node.copy_steps %}
+
+## {% if step.total > 1 %}{{ step.number }}. {% endif %}{{ step.link.title }}
+{% if step.has_file %}
+
+Step file: [{{ step_href(step.link) | link_text }}]({{ step_href(step.link) }})
+{% endif %}
+
+{{ step.procedure }}
+{% for rule in step.missing_rules %}
+
+Missing rule: {{ rule }}
+{% endfor %}
+{% if not step.has_file %}
+{% if step.pages %}
+
+Pages:
+
+{% for pointer in step.pages %}
+{% include "_pointer.md.jinja" %}
+{% endfor %}
+{% endif %}
+{% if step.names_directives %}
+
+Directives:
+
+{% for directive in step.directives %}
+{% include "_copy_line.md.jinja" %}
+{% else %}
+{% if notice %}
+No directive applies at this step.
+{% else %}
+No directive of this step is in force.
+{% endif %}
+{% endfor %}
+{% endif %}
+{% for branch in step.branches %}
+
+### {{ branch.condition }}
+
+{% for directive in branch.directives %}
+{% include "_copy_line.md.jinja" %}
+{% endfor %}
+{% endfor %}
+{% endif %}
+
+Output: {{ step.output }}
+{% endfor %}
+{% if node.body %}
+
+{{ node.body }}
+{% endif %}
+{% include "_references.md.jinja" %}

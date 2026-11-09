@@ -18,7 +18,7 @@ Any other Markdown file, and any symbolic link, in these folders is an error, so
 
 A skill folder can also hold a `scripts/` folder. The parser skips every file in it, whatever its name, so a script can be a Markdown file and still pass. The exemption covers only a skill's own `scripts/`. One beside any other node still fails `file-name`. A symbolic link in it still fails, and a file that git ignores, such as a cache, is left out. The [runtime files](runtime-files.md#skill-scripts) copy the folder next to the generated `SKILL.md`.
 
-A flow skill folder also holds a `steps/` folder, described [below](#step-files).
+A task skill folder also holds a `steps/` folder, described [below](#step-files). A skill folder can hold `trigger-cases.yaml` too, described in [Trigger cases](#trigger-cases). The parser reads neither file as a node.
 
 The parser also skips `knowledge/evals/`, which holds the [eval tasks](evaluation.md#the-eval-tasks). The exemption covers only that folder. A folder named `evals` anywhere else is checked like any other.
 
@@ -90,32 +90,108 @@ A value is plain text, so put one that holds Markdown syntax in backticks:
 
 ## Step files
 
-A flow skill names its steps in `steps`, and each step gets a file at `steps/<step-id>.md` in the skill's folder:
+A task skill names its steps in `steps`, in order, and each step gets a file at `steps/<step-id>.md` in the skill's folder:
 
 ```text
 knowledge/skills/design-interface/
 ├── node.md
+├── trigger-cases.yaml
 └── steps/
+    ├── frame-the-task.md
     ├── information-architecture.md
     ├── interaction-design.md
     ├── visual-design.md
     └── design-systems.md
 ```
 
-A step file is plain Markdown with no front matter. It holds four sections in this order, and each one needs text:
+A step file comes in one of two forms, and every step file of a skill uses the same one.
 
-| Section     | What it holds                                        |
-| ----------- | ---------------------------------------------------- |
-| `Inputs`    | What the step starts from                            |
-| `Procedure` | The numbered actions of the step                     |
-| `Output`    | What the step hands to the next step                 |
-| `Exit gate` | What must hold before the flow goes to the next step |
+### The copy form
 
-A step with no procedure from a source says so in one line, `The procedure of this step is missing.`, and a partial one ends with `The rest of the procedure of this step is missing.` The file holds no directives. They stay in the nodes, and the [runtime files](runtime-files.md#flow-skills) put each one in the right file.
+The step names the directives it copies, by ID. Its front matter holds the copies, and its body holds the procedure and the output:
 
-The parser reads each Markdown file in a skill's `steps/` folder as a step file and fails it with `step-file` if it sits in a subfolder, its name isn't a lowercase ID with `.md`, a section is missing, out of order, or empty, or text comes before the first section. It also fails a `## Definition` or a `## Directives` heading. The [graph checks](graph-checks.md#skills-and-steps) match the files to `steps`.
+```markdown
+---
+title: Organize the content and the functions
+pages:
+  - target: navigation
+    trigger: You design how people move between screens.
+directives:
+  - show-current-location
+branches:
+  - condition: If the target is Android
+    directives:
+      - navigation-bar-destinations
+missing_rules:
+  - No directive covers a query with no result.
+---
+
+## Procedure
+
+1. Sort the content and the functions into groups.
+
+## Output
+
+The organization system of the content and the functions of the product.
+```
+
+| Key             | Required | What it holds                                                                 |
+| --------------- | -------- | ----------------------------------------------------------------------------- |
+| `title`         | yes      | The title of the step, on one line                                            |
+| `pages`         | no       | Each node the step points to, with a `target` and a `trigger`                 |
+| `directives`    | no       | The IDs of the directives that apply to every run of the step                 |
+| `branches`      | no       | Each `condition` with the IDs of the directives that apply only when it holds |
+| `missing_rules` | no       | One line for each rule the step needs that no directive states yet            |
+
+A `condition` starts with `If` and has no period at the end. A step names each directive once, in its core list or in one branch. The body holds `## Procedure` and then `## Output`, and each needs text.
+
+A step can copy a directive from any node. The [graph checks](graph-checks.md#skills-and-steps) fail an ID that names no directive and a copy of a `rejected` one, and they make each directive that the skill holds itself show up in a step.
+
+### The tree form
+
+A step file with no front matter keeps the older form. It holds four sections in this order, and each one needs text:
+
+| Section     | What it holds                                         |
+| ----------- | ----------------------------------------------------- |
+| `Inputs`    | What the step starts from                             |
+| `Procedure` | The numbered actions of the step                      |
+| `Output`    | What the step hands to the next step                  |
+| `Exit gate` | What must hold before the skill goes to the next step |
+
+Each step ID names a practice area under the skill's discipline, and the [runtime files](runtime-files.md#copies-in-the-tree-form) copy the directives of that area's subtree. A step with no procedure from a source says so in one line, `The procedure of this step is missing.`, and a partial one ends with `The rest of the procedure of this step is missing.`
+
+The skills of the strategy, research, brand, content, and engineering disciplines still use the tree form. The tree form goes away once each of them names its copies.
+
+### What the parser checks
+
+The parser reads each Markdown file in a skill's `steps/` folder as a step file and fails it with `step-file` if:
+
+- it sits in a subfolder, or its name isn't a lowercase ID with `.md`
+- a section is missing, out of order, or empty, or text comes before the first section
+- it holds a `## Definition` or a `## Directives` heading
+- its front matter has an unknown key, no `title`, a value on more than one line, an ID that isn't a lowercase ID, a branch with no directive, or a directive named twice
+
+The [graph checks](graph-checks.md#skills-and-steps) match the files to `steps`.
 
 A step file needs no review, the same as the body of a node, and the history records a digest of the step files of each skill.
+
+## Trigger cases
+
+A skill with step files in the copy form keeps test prompts next to its node, in `trigger-cases.yaml`:
+
+```yaml
+positive:
+  - The new checkout flow is ready. Please review it.
+  - Review these three screens of the admin panel before we ship them.
+  - Do a design review of the onboarding flow.
+negative:
+  - prompt: Review this pull request.
+    skill: review-code-change
+  - prompt: Write the release notes for version 2.
+    skill: null
+```
+
+A positive prompt should start the skill. A negative prompt should not, and its `skill` names the skill that should start instead, or `null` for none. The test suite fails a skill that an agent can start by itself if its file has fewer than three positive or two negative prompts, or names a skill that doesn't exist. Nothing runs the prompts against a model yet.
 
 ## Check your nodes
 

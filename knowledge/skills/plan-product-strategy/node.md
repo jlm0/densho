@@ -7,7 +7,7 @@ origin: template
 knowledge_type: domain
 description: Define the strategy, the metrics, the opportunities, the order of the work, and the positioning of a product. Use when you decide what a product does, who it is for, or what a team builds next.
 invocation: agent
-skill_type: flow
+skill_type: task
 uses:
   - product-strategy
 steps:

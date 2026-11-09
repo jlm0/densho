@@ -29,14 +29,15 @@ Each page explains how to use what exists today, and ends with what it does not 
 
 ## Terms
 
-| Term      | In the library                                  | What it is                                                     |
-| --------- | ----------------------------------------------- | -------------------------------------------------------------- |
-| Node      | A book                                          | One Markdown file of knowledge                                 |
-| Pointer   | A "see also" note that says when to go there    | A route to another node, with the trigger for following it     |
-| Directive | A sign with one house rule                      | One short instruction with its own ID                          |
-| Skill     | A reading list for one job                      | A reusable workflow that loads the directives of its knowledge |
-| Step      | One stop on the reading list                    | One practice area of a flow skill, in its own file             |
-| Agent     | A visitor who goes only where the signs lead it | The AI tool that does the work                                 |
+| Term      | In the library                                  | What it is                                                  |
+| --------- | ----------------------------------------------- | ----------------------------------------------------------- |
+| Node      | A book                                          | One Markdown file of knowledge                              |
+| Pointer   | A "see also" note that says when to go there    | A route to another node, with the trigger for following it  |
+| Directive | A sign with one house rule                      | One short instruction with its own ID                       |
+| Skill     | A reading list for one job                      | A reusable workflow that carries the directives it needs    |
+| Step      | One stop on the reading list                    | One step of a task skill or a lens, in its own file         |
+| Copy      | A copy of a sign, posted at the stop it serves  | A directive that a step names by ID, so its file carries it |
+| Agent     | A visitor who goes only where the signs lead it | The AI tool that does the work                              |
 
 ## Commands
 

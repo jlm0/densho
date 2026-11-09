@@ -139,6 +139,7 @@ def directive_lines(entry: Fields) -> list[str]:
 def render(node_id: str, fields: Fields) -> str:
     front: Fields = {"id": node_id, "title": node_id.title(), **fields}
     directives: list[Fields] = front.pop("directives", [])
+    body: str | None = front.pop("body", None)
     del front["file"]
     lines = ["---"]
     for key, value in front.items():
@@ -151,6 +152,8 @@ def render(node_id: str, fields: Fields) -> str:
         for entry in directives:
             lines += directive_lines(entry)
         lines.append("")
+    if body is not None:
+        lines += [body, ""]
     return "\n".join(lines)
 
 
@@ -507,7 +510,8 @@ def test_a_broken_reference_does_not_stop_cycles_or_associations(tree: Tree) -> 
 
 
 def test_the_sample_graph_has_each_reference_field(tree: Tree) -> None:
-    add_flow(tree, "visual")
+    add_task(tree, "visual")
+    tree.change("root", use_a_skill=["use-a-verb"], create_a_rule=["be-brief"])
     write_tree(tree.repository, tree.nodes)
     items, _ = parse_tree([Path("knowledge")])
     found = {reference.field for item in items for reference in references_of(item)}
@@ -1041,38 +1045,38 @@ def test_a_pointer_from_a_rejected_node_reaches_nothing(tree: Tree) -> None:
 
 
 STEP_TEXT = "## Inputs\n\nA.\n\n## Procedure\n\nB.\n\n## Output\n\nC.\n\n## Exit gate\n\nD.\n"
-FLOW_FILE = "knowledge/skills/flow/node.md"
-FLOW_ROW = {"kind": "densho:SkillPointer", "target": "flow", "trigger": "You change the ui."}
+TASK_FILE = "knowledge/skills/task/node.md"
+TASK_ROW = {"kind": "densho:SkillPointer", "target": "task", "trigger": "You change the ui."}
 NO_ROW = (
     "Add a densho:SkillPointer to this skill on the root, "
     "so the skill table of AGENTS.md names its activity."
 )
 
 
-def add_flow(tree: Tree, *steps: str) -> None:
-    tree.nodes["flow"] = {
-        "file": FLOW_FILE,
+def add_task(tree: Tree, *steps: str) -> None:
+    tree.nodes["task"] = {
+        "file": TASK_FILE,
         "kind": "densho:Skill",
         **KNOWLEDGE,
-        "description": "Run the ui flow. Use when you change the ui.",
+        "description": "Run the ui task. Use when you change the ui.",
         "invocation": "agent",
-        "skill_type": "flow",
+        "skill_type": "task",
         "uses": ["ui"],
         "steps": list(steps),
     }
-    tree.change("root", pointers=[*tree.nodes["root"]["pointers"], FLOW_ROW])
+    tree.change("root", pointers=[*tree.nodes["root"]["pointers"], TASK_ROW])
     write_steps(tree, *steps)
 
 
 def write_steps(tree: Tree, *steps: str) -> None:
-    folder = tree.repository / "knowledge/skills/flow/steps"
+    folder = tree.repository / "knowledge/skills/task/steps"
     folder.mkdir(parents=True, exist_ok=True)
     for step in steps:
         (folder / f"{step}.md").write_text(STEP_TEXT, encoding="utf-8")
 
 
-def test_a_flow_with_its_steps_passes(tree: Tree) -> None:
-    add_flow(tree, "visual", "motion")
+def test_a_task_with_its_steps_passes(tree: Tree) -> None:
+    add_task(tree, "visual", "motion")
     assert tree.problems() == []
 
 
@@ -1081,26 +1085,26 @@ def test_a_lens_with_a_row_passes(tree: Tree) -> None:
     assert tree.problems() == []
 
 
-@pytest.mark.parametrize("kind", ["flow", "lens"])
-def test_a_flow_or_lens_skill_needs_agent_invocation(tree: Tree, kind: str) -> None:
+@pytest.mark.parametrize("kind", ["task", "lens"])
+def test_a_task_or_lens_skill_needs_agent_invocation(tree: Tree, kind: str) -> None:
     tree.change("review", skill_type=kind, invocation="person")
-    if kind == "flow":
+    if kind == "task":
         tree.change("review", uses=["ui"], applies=[], steps=["visual"])
         tree.nodes["review"]["file"] = "knowledge/skills/review/node.md"
         folder = tree.repository / "knowledge/skills/review/steps"
         folder.mkdir(parents=True)
         (folder / "visual.md").write_text(STEP_TEXT, encoding="utf-8")
-    message = "A flow or lens skill needs invocation: agent, so the agent starts it."
+    message = "A task or lens skill needs invocation: agent, so the agent starts it."
     assert tree.problems() == [tree.expect("review", "invocation: person", "skill", message)]
 
 
-@pytest.mark.parametrize("kind", ["flow", "lens"])
-def test_a_flow_or_lens_skill_needs_a_row(tree: Tree, kind: str) -> None:
-    if kind == "flow":
-        add_flow(tree, "visual")
+@pytest.mark.parametrize("kind", ["task", "lens"])
+def test_a_task_or_lens_skill_needs_a_row(tree: Tree, kind: str) -> None:
+    if kind == "task":
+        add_task(tree, "visual")
         tree.change("root", pointers=[text_pointer("design"), skill_pointer("review")])
-        tree.change("visual", pointers=[text_pointer("hierarchy"), skill_pointer("flow")])
-        assert tree.problems() == [tree.expect("flow", "skill_type: flow", "skill", NO_ROW)]
+        tree.change("visual", pointers=[text_pointer("hierarchy"), skill_pointer("task")])
+        assert tree.problems() == [tree.expect("task", "skill_type: task", "skill", NO_ROW)]
     else:
         tree.change("review", skill_type="lens")
         tree.change("root", pointers=[text_pointer("design")])
@@ -1144,89 +1148,260 @@ def test_a_row_to_a_node_that_is_no_skill_is_a_type_problem_only(tree: Tree) -> 
     assert tree.codes() == ["type"]
 
 
-@pytest.mark.parametrize("kind", ["lens", "system"])
-def test_only_a_flow_has_steps(tree: Tree, kind: str) -> None:
-    tree.change("review", skill_type=kind, steps=["visual"])
-    message = "Only a flow skill has steps. Remove steps, or set skill_type to flow."
+def test_a_system_skill_has_no_steps(tree: Tree) -> None:
+    tree.change("review", steps=["visual"])
+    message = "A system skill has no steps. Remove steps, or set skill_type to task."
     assert tree.problems() == [tree.expect("review", "steps:", "step", message)]
 
 
-@pytest.mark.parametrize("kind", ["lens", "system"])
-def test_only_a_flow_has_step_files(tree: Tree, kind: str) -> None:
-    tree.change("review", skill_type=kind)
+def test_a_system_skill_has_no_step_files(tree: Tree) -> None:
     folder = tree.repository / "knowledge/skills/review/steps"
     folder.mkdir(parents=True)
     (folder / "visual.md").write_text(STEP_TEXT, encoding="utf-8")
-    message = "Only a flow skill has step files. Remove steps/, or set skill_type to flow."
-    assert tree.problems() == [tree.expect("review", f"skill_type: {kind}", "step", message)]
+    message = "A system skill has no step files. Remove steps/, or set skill_type to task."
+    assert tree.problems() == [tree.expect("review", "skill_type: system", "step", message)]
 
 
-def test_a_flow_needs_steps(tree: Tree) -> None:
-    add_flow(tree)
-    message = "Name the steps of the flow in steps, in their order."
-    assert tree.problems() == [tree.expect("flow", "skill_type: flow", "step", message)]
+def test_a_lens_in_the_tree_form_fails(tree: Tree) -> None:
+    tree.change("review", skill_type="lens", steps=["visual"])
+    folder = tree.repository / "knowledge/skills/review/steps"
+    folder.mkdir(parents=True)
+    (folder / "visual.md").write_text(STEP_TEXT, encoding="utf-8")
+    message = "Write the step files of a lens in the copy form, with front matter."
+    assert tree.problems() == [tree.expect("review", "steps:", "step", message)]
 
 
-def test_a_flow_uses_exactly_one_node(tree: Tree) -> None:
-    add_flow(tree, "visual")
-    tree.change("flow", uses=["ui", "design"])
-    message = "A flow skill uses exactly 1 node: the node of its discipline."
-    assert tree.problems() == [tree.expect("flow", "uses:", "step", message)]
+def test_a_step_file_with_no_entry_in_steps_fails_for_a_lens(tree: Tree) -> None:
+    tree.change("review", skill_type="lens")
+    folder = tree.repository / "knowledge/skills/review/steps"
+    folder.mkdir(parents=True)
+    (folder / "visual.md").write_text(STEP_TEXT, encoding="utf-8")
+    message = "No entry in steps of review names this step file. Add one, or remove the file."
+    assert tree.problems() == [f"knowledge/skills/review/steps/visual.md:1: step: {message}"]
 
 
-def test_a_flow_with_no_uses_reports_it_at_the_skill(tree: Tree) -> None:
-    add_flow(tree, "visual")
-    tree.change("flow", uses=[], applies=["use-a-verb"])
-    message = "A flow skill uses exactly 1 node: the node of its discipline."
-    assert tree.problems() == [tree.expect("flow", "uses:", "step", message)]
+def test_a_task_needs_steps(tree: Tree) -> None:
+    add_task(tree)
+    message = "Name the steps of the task in steps, in their order."
+    assert tree.problems() == [tree.expect("task", "skill_type: task", "step", message)]
 
 
-def test_a_flow_names_a_step_once(tree: Tree) -> None:
-    add_flow(tree, "visual", "visual")
+def test_a_task_uses_exactly_one_node(tree: Tree) -> None:
+    add_task(tree, "visual")
+    tree.change("task", uses=["ui", "design"])
+    message = "A task skill with the copy by tree uses exactly 1 node: its discipline."
+    assert tree.problems() == [tree.expect("task", "uses:", "step", message)]
+
+
+def test_a_task_with_no_uses_reports_it_at_the_skill(tree: Tree) -> None:
+    add_task(tree, "visual")
+    tree.change("task", uses=[], applies=["use-a-verb"])
+    message = "A task skill with the copy by tree uses exactly 1 node: its discipline."
+    assert tree.problems() == [tree.expect("task", "uses:", "step", message)]
+
+
+def test_a_task_names_a_step_once(tree: Tree) -> None:
+    add_task(tree, "visual", "visual")
     assert tree.problems() == [
-        tree.expect("flow", "  - visual", "step", "steps names visual twice.")
+        tree.expect("task", "  - visual", "step", "steps names visual twice.")
     ]
 
 
 @pytest.mark.parametrize("step", ["hierarchy", "research"])
 def test_a_step_sits_directly_under_the_discipline(tree: Tree, step: str) -> None:
-    add_flow(tree, step)
+    add_task(tree, step)
     message = f"{step} is not under ui. Name a node whose broader names ui."
-    assert tree.problems() == [tree.expect("flow", f"  - {step}", "step", message)]
+    assert tree.problems() == [tree.expect("task", f"  - {step}", "step", message)]
 
 
 def test_a_step_that_is_no_taxonomy_node_is_reported(tree: Tree) -> None:
-    add_flow(tree, "visual", "review")
+    add_task(tree, "visual", "review")
     write_steps(tree, "review")
     message = "review is not under ui. Name a node whose broader names ui."
-    assert sorted(tree.codes()) == ["step", "type"]
-    assert tree.expect("flow", "  - review", "step", message) in tree.problems()
+    assert tree.problems() == [tree.expect("task", "  - review", "step", message)]
 
 
 def test_a_step_comes_before_each_step_it_informs(tree: Tree) -> None:
-    add_flow(tree, "visual", "motion")
+    add_task(tree, "visual", "motion")
     tree.change("motion", informs=["visual"])
     message = "motion informs visual, so motion comes before visual in steps."
-    assert tree.problems() == [tree.expect("flow", "  - motion", "step", message)]
-    tree.change("flow", steps=["motion", "visual"])
+    assert tree.problems() == [tree.expect("task", "  - motion", "step", message)]
+    tree.change("task", steps=["motion", "visual"])
     assert tree.problems() == []
 
 
 def test_a_step_needs_its_step_file(tree: Tree) -> None:
-    add_flow(tree, "visual")
-    tree.change("flow", steps=["visual", "motion"])
+    add_task(tree, "visual")
+    tree.change("task", steps=["visual", "motion"])
     message = "Add the step file steps/motion.md."
-    assert tree.problems() == [tree.expect("flow", "  - motion", "step", message)]
+    assert tree.problems() == [tree.expect("task", "  - motion", "step", message)]
 
 
 def test_a_step_file_needs_its_step(tree: Tree) -> None:
-    add_flow(tree, "visual", "motion")
-    tree.change("flow", steps=["visual"])
-    message = "No entry in steps of flow names this step file. Add one, or remove the file."
-    assert tree.problems() == [f"knowledge/skills/flow/steps/motion.md:1: step: {message}"]
+    add_task(tree, "visual", "motion")
+    tree.change("task", steps=["visual"])
+    message = "No entry in steps of task names this step file. Add one, or remove the file."
+    assert tree.problems() == [f"knowledge/skills/task/steps/motion.md:1: step: {message}"]
 
 
-def test_a_flow_with_two_uses_still_checks_its_steps(tree: Tree) -> None:
-    add_flow(tree, "visual", "visual")
-    tree.change("flow", uses=["ui", "design"])
+def test_a_task_with_two_uses_still_checks_its_steps(tree: Tree) -> None:
+    add_task(tree, "visual", "visual")
+    tree.change("task", uses=["ui", "design"])
     assert tree.codes() == ["step", "step"]
+
+
+SKILL_BODY = "## Exit checklist\n\n- [ ] It holds.\n\n## Output\n\nA result."
+COPY_BODY = "\n## Procedure\n\n1. Do it.\n\n## Output\n\nA result.\n"
+
+
+def copy_step(*directives: str, pages: tuple[str, ...] = (), branch: tuple[str, ...] = ()) -> str:
+    lines = ["---", "title: Do the step"]
+    if pages:
+        lines.append("pages:")
+        for page in pages:
+            lines += [f"  - target: {page}", "    trigger: You need it."]
+    if directives:
+        lines += ["directives:", *[f"  - {name}" for name in directives]]
+    if branch:
+        lines += ["branches:", "  - condition: If the target is Android", "    directives:"]
+        lines += [f"      - {name}" for name in branch]
+    return "\n".join([*lines, "---", COPY_BODY])
+
+
+def add_copy_task(tree: Tree, steps: dict[str, str], **fields: object) -> None:
+    tree.nodes["task"] = {
+        "file": TASK_FILE,
+        "kind": "densho:Skill",
+        **KNOWLEDGE,
+        "description": "Run the ui task. Use when you change the ui.",
+        "invocation": "agent",
+        "skill_type": "task",
+        "uses": ["ui"],
+        "steps": list(steps),
+        "body": SKILL_BODY,
+        **fields,
+    }
+    tree.change("root", pointers=[*tree.nodes["root"]["pointers"], TASK_ROW])
+    folder = tree.repository / "knowledge/skills/task/steps"
+    folder.mkdir(parents=True, exist_ok=True)
+    for name, text in steps.items():
+        (folder / f"{name}.md").write_text(text, encoding="utf-8")
+
+
+def step_line(name: str, text: str) -> str:
+    path = Path("knowledge/skills/task/steps") / f"{name}.md"
+    lines = path.read_text(encoding="utf-8").split("\n")
+    return f"{path.as_posix()}:{lines.index(text) + 1}"
+
+
+def test_a_task_with_copies_passes(tree: Tree) -> None:
+    add_copy_task(
+        tree,
+        {
+            "frame": copy_step("use-a-verb", pages=("hierarchy",), branch=("be-brief",)),
+            "build": copy_step("use-a-verb"),
+        },
+        uses=["ui", "design"],
+    )
+    assert tree.problems() == []
+
+
+def test_a_lens_with_copies_passes(tree: Tree) -> None:
+    tree.change("review", skill_type="lens", steps=["check"], body=SKILL_BODY)
+    folder = tree.repository / "knowledge/skills/review/steps"
+    folder.mkdir(parents=True)
+    (folder / "check.md").write_text(copy_step("be-brief"), encoding="utf-8")
+    assert tree.problems() == []
+
+
+def test_a_copy_of_an_unknown_id_fails_at_its_line(tree: Tree) -> None:
+    add_copy_task(tree, {"frame": copy_step("use-a-verb", branch=("no-such",))})
+    message = (
+        "No directive has the ID no-such. A selection can remove the node that holds it. "
+        "Name a directive of the graph, or remove the ID."
+    )
+    assert tree.problems() == [f"{step_line('frame', '      - no-such')}: step: {message}"]
+
+
+def test_a_copy_of_a_rejected_directive_fails(tree: Tree) -> None:
+    rejected = directive("be-brief", **REJECTED)
+    tree.change("design", directives=[directive("use-a-verb"), rejected])
+    add_copy_task(tree, {"frame": copy_step("be-brief")})
+    message = "be-brief is rejected. Remove the ID."
+    assert tree.problems() == [f"{step_line('frame', '  - be-brief')}: step: {message}"]
+
+
+@pytest.mark.parametrize("page", ["nothing", "review", "use-a-verb"])
+def test_a_page_that_is_not_a_node_fails(tree: Tree, page: str) -> None:
+    add_copy_task(tree, {"frame": copy_step("use-a-verb", pages=(page,))})
+    message = f"No page has the ID {page}. Name a node that is not a skill and not rejected."
+    assert tree.problems() == [f"{step_line('frame', f'  - target: {page}')}: step: {message}"]
+
+
+def test_a_page_that_is_rejected_fails(tree: Tree) -> None:
+    tree.change("settings", **REJECTED)
+    add_copy_task(tree, {"frame": copy_step("use-a-verb", pages=("settings",))})
+    message = "No page has the ID settings. Name a node that is not a skill and not rejected."
+    expected = f"{step_line('frame', '  - target: settings')}: step: {message}"
+    assert expected in tree.problems()
+
+
+def test_each_directive_of_the_skill_is_in_a_step(tree: Tree) -> None:
+    add_copy_task(
+        tree,
+        {"frame": copy_step("own-rule")},
+        directives=[directive("own-rule"), directive("other-rule", scope="node")],
+    )
+    message = "No step of task names other-rule. Add it to a step."
+    assert tree.problems() == [tree.expect("task", "^other-rule", "step", message)]
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        "## Output\n\nA result.",
+        "## Exit checklist\n\n- [ ] It holds.",
+        "## Exit checklist\n\n- [ ] It holds.\n\n## Output\n\nA result.\n\n## Notes\n\nMore.",
+    ],
+)
+def test_the_body_of_a_task_with_copies_needs_its_two_sections(tree: Tree, body: str) -> None:
+    add_copy_task(tree, {"frame": copy_step("use-a-verb")}, body=body)
+    message = (
+        "Give the body of the skill exactly these sections in this order: "
+        "## Exit checklist, ## Output."
+    )
+    line = tree.lines("task", "## ")[0]
+    assert tree.problems() == [f"{line}: step: {message}"]
+
+
+def test_an_empty_body_section_fails_at_its_heading(tree: Tree) -> None:
+    add_copy_task(
+        tree, {"frame": copy_step("use-a-verb")}, body="## Exit checklist\n\n## Output\n\nA."
+    )
+    expected = tree.expect(
+        "task", "## Exit checklist", "step", "Write the text of ## Exit checklist."
+    )
+    assert tree.problems() == [expected]
+
+
+def test_a_skill_with_both_step_forms_fails(tree: Tree) -> None:
+    add_copy_task(tree, {"frame": copy_step("use-a-verb"), "visual": STEP_TEXT})
+    message = "Write each step file of the skill in the same form: each with front matter, or none."
+    assert tree.problems() == [tree.expect("task", "steps:", "step", message)]
+
+
+def test_a_directive_in_two_root_sections_fails(tree: Tree) -> None:
+    tree.change("root", use_a_skill=["use-a-verb"], create_a_rule=["be-brief", "use-a-verb"])
+    message = "use-a-verb is in a root section already. Name it in 1 section only."
+    assert tree.problems() == [tree.expect("root", "  - use-a-verb", "skill", message)]
+
+
+def test_a_root_section_names_a_directive_once(tree: Tree) -> None:
+    tree.change("root", use_a_skill=["use-a-verb", "use-a-verb"])
+    message = "use-a-verb is in a root section already. Name it in 1 section only."
+    assert tree.problems() == [tree.expect("root", "  - use-a-verb", "skill", message)]
+
+
+def test_a_root_section_names_only_a_directive(tree: Tree) -> None:
+    tree.change("root", create_a_rule=["design"])
+    assert tree.codes() == ["type"]

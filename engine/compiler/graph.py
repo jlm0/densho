@@ -88,7 +88,7 @@ def _list_key(entry: object) -> tuple[str, str]:
     return str(entity_id), json.dumps(entry, sort_keys=True)
 
 
-ORDERED_FIELDS = frozenset({"steps"})
+ORDERED_FIELDS = frozenset({"steps", "use_a_skill", "create_a_rule"})
 
 
 def normal_form(value: object) -> object:

@@ -829,24 +829,25 @@ def test_each_edge_of_a_directive_and_a_node_links_to_its_target() -> None:
     assert 'Refines: <a href="nodes/alpha.html#directive-base-rule">' in review
 
 
-def test_a_flow_shows_its_steps_in_their_order() -> None:
+def test_a_task_skill_shows_its_steps_in_their_order() -> None:
     sources = {
         "knowledge/node.md": node("root", "densho:Root", front=pointers("area")),
         "knowledge/nodes/area/node.md": node("area"),
-        "knowledge/nodes/zeta/node.md": node("zeta", "densho:Concept", front="broader: [area]\n"),
-        "knowledge/nodes/alpha/node.md": node("alpha", "densho:Concept", front="broader: [area]\n"),
-        "knowledge/skills/flow/node.md": node(
-            "flow",
+        "knowledge/skills/task/node.md": node(
+            "task",
             "densho:Skill",
             front=(
-                "description: Run the flow. Use when you run the flow.\n"
-                "invocation: agent\nskill_type: flow\nuses: [area]\nsteps: [zeta, alpha]\n"
+                "description: Run the task. Use when you run the task.\n"
+                "invocation: agent\nskill_type: task\nuses: [area]\nsteps: [zeta, alpha]\n"
             ),
         ),
     }
-    skill = site_of(sources)["nodes/flow.html"]
-    assert '<dt>Steps</dt>\n<dd><a href="zeta.html">' in skill
-    assert skill.index('href="zeta.html"') < skill.index('href="alpha.html"')
+    skill = site_of(sources)["nodes/task.html"]
+    assert (
+        "<h2>Steps</h2>\n<ol>\n<li><code>zeta</code></li>\n<li><code>alpha</code></li>\n</ol>"
+        in skill
+    )
+    assert "<h2>Steps</h2>" not in site_of(sources)["nodes/area.html"]
 
 
 def test_each_edge_field_has_a_label() -> None:

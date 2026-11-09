@@ -68,6 +68,19 @@ def _texts_of(item: ParsedNode) -> list[_Text]:
     ]
     if isinstance(node, Skill):
         texts.append(text("description", "description", source=node.description))
+    for step in item.step_files:
+        if step.copies is None or step.path is None:
+            continue
+        texts += [
+            _Text(
+                "trigger",
+                step.path,
+                step.line_of(("pages", index, "trigger")),
+                page.trigger,
+                node.id,
+            )
+            for index, page in enumerate(step.copies.pages)
+        ]
     return texts
 
 
@@ -146,7 +159,10 @@ def check_items(
     items: Sequence[ParsedNode], profile: LanguageProfile, rules: Sequence[_Text] = ()
 ) -> tuple[int, list[Problem]]:
     grammar = profile.grammar
-    problems = [*_unknown_branches(items, profile), *_listing_budget(items, profile)]
+    problems = [
+        *_unknown_branches(items, profile),
+        *_listing_budget(items, profile),
+    ]
     texts = [*rules, *(text for item in items for text in _texts_of(item))]
     terms_by_node = _terms_by_node(items, profile)
     seen: dict[str, _Text] = {}

@@ -47,6 +47,9 @@ classes:
   Root:
     description: The top node of the graph. Agents load the root first.
     is_a: Node
+    slots:
+      - use_a_skill
+      - create_a_rule
     slot_usage:
       pointers:
         required: true
@@ -353,9 +356,18 @@ slots:
     range: Directive
     multivalued: true
   steps:
-    description: The steps of a flow skill, in their order. Each step is a node under the node that the flow uses.
+    description: The IDs of the steps of the skill, in their order. Each step has a step file with its ID.
+    multivalued: true
+    pattern: ^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\n)$
+  use_a_skill:
+    description: The directives that the section Use a skill of AGENTS.md lists, in their order. The edge does not attach the directive.
     is_a: edge
-    range: TaxonomyNode
+    range: Directive
+    multivalued: true
+  create_a_rule:
+    description: The directives that the section Create a rule of AGENTS.md lists, in their order. The edge does not attach the directive.
+    is_a: edge
+    range: Directive
     multivalued: true
 
 enums:
@@ -401,8 +413,8 @@ enums:
   SkillType:
     description: The kinds of skill.
     permissible_values:
-      flow:
-        description: The skill runs the steps of a discipline in their order. Each step has a step file.
+      task:
+        description: The skill does one task in 1 or more steps, in their order. Each step has a step file.
       lens:
         description: The skill reviews work from one angle, or runs other lens skills.
       system:

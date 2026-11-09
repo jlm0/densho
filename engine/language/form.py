@@ -2,7 +2,7 @@
 import re
 from typing import TYPE_CHECKING, TypedDict, cast
 
-from engine.language.prose import words_of
+from engine.language.prose import CODE_WORD, words_of
 from engine.vendor.ste_lint import lint
 
 if TYPE_CHECKING:
@@ -18,6 +18,7 @@ class _SteFinding(TypedDict):
 
 
 USE_WHEN = "Use when "
+EXCLUSION = "Do not use it for "
 DO_NOT = ["do", "not"]
 PREFER = "prefer"
 PREFER_FINDING: Finding = (
@@ -28,7 +29,7 @@ PREFER_FINDING: Finding = (
     ),
 )
 UNLESS = "unless"
-DESCRIPTION_SENTENCES = 2
+DESCRIPTION_SENTENCES = (2, 3)
 INTERIOR_END = re.compile(r"[.!?](?=\s+\S)")
 SENTENCE_BREAK = re.compile(r"(?<=[.!?])\s+")
 LITERAL_SHAPE = re.compile(
@@ -161,14 +162,25 @@ def description_findings(source: str, masked: str, grammar: Grammar, terms: Term
     for part in parts:
         findings += _sentence(part)
         findings += _word_count(part, limits.max_sentence_words)
-    if len(parts) != DESCRIPTION_SENTENCES:
-        message = "Write 2 sentences: the action of the skill, then Use when and a trigger."
+    if len(parts) not in DESCRIPTION_SENTENCES:
+        message = (
+            "Write 2 or 3 sentences: the action of the skill, Use when and a trigger, "
+            "and Do not use it for with the sibling skills."
+        )
         return [*findings, ("description-form", message)]
-    action, use_when = parts
+    action, use_when, *exclusion = parts
     first = next(iter(words_of(action)), "")
     if first not in terms.verbs:
         message = f"Start the first sentence with an approved verb, not {first!a}."
         findings.append(("description-form", message))
     if not use_when.startswith(USE_WHEN):
         findings.append(("description-form", "Start the second sentence with Use when."))
+    for sentence in exclusion:
+        if not sentence.startswith(EXCLUSION):
+            findings.append(
+                ("description-form", "Start the third sentence with Do not use it for.")
+            )
+        if CODE_WORD not in sentence:
+            message = "Name each sibling skill of the third sentence in backticks."
+            findings.append(("description-form", message))
     return findings

@@ -49,6 +49,25 @@ pointers:
   - kind: densho:SkillPointer
     target: review-code-change
     trigger: A code change is ready for review.
+use_a_skill:
+  - run-triggered-skill
+  - follow-triggered-skill
+  - read-skill-after-compaction
+create_a_rule:
+  - propose-corrections
+  - propose-stated-rules
+  - follow-stated-rule-in-session
+  - keep-personal-preferences
+  - start-as-proposed
+  - proposed-is-a-draft
+  - person-accepts
+  - one-action-per-directive
+  - define-each-other-case
+  - follow-the-grammar
+  - new-rules-in-workspace
+  - task-rules-on-root
+  - report-template-candidates
+  - reopen-a-directive
 ---
 
 ## Directives
@@ -69,6 +88,31 @@ pointers:
   - status: proposed
   - origin: template
 - After a compaction, read the current step file and each required read of your skill again. ^read-skill-after-compaction
+  - scope: node
+  - basis: judgment
+  - status: proposed
+  - origin: template
+- When a person states a new rule, propose it with `propose-knowledge`. ^propose-stated-rules
+  - scope: node
+  - basis: judgment
+  - status: proposed
+  - origin: template
+- If a person states a rule in a session, follow the rule for the rest of that session. ^follow-stated-rule-in-session
+  - scope: node
+  - basis: judgment
+  - status: proposed
+  - origin: template
+- In a project, put each new directive in workspace knowledge. ^new-rules-in-workspace
+  - scope: node
+  - basis: judgment
+  - status: proposed
+  - origin: template
+- If a new directive covers each task in the project, put it on the root with `scope: node`. ^task-rules-on-root
+  - scope: node
+  - basis: judgment
+  - status: proposed
+  - origin: template
+- If an accepted workspace directive names nothing that only this project has, tell the person to run `sync-template`. ^report-template-candidates
   - scope: node
   - basis: judgment
   - status: proposed

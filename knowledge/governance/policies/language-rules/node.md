@@ -26,6 +26,16 @@ The controlled language of each directive, trigger, and skill description. The r
   - basis: judgment
   - status: proposed
   - origin: template
+- Write each directive as one sentence that gives exactly `1` action in each case. ^one-action-per-directive
+  - scope: node
+  - basis: judgment
+  - status: proposed
+  - origin: template
+- Write each other case as an `unless` clause or as a second directive with a condition. ^define-each-other-case
+  - scope: node
+  - basis: judgment
+  - status: proposed
+  - origin: template
 - Add each new opening verb to `knowledge/governance/language/vocabulary.yaml` or to the branch file of the node. ^add-the-verb
   - scope: node
   - basis: judgment

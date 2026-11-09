@@ -28,7 +28,9 @@ From [Change rules](../../references/change-rules.md):
 From [Language rules](../../references/language-rules.md):
 
 - Add each new opening verb to `knowledge/governance/language/vocabulary.yaml` or to the branch file of the node. ^add-the-verb
+- Write each other case as an `unless` clause or as a second directive with a condition. ^define-each-other-case
 - Write each directive, trigger, and skill description in the grammar of `knowledge/governance/language/grammar.yaml`. ^follow-the-grammar
+- Write each directive as one sentence that gives exactly `1` action in each case. ^one-action-per-directive
 
 From [Lifecycle](../../references/lifecycle.md):
 
@@ -38,7 +40,7 @@ From [Lifecycle](../../references/lifecycle.md):
 - Do not change the `origin` of a node or a directive. ^keep-the-origin
 - Before you deprecate a node, move the nodes under it. ^move-before-deprecating
 - Follow a directive while its exception stays `proposed`. ^proposed-exception-stops-nothing
-- Treat a `proposed` directive as a draft, not as a rule. ^proposed-is-a-draft
+- Treat a `proposed` directive as a draft, not as a rule, unless a person stated it in the current session. ^proposed-is-a-draft
 - Before you reject a node, leave no `proposed` or `accepted` directive or exception in it. ^reject-the-contents
 - Do not apply a `rejected` node or directive to any work. ^rejected-applies-nowhere
 - Before you reject an entity, remove each reference to it from the entities that are not `rejected`. ^remove-references-before-rejecting

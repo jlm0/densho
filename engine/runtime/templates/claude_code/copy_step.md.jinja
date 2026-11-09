@@ -1,0 +1,51 @@
+{% include "_title.md.jinja" %}
+
+This file is step {{ node.number }} of {{ node.total }} of the skill `{{ node.skill.id }}`.
+{% if node.pages %}
+
+## Pages
+
+{% for pointer in node.pages %}
+{% include "_pointer.md.jinja" %}
+{% endfor %}
+{% endif %}
+{% if node.names_directives %}
+
+## Directives
+
+{% for directive in node.directives %}
+{% include "_copy_line.md.jinja" %}
+{% else %}
+{% if notice %}
+No directive applies at this step.
+{% else %}
+No directive of this step is in force.
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if node.branches %}
+
+## Branches
+
+{% if node.skill_type == "lens" %}
+If a heading matches the work, check the work against each directive under it.
+{% else %}
+If a heading matches the work, follow each directive under it.
+{% endif %}
+{% for branch in node.branches %}
+
+### {{ branch.condition }}
+
+{% for directive in branch.directives %}
+{% include "_copy_line.md.jinja" %}
+{% endfor %}
+{% endfor %}
+{% endif %}
+
+## Next step
+
+{% if node.following %}
+Return to step {{ node.following }} of [the skill]({{ href(node.skill) }}).
+{% else %}
+Return to the exit checklist of [the skill]({{ href(node.skill) }}).
+{% endif %}

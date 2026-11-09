@@ -10,6 +10,7 @@ from engine.language.profile import BRANCH_FOLDER, BRANCH_SUFFIX
 from engine.layout import EVALS_FOLDER, KNOWLEDGE_FOLDER, LANGUAGE_FOLDER, SKILLS_FOLDER
 from engine.parser.node import node_folders, parse_source, parse_tree, universal_newlines
 from engine.parser.result import ParsedNode, Problem
+from engine.template.step_select import step_edits
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping, Sequence
@@ -19,7 +20,9 @@ if TYPE_CHECKING:
     from engine.parser.result import FieldPath
 
 SELECT_CODES = ("select",)
-PRUNED_FIELDS = frozenset({"informs", "related", "also_attached_to", "refines"})
+PRUNED_FIELDS = frozenset(
+    {"informs", "related", "also_attached_to", "refines", "use_a_skill", "create_a_rule"}
+)
 POINTER_FIELD = "pointers"
 DIRECTIVES_FIELD = "directives"
 FRONT_MATTER_DELIMITER = "---"
@@ -202,6 +205,10 @@ def _edits(
             else:
                 problems.append(_edge_problem(item, reference))
     edits: dict[Path, str] = {}
+    step_changes = step_edits(items, plan.removed, holders)
+    edits.update(step_changes.edits)
+    pruned += step_changes.pruned
+    problems += step_changes.problems
     for path, paths in removals.items():
         edited = _edited_text(by_path[path], paths)
         if edited is None:

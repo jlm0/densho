@@ -1,0 +1,9 @@
+positive:
+  - Does the home screen show the most important thing first?
+  - Review the visual hierarchy of the pricing page.
+  - The dashboard feels cluttered. Check its grouping and its emphasis.
+negative:
+  - prompt: Review the whole booking flow for usability problems.
+    skill: review-usability
+  - prompt: Audit the contrast and the keyboard access of the pricing page.
+    skill: audit-accessibility

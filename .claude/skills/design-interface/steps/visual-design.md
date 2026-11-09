@@ -1,47 +1,22 @@
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
-# Visual design
+# Lay out and style each screen
 
-This file is step 3 of 4 of the skill `design-interface`.
+This file is step 4 of 5 of the skill `design-interface`.
+
+## Pages
+
+- You rank the elements of a screen. Read [Information hierarchy](../../../references/information-hierarchy.md).
+- You place, style, or frame related elements on a screen. Read [Visual grouping](../../../references/visual-grouping.md).
+- You choose between prose and a visual form. Read [Visual communication](../../../references/visual-communication.md).
+- You design or apply a logo, a brand color, or a type style. Read [Visual identity](../../../references/visual-identity.md).
+- You choose the typefaces, the text sizes, or the text styles of a brand. Read [Type scale](../../../references/type-scale.md).
+- You fit a layout to a screen size. Read [Responsive design](../../../references/responsive-design.md).
+- You build a control, a form, a text style, a color choice, or media. Read [Accessibility](../../../references/accessibility.md).
 
 ## Directives
 
-No directive is in force at this step.
-
-## Inputs
-
-- The controls of each screen and their order
-- The brand guidelines of the project
-
-The output of each node in this list is an input of this step:
-
-- [Interaction design](interaction-design.md)
-
-## Procedure
-
-1. Group the options on each screen, and name each group.
-2. Apply the brand guidelines.
-3. Check the layout at the narrowest screen width.
-
-The rest of the procedure of this step is missing.
-
-## Output
-
-The layout, the type, the color, the imagery, and the spacing of each screen.
-
-The output of this step is an input of each node in this list:
-
-- [Design systems](design-systems.md)
-
-## Exit gate
-
-Check the screens against each directive of this step and of the skill, and report each one that it misses.
+No directive of this step is in force.
 
 ## Next step
 
-Read [Design systems](design-systems.md).
-
-## References
-
-- You rank the elements of a screen. Read [Information hierarchy](../../../references/information-hierarchy.md).
-- You choose between prose and a visual form. Read [Visual communication](../../../references/visual-communication.md).
-- You place, style, or frame related elements on a screen. Read [Visual grouping](../../../references/visual-grouping.md).
+Return to step 5 of [the skill](../SKILL.md).

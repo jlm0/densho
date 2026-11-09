@@ -189,7 +189,8 @@ def test_schema_lists_each_edge_kind() -> None:
         "implements",
         "uses",
         "applies",
-        "steps",
+        "use_a_skill",
+        "create_a_rule",
     }
 
 

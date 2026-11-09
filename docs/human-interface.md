@@ -29,7 +29,7 @@ The command runs every check, then writes one static site to `build/view/`, whic
 
 A node page keeps directives apart by state. `In force` holds what binds an agent today. `In force only after acceptance` holds what a proposal would add, and `Stopped here after acceptance` names what a proposed exception would stop.
 
-The site draws no graph picture. The tree shows `broader`, and `related`, `informs`, and the other edges appear as links on each node page. To change a node, use an editor, and the git hook checks the result.
+The site draws no graph picture. The tree shows `broader`, and `related`, `informs`, and the other edges appear as links on each node page. A skill page lists its steps in order, as plain IDs. The site doesn't show the step files or the directives they copy, so a reviewer reads those in the diff. To change a node, use an editor, and the git hook checks the result.
 
 The site leaves out each `rejected` entity, the same as the runtime files. A node with two parents appears twice in the tree. The second row links to the node and says that it is listed above. A tree that fails a check removes the old pages, so you can't read a site that no longer matches a valid tree by accident.
 

@@ -14,7 +14,9 @@ From [Governance](../rules/knowledge/governance.md):
 From [Language rules](language-rules.md):
 
 - Add each new opening verb to `knowledge/governance/language/vocabulary.yaml` or to the branch file of the node. ^add-the-verb
+- Write each other case as an `unless` clause or as a second directive with a condition. ^define-each-other-case
 - Write each directive, trigger, and skill description in the grammar of `knowledge/governance/language/grammar.yaml`. ^follow-the-grammar
+- Write each directive as one sentence that gives exactly `1` action in each case. ^one-action-per-directive
 
 ## Definition
 

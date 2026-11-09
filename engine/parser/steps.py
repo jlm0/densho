@@ -1,35 +1,43 @@
 import hashlib
 import json
 import re
-from typing import TYPE_CHECKING
+from dataclasses import asdict
+from typing import TYPE_CHECKING, cast
 
-from markdown_it import MarkdownIt
-
+from engine import tree_copies
 from engine.git import ignored_paths
-from engine.parser.body import read_body
-from engine.parser.result import Problem, StepFile
+from engine.parser.front_matter import DELIMITER, read_front_matter
+from engine.parser.result import Branch, Page, Problem, StepCopies, StepFile, line_of
+from engine.parser.sections import section_problems
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping, Sequence
+    from collections.abc import Callable, Mapping, Sequence
     from pathlib import Path
 
-    from markdown_it.token import Token
+    from engine.parser.result import FieldPath
 
 STEPS_FOLDER_NAME = "steps"
 STEP_SUFFIX = ".md"
-STEP_SECTIONS = ("Inputs", "Procedure", "Output", "Exit gate")
+COPY_SECTIONS = ("Procedure", "Output")
+COPY_KEYS = ("title", "pages", "directives", "branches", "missing_rules")
+PAGE_KEYS = ("target", "trigger")
+BRANCH_KEYS = ("condition", "directives")
+CONDITION_START = "If "
 STEP_ID = re.compile(r"[a-z][a-z0-9]*(-[a-z0-9]+)*")
+SINGLE_LINE = re.compile(r"\S(?: *\S)*")
 CONTROL_CHARACTER = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]")
-SECTION_TAG = "h2"
-SPLIT_TAGS = frozenset({"h1", SECTION_TAG})
-ORDER = ", ".join(f"## {name}" for name in STEP_SECTIONS)
 
 
 def step_files_digest(step_files: Sequence[StepFile]) -> str:
-    listing = [
-        [step.id, [list(section) for section in step.sections]] for step in sorted(step_files)
-    ]
+    listing = [_digest_entry(step) for step in sorted(step_files)]
     return hashlib.sha256(json.dumps(listing).encode("utf-8")).hexdigest()
+
+
+def _digest_entry(step: StepFile) -> list[object]:
+    entry: list[object] = [step.id, [list(section) for section in step.sections]]
+    if step.copies is not None:
+        entry.append(asdict(step.copies))
+    return entry
 
 
 def read_step_files(
@@ -73,66 +81,143 @@ def _read_step(path: Path, folder: Path, problems: list[Problem]) -> StepFile | 
     except OSError as error:
         problems.append(Problem(path, 1, "read", str(error)))
         return None
-    found = step_file_problems(text, path)
+    found = read_step_source(text, path)
     if isinstance(found, list):
         problems.extend(found)
         return None
-    return StepFile(path.stem, found)
+    return found
 
 
-def step_file_problems(text: str, path: Path) -> tuple[tuple[str, str], ...] | list[Problem]:
+def read_step_source(text: str, path: Path) -> StepFile | list[Problem]:
     control = sorted(
         {text.count("\n", 0, match.start()) + 1 for match in CONTROL_CHARACTER.finditer(text)}
     )
     if control:
         message = "Remove the control character from this line."
         return [Problem(path, line, "control-character", message) for line in control]
-    body = read_body(text, 1, path)
-    problems = list(body.problems)
-    if {"definition", "directives"} & set(body.fields):
-        message = "A step file holds no ## Definition and no ## Directives. Put them in a node."
-        problems.append(Problem(path, 1, "step-file", message))
-    lines = text.split("\n")
-    tokens = MarkdownIt("commonmark").parse(text)
-    heads = [
-        index
-        for index, token in enumerate(tokens)
-        if token.type == "heading_open" and token.level == 0 and token.tag in SPLIT_TAGS
+    if text.split("\n", 1)[0] != DELIMITER:
+        sections = tree_copies.tree_step_sections(text, path)
+        return sections if isinstance(sections, list) else StepFile(path.stem, sections)
+    front = read_front_matter(text, path)
+    if isinstance(front, list):
+        return front
+    copies = _copies(front.data, front.locations, path)
+    sections = section_problems(front.body, path, COPY_SECTIONS, front.body_line)
+    problems = [
+        *(copies if isinstance(copies, list) else []),
+        *(sections if isinstance(sections, list) else []),
     ]
-    names = [_heading(tokens, index) for index in heads]
-    if names != list(STEP_SECTIONS):
-        line = _start(tokens[heads[0]]) + 1 if heads else 1
-        message = f"Give the step file exactly these sections in this order: {ORDER}."
-        problems.append(Problem(path, line, "step-file", message))
-    elif _has_text(lines[: _start(tokens[heads[0]])]):
-        message = f"Put each line of the step file in a section: {ORDER}."
-        problems.append(Problem(path, 1, "step-file", message))
-    if problems:
+    if problems or isinstance(copies, list) or isinstance(sections, list):
         return sorted(problems)
-    sections: list[tuple[str, str]] = []
-    for position, index in enumerate(heads):
-        end = _start(tokens[heads[position + 1]]) if position + 1 < len(heads) else len(lines)
-        content = "\n".join(lines[_end(tokens[index]) : end]).strip("\n")
-        if not content.strip():
-            message = f"Write the text of ## {names[position]}."
-            problems.append(Problem(path, _start(tokens[index]) + 1, "step-file", message))
-        sections.append((names[position], content))
-    return problems or tuple(sections)
+    return StepFile(path.stem, sections, copies, path, front.locations)
 
 
-def _heading(tokens: list[Token], index: int) -> str:
-    opener = tokens[index]
-    text = tokens[index + 1].content.strip()
-    return text if opener.tag == SECTION_TAG else f"# {text}"
+class _Reader:
+    def __init__(self, locations: Mapping[FieldPath, int], path: Path) -> None:
+        self.locations = locations
+        self.path = path
+        self.problems: list[Problem] = []
+
+    def report(self, field_path: FieldPath, message: str) -> None:
+        line = line_of(self.locations, field_path)
+        self.problems.append(Problem(self.path, line, "step-file", message))
+
+    def text(self, value: object, field_path: FieldPath, name: str) -> str | None:
+        if isinstance(value, str) and SINGLE_LINE.fullmatch(value):
+            return value
+        self.report(field_path, f"Write {name} as text on 1 line.")
+        return None
+
+    def identifier(self, value: object, field_path: FieldPath) -> str | None:
+        if isinstance(value, str) and STEP_ID.fullmatch(value):
+            return value
+        self.report(field_path, "Write each ID in lowercase words joined by hyphens.")
+        return None
+
+    def entries(self, value: object, field_path: FieldPath, name: str) -> list[object]:
+        if isinstance(value, list):
+            return cast("list[object]", value)
+        self.report(field_path, f"Write {name} as a list.")
+        return []
+
+    def mapping(
+        self, value: object, field_path: FieldPath, keys: Sequence[str], name: str
+    ) -> dict[str, object] | None:
+        fields = cast("dict[str, object]", value) if isinstance(value, dict) else None
+        if fields is None or sorted(fields) != sorted(keys):
+            listed = " and ".join(keys)
+            self.report(field_path, f"Give each entry of {name} exactly the keys {listed}.")
+            return None
+        return fields
+
+    def page(self, value: object, field_path: FieldPath) -> Page | None:
+        fields = self.mapping(value, field_path, PAGE_KEYS, "pages")
+        if fields is None:
+            return None
+        target = self.identifier(fields["target"], (*field_path, "target"))
+        trigger = self.text(fields["trigger"], (*field_path, "trigger"), "the trigger")
+        return None if target is None or trigger is None else Page(target, trigger)
+
+    def branch(self, value: object, field_path: FieldPath) -> Branch | None:
+        fields = self.mapping(value, field_path, BRANCH_KEYS, "branches")
+        if fields is None:
+            return None
+        place = (*field_path, "condition")
+        condition = self.text(fields["condition"], place, "the condition")
+        if condition is not None and (
+            not condition.startswith(CONDITION_START) or condition.endswith(".")
+        ):
+            self.report(place, "Start the condition with If, and end it with no period.")
+            condition = None
+        names = _identifiers(self, fields["directives"], (*field_path, "directives"))
+        if not names:
+            self.report((*field_path, "directives"), "Name at least 1 directive in the branch.")
+        return None if condition is None or not names else Branch(condition, names)
+
+    def rule(self, value: object, field_path: FieldPath) -> str | None:
+        return self.text(value, field_path, "each missing rule")
+
+    def each[ItemT](
+        self,
+        data: Mapping[str, object],
+        name: str,
+        read: Callable[[object, FieldPath], ItemT | None],
+    ) -> tuple[ItemT, ...]:
+        if name not in data:
+            return ()
+        values = self.entries(data[name], (name,), name)
+        found = [read(value, (name, index)) for index, value in enumerate(values)]
+        return tuple(entry for entry in found if entry is not None)
 
 
-def _start(token: Token) -> int:
-    return token.map[0] if token.map else 0
+def _copies(
+    data: Mapping[str, object], locations: Mapping[FieldPath, int], path: Path
+) -> StepCopies | list[Problem]:
+    reader = _Reader(locations, path)
+    for key in data:
+        if key not in COPY_KEYS:
+            listed = ", ".join(COPY_KEYS)
+            reader.report((key,), f"A step file has no key {key}. Use only: {listed}.")
+    if "title" not in data:
+        reader.report((), "Give the step a title.")
+    title = reader.text(data.get("title"), ("title",), "the title") if "title" in data else None
+    core = _identifiers(reader, data["directives"], ("directives",)) if "directives" in data else ()
+    copies = StepCopies(
+        title or "",
+        reader.each(data, "pages", reader.page),
+        core,
+        reader.each(data, "branches", reader.branch),
+        reader.each(data, "missing_rules", reader.rule),
+    )
+    seen: set[str] = set()
+    for name, field_path in copies.copied():
+        if name in seen:
+            reader.report(field_path, f"The step names {name} twice. Name it once.")
+        seen.add(name)
+    return reader.problems or copies
 
 
-def _end(token: Token) -> int:
-    return token.map[1] if token.map else 0
-
-
-def _has_text(lines: Sequence[str]) -> bool:
-    return any(line.strip() for line in lines)
+def _identifiers(reader: _Reader, value: object, field_path: FieldPath) -> tuple[str, ...]:
+    values = reader.entries(value, field_path, "directives")
+    found = [reader.identifier(entry, (*field_path, index)) for index, entry in enumerate(values)]
+    return tuple(name for name in found if name is not None)

@@ -7,7 +7,7 @@ origin: template
 knowledge_type: domain
 description: Build software, from its requirements to its operation. Use when you write, test, or release software.
 invocation: agent
-skill_type: flow
+skill_type: task
 uses:
   - software-engineering
 steps:

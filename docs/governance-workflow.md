@@ -127,7 +127,7 @@ A pointer does not reopen a review, because every new node needs a pointer and w
 
 The scripts of a skill count as one field. The check hashes the path, the bytes, and the executable bit of each file under the skill's `scripts/` folder, so a script that changes, arrives, goes, moves, or becomes executable reopens the skill.
 
-The [step files](node-format.md#step-files) of a flow skill are text like `body`, so a change to one doesn't reopen the skill. The order of the steps is the `steps` edge, and a change to it does. `knowledge/.densho/history.jsonl` records a digest of the step files, so the history still shows each change.
+The [step files](node-format.md#step-files) of a skill are text like `body`, so a change to one doesn't reopen the skill, even when it changes the directives a step copies. The order of the steps is the `steps` list, and a change to it does. `knowledge/.densho/history.jsonl` records a digest of the step files, so the history still shows each change.
 
 The comparison uses rendered Markdown and ignores the order of a list, so a formatter can't reopen a review. A moved file is the same entity, because its ID identifies it.
 

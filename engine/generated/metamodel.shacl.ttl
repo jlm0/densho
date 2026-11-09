@@ -8,110 +8,110 @@
 skos:Concept a sh:NodeShape ;
 	rdfs:comment "A node in the classification from domain to concept." ;
 	sh:closed false ;
-	sh:ignoredProperties _:c14n124 ;
-	sh:property _:c14n0 , _:c14n104 , _:c14n118 , _:c14n12 , _:c14n128 , _:c14n129 , _:c14n156 , _:c14n172 , _:c14n176 , _:c14n191 , _:c14n196 , _:c14n216 , _:c14n24 , _:c14n34 , _:c14n48 , _:c14n49 , _:c14n61 , _:c14n87 ;
+	sh:ignoredProperties _:c14n127 ;
+	sh:property _:c14n0 , _:c14n106 , _:c14n121 , _:c14n13 , _:c14n131 , _:c14n132 , _:c14n160 , _:c14n176 , _:c14n179 , _:c14n195 , _:c14n200 , _:c14n218 , _:c14n26 , _:c14n37 , _:c14n51 , _:c14n52 , _:c14n64 , _:c14n89 ;
 	sh:targetClass skos:Concept .
 densho:AlwaysPointer a sh:NodeShape ;
 	rdfs:comment "A pointer to a node that the harness loads at session start." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n26 ;
-	sh:property _:c14n101 , _:c14n102 , _:c14n126 ;
+	sh:ignoredProperties _:c14n29 ;
+	sh:property _:c14n103 , _:c14n104 , _:c14n129 ;
 	sh:targetClass densho:AlwaysPointer .
 densho:Concept a sh:NodeShape ;
 	rdfs:comment "A principle, a technique, or a body of knowledge." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n134 ;
-	sh:property _:c14n105 , _:c14n113 , _:c14n114 , _:c14n166 , _:c14n17 , _:c14n175 , _:c14n178 , _:c14n212 , _:c14n220 , _:c14n27 , _:c14n3 , _:c14n50 , _:c14n52 , _:c14n58 , _:c14n59 , _:c14n65 , _:c14n88 , _:c14n93 , _:c14n98 ;
+	sh:ignoredProperties _:c14n138 ;
+	sh:property _:c14n101 , _:c14n107 , _:c14n116 , _:c14n117 , _:c14n171 , _:c14n178 , _:c14n182 , _:c14n19 , _:c14n215 , _:c14n222 , _:c14n3 , _:c14n31 , _:c14n53 , _:c14n55 , _:c14n61 , _:c14n62 , _:c14n69 , _:c14n90 , _:c14n95 ;
 	sh:targetClass densho:Concept .
 densho:Directive a sh:NodeShape ;
 	rdfs:comment "An atomic instruction with its own identity. A directive lives in the file of one node." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n224 ;
-	sh:property _:c14n133 , _:c14n135 , _:c14n138 , _:c14n165 , _:c14n179 , _:c14n206 , _:c14n5 , _:c14n63 , _:c14n72 , _:c14n75 , _:c14n83 ;
+	sh:ignoredProperties _:c14n226 ;
+	sh:property _:c14n136 , _:c14n139 , _:c14n143 , _:c14n170 , _:c14n183 , _:c14n209 , _:c14n5 , _:c14n67 , _:c14n76 , _:c14n78 , _:c14n85 ;
 	sh:targetClass densho:Directive .
 densho:DirectiveException a sh:NodeShape ;
 	rdfs:comment "A statement that a node steps out of a directive that it would otherwise inherit. Only an accepted exception stops the directive." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n195 ;
-	sh:property _:c14n112 , _:c14n125 , _:c14n136 , _:c14n192 ;
+	sh:ignoredProperties _:c14n199 ;
+	sh:property _:c14n115 , _:c14n128 , _:c14n141 , _:c14n196 ;
 	sh:targetClass densho:DirectiveException .
 densho:Discipline a sh:NodeShape ;
 	rdfs:comment "A field of work in a domain." ;
 	sh:closed true ;
 	sh:ignoredProperties _:c14n1 ;
-	sh:property _:c14n103 , _:c14n107 , _:c14n139 , _:c14n140 , _:c14n145 , _:c14n146 , _:c14n147 , _:c14n174 , _:c14n177 , _:c14n184 , _:c14n222 , _:c14n31 , _:c14n35 , _:c14n39 , _:c14n7 , _:c14n70 , _:c14n8 , _:c14n90 , _:c14n91 ;
+	sh:property _:c14n105 , _:c14n109 , _:c14n144 , _:c14n145 , _:c14n149 , _:c14n150 , _:c14n151 , _:c14n177 , _:c14n181 , _:c14n188 , _:c14n224 , _:c14n34 , _:c14n38 , _:c14n42 , _:c14n7 , _:c14n74 , _:c14n8 , _:c14n92 , _:c14n93 ;
 	sh:targetClass densho:Discipline .
 densho:Domain a sh:NodeShape ;
 	rdfs:comment "The top level of the taxonomy. A domain has no broader node." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n117 ;
-	sh:property _:c14n119 , _:c14n131 , _:c14n150 , _:c14n152 , _:c14n162 , _:c14n168 , _:c14n20 , _:c14n204 , _:c14n213 , _:c14n32 , _:c14n33 , _:c14n36 , _:c14n47 , _:c14n77 , _:c14n79 , _:c14n82 , _:c14n89 , _:c14n97 ;
+	sh:ignoredProperties _:c14n120 ;
+	sh:property _:c14n100 , _:c14n122 , _:c14n134 , _:c14n154 , _:c14n156 , _:c14n167 , _:c14n172 , _:c14n207 , _:c14n216 , _:c14n23 , _:c14n35 , _:c14n36 , _:c14n39 , _:c14n50 , _:c14n80 , _:c14n82 , _:c14n84 , _:c14n91 ;
 	sh:targetClass densho:Domain .
 densho:GovernedEntity a sh:NodeShape ;
 	rdfs:comment "An addressable entity that governance tracks." ;
 	sh:closed false ;
-	sh:ignoredProperties _:c14n41 ;
-	sh:property _:c14n163 , _:c14n207 , _:c14n225 , _:c14n43 , _:c14n9 ;
+	sh:ignoredProperties _:c14n44 ;
+	sh:property _:c14n10 , _:c14n168 , _:c14n210 , _:c14n227 , _:c14n46 ;
 	sh:targetClass densho:GovernedEntity .
 densho:KnowledgeGraph a sh:NodeShape ;
 	rdfs:comment "The root and the knowledge nodes of one repository. A graph has exactly one root." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n71 ;
-	sh:property _:c14n158 , _:c14n160 , _:c14n30 ;
+	sh:ignoredProperties _:c14n75 ;
+	sh:property _:c14n162 , _:c14n164 , _:c14n33 ;
 	sh:targetClass densho:KnowledgeGraph .
 densho:KnowledgeNode a sh:NodeShape ;
 	rdfs:comment "A node that holds domain knowledge or workspace knowledge." ;
 	sh:closed false ;
-	sh:ignoredProperties _:c14n69 ;
-	sh:property _:c14n111 , _:c14n127 , _:c14n137 , _:c14n142 , _:c14n151 , _:c14n161 , _:c14n182 , _:c14n202 , _:c14n205 , _:c14n37 , _:c14n68 , _:c14n95 ;
+	sh:ignoredProperties _:c14n73 ;
+	sh:property _:c14n114 , _:c14n130 , _:c14n142 , _:c14n147 , _:c14n155 , _:c14n166 , _:c14n186 , _:c14n205 , _:c14n208 , _:c14n40 , _:c14n72 , _:c14n97 ;
 	sh:targetClass densho:KnowledgeNode .
 densho:Node a sh:NodeShape ;
 	rdfs:comment "One file in the graph. A node holds its knowledge, its directives, and its pointers." ;
 	sh:closed false ;
-	sh:ignoredProperties _:c14n74 ;
-	sh:property _:c14n123 , _:c14n144 , _:c14n157 , _:c14n18 , _:c14n29 , _:c14n46 , _:c14n57 , _:c14n60 , _:c14n84 , _:c14n96 ;
+	sh:ignoredProperties _:c14n77 ;
+	sh:property _:c14n126 , _:c14n148 , _:c14n161 , _:c14n20 , _:c14n32 , _:c14n49 , _:c14n60 , _:c14n63 , _:c14n86 , _:c14n98 ;
 	sh:targetClass densho:Node .
 densho:PathPointer a sh:NodeShape ;
 	rdfs:comment "A pointer to a node that the harness loads when the agent opens a matching file." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n159 ;
-	sh:property _:c14n170 , _:c14n199 , _:c14n223 , _:c14n85 ;
+	sh:ignoredProperties _:c14n163 ;
+	sh:property _:c14n174 , _:c14n202 , _:c14n225 , _:c14n87 ;
 	sh:targetClass densho:PathPointer .
 densho:Pointer a sh:NodeShape ;
 	rdfs:comment "A route that tells an agent when and how to load a node." ;
 	sh:closed false ;
-	sh:ignoredProperties _:c14n181 ;
-	sh:property _:c14n116 , _:c14n214 , _:c14n66 ;
+	sh:ignoredProperties _:c14n185 ;
+	sh:property _:c14n118 , _:c14n217 , _:c14n70 ;
 	sh:targetClass densho:Pointer .
 densho:PracticeArea a sh:NodeShape ;
 	rdfs:comment "A narrower area of work." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n78 ;
-	sh:property _:c14n109 , _:c14n14 , _:c14n141 , _:c14n15 , _:c14n169 , _:c14n180 , _:c14n185 , _:c14n186 , _:c14n19 , _:c14n198 , _:c14n203 , _:c14n209 , _:c14n217 , _:c14n219 , _:c14n22 , _:c14n38 , _:c14n54 , _:c14n62 , _:c14n92 ;
+	sh:ignoredProperties _:c14n81 ;
+	sh:property _:c14n112 , _:c14n146 , _:c14n16 , _:c14n17 , _:c14n173 , _:c14n184 , _:c14n189 , _:c14n190 , _:c14n201 , _:c14n206 , _:c14n21 , _:c14n212 , _:c14n219 , _:c14n221 , _:c14n25 , _:c14n41 , _:c14n57 , _:c14n65 , _:c14n94 ;
 	sh:targetClass densho:PracticeArea .
 densho:Root a sh:NodeShape ;
 	rdfs:comment "The top node of the graph. Agents load the root first." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n190 ;
-	sh:property _:c14n100 , _:c14n115 , _:c14n143 , _:c14n167 , _:c14n173 , _:c14n197 , _:c14n215 , _:c14n23 , _:c14n28 , _:c14n94 ;
+	sh:ignoredProperties _:c14n194 ;
+	sh:property _:c14n110 , _:c14n119 , _:c14n137 , _:c14n140 , _:c14n15 , _:c14n165 , _:c14n180 , _:c14n22 , _:c14n30 , _:c14n9 , _:c14n96 , _:c14n99 ;
 	sh:targetClass densho:Root .
 densho:Skill a sh:NodeShape ;
 	rdfs:comment "A reusable capability that composes knowledge from any branch of the taxonomy." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n44 ;
-	sh:property _:c14n10 , _:c14n122 , _:c14n13 , _:c14n132 , _:c14n148 , _:c14n154 , _:c14n16 , _:c14n189 , _:c14n193 , _:c14n2 , _:c14n210 , _:c14n221 , _:c14n4 , _:c14n40 , _:c14n45 , _:c14n51 , _:c14n6 , _:c14n81 ;
+	sh:ignoredProperties _:c14n47 ;
+	sh:property _:c14n11 , _:c14n125 , _:c14n135 , _:c14n14 , _:c14n152 , _:c14n158 , _:c14n18 , _:c14n193 , _:c14n197 , _:c14n2 , _:c14n213 , _:c14n223 , _:c14n4 , _:c14n43 , _:c14n48 , _:c14n54 , _:c14n6 , _:c14n66 ;
 	sh:targetClass densho:Skill .
 densho:SkillPointer a sh:NodeShape ;
 	rdfs:comment "A pointer to a skill that the agent selects from the skill listing." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n121 ;
-	sh:property _:c14n108 , _:c14n25 , _:c14n76 ;
+	sh:ignoredProperties _:c14n124 ;
+	sh:property _:c14n111 , _:c14n27 , _:c14n79 ;
 	sh:targetClass densho:SkillPointer .
 densho:TextPointer a sh:NodeShape ;
 	rdfs:comment "A pointer to a node that the agent opens when it reads the pointer text." ;
 	sh:closed true ;
-	sh:ignoredProperties _:c14n218 ;
-	sh:property _:c14n130 , _:c14n211 , _:c14n53 ;
+	sh:ignoredProperties _:c14n220 ;
+	sh:property _:c14n133 , _:c14n214 , _:c14n56 ;
 	sh:targetClass densho:TextPointer .
 _:c14n0 sh:class skos:Concept ;
 	sh:description "The nodes with an association to this node. This edge is symmetric." ;
@@ -120,21 +120,26 @@ _:c14n0 sh:class skos:Concept ;
 	sh:path skos:related .
 _:c14n1 rdf:first rdf:type ;
 	rdf:rest rdf:nil .
-_:c14n10 sh:description "The kind of knowledge in the node." ;
-	sh:in _:c14n363 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 6 ;
-	sh:path densho:knowledge_type .
-_:c14n100 sh:datatype xsd:string ;
-	sh:description "The preferred name of the node." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
+_:c14n10 sh:datatype xsd:string ;
+	sh:description "The URLs, repository paths, or citations that support the entity." ;
 	sh:nodeKind sh:Literal ;
-	sh:order 1 ;
-	sh:path skos:prefLabel ;
+	sh:order 3 ;
+	sh:path dcterms:source ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n101 sh:datatype xsd:string ;
+_:c14n100 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n310 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 15 ;
+	sh:path densho:origin .
+_:c14n101 sh:class skos:Concept ;
+	sh:description "The domain nodes that this workspace node gives project values for." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 6 ;
+	sh:path densho:implements .
+_:c14n102 rdf:first densho:also_attached_to ;
+	rdf:rest _:c14n370 .
+_:c14n103 sh:datatype xsd:string ;
 	sh:description "The condition that tells an agent to follow the pointer." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -142,25 +147,25 @@ _:c14n101 sh:datatype xsd:string ;
 	sh:order 2 ;
 	sh:path densho:trigger ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n102 sh:class densho:Node ;
+_:c14n104 sh:class densho:Node ;
 	sh:description "The node that the pointer routes to." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 1 ;
 	sh:path densho:target .
-_:c14n103 sh:class skos:Concept ;
+_:c14n105 sh:class skos:Concept ;
 	sh:description "The domain nodes that this workspace node gives project values for." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 6 ;
 	sh:path densho:implements .
-_:c14n104 sh:datatype xsd:string ;
+_:c14n106 sh:datatype xsd:string ;
 	sh:description "The URLs, repository paths, or citations that support the entity." ;
 	sh:nodeKind sh:Literal ;
 	sh:order 16 ;
 	sh:path dcterms:source ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n105 sh:datatype xsd:string ;
+_:c14n107 sh:datatype xsd:string ;
 	sh:description "The meaning of the node." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -168,15 +173,26 @@ _:c14n105 sh:datatype xsd:string ;
 	sh:order 1 ;
 	sh:path skos:definition ;
 	sh:pattern "\\S" .
-_:c14n106 rdf:first densho:pointers ;
-	rdf:rest _:c14n188 .
-_:c14n107 sh:datatype xsd:string ;
+_:c14n108 rdf:first densho:pointers ;
+	rdf:rest _:c14n192 .
+_:c14n109 sh:datatype xsd:string ;
 	sh:description "The URLs, repository paths, or citations that support the entity." ;
 	sh:nodeKind sh:Literal ;
 	sh:order 17 ;
 	sh:path dcterms:source ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n108 sh:datatype xsd:string ;
+_:c14n11 sh:description "The kind of knowledge in the node." ;
+	sh:in _:c14n357 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 6 ;
+	sh:path densho:knowledge_type .
+_:c14n110 sh:class densho:Directive ;
+	sh:description "The directives that the section Create a rule of AGENTS.md lists, in their order. The edge does not attach the directive." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 1 ;
+	sh:path densho:create_a_rule .
+_:c14n111 sh:datatype xsd:string ;
 	sh:description "The condition that tells an agent to follow the pointer." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -184,46 +200,38 @@ _:c14n108 sh:datatype xsd:string ;
 	sh:order 2 ;
 	sh:path densho:trigger ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n109 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
+_:c14n112 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 9 ;
 	sh:path rdf:type .
-_:c14n11 rdf:first densho:text ;
-	rdf:rest _:c14n254 .
-_:c14n110 rdf:first skos:prefLabel ;
-	rdf:rest _:c14n365 .
-_:c14n111 sh:class densho:DirectiveException ;
+_:c14n113 rdf:first skos:prefLabel ;
+	rdf:rest _:c14n371 .
+_:c14n114 sh:class densho:DirectiveException ;
 	sh:description "The inherited directives that stop at this node." ;
 	sh:nodeKind sh:BlankNodeOrIRI ;
 	sh:order 1 ;
 	sh:path densho:exceptions .
-_:c14n112 sh:class densho:Directive ;
+_:c14n115 sh:class densho:Directive ;
 	sh:description "The directive that the exception stops." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 0 ;
 	sh:path densho:directive .
-_:c14n113 sh:class densho:Node ;
+_:c14n116 sh:class densho:Node ;
 	sh:description "The nodes that this node sets rules for. A governance node can name itself." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 5 ;
 	sh:path densho:governs .
-_:c14n114 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n323 ;
+_:c14n117 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n312 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 16 ;
 	sh:path densho:origin .
-_:c14n115 sh:description "The lifecycle state." ;
-	sh:in _:c14n277 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 6 ;
-	sh:path densho:status .
-_:c14n116 sh:datatype xsd:string ;
+_:c14n118 sh:datatype xsd:string ;
 	sh:description "The condition that tells an agent to follow the pointer." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -231,80 +239,82 @@ _:c14n116 sh:datatype xsd:string ;
 	sh:order 2 ;
 	sh:path densho:trigger ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n117 rdf:first rdf:type ;
+_:c14n119 sh:class densho:Directive ;
+	sh:description "The directives that the section Use a skill of AGENTS.md lists, in their order. The edge does not attach the directive." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 0 ;
+	sh:path densho:use_a_skill .
+_:c14n12 rdf:first densho:text ;
+	rdf:rest _:c14n259 .
+_:c14n120 rdf:first rdf:type ;
 	rdf:rest rdf:nil .
-_:c14n118 sh:class densho:DirectiveException ;
+_:c14n121 sh:class densho:DirectiveException ;
 	sh:description "The inherited directives that stop at this node." ;
 	sh:nodeKind sh:BlankNodeOrIRI ;
 	sh:order 7 ;
 	sh:path densho:exceptions .
-_:c14n119 sh:class skos:Concept ;
+_:c14n122 sh:class skos:Concept ;
 	sh:description "The nodes that take the output of this node as an input. This edge is the flow from one step to the next." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 2 ;
 	sh:path densho:informs .
-_:c14n12 sh:datatype xsd:string ;
-	sh:description "The stable identifier. The identifier does not change when a file moves." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 13 ;
-	sh:path densho:id ;
-	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n120 rdf:first "lens" ;
-	rdf:rest _:c14n201 .
-_:c14n121 rdf:first rdf:type ;
+_:c14n123 rdf:first "lens" ;
+	rdf:rest _:c14n204 .
+_:c14n124 rdf:first rdf:type ;
 	rdf:rest rdf:nil .
-_:c14n122 sh:datatype xsd:string ;
+_:c14n125 sh:datatype xsd:string ;
 	sh:description "The supporting prose of the node." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 12 ;
 	sh:path densho:body ;
 	sh:pattern "\\S" .
-_:c14n123 sh:description "The lifecycle state." ;
-	sh:in _:c14n289 ;
+_:c14n126 sh:description "The lifecycle state." ;
+	sh:in _:c14n298 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 6 ;
 	sh:path densho:status .
-_:c14n124 rdf:first rdf:type ;
-	rdf:rest _:c14n187 .
-_:c14n125 sh:description "The lifecycle state." ;
-	sh:in _:c14n297 ;
+_:c14n127 rdf:first rdf:type ;
+	rdf:rest _:c14n191 .
+_:c14n128 sh:description "The lifecycle state." ;
+	sh:in _:c14n294 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 2 ;
 	sh:path densho:status .
-_:c14n126 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
+_:c14n129 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 0 ;
 	sh:path rdf:type .
-_:c14n127 sh:datatype xsd:string ;
+_:c14n13 sh:datatype xsd:string ;
+	sh:description "The stable identifier. The identifier does not change when a file moves." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 13 ;
+	sh:path densho:id ;
+	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
+_:c14n130 sh:datatype xsd:string ;
 	sh:description "The supporting prose of the node." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 6 ;
 	sh:path densho:body ;
 	sh:pattern "\\S" .
-_:c14n128 sh:class skos:Concept ;
+_:c14n131 sh:class skos:Concept ;
 	sh:description "The nodes that this node cannot exist without. A handoff from one step to the next uses informs." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 3 ;
 	sh:path densho:depends_on .
-_:c14n129 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n321 ;
+_:c14n132 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n316 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 15 ;
 	sh:path densho:origin .
-_:c14n13 sh:class densho:Directive ;
-	sh:description "The directives that live in this file." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 11 ;
-	sh:path densho:directives .
-_:c14n130 sh:datatype xsd:string ;
+_:c14n133 sh:datatype xsd:string ;
 	sh:description "The condition that tells an agent to follow the pointer." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -312,13 +322,13 @@ _:c14n130 sh:datatype xsd:string ;
 	sh:order 2 ;
 	sh:path densho:trigger ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n131 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
+_:c14n134 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 8 ;
 	sh:path rdf:type .
-_:c14n132 sh:datatype xsd:string ;
+_:c14n135 sh:datatype xsd:string ;
 	sh:description "The text that an agent reads to select the skill." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -326,7 +336,7 @@ _:c14n132 sh:datatype xsd:string ;
 	sh:order 0 ;
 	sh:path densho:description ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n133 sh:datatype xsd:string ;
+_:c14n136 sh:datatype xsd:string ;
 	sh:description "The instruction." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -334,14 +344,31 @@ _:c14n133 sh:datatype xsd:string ;
 	sh:order 0 ;
 	sh:path densho:text ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n134 rdf:first rdf:type ;
+_:c14n137 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 2 ;
+	sh:path rdf:type .
+_:c14n138 rdf:first rdf:type ;
 	rdf:rest rdf:nil .
-_:c14n135 sh:class densho:Node ;
+_:c14n139 sh:class densho:Node ;
 	sh:description "The nodes that the directive attaches to, in addition to the node that holds it." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 3 ;
 	sh:path densho:also_attached_to .
-_:c14n136 sh:datatype xsd:string ;
+_:c14n14 sh:class densho:Directive ;
+	sh:description "The directives that live in this file." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 11 ;
+	sh:path densho:directives .
+_:c14n140 sh:datatype xsd:string ;
+	sh:description "The URLs, repository paths, or citations that support the entity." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 10 ;
+	sh:path dcterms:source ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n141 sh:datatype xsd:string ;
 	sh:description "The reason that the directive does not apply at this node." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -349,376 +376,342 @@ _:c14n136 sh:datatype xsd:string ;
 	sh:order 1 ;
 	sh:path densho:reason ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n137 sh:datatype xsd:string ;
+_:c14n142 sh:datatype xsd:string ;
 	sh:description "The stable identifier. The identifier does not change when a file moves." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 7 ;
 	sh:path densho:id ;
 	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n138 sh:datatype xsd:string ;
+_:c14n143 sh:datatype xsd:string ;
 	sh:description "The stable identifier. The identifier does not change when a file moves." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 6 ;
 	sh:path densho:id ;
 	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n139 sh:class densho:Pointer ;
+_:c14n144 sh:class densho:Pointer ;
 	sh:description "The routes from this node to other nodes." ;
 	sh:nodeKind sh:BlankNodeOrIRI ;
 	sh:order 11 ;
 	sh:path densho:pointers .
-_:c14n14 sh:description "The kind of knowledge in the node." ;
-	sh:in _:c14n357 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 7 ;
-	sh:path densho:knowledge_type .
-_:c14n140 sh:class skos:Concept ;
+_:c14n145 sh:class skos:Concept ;
 	sh:description "The nodes that this node cannot exist without. A handoff from one step to the next uses informs." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 4 ;
 	sh:path densho:depends_on .
-_:c14n141 sh:datatype xsd:string ;
+_:c14n146 sh:datatype xsd:string ;
 	sh:description "The reason that a person rejected the entity." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 18 ;
 	sh:path densho:rejection_reason ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n142 sh:description "The lifecycle state." ;
-	sh:in _:c14n285 ;
+_:c14n147 sh:description "The lifecycle state." ;
+	sh:in _:c14n262 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 8 ;
 	sh:path densho:status .
-_:c14n143 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n319 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 7 ;
-	sh:path densho:origin .
-_:c14n144 sh:datatype xsd:string ;
+_:c14n148 sh:datatype xsd:string ;
 	sh:description "The supporting prose of the node." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 4 ;
 	sh:path densho:body ;
 	sh:pattern "\\S" .
-_:c14n145 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n315 ;
+_:c14n149 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n328 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 16 ;
 	sh:path densho:origin .
-_:c14n146 sh:datatype xsd:string ;
-	sh:description "The supporting prose of the node." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 13 ;
-	sh:path densho:body ;
-	sh:pattern "\\S" .
-_:c14n147 sh:datatype xsd:string ;
-	sh:description "The preferred name of the node." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 10 ;
-	sh:path skos:prefLabel ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n148 sh:class densho:DirectiveException ;
-	sh:description "The inherited directives that stop at this node." ;
-	sh:nodeKind sh:BlankNodeOrIRI ;
-	sh:order 7 ;
-	sh:path densho:exceptions .
-_:c14n149 rdf:first densho:conflicts_with ;
-	rdf:rest _:c14n349 .
-_:c14n15 sh:class densho:Node ;
-	sh:description "The nodes that this node sets rules for. A governance node can name itself." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 5 ;
-	sh:path densho:governs .
-_:c14n150 sh:description "The lifecycle state." ;
-	sh:in _:c14n265 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 14 ;
-	sh:path densho:status .
-_:c14n151 sh:datatype xsd:string ;
-	sh:description "The preferred name of the node." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 3 ;
-	sh:path skos:prefLabel ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n152 sh:datatype xsd:string ;
-	sh:description "The meaning of the node." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 0 ;
-	sh:path skos:definition ;
-	sh:pattern "\\S" .
-_:c14n153 rdf:first "person" ;
-	rdf:rest rdf:nil .
-_:c14n154 sh:description "The actor that starts the skill." ;
-	sh:in _:c14n86 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 1 ;
-	sh:path densho:invocation .
-_:c14n155 sh:class densho:Concept .
-_:c14n156 sh:datatype xsd:string ;
-	sh:description "The supporting prose of the node." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 12 ;
-	sh:path densho:body ;
-	sh:pattern "\\S" .
-_:c14n157 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 0 ;
-	sh:path rdf:type .
-_:c14n158 sh:class densho:KnowledgeNode ;
-	sh:description "The knowledge nodes of the graph." ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 1 ;
-	sh:path densho:nodes .
-_:c14n159 rdf:first rdf:type ;
-	rdf:rest rdf:nil .
-_:c14n16 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n309 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 15 ;
-	sh:path densho:origin .
-_:c14n160 sh:description "The directives that a compiled graph holds. A source graph has no value." ;
-	sh:in _:c14n183 ;
-	sh:maxCount 1 ;
-	sh:order 2 ;
-	sh:path densho:result .
-_:c14n161 sh:datatype xsd:string ;
+_:c14n15 sh:datatype xsd:string ;
 	sh:description "The reason that a person rejected the entity." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 11 ;
 	sh:path densho:rejection_reason ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n162 sh:class densho:Pointer ;
-	sh:description "The routes from this node to other nodes." ;
-	sh:nodeKind sh:BlankNodeOrIRI ;
-	sh:order 10 ;
-	sh:path densho:pointers .
-_:c14n163 sh:datatype xsd:string ;
-	sh:description "The reason that a person rejected the entity." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 4 ;
-	sh:path densho:rejection_reason ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n164 rdf:first densho:paths ;
-	rdf:rest rdf:nil .
-_:c14n165 sh:class densho:Directive ;
-	sh:description "The broader directives that this directive makes more specific. Both directives apply." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 4 ;
-	sh:path densho:refines .
-_:c14n166 sh:description "The lifecycle state." ;
-	sh:in _:c14n273 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 15 ;
-	sh:path densho:status .
-_:c14n167 sh:class densho:Pointer ;
-	sh:description "The routes from this node to other nodes." ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:BlankNodeOrIRI ;
-	sh:order 2 ;
-	sh:path densho:pointers .
-_:c14n168 sh:class densho:DirectiveException ;
-	sh:description "The inherited directives that stop at this node." ;
-	sh:nodeKind sh:BlankNodeOrIRI ;
-	sh:order 7 ;
-	sh:path densho:exceptions .
-_:c14n169 sh:description "The lifecycle state." ;
-	sh:in _:c14n257 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 15 ;
-	sh:path densho:status .
-_:c14n17 sh:class skos:Concept ;
-	sh:description "The nodes that take the output of this node as an input. This edge is the flow from one step to the next." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 3 ;
-	sh:path densho:informs .
-_:c14n170 sh:datatype xsd:string ;
-	sh:description "The file patterns that load the target." ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 0 ;
-	sh:path densho:paths ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n171 rdf:first densho:basis ;
-	rdf:rest _:c14n64 .
-_:c14n172 sh:class skos:Concept ;
-	sh:description "The domain nodes that this workspace node gives project values for." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 5 ;
-	sh:path densho:implements .
-_:c14n173 sh:datatype xsd:string ;
-	sh:description "The reason that a person rejected the entity." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 9 ;
-	sh:path densho:rejection_reason ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n174 sh:datatype xsd:string ;
-	sh:description "The meaning of the node." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 1 ;
-	sh:path skos:definition ;
-	sh:pattern "\\S" .
-_:c14n175 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 9 ;
-	sh:path rdf:type .
-_:c14n176 sh:datatype xsd:string ;
-	sh:description "The meaning of the node." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 0 ;
-	sh:path skos:definition ;
-	sh:pattern "\\S" .
-_:c14n177 sh:class skos:Concept ;
-	sh:description "The nodes with an association to this node. This edge is symmetric." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 2 ;
-	sh:path skos:related .
-_:c14n178 sh:class densho:Directive ;
-	sh:description "The directives that live in this file." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 12 ;
-	sh:path densho:directives .
-_:c14n179 sh:datatype xsd:string ;
-	sh:description "The URLs, repository paths, or citations that support the entity." ;
-	sh:nodeKind sh:Literal ;
-	sh:order 9 ;
-	sh:path dcterms:source ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n18 sh:datatype xsd:string ;
-	sh:description "The reason that a person rejected the entity." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 9 ;
-	sh:path densho:rejection_reason ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n180 sh:class skos:Concept ;
-	sh:description "The domain nodes that this workspace node gives project values for." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 6 ;
-	sh:path densho:implements .
-_:c14n181 rdf:first rdf:type ;
-	rdf:rest _:c14n164 .
-_:c14n182 sh:description "The kind of knowledge in the node." ;
-	sh:in _:c14n353 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 0 ;
-	sh:path densho:knowledge_type .
-_:c14n183 rdf:first "in_force" ;
-	rdf:rest _:c14n80 .
-_:c14n184 sh:class densho:DirectiveException ;
-	sh:description "The inherited directives that stop at this node." ;
-	sh:nodeKind sh:BlankNodeOrIRI ;
-	sh:order 8 ;
-	sh:path densho:exceptions .
-_:c14n185 sh:datatype xsd:string ;
-	sh:description "The preferred name of the node." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 10 ;
-	sh:path skos:prefLabel ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n186 sh:class skos:Concept ;
-	sh:description "The nodes that take the output of this node as an input. This edge is the flow from one step to the next." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 3 ;
-	sh:path densho:informs .
-_:c14n187 rdf:first skos:broader ;
-	rdf:rest rdf:nil .
-_:c14n188 rdf:first densho:refines ;
-	rdf:rest _:c14n42 .
-_:c14n189 sh:class densho:Pointer ;
-	sh:description "The routes from this node to other nodes." ;
-	sh:nodeKind sh:BlankNodeOrIRI ;
-	sh:order 10 ;
-	sh:path densho:pointers .
-_:c14n19 sh:class skos:Concept ;
-	sh:description "The nodes that this node cannot exist without. A handoff from one step to the next uses informs." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 4 ;
-	sh:path densho:depends_on .
-_:c14n190 rdf:first rdf:type ;
-	rdf:rest rdf:nil .
-_:c14n191 sh:class densho:Node ;
-	sh:description "The nodes that this node sets rules for. A governance node can name itself." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 4 ;
-	sh:path densho:governs .
-_:c14n192 sh:datatype xsd:string ;
-	sh:description "The reason that a person rejected the entity." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 3 ;
-	sh:path densho:rejection_reason ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n193 sh:datatype xsd:string ;
-	sh:description "The preferred name of the node." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 9 ;
-	sh:path skos:prefLabel ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n194 rdf:first "practitioner" ;
-	rdf:rest _:c14n208 .
-_:c14n195 rdf:first rdf:type ;
-	rdf:rest rdf:nil .
-_:c14n196 sh:class skos:Concept ;
-	sh:description "The nodes that take the output of this node as an input. This edge is the flow from one step to the next." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 2 ;
-	sh:path densho:informs .
-_:c14n197 sh:datatype xsd:string ;
-	sh:description "The stable identifier. The identifier does not change when a file moves." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 5 ;
-	sh:path densho:id ;
-	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n198 sh:datatype xsd:string ;
+_:c14n150 sh:datatype xsd:string ;
 	sh:description "The supporting prose of the node." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 13 ;
 	sh:path densho:body ;
 	sh:pattern "\\S" .
-_:c14n199 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
+_:c14n151 sh:datatype xsd:string ;
+	sh:description "The preferred name of the node." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 10 ;
+	sh:path skos:prefLabel ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n152 sh:class densho:DirectiveException ;
+	sh:description "The inherited directives that stop at this node." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 7 ;
+	sh:path densho:exceptions .
+_:c14n153 rdf:first densho:conflicts_with ;
+	rdf:rest _:c14n355 .
+_:c14n154 sh:description "The lifecycle state." ;
+	sh:in _:c14n302 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 14 ;
+	sh:path densho:status .
+_:c14n155 sh:datatype xsd:string ;
+	sh:description "The preferred name of the node." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 3 ;
+	sh:path skos:prefLabel ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n156 sh:datatype xsd:string ;
+	sh:description "The meaning of the node." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 0 ;
+	sh:path skos:definition ;
+	sh:pattern "\\S" .
+_:c14n157 rdf:first "person" ;
+	rdf:rest rdf:nil .
+_:c14n158 sh:description "The actor that starts the skill." ;
+	sh:in _:c14n88 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 1 ;
+	sh:path densho:invocation .
+_:c14n159 sh:class densho:Concept .
+_:c14n16 sh:description "The kind of knowledge in the node." ;
+	sh:in _:c14n365 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 7 ;
+	sh:path densho:knowledge_type .
+_:c14n160 sh:datatype xsd:string ;
+	sh:description "The supporting prose of the node." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 12 ;
+	sh:path densho:body ;
+	sh:pattern "\\S" .
+_:c14n161 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
-	sh:order 1 ;
+	sh:order 0 ;
 	sh:path rdf:type .
+_:c14n162 sh:class densho:KnowledgeNode ;
+	sh:description "The knowledge nodes of the graph." ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 1 ;
+	sh:path densho:nodes .
+_:c14n163 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n164 sh:description "The directives that a compiled graph holds. A source graph has no value." ;
+	sh:in _:c14n187 ;
+	sh:maxCount 1 ;
+	sh:order 2 ;
+	sh:path densho:result .
+_:c14n165 sh:datatype xsd:string ;
+	sh:description "The preferred name of the node." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 3 ;
+	sh:path skos:prefLabel ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n166 sh:datatype xsd:string ;
+	sh:description "The reason that a person rejected the entity." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 11 ;
+	sh:path densho:rejection_reason ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n167 sh:class densho:Pointer ;
+	sh:description "The routes from this node to other nodes." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 10 ;
+	sh:path densho:pointers .
+_:c14n168 sh:datatype xsd:string ;
+	sh:description "The reason that a person rejected the entity." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 4 ;
+	sh:path densho:rejection_reason ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n169 rdf:first densho:paths ;
+	rdf:rest rdf:nil .
+_:c14n17 sh:class densho:Node ;
+	sh:description "The nodes that this node sets rules for. A governance node can name itself." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 5 ;
+	sh:path densho:governs .
+_:c14n170 sh:class densho:Directive ;
+	sh:description "The broader directives that this directive makes more specific. Both directives apply." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 4 ;
+	sh:path densho:refines .
+_:c14n171 sh:description "The lifecycle state." ;
+	sh:in _:c14n286 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 15 ;
+	sh:path densho:status .
+_:c14n172 sh:class densho:DirectiveException ;
+	sh:description "The inherited directives that stop at this node." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 7 ;
+	sh:path densho:exceptions .
+_:c14n173 sh:description "The lifecycle state." ;
+	sh:in _:c14n290 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 15 ;
+	sh:path densho:status .
+_:c14n174 sh:datatype xsd:string ;
+	sh:description "The file patterns that load the target." ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 0 ;
+	sh:path densho:paths ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n175 rdf:first densho:basis ;
+	rdf:rest _:c14n68 .
+_:c14n176 sh:class skos:Concept ;
+	sh:description "The domain nodes that this workspace node gives project values for." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 5 ;
+	sh:path densho:implements .
+_:c14n177 sh:datatype xsd:string ;
+	sh:description "The meaning of the node." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 1 ;
+	sh:path skos:definition ;
+	sh:pattern "\\S" .
+_:c14n178 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 9 ;
+	sh:path rdf:type .
+_:c14n179 sh:datatype xsd:string ;
+	sh:description "The meaning of the node." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 0 ;
+	sh:path skos:definition ;
+	sh:pattern "\\S" .
+_:c14n18 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n322 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 15 ;
+	sh:path densho:origin .
+_:c14n180 sh:datatype xsd:string ;
+	sh:description "The stable identifier. The identifier does not change when a file moves." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 7 ;
+	sh:path densho:id ;
+	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
+_:c14n181 sh:class skos:Concept ;
+	sh:description "The nodes with an association to this node. This edge is symmetric." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 2 ;
+	sh:path skos:related .
+_:c14n182 sh:class densho:Directive ;
+	sh:description "The directives that live in this file." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 12 ;
+	sh:path densho:directives .
+_:c14n183 sh:datatype xsd:string ;
+	sh:description "The URLs, repository paths, or citations that support the entity." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 9 ;
+	sh:path dcterms:source ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n184 sh:class skos:Concept ;
+	sh:description "The domain nodes that this workspace node gives project values for." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 6 ;
+	sh:path densho:implements .
+_:c14n185 rdf:first rdf:type ;
+	rdf:rest _:c14n169 .
+_:c14n186 sh:description "The kind of knowledge in the node." ;
+	sh:in _:c14n369 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 0 ;
+	sh:path densho:knowledge_type .
+_:c14n187 rdf:first "in_force" ;
+	rdf:rest _:c14n83 .
+_:c14n188 sh:class densho:DirectiveException ;
+	sh:description "The inherited directives that stop at this node." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 8 ;
+	sh:path densho:exceptions .
+_:c14n189 sh:datatype xsd:string ;
+	sh:description "The preferred name of the node." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 10 ;
+	sh:path skos:prefLabel ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n19 sh:class skos:Concept ;
+	sh:description "The nodes that take the output of this node as an input. This edge is the flow from one step to the next." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 3 ;
+	sh:path densho:informs .
+_:c14n190 sh:class skos:Concept ;
+	sh:description "The nodes that take the output of this node as an input. This edge is the flow from one step to the next." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 3 ;
+	sh:path densho:informs .
+_:c14n191 rdf:first skos:broader ;
+	rdf:rest rdf:nil .
+_:c14n192 rdf:first densho:refines ;
+	rdf:rest _:c14n45 .
+_:c14n193 sh:class densho:Pointer ;
+	sh:description "The routes from this node to other nodes." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 10 ;
+	sh:path densho:pointers .
+_:c14n194 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n195 sh:class densho:Node ;
+	sh:description "The nodes that this node sets rules for. A governance node can name itself." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 4 ;
+	sh:path densho:governs .
+_:c14n196 sh:datatype xsd:string ;
+	sh:description "The reason that a person rejected the entity." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 3 ;
+	sh:path densho:rejection_reason ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n197 sh:datatype xsd:string ;
+	sh:description "The preferred name of the node." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 9 ;
+	sh:path skos:prefLabel ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n198 rdf:first "practitioner" ;
+	rdf:rest _:c14n211 .
+_:c14n199 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
 _:c14n2 sh:datatype xsd:string ;
 	sh:description "The URLs, repository paths, or citations that support the entity." ;
 	sh:nodeKind sh:Literal ;
@@ -726,27 +719,46 @@ _:c14n2 sh:datatype xsd:string ;
 	sh:path dcterms:source ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
 _:c14n20 sh:datatype xsd:string ;
-	sh:description "The URLs, repository paths, or citations that support the entity." ;
+	sh:description "The reason that a person rejected the entity." ;
+	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
-	sh:order 16 ;
-	sh:path dcterms:source ;
+	sh:order 9 ;
+	sh:path densho:rejection_reason ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n200 rdf:first densho:directives ;
-	rdf:rest _:c14n330 .
-_:c14n201 rdf:first "system" ;
-	rdf:rest rdf:nil .
+_:c14n200 sh:class skos:Concept ;
+	sh:description "The nodes that take the output of this node as an input. This edge is the flow from one step to the next." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 2 ;
+	sh:path densho:informs .
+_:c14n201 sh:datatype xsd:string ;
+	sh:description "The supporting prose of the node." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 13 ;
+	sh:path densho:body ;
+	sh:pattern "\\S" .
 _:c14n202 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 1 ;
+	sh:path rdf:type .
+_:c14n203 rdf:first densho:directives ;
+	rdf:rest _:c14n335 .
+_:c14n204 rdf:first "system" ;
+	rdf:rest rdf:nil .
+_:c14n205 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 2 ;
 	sh:path rdf:type .
-_:c14n203 sh:class densho:Pointer ;
+_:c14n206 sh:class densho:Pointer ;
 	sh:description "The routes from this node to other nodes." ;
 	sh:nodeKind sh:BlankNodeOrIRI ;
 	sh:order 11 ;
 	sh:path densho:pointers .
-_:c14n204 sh:datatype xsd:string ;
+_:c14n207 sh:datatype xsd:string ;
 	sh:description "The preferred name of the node." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -754,58 +766,42 @@ _:c14n204 sh:datatype xsd:string ;
 	sh:order 9 ;
 	sh:path skos:prefLabel ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n205 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n305 ;
+_:c14n208 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n330 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 9 ;
 	sh:path densho:origin .
-_:c14n206 sh:class densho:Directive ;
+_:c14n209 sh:class densho:Directive ;
 	sh:description "The directives that must not apply at the same node as this directive. This relationship is symmetric." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 5 ;
 	sh:path densho:conflicts_with .
-_:c14n207 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n313 ;
+_:c14n21 sh:class skos:Concept ;
+	sh:description "The nodes that this node cannot exist without. A handoff from one step to the next uses informs." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 4 ;
+	sh:path densho:depends_on .
+_:c14n210 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n324 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 2 ;
 	sh:path densho:origin .
-_:c14n208 rdf:first "judgment" ;
+_:c14n211 rdf:first "judgment" ;
 	rdf:rest rdf:nil .
-_:c14n209 sh:class skos:Concept ;
+_:c14n212 sh:class skos:Concept ;
 	sh:description "The nodes with an association to this node. This edge is symmetric." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 2 ;
 	sh:path skos:related .
-_:c14n21 rdf:first "research" ;
-	rdf:rest _:c14n194 .
-_:c14n210 sh:datatype xsd:string ;
+_:c14n213 sh:datatype xsd:string ;
 	sh:description "The reason that a person rejected the entity." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 17 ;
 	sh:path densho:rejection_reason ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n211 sh:class densho:Node ;
-	sh:description "The node that the pointer routes to." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 1 ;
-	sh:path densho:target .
-_:c14n212 sh:class densho:Pointer ;
-	sh:description "The routes from this node to other nodes." ;
-	sh:nodeKind sh:BlankNodeOrIRI ;
-	sh:order 11 ;
-	sh:path densho:pointers .
-_:c14n213 sh:datatype xsd:string ;
-	sh:description "The stable identifier. The identifier does not change when a file moves." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 13 ;
-	sh:path densho:id ;
-	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
 _:c14n214 sh:class densho:Node ;
 	sh:description "The node that the pointer routes to." ;
 	sh:maxCount 1 ;
@@ -813,55 +809,70 @@ _:c14n214 sh:class densho:Node ;
 	sh:nodeKind sh:IRI ;
 	sh:order 1 ;
 	sh:path densho:target .
-_:c14n215 sh:class densho:Directive ;
-	sh:description "The directives that live in this file." ;
+_:c14n215 sh:class densho:Pointer ;
+	sh:description "The routes from this node to other nodes." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 11 ;
+	sh:path densho:pointers .
+_:c14n216 sh:datatype xsd:string ;
+	sh:description "The stable identifier. The identifier does not change when a file moves." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 13 ;
+	sh:path densho:id ;
+	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
+_:c14n217 sh:class densho:Node ;
+	sh:description "The node that the pointer routes to." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
-	sh:order 3 ;
-	sh:path densho:directives .
-_:c14n216 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
+	sh:order 1 ;
+	sh:path densho:target .
+_:c14n218 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 8 ;
 	sh:path rdf:type .
-_:c14n217 sh:datatype xsd:string ;
+_:c14n219 sh:datatype xsd:string ;
 	sh:description "The stable identifier. The identifier does not change when a file moves." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 14 ;
 	sh:path densho:id ;
 	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n218 rdf:first rdf:type ;
+_:c14n22 sh:datatype xsd:string ;
+	sh:description "The supporting prose of the node." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 6 ;
+	sh:path densho:body ;
+	sh:pattern "\\S" .
+_:c14n220 rdf:first rdf:type ;
 	rdf:rest rdf:nil .
-_:c14n219 sh:class densho:Directive ;
+_:c14n221 sh:class densho:Directive ;
 	sh:description "The directives that live in this file." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 12 ;
 	sh:path densho:directives .
-_:c14n22 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n307 ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 16 ;
-	sh:path densho:origin .
-_:c14n220 sh:class densho:DirectiveException ;
+_:c14n222 sh:class densho:DirectiveException ;
 	sh:description "The inherited directives that stop at this node." ;
 	sh:nodeKind sh:BlankNodeOrIRI ;
 	sh:order 8 ;
 	sh:path densho:exceptions .
-_:c14n221 sh:class densho:Directive ;
+_:c14n223 sh:class densho:Directive ;
 	sh:description "The directives that the skill applies." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 4 ;
 	sh:path densho:applies .
-_:c14n222 sh:datatype xsd:string ;
+_:c14n224 sh:datatype xsd:string ;
 	sh:description "The reason that a person rejected the entity." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 18 ;
 	sh:path densho:rejection_reason ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n223 sh:datatype xsd:string ;
+_:c14n225 sh:datatype xsd:string ;
 	sh:description "The condition that tells an agent to follow the pointer." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -869,349 +880,332 @@ _:c14n223 sh:datatype xsd:string ;
 	sh:order 3 ;
 	sh:path densho:trigger ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n224 rdf:first rdf:type ;
+_:c14n226 rdf:first rdf:type ;
 	rdf:rest rdf:nil .
-_:c14n225 sh:description "The lifecycle state." ;
-	sh:in _:c14n261 ;
+_:c14n227 sh:description "The lifecycle state." ;
+	sh:in _:c14n278 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 1 ;
 	sh:path densho:status .
-_:c14n226 rdf:first densho:uses ;
+_:c14n228 rdf:first densho:uses ;
 	rdf:rest rdf:nil .
-_:c14n227 rdf:first densho:steps ;
-	rdf:rest _:c14n226 .
-_:c14n228 rdf:first densho:skill_type ;
-	rdf:rest _:c14n227 .
-_:c14n229 rdf:first densho:invocation ;
+_:c14n229 rdf:first densho:use_a_skill ;
 	rdf:rest _:c14n228 .
 _:c14n23 sh:datatype xsd:string ;
 	sh:description "The URLs, repository paths, or citations that support the entity." ;
 	sh:nodeKind sh:Literal ;
-	sh:order 8 ;
+	sh:order 16 ;
 	sh:path dcterms:source ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n230 rdf:first densho:informs ;
+_:c14n230 rdf:first densho:steps ;
 	rdf:rest _:c14n229 .
-_:c14n231 rdf:first densho:implements ;
+_:c14n231 rdf:first densho:skill_type ;
 	rdf:rest _:c14n230 .
-_:c14n232 rdf:first densho:governs ;
+_:c14n232 rdf:first densho:knowledge_type ;
 	rdf:rest _:c14n231 .
-_:c14n233 rdf:first densho:description ;
+_:c14n233 rdf:first densho:invocation ;
 	rdf:rest _:c14n232 .
-_:c14n234 rdf:first densho:depends_on ;
+_:c14n234 rdf:first densho:informs ;
 	rdf:rest _:c14n233 .
-_:c14n235 rdf:first densho:applies ;
+_:c14n235 rdf:first densho:implements ;
 	rdf:rest _:c14n234 .
-_:c14n236 rdf:first skos:related ;
+_:c14n236 rdf:first densho:governs ;
 	rdf:rest _:c14n235 .
-_:c14n237 rdf:first skos:definition ;
+_:c14n237 rdf:first densho:exceptions ;
 	rdf:rest _:c14n236 .
-_:c14n238 rdf:first skos:broader ;
+_:c14n238 rdf:first densho:description ;
 	rdf:rest _:c14n237 .
-_:c14n239 rdf:first densho:uses ;
+_:c14n239 rdf:first densho:depends_on ;
+	rdf:rest _:c14n238 .
+_:c14n24 rdf:first "research" ;
+	rdf:rest _:c14n198 .
+_:c14n240 rdf:first densho:create_a_rule ;
+	rdf:rest _:c14n239 .
+_:c14n241 rdf:first densho:applies ;
+	rdf:rest _:c14n240 .
+_:c14n242 rdf:first skos:related ;
+	rdf:rest _:c14n241 .
+_:c14n243 rdf:first skos:definition ;
+	rdf:rest _:c14n242 .
+_:c14n244 rdf:first skos:broader ;
+	rdf:rest _:c14n243 .
+_:c14n245 rdf:first densho:uses ;
 	rdf:rest rdf:nil .
-_:c14n24 sh:datatype xsd:string ;
+_:c14n246 rdf:first densho:steps ;
+	rdf:rest _:c14n245 .
+_:c14n247 rdf:first densho:skill_type ;
+	rdf:rest _:c14n246 .
+_:c14n248 rdf:first densho:invocation ;
+	rdf:rest _:c14n247 .
+_:c14n249 rdf:first densho:informs ;
+	rdf:rest _:c14n248 .
+_:c14n25 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n314 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 16 ;
+	sh:path densho:origin .
+_:c14n250 rdf:first densho:implements ;
+	rdf:rest _:c14n249 .
+_:c14n251 rdf:first densho:governs ;
+	rdf:rest _:c14n250 .
+_:c14n252 rdf:first densho:description ;
+	rdf:rest _:c14n251 .
+_:c14n253 rdf:first densho:depends_on ;
+	rdf:rest _:c14n252 .
+_:c14n254 rdf:first densho:applies ;
+	rdf:rest _:c14n253 .
+_:c14n255 rdf:first skos:related ;
+	rdf:rest _:c14n254 .
+_:c14n256 rdf:first skos:definition ;
+	rdf:rest _:c14n255 .
+_:c14n257 rdf:first skos:broader ;
+	rdf:rest _:c14n256 .
+_:c14n258 rdf:first densho:uses ;
+	rdf:rest rdf:nil .
+_:c14n259 rdf:first densho:use_a_skill ;
+	rdf:rest _:c14n258 .
+_:c14n26 sh:datatype xsd:string ;
 	sh:description "The reason that a person rejected the entity." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 17 ;
 	sh:path densho:rejection_reason ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n240 rdf:first densho:steps ;
-	rdf:rest _:c14n239 .
-_:c14n241 rdf:first densho:skill_type ;
-	rdf:rest _:c14n240 .
-_:c14n242 rdf:first densho:knowledge_type ;
-	rdf:rest _:c14n241 .
-_:c14n243 rdf:first densho:invocation ;
-	rdf:rest _:c14n242 .
-_:c14n244 rdf:first densho:informs ;
-	rdf:rest _:c14n243 .
-_:c14n245 rdf:first densho:implements ;
-	rdf:rest _:c14n244 .
-_:c14n246 rdf:first densho:governs ;
-	rdf:rest _:c14n245 .
-_:c14n247 rdf:first densho:exceptions ;
-	rdf:rest _:c14n246 .
-_:c14n248 rdf:first densho:description ;
-	rdf:rest _:c14n247 .
-_:c14n249 rdf:first densho:depends_on ;
-	rdf:rest _:c14n248 .
-_:c14n25 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
+_:c14n260 rdf:first densho:skill_type ;
+	rdf:rest _:c14n261 .
+_:c14n261 rdf:first densho:steps ;
+	rdf:rest _:c14n12 .
+_:c14n262 rdf:first "proposed" ;
+	rdf:rest _:c14n263 .
+_:c14n263 rdf:first "accepted" ;
+	rdf:rest _:c14n264 .
+_:c14n264 rdf:first "deprecated" ;
+	rdf:rest _:c14n265 .
+_:c14n265 rdf:first "rejected" ;
+	rdf:rest rdf:nil .
+_:c14n266 rdf:first "proposed" ;
+	rdf:rest _:c14n267 .
+_:c14n267 rdf:first "accepted" ;
+	rdf:rest _:c14n268 .
+_:c14n268 rdf:first "deprecated" ;
+	rdf:rest _:c14n269 .
+_:c14n269 rdf:first "rejected" ;
+	rdf:rest rdf:nil .
+_:c14n27 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 0 ;
 	sh:path rdf:type .
-_:c14n250 rdf:first densho:applies ;
-	rdf:rest _:c14n249 .
-_:c14n251 rdf:first skos:related ;
-	rdf:rest _:c14n250 .
-_:c14n252 rdf:first skos:definition ;
-	rdf:rest _:c14n251 .
-_:c14n253 rdf:first skos:broader ;
-	rdf:rest _:c14n252 .
-_:c14n254 rdf:first densho:uses ;
+_:c14n270 rdf:first "proposed" ;
+	rdf:rest _:c14n271 .
+_:c14n271 rdf:first "accepted" ;
+	rdf:rest _:c14n272 .
+_:c14n272 rdf:first "deprecated" ;
+	rdf:rest _:c14n273 .
+_:c14n273 rdf:first "rejected" ;
 	rdf:rest rdf:nil .
-_:c14n255 rdf:first densho:skill_type ;
-	rdf:rest _:c14n256 .
-_:c14n256 rdf:first densho:steps ;
-	rdf:rest _:c14n11 .
-_:c14n257 rdf:first "proposed" ;
-	rdf:rest _:c14n258 .
-_:c14n258 rdf:first "accepted" ;
-	rdf:rest _:c14n259 .
-_:c14n259 rdf:first "deprecated" ;
-	rdf:rest _:c14n260 .
-_:c14n26 rdf:first rdf:type ;
+_:c14n274 rdf:first "proposed" ;
+	rdf:rest _:c14n275 .
+_:c14n275 rdf:first "accepted" ;
+	rdf:rest _:c14n276 .
+_:c14n276 rdf:first "deprecated" ;
+	rdf:rest _:c14n277 .
+_:c14n277 rdf:first "rejected" ;
 	rdf:rest rdf:nil .
-_:c14n260 rdf:first "rejected" ;
+_:c14n278 rdf:first "proposed" ;
+	rdf:rest _:c14n279 .
+_:c14n279 rdf:first "accepted" ;
+	rdf:rest _:c14n280 .
+_:c14n28 rdf:first "task" ;
+	rdf:rest _:c14n123 .
+_:c14n280 rdf:first "deprecated" ;
+	rdf:rest _:c14n281 .
+_:c14n281 rdf:first "rejected" ;
 	rdf:rest rdf:nil .
-_:c14n261 rdf:first "proposed" ;
-	rdf:rest _:c14n262 .
-_:c14n262 rdf:first "accepted" ;
-	rdf:rest _:c14n263 .
-_:c14n263 rdf:first "deprecated" ;
-	rdf:rest _:c14n264 .
-_:c14n264 rdf:first "rejected" ;
+_:c14n282 rdf:first "proposed" ;
+	rdf:rest _:c14n283 .
+_:c14n283 rdf:first "accepted" ;
+	rdf:rest _:c14n284 .
+_:c14n284 rdf:first "deprecated" ;
+	rdf:rest _:c14n285 .
+_:c14n285 rdf:first "rejected" ;
 	rdf:rest rdf:nil .
-_:c14n265 rdf:first "proposed" ;
-	rdf:rest _:c14n266 .
-_:c14n266 rdf:first "accepted" ;
-	rdf:rest _:c14n267 .
-_:c14n267 rdf:first "deprecated" ;
-	rdf:rest _:c14n268 .
-_:c14n268 rdf:first "rejected" ;
+_:c14n286 rdf:first "proposed" ;
+	rdf:rest _:c14n287 .
+_:c14n287 rdf:first "accepted" ;
+	rdf:rest _:c14n288 .
+_:c14n288 rdf:first "deprecated" ;
+	rdf:rest _:c14n289 .
+_:c14n289 rdf:first "rejected" ;
 	rdf:rest rdf:nil .
-_:c14n269 rdf:first "proposed" ;
-	rdf:rest _:c14n270 .
-_:c14n27 sh:class skos:Concept ;
+_:c14n29 rdf:first rdf:type ;
+	rdf:rest rdf:nil .
+_:c14n290 rdf:first "proposed" ;
+	rdf:rest _:c14n291 .
+_:c14n291 rdf:first "accepted" ;
+	rdf:rest _:c14n292 .
+_:c14n292 rdf:first "deprecated" ;
+	rdf:rest _:c14n293 .
+_:c14n293 rdf:first "rejected" ;
+	rdf:rest rdf:nil .
+_:c14n294 rdf:first "proposed" ;
+	rdf:rest _:c14n295 .
+_:c14n295 rdf:first "accepted" ;
+	rdf:rest _:c14n296 .
+_:c14n296 rdf:first "deprecated" ;
+	rdf:rest _:c14n297 .
+_:c14n297 rdf:first "rejected" ;
+	rdf:rest rdf:nil .
+_:c14n298 rdf:first "proposed" ;
+	rdf:rest _:c14n299 .
+_:c14n299 rdf:first "accepted" ;
+	rdf:rest _:c14n300 .
+_:c14n3 sh:description "The broader nodes in the taxonomy." ;
+	sh:minCount 1 ;
+	sh:or _:c14n351 ;
+	sh:order 0 ;
+	sh:path skos:broader .
+_:c14n30 sh:description "The lifecycle state." ;
+	sh:in _:c14n306 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 8 ;
+	sh:path densho:status .
+_:c14n300 rdf:first "deprecated" ;
+	rdf:rest _:c14n301 .
+_:c14n301 rdf:first "rejected" ;
+	rdf:rest rdf:nil .
+_:c14n302 rdf:first "proposed" ;
+	rdf:rest _:c14n303 .
+_:c14n303 rdf:first "accepted" ;
+	rdf:rest _:c14n304 .
+_:c14n304 rdf:first "deprecated" ;
+	rdf:rest _:c14n305 .
+_:c14n305 rdf:first "rejected" ;
+	rdf:rest rdf:nil .
+_:c14n306 rdf:first "proposed" ;
+	rdf:rest _:c14n307 .
+_:c14n307 rdf:first "accepted" ;
+	rdf:rest _:c14n308 .
+_:c14n308 rdf:first "deprecated" ;
+	rdf:rest _:c14n309 .
+_:c14n309 rdf:first "rejected" ;
+	rdf:rest rdf:nil .
+_:c14n31 sh:class skos:Concept ;
 	sh:description "The nodes with an association to this node. This edge is symmetric." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 2 ;
 	sh:path skos:related .
-_:c14n270 rdf:first "accepted" ;
-	rdf:rest _:c14n271 .
-_:c14n271 rdf:first "deprecated" ;
-	rdf:rest _:c14n272 .
-_:c14n272 rdf:first "rejected" ;
+_:c14n310 rdf:first "template" ;
+	rdf:rest _:c14n311 .
+_:c14n311 rdf:first "project" ;
 	rdf:rest rdf:nil .
-_:c14n273 rdf:first "proposed" ;
-	rdf:rest _:c14n274 .
-_:c14n274 rdf:first "accepted" ;
-	rdf:rest _:c14n275 .
-_:c14n275 rdf:first "deprecated" ;
-	rdf:rest _:c14n276 .
-_:c14n276 rdf:first "rejected" ;
+_:c14n312 rdf:first "template" ;
+	rdf:rest _:c14n313 .
+_:c14n313 rdf:first "project" ;
 	rdf:rest rdf:nil .
-_:c14n277 rdf:first "proposed" ;
-	rdf:rest _:c14n278 .
-_:c14n278 rdf:first "accepted" ;
-	rdf:rest _:c14n279 .
-_:c14n279 rdf:first "deprecated" ;
-	rdf:rest _:c14n280 .
-_:c14n28 sh:datatype xsd:string ;
-	sh:description "The supporting prose of the node." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 4 ;
-	sh:path densho:body ;
-	sh:pattern "\\S" .
-_:c14n280 rdf:first "rejected" ;
+_:c14n314 rdf:first "template" ;
+	rdf:rest _:c14n315 .
+_:c14n315 rdf:first "project" ;
 	rdf:rest rdf:nil .
-_:c14n281 rdf:first "proposed" ;
-	rdf:rest _:c14n282 .
-_:c14n282 rdf:first "accepted" ;
-	rdf:rest _:c14n283 .
-_:c14n283 rdf:first "deprecated" ;
-	rdf:rest _:c14n284 .
-_:c14n284 rdf:first "rejected" ;
+_:c14n316 rdf:first "template" ;
+	rdf:rest _:c14n317 .
+_:c14n317 rdf:first "project" ;
 	rdf:rest rdf:nil .
-_:c14n285 rdf:first "proposed" ;
-	rdf:rest _:c14n286 .
-_:c14n286 rdf:first "accepted" ;
-	rdf:rest _:c14n287 .
-_:c14n287 rdf:first "deprecated" ;
-	rdf:rest _:c14n288 .
-_:c14n288 rdf:first "rejected" ;
+_:c14n318 rdf:first "template" ;
+	rdf:rest _:c14n319 .
+_:c14n319 rdf:first "project" ;
 	rdf:rest rdf:nil .
-_:c14n289 rdf:first "proposed" ;
-	rdf:rest _:c14n290 .
-_:c14n29 sh:class densho:Pointer ;
+_:c14n32 sh:class densho:Pointer ;
 	sh:description "The routes from this node to other nodes." ;
 	sh:nodeKind sh:BlankNodeOrIRI ;
 	sh:order 2 ;
 	sh:path densho:pointers .
-_:c14n290 rdf:first "accepted" ;
-	rdf:rest _:c14n291 .
-_:c14n291 rdf:first "deprecated" ;
-	rdf:rest _:c14n292 .
-_:c14n292 rdf:first "rejected" ;
+_:c14n320 rdf:first "template" ;
+	rdf:rest _:c14n321 .
+_:c14n321 rdf:first "project" ;
 	rdf:rest rdf:nil .
-_:c14n293 rdf:first "proposed" ;
-	rdf:rest _:c14n294 .
-_:c14n294 rdf:first "accepted" ;
-	rdf:rest _:c14n295 .
-_:c14n295 rdf:first "deprecated" ;
-	rdf:rest _:c14n296 .
-_:c14n296 rdf:first "rejected" ;
+_:c14n322 rdf:first "template" ;
+	rdf:rest _:c14n323 .
+_:c14n323 rdf:first "project" ;
 	rdf:rest rdf:nil .
-_:c14n297 rdf:first "proposed" ;
-	rdf:rest _:c14n298 .
-_:c14n298 rdf:first "accepted" ;
-	rdf:rest _:c14n299 .
-_:c14n299 rdf:first "deprecated" ;
-	rdf:rest _:c14n300 .
-_:c14n3 sh:description "The broader nodes in the taxonomy." ;
-	sh:minCount 1 ;
-	sh:or _:c14n340 ;
-	sh:order 0 ;
-	sh:path skos:broader .
-_:c14n30 sh:class densho:Root ;
+_:c14n324 rdf:first "template" ;
+	rdf:rest _:c14n325 .
+_:c14n325 rdf:first "project" ;
+	rdf:rest rdf:nil .
+_:c14n326 rdf:first "template" ;
+	rdf:rest _:c14n327 .
+_:c14n327 rdf:first "project" ;
+	rdf:rest rdf:nil .
+_:c14n328 rdf:first "template" ;
+	rdf:rest _:c14n329 .
+_:c14n329 rdf:first "project" ;
+	rdf:rest rdf:nil .
+_:c14n33 sh:class densho:Root ;
 	sh:description "The top node of the graph." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 0 ;
 	sh:path densho:root .
-_:c14n300 rdf:first "rejected" ;
+_:c14n330 rdf:first "template" ;
+	rdf:rest _:c14n331 .
+_:c14n331 rdf:first "project" ;
 	rdf:rest rdf:nil .
-_:c14n301 rdf:first "proposed" ;
-	rdf:rest _:c14n302 .
-_:c14n302 rdf:first "accepted" ;
-	rdf:rest _:c14n303 .
-_:c14n303 rdf:first "deprecated" ;
-	rdf:rest _:c14n304 .
-_:c14n304 rdf:first "rejected" ;
-	rdf:rest rdf:nil .
-_:c14n305 rdf:first "template" ;
-	rdf:rest _:c14n306 .
-_:c14n306 rdf:first "project" ;
-	rdf:rest rdf:nil .
-_:c14n307 rdf:first "template" ;
-	rdf:rest _:c14n308 .
-_:c14n308 rdf:first "project" ;
-	rdf:rest rdf:nil .
-_:c14n309 rdf:first "template" ;
-	rdf:rest _:c14n310 .
-_:c14n31 sh:class densho:Node ;
+_:c14n332 rdf:first skos:broader ;
+	rdf:rest _:c14n333 .
+_:c14n333 rdf:first skos:definition ;
+	rdf:rest _:c14n113 .
+_:c14n334 rdf:first densho:governs ;
+	rdf:rest _:c14n336 .
+_:c14n335 rdf:first densho:exceptions ;
+	rdf:rest _:c14n334 .
+_:c14n336 rdf:first densho:implements ;
+	rdf:rest _:c14n337 .
+_:c14n337 rdf:first densho:informs ;
+	rdf:rest _:c14n338 .
+_:c14n338 rdf:first densho:invocation ;
+	rdf:rest _:c14n339 .
+_:c14n339 rdf:first densho:knowledge_type ;
+	rdf:rest _:c14n108 .
+_:c14n34 sh:class densho:Node ;
 	sh:description "The nodes that this node sets rules for. A governance node can name itself." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 5 ;
 	sh:path densho:governs .
-_:c14n310 rdf:first "project" ;
+_:c14n340 sh:class densho:Discipline .
+_:c14n341 rdf:first _:c14n340 ;
+	rdf:rest _:c14n342 .
+_:c14n342 rdf:first _:c14n343 ;
 	rdf:rest rdf:nil .
-_:c14n311 rdf:first "template" ;
-	rdf:rest _:c14n312 .
-_:c14n312 rdf:first "project" ;
+_:c14n343 sh:class densho:PracticeArea .
+_:c14n344 rdf:first _:c14n345 ;
+	rdf:rest _:c14n341 .
+_:c14n345 sh:class densho:Domain .
+_:c14n346 sh:class densho:Discipline .
+_:c14n347 rdf:first _:c14n346 ;
+	rdf:rest _:c14n348 .
+_:c14n348 rdf:first _:c14n350 ;
+	rdf:rest _:c14n349 .
+_:c14n349 rdf:first _:c14n159 ;
 	rdf:rest rdf:nil .
-_:c14n313 rdf:first "template" ;
-	rdf:rest _:c14n314 .
-_:c14n314 rdf:first "project" ;
-	rdf:rest rdf:nil .
-_:c14n315 rdf:first "template" ;
-	rdf:rest _:c14n316 .
-_:c14n316 rdf:first "project" ;
-	rdf:rest rdf:nil .
-_:c14n317 rdf:first "template" ;
-	rdf:rest _:c14n318 .
-_:c14n318 rdf:first "project" ;
-	rdf:rest rdf:nil .
-_:c14n319 rdf:first "template" ;
-	rdf:rest _:c14n320 .
-_:c14n32 sh:class densho:Directive ;
+_:c14n35 sh:class densho:Directive ;
 	sh:description "The directives that live in this file." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 11 ;
 	sh:path densho:directives .
-_:c14n320 rdf:first "project" ;
-	rdf:rest rdf:nil .
-_:c14n321 rdf:first "template" ;
-	rdf:rest _:c14n322 .
-_:c14n322 rdf:first "project" ;
-	rdf:rest rdf:nil .
-_:c14n323 rdf:first "template" ;
-	rdf:rest _:c14n324 .
-_:c14n324 rdf:first "project" ;
-	rdf:rest rdf:nil .
-_:c14n325 rdf:first "template" ;
-	rdf:rest _:c14n326 .
-_:c14n326 rdf:first "project" ;
-	rdf:rest rdf:nil .
-_:c14n327 rdf:first skos:broader ;
-	rdf:rest _:c14n328 .
-_:c14n328 rdf:first skos:definition ;
-	rdf:rest _:c14n110 .
-_:c14n329 rdf:first densho:governs ;
-	rdf:rest _:c14n331 .
-_:c14n33 sh:datatype xsd:string ;
-	sh:description "The supporting prose of the node." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 12 ;
-	sh:path densho:body ;
-	sh:pattern "\\S" .
-_:c14n330 rdf:first densho:exceptions ;
-	rdf:rest _:c14n329 .
-_:c14n331 rdf:first densho:implements ;
-	rdf:rest _:c14n332 .
-_:c14n332 rdf:first densho:informs ;
-	rdf:rest _:c14n333 .
-_:c14n333 rdf:first densho:invocation ;
-	rdf:rest _:c14n334 .
-_:c14n334 rdf:first densho:knowledge_type ;
-	rdf:rest _:c14n106 .
-_:c14n335 sh:class densho:Discipline .
-_:c14n336 rdf:first _:c14n335 ;
-	rdf:rest _:c14n337 .
-_:c14n337 rdf:first _:c14n339 ;
-	rdf:rest _:c14n338 .
-_:c14n338 rdf:first _:c14n155 ;
-	rdf:rest rdf:nil .
-_:c14n339 sh:class densho:PracticeArea .
-_:c14n34 sh:datatype xsd:string ;
-	sh:description "The preferred name of the node." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 9 ;
-	sh:path skos:prefLabel ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n340 rdf:first _:c14n341 ;
-	rdf:rest _:c14n336 .
-_:c14n341 sh:class densho:Domain .
-_:c14n342 sh:class densho:Discipline .
-_:c14n343 rdf:first _:c14n342 ;
-	rdf:rest _:c14n344 .
-_:c14n344 rdf:first _:c14n345 ;
-	rdf:rest rdf:nil .
-_:c14n345 sh:class densho:PracticeArea .
-_:c14n346 rdf:first _:c14n347 ;
-	rdf:rest _:c14n343 .
-_:c14n347 sh:class densho:Domain .
-_:c14n348 rdf:first densho:description ;
-	rdf:rest _:c14n200 .
-_:c14n349 rdf:first densho:depends_on ;
-	rdf:rest _:c14n348 .
-_:c14n35 sh:datatype xsd:string ;
-	sh:description "The stable identifier. The identifier does not change when a file moves." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 14 ;
-	sh:path densho:id ;
-	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n350 rdf:first "workspace" ;
-	rdf:rest rdf:nil .
-_:c14n351 rdf:first "domain" ;
-	rdf:rest _:c14n350 .
-_:c14n352 rdf:first "workspace" ;
-	rdf:rest rdf:nil .
-_:c14n353 rdf:first "domain" ;
-	rdf:rest _:c14n352 .
-_:c14n354 rdf:first "workspace" ;
-	rdf:rest rdf:nil .
-_:c14n355 rdf:first "domain" ;
+_:c14n350 sh:class densho:PracticeArea .
+_:c14n351 rdf:first _:c14n352 ;
+	rdf:rest _:c14n347 .
+_:c14n352 sh:class densho:Domain .
+_:c14n353 rdf:first densho:description ;
+	rdf:rest _:c14n203 .
+_:c14n354 rdf:first densho:depends_on ;
+	rdf:rest _:c14n353 .
+_:c14n355 rdf:first densho:create_a_rule ;
 	rdf:rest _:c14n354 .
 _:c14n356 rdf:first "workspace" ;
 	rdf:rest rdf:nil .
@@ -1221,12 +1215,13 @@ _:c14n358 rdf:first "workspace" ;
 	rdf:rest rdf:nil .
 _:c14n359 rdf:first "domain" ;
 	rdf:rest _:c14n358 .
-_:c14n36 sh:description "The kind of knowledge in the node." ;
-	sh:in _:c14n361 ;
+_:c14n36 sh:datatype xsd:string ;
+	sh:description "The supporting prose of the node." ;
 	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:order 6 ;
-	sh:path densho:knowledge_type .
+	sh:nodeKind sh:Literal ;
+	sh:order 12 ;
+	sh:path densho:body ;
+	sh:pattern "\\S" .
 _:c14n360 rdf:first "workspace" ;
 	rdf:rest rdf:nil .
 _:c14n361 rdf:first "domain" ;
@@ -1235,139 +1230,149 @@ _:c14n362 rdf:first "workspace" ;
 	rdf:rest rdf:nil .
 _:c14n363 rdf:first "domain" ;
 	rdf:rest _:c14n362 .
-_:c14n364 rdf:first densho:applies ;
-	rdf:rest _:c14n171 .
-_:c14n365 rdf:first skos:related ;
-	rdf:rest _:c14n99 .
-_:c14n37 sh:class densho:Directive ;
-	sh:description "The directives that live in this file." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 5 ;
-	sh:path densho:directives .
-_:c14n38 sh:datatype xsd:string ;
-	sh:description "The URLs, repository paths, or citations that support the entity." ;
-	sh:nodeKind sh:Literal ;
-	sh:order 17 ;
-	sh:path dcterms:source ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n39 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
+_:c14n364 rdf:first "workspace" ;
+	rdf:rest rdf:nil .
+_:c14n365 rdf:first "domain" ;
+	rdf:rest _:c14n364 .
+_:c14n366 rdf:first "workspace" ;
+	rdf:rest rdf:nil .
+_:c14n367 rdf:first "domain" ;
+	rdf:rest _:c14n366 .
+_:c14n368 rdf:first "workspace" ;
+	rdf:rest rdf:nil .
+_:c14n369 rdf:first "domain" ;
+	rdf:rest _:c14n368 .
+_:c14n37 sh:datatype xsd:string ;
+	sh:description "The preferred name of the node." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
+	sh:nodeKind sh:Literal ;
 	sh:order 9 ;
-	sh:path rdf:type .
+	sh:path skos:prefLabel ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n370 rdf:first densho:applies ;
+	rdf:rest _:c14n175 .
+_:c14n371 rdf:first skos:related ;
+	rdf:rest _:c14n102 .
+_:c14n38 sh:datatype xsd:string ;
+	sh:description "The stable identifier. The identifier does not change when a file moves." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 14 ;
+	sh:path densho:id ;
+	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
+_:c14n39 sh:description "The kind of knowledge in the node." ;
+	sh:in _:c14n359 ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:order 6 ;
+	sh:path densho:knowledge_type .
 _:c14n4 sh:class skos:Concept ;
 	sh:description "The knowledge that the skill composes." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 3 ;
 	sh:path densho:uses .
-_:c14n40 sh:description "The kind of work that the skill does." ;
-	sh:in _:c14n73 ;
+_:c14n40 sh:class densho:Directive ;
+	sh:description "The directives that live in this file." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 5 ;
+	sh:path densho:directives .
+_:c14n41 sh:datatype xsd:string ;
+	sh:description "The URLs, repository paths, or citations that support the entity." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 17 ;
+	sh:path dcterms:source ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n42 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 9 ;
+	sh:path rdf:type .
+_:c14n43 sh:description "The kind of work that the skill does." ;
+	sh:in _:c14n28 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 2 ;
 	sh:path densho:skill_type .
-_:c14n41 rdf:first rdf:type ;
-	rdf:rest _:c14n327 .
-_:c14n42 rdf:first densho:scope ;
-	rdf:rest _:c14n255 .
-_:c14n43 sh:datatype xsd:string ;
+_:c14n44 rdf:first rdf:type ;
+	rdf:rest _:c14n332 .
+_:c14n45 rdf:first densho:scope ;
+	rdf:rest _:c14n260 .
+_:c14n46 sh:datatype xsd:string ;
 	sh:description "The stable identifier. The identifier does not change when a file moves." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 0 ;
 	sh:path densho:id ;
 	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n44 rdf:first rdf:type ;
+_:c14n47 rdf:first rdf:type ;
 	rdf:rest rdf:nil .
-_:c14n45 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
+_:c14n48 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 8 ;
 	sh:path rdf:type .
-_:c14n46 sh:class densho:Directive ;
+_:c14n49 sh:class densho:Directive ;
 	sh:description "The directives that live in this file." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 3 ;
 	sh:path densho:directives .
-_:c14n47 sh:class skos:Concept ;
-	sh:description "The domain nodes that this workspace node gives project values for." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 5 ;
-	sh:path densho:implements .
-_:c14n48 sh:class densho:Pointer ;
-	sh:description "The routes from this node to other nodes." ;
-	sh:nodeKind sh:BlankNodeOrIRI ;
-	sh:order 10 ;
-	sh:path densho:pointers .
-_:c14n49 sh:class densho:Directive ;
-	sh:description "The directives that live in this file." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 11 ;
-	sh:path densho:directives .
 _:c14n5 sh:description "The nodes that the directive applies to. This field has no default, because inheritance is explicit." ;
-	sh:in _:c14n55 ;
+	sh:in _:c14n58 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 1 ;
 	sh:path densho:scope .
-_:c14n50 sh:datatype xsd:string ;
+_:c14n50 sh:class skos:Concept ;
+	sh:description "The domain nodes that this workspace node gives project values for." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 5 ;
+	sh:path densho:implements .
+_:c14n51 sh:class densho:Pointer ;
+	sh:description "The routes from this node to other nodes." ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 10 ;
+	sh:path densho:pointers .
+_:c14n52 sh:class densho:Directive ;
+	sh:description "The directives that live in this file." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 11 ;
+	sh:path densho:directives .
+_:c14n53 sh:datatype xsd:string ;
 	sh:description "The supporting prose of the node." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 13 ;
 	sh:path densho:body ;
 	sh:pattern "\\S" .
-_:c14n51 sh:description "The lifecycle state." ;
-	sh:in _:c14n269 ;
+_:c14n54 sh:description "The lifecycle state." ;
+	sh:in _:c14n270 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 14 ;
 	sh:path densho:status .
-_:c14n52 sh:class skos:Concept ;
+_:c14n55 sh:class skos:Concept ;
 	sh:description "The nodes that this node cannot exist without. A handoff from one step to the next uses informs." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 4 ;
 	sh:path densho:depends_on .
-_:c14n53 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
+_:c14n56 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 0 ;
 	sh:path rdf:type .
-_:c14n54 sh:class densho:DirectiveException ;
+_:c14n57 sh:class densho:DirectiveException ;
 	sh:description "The inherited directives that stop at this node." ;
 	sh:nodeKind sh:BlankNodeOrIRI ;
 	sh:order 8 ;
 	sh:path densho:exceptions .
-_:c14n55 rdf:first "node" ;
-	rdf:rest _:c14n56 .
-_:c14n56 rdf:first "subtree" ;
+_:c14n58 rdf:first "node" ;
+	rdf:rest _:c14n59 .
+_:c14n59 rdf:first "subtree" ;
 	rdf:rest rdf:nil .
-_:c14n57 sh:datatype xsd:string ;
-	sh:description "The preferred name of the node." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 1 ;
-	sh:path skos:prefLabel ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n58 sh:datatype xsd:string ;
-	sh:description "The preferred name of the node." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 10 ;
-	sh:path skos:prefLabel ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n59 sh:datatype xsd:string ;
-	sh:description "The stable identifier. The identifier does not change when a file moves." ;
-	sh:maxCount 1 ;
-	sh:nodeKind sh:Literal ;
-	sh:order 14 ;
-	sh:path densho:id ;
-	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
 _:c14n6 sh:datatype xsd:string ;
 	sh:description "The stable identifier. The identifier does not change when a file moves." ;
 	sh:maxCount 1 ;
@@ -1375,19 +1380,42 @@ _:c14n6 sh:datatype xsd:string ;
 	sh:order 13 ;
 	sh:path densho:id ;
 	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n60 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n325 ;
+_:c14n60 sh:datatype xsd:string ;
+	sh:description "The preferred name of the node." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 1 ;
+	sh:path skos:prefLabel ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n61 sh:datatype xsd:string ;
+	sh:description "The preferred name of the node." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 10 ;
+	sh:path skos:prefLabel ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n62 sh:datatype xsd:string ;
+	sh:description "The stable identifier. The identifier does not change when a file moves." ;
+	sh:maxCount 1 ;
+	sh:nodeKind sh:Literal ;
+	sh:order 14 ;
+	sh:path densho:id ;
+	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
+_:c14n63 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n320 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 7 ;
 	sh:path densho:origin .
-_:c14n61 sh:description "The kind of knowledge in the node." ;
-	sh:in _:c14n355 ;
+_:c14n64 sh:description "The kind of knowledge in the node." ;
+	sh:in _:c14n361 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 6 ;
 	sh:path densho:knowledge_type .
-_:c14n62 sh:datatype xsd:string ;
+_:c14n65 sh:datatype xsd:string ;
 	sh:description "The meaning of the node." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
@@ -1395,201 +1423,192 @@ _:c14n62 sh:datatype xsd:string ;
 	sh:order 1 ;
 	sh:path skos:definition ;
 	sh:pattern "\\S" .
-_:c14n63 sh:description "The lifecycle state." ;
-	sh:in _:c14n293 ;
+_:c14n66 sh:datatype xsd:string ;
+	sh:description "The IDs of the steps of the skill, in their order. Each step has a step file with its ID." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 5 ;
+	sh:path densho:steps ;
+	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
+_:c14n67 sh:description "The lifecycle state." ;
+	sh:in _:c14n274 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 7 ;
 	sh:path densho:status .
-_:c14n64 rdf:first densho:body ;
-	rdf:rest _:c14n149 .
-_:c14n65 sh:datatype xsd:string ;
+_:c14n68 rdf:first densho:body ;
+	rdf:rest _:c14n153 .
+_:c14n69 sh:datatype xsd:string ;
 	sh:description "The reason that a person rejected the entity." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 18 ;
 	sh:path densho:rejection_reason ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n66 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
-	sh:nodeKind sh:IRI ;
-	sh:order 0 ;
-	sh:path rdf:type .
-_:c14n67 rdf:first "standard" ;
-	rdf:rest _:c14n21 .
-_:c14n68 sh:datatype xsd:string ;
-	sh:description "The URLs, repository paths, or citations that support the entity." ;
-	sh:nodeKind sh:Literal ;
-	sh:order 10 ;
-	sh:path dcterms:source ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n69 rdf:first rdf:type ;
-	rdf:rest _:c14n238 .
 _:c14n7 sh:class densho:Domain ;
 	sh:description "The broader nodes in the taxonomy." ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 0 ;
 	sh:path skos:broader .
-_:c14n70 sh:class densho:Directive ;
+_:c14n70 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
+	sh:maxCount 1 ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:IRI ;
+	sh:order 0 ;
+	sh:path rdf:type .
+_:c14n71 rdf:first "standard" ;
+	rdf:rest _:c14n24 .
+_:c14n72 sh:datatype xsd:string ;
+	sh:description "The URLs, repository paths, or citations that support the entity." ;
+	sh:nodeKind sh:Literal ;
+	sh:order 10 ;
+	sh:path dcterms:source ;
+	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
+_:c14n73 rdf:first rdf:type ;
+	rdf:rest _:c14n257 .
+_:c14n74 sh:class densho:Directive ;
 	sh:description "The directives that live in this file." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 12 ;
 	sh:path densho:directives .
-_:c14n71 rdf:first rdf:type ;
+_:c14n75 rdf:first rdf:type ;
 	rdf:rest rdf:nil .
-_:c14n72 sh:datatype xsd:string ;
+_:c14n76 sh:datatype xsd:string ;
 	sh:description "The reason that a person rejected the entity." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 10 ;
 	sh:path densho:rejection_reason ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n73 rdf:first "flow" ;
-	rdf:rest _:c14n120 .
-_:c14n74 rdf:first rdf:type ;
-	rdf:rest _:c14n253 .
-_:c14n75 sh:description "The kind of source that supports the directive." ;
-	sh:in _:c14n67 ;
+_:c14n77 rdf:first rdf:type ;
+	rdf:rest _:c14n244 .
+_:c14n78 sh:description "The kind of source that supports the directive." ;
+	sh:in _:c14n71 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 2 ;
 	sh:path densho:basis .
-_:c14n76 sh:class densho:Skill ;
+_:c14n79 sh:class densho:Skill ;
 	sh:description "The node that the pointer routes to." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 1 ;
 	sh:path densho:target .
-_:c14n77 sh:datatype xsd:string ;
+_:c14n8 sh:class skos:Concept ;
+	sh:description "The nodes that take the output of this node as an input. This edge is the flow from one step to the next." ;
+	sh:nodeKind sh:IRI ;
+	sh:order 3 ;
+	sh:path densho:informs .
+_:c14n80 sh:datatype xsd:string ;
 	sh:description "The reason that a person rejected the entity." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 17 ;
 	sh:path densho:rejection_reason ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n78 rdf:first rdf:type ;
+_:c14n81 rdf:first rdf:type ;
 	rdf:rest rdf:nil .
-_:c14n79 sh:class densho:Node ;
+_:c14n82 sh:class densho:Node ;
 	sh:description "The nodes that this node sets rules for. A governance node can name itself." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 4 ;
 	sh:path densho:governs .
-_:c14n8 sh:class skos:Concept ;
-	sh:description "The nodes that take the output of this node as an input. This edge is the flow from one step to the next." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 3 ;
-	sh:path densho:informs .
-_:c14n80 rdf:first "proposals" ;
+_:c14n83 rdf:first "proposals" ;
 	rdf:rest rdf:nil .
-_:c14n81 sh:class skos:Concept ;
-	sh:description "The steps of a flow skill, in their order. Each step is a node under the node that the flow uses." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 5 ;
-	sh:path densho:steps .
-_:c14n82 sh:class skos:Concept ;
+_:c14n84 sh:class skos:Concept ;
 	sh:description "The nodes that this node cannot exist without. A handoff from one step to the next uses informs." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 3 ;
 	sh:path densho:depends_on .
-_:c14n83 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n311 ;
+_:c14n85 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n326 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 8 ;
 	sh:path densho:origin .
-_:c14n84 sh:datatype xsd:string ;
+_:c14n86 sh:datatype xsd:string ;
 	sh:description "The URLs, repository paths, or citations that support the entity." ;
 	sh:nodeKind sh:Literal ;
 	sh:order 8 ;
 	sh:path dcterms:source ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n85 sh:class densho:Node ;
+_:c14n87 sh:class densho:Node ;
 	sh:description "The node that the pointer routes to." ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:nodeKind sh:IRI ;
 	sh:order 2 ;
 	sh:path densho:target .
-_:c14n86 rdf:first "agent" ;
-	rdf:rest _:c14n153 .
-_:c14n87 sh:description "The lifecycle state." ;
-	sh:in _:c14n301 ;
+_:c14n88 rdf:first "agent" ;
+	rdf:rest _:c14n157 .
+_:c14n89 sh:description "The lifecycle state." ;
+	sh:in _:c14n266 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 14 ;
 	sh:path densho:status .
-_:c14n88 sh:datatype xsd:string ;
+_:c14n9 sh:class densho:Pointer ;
+	sh:description "The routes from this node to other nodes." ;
+	sh:minCount 1 ;
+	sh:nodeKind sh:BlankNodeOrIRI ;
+	sh:order 4 ;
+	sh:path densho:pointers .
+_:c14n90 sh:datatype xsd:string ;
 	sh:description "The URLs, repository paths, or citations that support the entity." ;
 	sh:nodeKind sh:Literal ;
 	sh:order 17 ;
 	sh:path dcterms:source ;
 	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n89 sh:class skos:Concept ;
+_:c14n91 sh:class skos:Concept ;
 	sh:description "The nodes with an association to this node. This edge is symmetric." ;
 	sh:nodeKind sh:IRI ;
 	sh:order 1 ;
 	sh:path skos:related .
-_:c14n9 sh:datatype xsd:string ;
-	sh:description "The URLs, repository paths, or citations that support the entity." ;
-	sh:nodeKind sh:Literal ;
-	sh:order 3 ;
-	sh:path dcterms:source ;
-	sh:pattern "^\\S(?: *\\S)*(?!\\n)$" .
-_:c14n90 sh:description "The kind of knowledge in the node." ;
-	sh:in _:c14n351 ;
+_:c14n92 sh:description "The kind of knowledge in the node." ;
+	sh:in _:c14n367 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 7 ;
 	sh:path densho:knowledge_type .
-_:c14n91 sh:description "The lifecycle state." ;
-	sh:in _:c14n281 ;
+_:c14n93 sh:description "The lifecycle state." ;
+	sh:in _:c14n282 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 15 ;
 	sh:path densho:status .
-_:c14n92 sh:description "The broader nodes in the taxonomy." ;
+_:c14n94 sh:description "The broader nodes in the taxonomy." ;
 	sh:minCount 1 ;
-	sh:or _:c14n346 ;
+	sh:or _:c14n344 ;
 	sh:order 0 ;
 	sh:path skos:broader .
-_:c14n93 sh:description "The kind of knowledge in the node." ;
-	sh:in _:c14n359 ;
+_:c14n95 sh:description "The kind of knowledge in the node." ;
+	sh:in _:c14n363 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
 	sh:order 7 ;
 	sh:path densho:knowledge_type .
-_:c14n94 sh:description "The class of the entity. The value is the class CURIE, for example densho:Concept." ;
-	sh:maxCount 1 ;
-	sh:minCount 1 ;
+_:c14n96 sh:class densho:Directive ;
+	sh:description "The directives that live in this file." ;
 	sh:nodeKind sh:IRI ;
-	sh:order 0 ;
-	sh:path rdf:type .
-_:c14n95 sh:class densho:Pointer ;
+	sh:order 5 ;
+	sh:path densho:directives .
+_:c14n97 sh:class densho:Pointer ;
 	sh:description "The routes from this node to other nodes." ;
 	sh:nodeKind sh:BlankNodeOrIRI ;
 	sh:order 4 ;
 	sh:path densho:pointers .
-_:c14n96 sh:datatype xsd:string ;
+_:c14n98 sh:datatype xsd:string ;
 	sh:description "The stable identifier. The identifier does not change when a file moves." ;
 	sh:maxCount 1 ;
 	sh:nodeKind sh:Literal ;
 	sh:order 5 ;
 	sh:path densho:id ;
 	sh:pattern "^[a-z][a-z0-9]*(-[a-z0-9]+)*(?!\\n)$" .
-_:c14n97 sh:description "The source of the entity in this repository." ;
-	sh:in _:c14n317 ;
+_:c14n99 sh:description "The source of the entity in this repository." ;
+	sh:in _:c14n318 ;
 	sh:maxCount 1 ;
 	sh:minCount 1 ;
-	sh:order 15 ;
+	sh:order 9 ;
 	sh:path densho:origin .
-_:c14n98 sh:class skos:Concept ;
-	sh:description "The domain nodes that this workspace node gives project values for." ;
-	sh:nodeKind sh:IRI ;
-	sh:order 6 ;
-	sh:path densho:implements .
-_:c14n99 rdf:first densho:also_attached_to ;
-	rdf:rest _:c14n364 .
 

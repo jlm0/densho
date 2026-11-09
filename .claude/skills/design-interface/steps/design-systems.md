@@ -1,43 +1,19 @@
 <!-- Generated from the knowledge graph. Do not edit. Change the node file. -->
-# Design systems
+# Specify the components and the tokens
 
-This file is step 4 of 4 of the skill `design-interface`.
+This file is step 5 of 5 of the skill `design-interface`.
+
+## Pages
+
+- You build or use the tokens and the components of a design system. Read [Design systems](../../../references/design-systems.md).
+- You build, combine, or test the components of a design system. Read [Atomic design](../../../references/atomic-design.md).
+- You name, store, or reference a color, a size, a space, or a type style. Read [Design tokens](../../../references/design-tokens.md).
+- You build a control, a form, a text style, a color choice, or media. Read [Accessibility](../../../references/accessibility.md).
 
 ## Directives
 
-No directive is in force at this step.
-
-## Inputs
-
-- The screens of the visual design
-- The design tokens and the components that the product has
-
-The output of each node in this list is an input of this step:
-
-- [Visual design](visual-design.md)
-- [Visual identity](../../../references/visual-identity.md)
-
-## Procedure
-
-The procedure of this step is missing.
-
-## Output
-
-The design tokens and the components that the screens use, with the rules for their use.
-
-The output of this step is an input of each node in this list:
-
-- [Software design](../../../references/software-design.md)
-
-## Exit gate
-
-Check the tokens and the components against each directive of this step and of the skill, and report each one that it misses.
+No directive of this step is in force.
 
 ## Next step
 
-This step is the last step of the skill.
-
-## References
-
-- You build, combine, or test the components of a design system. Read [Atomic design](../../../references/atomic-design.md).
-- You name, store, or reference a color, a size, a space, or a type style. Read [Design tokens](../../../references/design-tokens.md).
+Return to the exit checklist of [the skill](../SKILL.md).

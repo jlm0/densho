@@ -72,7 +72,9 @@ KIND_LABELS: Mapping[type, str] = {
     Skill: "Skill",
 }
 DIRECTIVE_EDGES = ("also_attached_to", "refines", "conflicts_with")
-DIRECTIVE_TARGET_FIELDS = frozenset({"applies", "refines", "conflicts_with"})
+DIRECTIVE_TARGET_FIELDS = frozenset(
+    {"applies", "use_a_skill", "create_a_rule", "refines", "conflicts_with"}
+)
 FIELD_LABELS = {
     "broader": "Broader",
     "related": "Related",
@@ -85,7 +87,8 @@ FIELD_LABELS = {
     "also_attached_to": "Also attached to",
     "refines": "Refines",
     "conflicts_with": "Conflicts with",
-    "steps": "Steps",
+    "use_a_skill": "Use a skill",
+    "create_a_rule": "Create a rule",
 }
 
 _ENVIRONMENT = Environment(
@@ -164,6 +167,7 @@ class NodePage:
     path: str
     definition: str | None
     description: str | None
+    steps: tuple[str, ...]
     body: str | None
     sources: tuple[str, ...]
     trail: tuple[Target, ...]
@@ -386,6 +390,7 @@ def _node_page(node_id: str, graph: _Graph) -> NodePage:
         path=graph.proposals.paths[node_id],
         definition=node.definition if isinstance(node, TaxonomyNode) else None,
         description=node.description if isinstance(node, Skill) else None,
+        steps=tuple((node.steps or []) if isinstance(node, Skill) else ()),
         body=node.body,
         sources=tuple(node.sources or ()),
         trail=_trail(node_id, graph),

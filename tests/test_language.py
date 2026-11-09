@@ -22,6 +22,8 @@ from engine.language.profile import (
 )
 from engine.language.prose import read_prose
 from engine.parser import ParsedNode, Problem, parse_source
+from engine.parser.result import StepFile
+from engine.parser.steps import read_step_source
 from engine.vendor import ste_lint
 
 REPO = Path(__file__).resolve().parents[1]
@@ -572,6 +574,93 @@ def test_a_good_description_passes(text: str) -> None:
 )
 def test_a_bad_description_fails(text: str, code: str) -> None:
     assert code in description_codes(text)
+
+
+THIRD = "Review a file. Use when a file changes. "
+
+
+def description_messages(text: str) -> list[str]:
+    return [
+        problem.message
+        for problem in problems_of(node_source(description=text))
+        if problem.code == "description-form"
+    ]
+
+
+def test_a_description_with_a_third_sentence_passes() -> None:
+    text = THIRD + "Do not use it for a flow (`review-usability`) or a brand (`design-brand`)."
+    assert problems_of(node_source(description=text)) == []
+
+
+@pytest.mark.parametrize(
+    ("third", "message"),
+    [
+        ("Run `review-usability` for a flow.", "Start the third sentence with Do not use it for."),
+        (
+            "Do not use it for a review of a flow.",
+            "Name each sibling skill of the third sentence in backticks.",
+        ),
+        (
+            "Do not use it on a flow (`review-usability`).",
+            "Start the third sentence with Do not use it for.",
+        ),
+    ],
+)
+def test_a_bad_third_sentence_fails(third: str, message: str) -> None:
+    assert description_messages(THIRD + third) == [message]
+
+
+def test_a_fourth_sentence_fails() -> None:
+    text = THIRD + "Do not use it for a flow (`review-usability`). Run it now."
+    message = (
+        "Write 2 or 3 sentences: the action of the skill, Use when and a trigger, "
+        "and Do not use it for with the sibling skills."
+    )
+    assert description_messages(text) == [message]
+
+
+SENTENCE_COUNT = (
+    "Write 2 or 3 sentences: the action of the skill, Use when and a trigger, "
+    "and Do not use it for with the sibling skills."
+)
+
+
+def test_a_one_sentence_description_names_the_sentence_count() -> None:
+    assert description_messages("Review a file.") == [SENTENCE_COUNT]
+
+
+def test_the_third_sentence_has_the_word_limit() -> None:
+    text = THIRD + f"Do not use it for {words(15)} (`x`)."
+    assert "word-count" in description_codes(text)
+    assert "word-count" not in description_codes(THIRD + f"Do not use it for {words(14)} (`x`).")
+
+
+PAGE_STEP = (
+    "---\ntitle: First\npages:\n  - target: other\n    trigger: {0}\n---\n\n"
+    "## Procedure\n\n1. Run it.\n\n## Output\n\nIt.\n"
+)
+STEP_PATH = Path("knowledge/skills/sample/steps/first.md")
+
+
+def step_problems(trigger: str) -> list[tuple[Path, int, str]]:
+    item = parsed(node_source(description=GOOD_DESCRIPTION))
+    step = read_step_source(PAGE_STEP.format(trigger), STEP_PATH)
+    assert isinstance(step, StepFile), step
+    problems = check_items([replace(item, step_files=(step,))], PROFILE)[1]
+    return [(problem.path, problem.line, problem.code) for problem in problems]
+
+
+def test_a_page_trigger_of_a_step_follows_the_trigger_grammar() -> None:
+    assert (STEP_PATH, 5, "trigger-form") in step_problems("When you edit a file.")
+    assert step_problems("You edit a file.") == []
+
+
+def test_a_page_trigger_counts_as_a_text() -> None:
+    item = parsed(node_source(description=GOOD_DESCRIPTION))
+    step = read_step_source(PAGE_STEP.format("You edit a file."), STEP_PATH)
+    assert isinstance(step, StepFile)
+    alone = check_items([item], PROFILE)[0]
+    assert check_items([replace(item, step_files=(step,))], PROFILE)[0] == alone + 1
 
 
 def test_each_description_sentence_passes_at_the_word_limit() -> None:

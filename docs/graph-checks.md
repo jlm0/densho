@@ -18,21 +18,21 @@ An empty tree passes, so a project can remove what it received and still start c
 
 ## What fails
 
-| Check        | Code           | What fails                                                                                                                                           |
-| ------------ | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Identity     | `duplicate-id` | Two nodes or directives share an ID                                                                                                                  |
-| Root         | `root`         | Nodes exist, but none of them is a `densho:Root`                                                                                                     |
-| Placement    | `placement`    | A node's kind does not match its folder, including a second root                                                                                     |
-| References   | `reference`    | An edge, a pointer, an exception, or a directive field such as `also_attached_to` names an ID that does not exist                                    |
-| Types        | `type`         | A reference names a kind the [schema](schema.md) does not allow, such as a `broader` target of the wrong rank, or a non-skill behind a skill pointer |
-| Skills       | `skill`        | A skill has neither `uses` nor `applies`, or its ID is `synced` or `anthropic-skills`, which Claude Code reserves                                    |
-| Skill table  | `skill`        | A flow or a lens skill has no row in the skill table, or can't start by itself, or a description leaves out the activity of its row                  |
-| Steps        | `step`         | The `steps` of a flow skill don't match its discipline or its step files, or a skill that is not a flow has steps                                    |
-| Ownership    | `implements`   | `implements` starts from a node that is not workspace knowledge                                                                                      |
-| Associations | `association`  | `related` joins a node to one in its own `broader` chain, up or down                                                                                 |
-| Cycles       | `cycle`        | A chain of `broader` edges, or a chain of `depends_on` edges, leads back to its start                                                                |
-| Reachability | `unreachable`  | No chain of pointers from an entry point reaches a node, so an agent could never find it                                                             |
-| Depth        | `depth`        | The shortest pointer route to a node takes more than 6 hops                                                                                          |
+| Check        | Code           | What fails                                                                                                                                                                     |
+| ------------ | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Identity     | `duplicate-id` | Two nodes or directives share an ID                                                                                                                                            |
+| Root         | `root`         | Nodes exist, but none of them is a `densho:Root`                                                                                                                               |
+| Placement    | `placement`    | A node's kind does not match its folder, including a second root                                                                                                               |
+| References   | `reference`    | An edge, a pointer, an exception, or a directive field such as `also_attached_to` names an ID that does not exist                                                              |
+| Types        | `type`         | A reference names a kind the [schema](schema.md) does not allow, such as a `broader` target of the wrong rank, or a non-skill behind a skill pointer                           |
+| Skills       | `skill`        | A skill has neither `uses` nor `applies`, or its ID is `synced` or `anthropic-skills`, which Claude Code reserves                                                              |
+| Skill table  | `skill`        | A task or a lens skill has no row in the skill table, or can't start by itself, or a description leaves out the activity of its row, or a root section names a directive twice |
+| Steps        | `step`         | The `steps` of a skill don't match its step files, a step copies a directive that doesn't exist, or a system skill has steps                                                   |
+| Ownership    | `implements`   | `implements` starts from a node that is not workspace knowledge                                                                                                                |
+| Associations | `association`  | `related` joins a node to one in its own `broader` chain, up or down                                                                                                           |
+| Cycles       | `cycle`        | A chain of `broader` edges, or a chain of `depends_on` edges, leads back to its start                                                                                          |
+| Reachability | `unreachable`  | No chain of pointers from an entry point reaches a node, so an agent could never find it                                                                                       |
+| Depth        | `depth`        | The shortest pointer route to a node takes more than 6 hops                                                                                                                    |
 
 Two more codes report a graph that the checks cannot read. `schema` means the graph breaks a rule of the graph as a whole, such as a root with no other node. `shape` means the shape check failed in a way that has no location of its own, so the problem points at the root node.
 
@@ -51,23 +51,39 @@ These checks do not need a `knowledge/governance/` folder, and a project can del
 
 Each skill has a `skill_type`:
 
-| Type     | What it does                                                        | Needs                                          |
-| -------- | ------------------------------------------------------------------- | ---------------------------------------------- |
-| `flow`   | Runs the work of one discipline, step by step                       | `invocation: agent`, a row, `steps`, and files |
-| `lens`   | Reviews work from one angle, alone or inside another skill          | `invocation: agent` and a row                  |
-| `system` | Runs Densho itself, such as a proposal or a review of the proposals | Nothing more                                   |
+| Type     | What it does                                                        | Needs                                               |
+| -------- | ------------------------------------------------------------------- | --------------------------------------------------- |
+| `task`   | Does one task in one or more steps                                  | `invocation: agent`, a row, `steps`, and step files |
+| `lens`   | Reviews work from one angle, alone or inside another skill          | `invocation: agent` and a row                       |
+| `system` | Runs Densho itself, such as a proposal or a review of the proposals | No steps                                            |
 
 A row is a `densho:SkillPointer` on the root. Its trigger is the activity, and [`AGENTS.md`](runtime-files.md#the-skill-table) shows it in the skill table. The description of the skill must hold that activity in its `Use when` sentence, with a lowercase first letter and no final period, so the listing and the table say the same thing. `You create or change a user interface.` needs `Use when you create or change a user interface.`
 
-A flow skill uses exactly one node, its discipline, and names its steps in order. The check fails with `step` when:
+The root's `use_a_skill` and `create_a_rule` lists fail with `skill` when they name a directive twice, or when both name the same one.
+
+A task skill with no `steps` fails with `step`. A skill with `steps` also fails with `step` when:
+
+- `steps` names a step twice
+- a step has no [step file](node-format.md#step-files), or a step file has no entry in `steps`
+- some step files use the copy form and others use the tree form
+
+A system skill with `steps`, or with a `steps/` folder, fails too, and so does a lens in the tree form.
+
+A skill whose step files use the [copy form](node-format.md#the-copy-form) also fails with `step` when:
+
+- a step copies an ID that names no directive. A [selection](template-packaging.md) that left out the node that holds it is the usual cause.
+- a step copies a `rejected` directive
+- a page names no node, or names a skill or a `rejected` node
+- a directive that the skill node holds isn't copied by any step
+- the body of the skill isn't exactly `## Exit checklist` and then `## Output`
+
+A copy can come from any node, so a step can carry a directive of another discipline. The [language checks](language-checks.md) read the trigger of each page as a trigger.
+
+A task skill in the tree form uses exactly one node, its discipline, and names its steps in order. It also fails with `step` when:
 
 - `uses` doesn't name exactly one node
-- `steps` is empty, or names a step twice
-- a step's `broader` doesn't name the discipline
+- a step names no node, or its `broader` doesn't name the discipline
 - a step informs a step that comes before it
-- a step has no [step file](node-format.md#step-files), or a step file has no entry in `steps`
-
-A lens or a system skill with `steps`, or with a `steps/` folder, fails too.
 
 ## Reachability and depth
 

@@ -7,7 +7,7 @@ origin: template
 knowledge_type: domain
 description: Define the strategy, the voice, the visual identity, and the guidelines of a brand. Use when you define or change the strategy, the voice, the visual identity, or the guidelines of a brand.
 invocation: agent
-skill_type: flow
+skill_type: task
 uses:
   - brand-design
 applies:

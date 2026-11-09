@@ -5,7 +5,7 @@ description: Add a discipline or a practice area to the template from establishe
 
 # Author a domain
 
-This skill adds domain knowledge to a clone of the template: a discipline, or a practice area of a discipline. Each rule comes from a framework that a published source states, and you open each source before you cite it. If compaction removes this skill, invoke it again.
+This skill adds domain knowledge to a clone of the template: a discipline, or a practice area of a discipline. Each rule comes from a framework that a published source states, and you open each source before you cite it.
 
 An agent proposes each entity, and a person accepts it. Run the steps in the template repo, where the engine runs as `uv run densho`.
 
